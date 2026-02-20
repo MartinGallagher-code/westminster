@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}Q{{ question.number }} - Westminster Shorter Catechism{% endblock %}
+
+{% block content %}
+<!-- Breadcrumbs -->
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'catechism:home' %}">Home</a></li>
+        <li class="breadcrumb-item">
+            <a href="{{ question.topic.get_absolute_url }}">{{ question.topic.name }}</a>
+        </li>
+        <li class="breadcrumb-item active">Q{{ question.number }}</li>
+    </ol>
+</nav>
+
+<!-- Prev/Next navigation (top) -->
+<div class="d-flex justify-content-between mb-3">
+    {% if previous_question %}
+    <a href="{{ previous_question.get_absolute_url }}" class="btn btn-outline-secondary btn-sm">
+        &larr; Q{{ previous_question.number }}
+    </a>
+    {% else %}<span></span>{% endif %}
+    {% if next_question %}
+    <a href="{{ next_question.get_absolute_url }}" class="btn btn-outline-secondary btn-sm">
+        Q{{ next_question.number }} &rarr;
+    </a>
+    {% else %}<span></span>{% endif %}
+</div>
+
+<!-- Question and Answer -->
+<div class="card mb-4">
+    <div class="card-body">
+        <h2 class="h4 question-text">Q{{ question.number }}. {{ question.question_text }}</h2>
+        <p class="lead mt-3 answer-text"><strong>A.</strong> {{ question.answer_text }}</p>
+    </div>
+</div>
+
+<!-- Proof Texts -->
+{% with proof_texts=question.get_proof_text_list %}
+{% if proof_texts %}
+<div class="card mb-4">
+    <div class="card-header"><h3 class="h6 mb-0">Scripture Proofs</h3></div>
+    <div class="card-body">
+        {% for ref in proof_texts %}
+        <span class="badge bg-light text-dark border me-1 mb-1">{{ ref }}</span>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endwith %}
+
+<!-- Commentaries (tabbed) -->
+{% if question.commentaries.all %}
+<div class="card mb-4">
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" role="tablist">
+            {% for commentary in question.commentaries.all %}
+            <li class="nav-item" role="presentation">
+                <button class="nav-link {% if forloop.first %}active{% endif %}"
+                        data-bs-toggle="tab"
+                        data-bs-target="#commentary-{{ commentary.source.slug }}"
+                        type="button" role="tab">
+                    {{ commentary.source.author }}
+                </button>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="card-body tab-content">
+        {% for commentary in question.commentaries.all %}
+        <div class="tab-pane fade {% if forloop.first %}show active{% endif %}"
+             id="commentary-{{ commentary.source.slug }}" role="tabpanel">
+
+            {% if commentary.body %}
+            <div class="commentary-text">{{ commentary.body|linebreaks }}</div>
+            {% endif %}
+
+            {% if commentary.sub_questions.all %}
+            <div class="fisher-subquestions">
+                {% for sq in commentary.sub_questions.all %}
+                <div class="mb-3 ps-3 border-start border-2">
+                    <p class="mb-1">
+                        <strong>Q{{ sq.number }}.</strong> {{ sq.question_text }}
+                    </p>
+                    <p class="text-muted mb-0">
+                        <strong>A.</strong> {{ sq.answer_text }}
+                    </p>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- User Notes -->
+{% if user.is_authenticated %}
+<div class="card mb-4">
+    <div class="card-header">
+        <h3 class="h6 mb-0">My Notes</h3>
+    </div>
+    <div class="card-body">
+        {% if user_note %}
+        <div class="mb-3 p-3 bg-light rounded">
+            {{ user_note.text|linebreaks }}
+            <small class="text-muted">Last updated: {{ user_note.updated_at|date:"M j, Y g:i a" }}</small>
+            <div class="mt-2">
+                <a href="{% url 'accounts:note_delete' pk=user_note.pk %}"
+                   class="btn btn-sm btn-outline-danger">Delete Note</a>
+            </div>
+        </div>
+        {% endif %}
+
+        <form method="post" action="{% url 'accounts:note_save' question_number=question.number %}">
+            {% csrf_token %}
+            <div class="mb-2">
+                <textarea name="text" rows="4" class="form-control"
+                          placeholder="Write your personal notes on this question...">{% if user_note %}{{ user_note.text }}{% endif %}</textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm">
+                {% if user_note %}Update Note{% else %}Save Note{% endif %}
+            </button>
+        </form>
+    </div>
+</div>
+{% else %}
+<div class="card mb-4">
+    <div class="card-body text-center text-muted">
+        <a href="{% url 'accounts:login' %}?next={{ request.path }}">Log in</a> to save personal notes on this question.
+    </div>
+</div>
+{% endif %}
+
+<!-- Prev/Next (bottom) -->
+<div class="d-flex justify-content-between mt-4 mb-4">
+    {% if previous_question %}
+    <a href="{{ previous_question.get_absolute_url }}" class="btn btn-outline-secondary">
+        &larr; Q{{ previous_question.number }}: {{ previous_question.question_text|truncatewords:8 }}
+    </a>
+    {% else %}<span></span>{% endif %}
+    {% if next_question %}
+    <a href="{{ next_question.get_absolute_url }}" class="btn btn-outline-secondary">
+        Q{{ next_question.number }}: {{ next_question.question_text|truncatewords:8 }} &rarr;
+    </a>
+    {% else %}<span></span>{% endif %}
+</div>
+{% endblock %}

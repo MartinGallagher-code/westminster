@@ -1,0 +1,26 @@
+databases:
+  - name: westminster-db
+    plan: free
+    databaseName: westminster
+    user: westminster
+
+services:
+  - type: web
+    name: westminster
+    plan: free
+    runtime: python
+    buildCommand: ./build.sh
+    startCommand: gunicorn config.wsgi --bind 0.0.0.0:$PORT
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings.production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: westminster-db
+          property: connectionURI
+      - key: ALLOWED_HOSTS
+        value: .onrender.com
+      - key: PYTHON_VERSION
+        value: 3.12.0

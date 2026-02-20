@@ -1,0 +1,46 @@
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'catechism:home' %}">Westminster Shorter Catechism</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'catechism:question_list' %}">All Questions</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'catechism:topic_list' %}">Topics</a>
+                </li>
+            </ul>
+            <form class="d-flex me-3" action="{% url 'catechism:search' %}" method="get">
+                <input class="form-control form-control-sm me-2" type="search" name="q"
+                       placeholder="Search..." value="{{ query|default:'' }}">
+                <button class="btn btn-outline-light btn-sm" type="submit">Search</button>
+            </form>
+            <ul class="navbar-nav">
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'accounts:dashboard' %}">My Notes</a>
+                </li>
+                <li class="nav-item">
+                    <span class="nav-link text-light-emphasis">{{ user.username }}</span>
+                </li>
+                <li class="nav-item">
+                    <form method="post" action="{% url 'accounts:logout' %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-light btn-sm nav-link">Logout</button>
+                    </form>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'accounts:login' %}">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'accounts:signup' %}">Sign Up</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>

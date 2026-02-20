@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Delete Note - Westminster Shorter Catechism{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h1 class="mb-3">Delete Note</h1>
+        <div class="card">
+            <div class="card-body">
+                <p>Are you sure you want to delete your note on
+                    <strong>Q{{ object.question.number }}. {{ object.question.question_text }}</strong>?
+                </p>
+                <p class="text-muted border-start ps-3">{{ object.text|truncatewords:50 }}</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <a href="{{ object.question.get_absolute_url }}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
