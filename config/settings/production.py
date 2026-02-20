@@ -4,15 +4,19 @@ from .base import *
 
 DEBUG = False
 
-SECRET_KEY = os.environ['SECRET_KEY']
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'change-me-in-production')
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '.onrender.com').split(',')
 
-DATABASES = {
-    'default': dj_database_url.config(conn_max_age=600)
-}
+# Use DATABASE_URL if set, otherwise fall back to SQLite
+DATABASE_URL = os.environ.get('DATABASE_URL')
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.config(conn_max_age=600)
+    }
 
 MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
