@@ -42,6 +42,22 @@
     line-height: 1.6;
 }
 
+/* Scripture text */
+.esv-text {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 0.93rem;
+    line-height: 1.7;
+    color: #333;
+}
+
+.scripture-ref {
+    font-size: 0.95rem;
+}
+
+.scripture-passage .border-start {
+    border-color: #0d6efd !important;
+}
+
 /* Footer spacing */
 footer {
     margin-top: auto;

@@ -10,3 +10,4 @@ python manage.py load_catechism
 python manage.py load_fisher
 python manage.py load_vincent
 python manage.py load_prooftexts
+python manage.py fetch_scripture --delay=0.3

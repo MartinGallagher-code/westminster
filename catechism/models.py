@@ -100,3 +100,14 @@ class FisherSubQuestion(models.Model):
 
     def __str__(self):
         return f"Q{self.commentary.question.number}.{self.number}"
+
+
+class ScripturePassage(models.Model):
+    reference = models.CharField(max_length=100, unique=True, db_index=True)
+    text = models.TextField()
+
+    class Meta:
+        ordering = ['reference']
+
+    def __str__(self):
+        return self.reference

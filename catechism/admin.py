@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Topic, Question, CommentarySource, Commentary, FisherSubQuestion
+from .models import Topic, Question, CommentarySource, Commentary, FisherSubQuestion, ScripturePassage
 
 
 @admin.register(Topic)
@@ -31,3 +31,9 @@ class CommentaryAdmin(admin.ModelAdmin):
     list_display = ('question', 'source')
     list_filter = ('source',)
     inlines = [FisherSubQuestionInline]
+
+
+@admin.register(ScripturePassage)
+class ScripturePassageAdmin(admin.ModelAdmin):
+    list_display = ('reference',)
+    search_fields = ('reference', 'text')

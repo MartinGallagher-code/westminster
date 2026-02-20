@@ -3,7 +3,7 @@ from datetime import date
 from django.db.models import Q, Prefetch
 from django.views.generic import TemplateView, ListView, DetailView
 
-from .models import Topic, Question, Commentary, FisherSubQuestion
+from .models import Topic, Question, Commentary, FisherSubQuestion, ScripturePassage
 
 
 class HomeView(TemplateView):
@@ -64,6 +64,23 @@ class QuestionDetailView(DetailView):
         q = self.object
         ctx['previous_question'] = q.get_previous()
         ctx['next_question'] = q.get_next()
+
+        # Build scripture text lookup for proof texts
+        refs = q.get_proof_text_list()
+        if refs:
+            passages = ScripturePassage.objects.filter(reference__in=refs)
+            ctx['scripture_map'] = {p.reference: p.text for p in passages}
+            # Also look up continuation references (e.g., "15:4" from "Rev. 4:8; 15:4")
+            # by checking references that weren't found directly
+            found_refs = set(ctx['scripture_map'].keys())
+            for ref in refs:
+                if ref not in found_refs:
+                    # Try matching by looking for passages whose reference matches
+                    passage = ScripturePassage.objects.filter(reference=ref).first()
+                    if passage:
+                        ctx['scripture_map'][ref] = passage.text
+        else:
+            ctx['scripture_map'] = {}
 
         if self.request.user.is_authenticated:
             from accounts.models import UserNote
