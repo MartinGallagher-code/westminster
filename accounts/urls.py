@@ -20,6 +20,6 @@ urlpatterns = [
     path('password-reset/complete/', auth_views.PasswordResetCompleteView.as_view(
         template_name='accounts/password_reset_complete.html'), name='password_reset_complete'),
 
-    path('notes/save/<int:question_number>/', views.NoteSaveView.as_view(), name='note_save'),
+    path('notes/save/<int:question_pk>/', views.NoteSaveView.as_view(), name='note_save'),
     path('notes/<int:pk>/delete/', views.NoteDeleteView.as_view(), name='note_delete'),
 ]

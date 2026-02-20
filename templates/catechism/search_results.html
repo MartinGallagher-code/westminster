@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Search{% if query %}: {{ query }}{% endif %} - Westminster Shorter Catechism{% endblock %}
+{% block title %}Search{% if query %}: {{ query }}{% endif %} - Westminster Standards{% endblock %}
 
 {% block content %}
 <h1 class="mb-3">Search</h1>
@@ -26,7 +26,7 @@
     {% for q in results %}
     <a href="{{ q.get_absolute_url }}" class="list-group-item list-group-item-action">
         <div class="d-flex w-100 justify-content-between">
-            <h6 class="mb-1">Q{{ q.number }}. {{ q.question_text }}</h6>
+            <h6 class="mb-1">{{ q.catechism.abbreviation }} Q{{ q.number }}. {{ q.question_text }}</h6>
             <small class="text-muted text-nowrap ms-2">{{ q.topic.name }}</small>
         </div>
         <p class="mb-0 text-muted small">{{ q.answer_text|truncatewords:25 }}</p>

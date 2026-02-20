@@ -5,13 +5,14 @@ import pdfplumber
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from catechism.models import Commentary, CommentarySource, Question
+from catechism.models import Catechism, Commentary, CommentarySource, Question
 
 
 class Command(BaseCommand):
     help = "Load Francis R. Beattie's 'The Presbyterian Standards' as WSC commentary"
 
     def handle(self, *args, **options):
+        catechism = Catechism.objects.get(slug='wsc')
         source, _ = CommentarySource.objects.update_or_create(
             slug="beattie",
             defaults={
@@ -42,7 +43,7 @@ class Command(BaseCommand):
         loaded = 0
         for num in sorted(question_texts):
             try:
-                question = Question.objects.get(number=num)
+                question = Question.objects.get(catechism=catechism, number=num)
             except Question.DoesNotExist:
                 self.stderr.write(
                     self.style.WARNING(

@@ -1,27 +1,56 @@
 from django.db import models
 
 
-class Topic(models.Model):
-    name = models.CharField(max_length=100)
+class Catechism(models.Model):
+    name = models.CharField(max_length=200)
+    abbreviation = models.CharField(max_length=10, unique=True)
     slug = models.SlugField(unique=True)
     description = models.TextField(blank=True)
-    order = models.PositiveIntegerField(unique=True)
+    year = models.PositiveIntegerField(null=True, blank=True)
+    total_questions = models.PositiveIntegerField()
+
+    class Meta:
+        ordering = ['abbreviation']
+
+    def __str__(self):
+        return self.abbreviation
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('catechism:catechism_home', kwargs={'catechism_slug': self.slug})
+
+
+class Topic(models.Model):
+    catechism = models.ForeignKey(
+        Catechism, on_delete=models.CASCADE, related_name='topics'
+    )
+    name = models.CharField(max_length=100)
+    slug = models.SlugField()
+    description = models.TextField(blank=True)
+    order = models.PositiveIntegerField()
     question_start = models.PositiveIntegerField()
     question_end = models.PositiveIntegerField()
 
     class Meta:
         ordering = ['order']
+        unique_together = [('catechism', 'slug'), ('catechism', 'order')]
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
         from django.urls import reverse
-        return reverse('catechism:topic_detail', kwargs={'slug': self.slug})
+        return reverse('catechism:topic_detail', kwargs={
+            'catechism_slug': self.catechism.slug,
+            'slug': self.slug,
+        })
 
 
 class Question(models.Model):
-    number = models.PositiveIntegerField(unique=True, db_index=True)
+    catechism = models.ForeignKey(
+        Catechism, on_delete=models.CASCADE, related_name='questions'
+    )
+    number = models.PositiveIntegerField(db_index=True)
     question_text = models.TextField()
     answer_text = models.TextField()
     topic = models.ForeignKey(
@@ -34,23 +63,31 @@ class Question(models.Model):
 
     class Meta:
         ordering = ['number']
+        unique_together = [('catechism', 'number')]
 
     def __str__(self):
         return f"Q{self.number}: {self.question_text[:60]}"
 
     def get_absolute_url(self):
         from django.urls import reverse
-        return reverse('catechism:question_detail', kwargs={'number': self.number})
+        return reverse('catechism:question_detail', kwargs={
+            'catechism_slug': self.catechism.slug,
+            'number': self.number,
+        })
 
     def get_previous(self):
         if self.number <= 1:
             return None
-        return Question.objects.filter(number=self.number - 1).first()
+        return Question.objects.filter(
+            catechism=self.catechism, number=self.number - 1
+        ).first()
 
     def get_next(self):
-        if self.number >= 107:
+        if self.number >= self.catechism.total_questions:
             return None
-        return Question.objects.filter(number=self.number + 1).first()
+        return Question.objects.filter(
+            catechism=self.catechism, number=self.number + 1
+        ).first()
 
     def get_proof_text_list(self):
         if not self.proof_texts:

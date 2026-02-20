@@ -6,7 +6,7 @@ from urllib.error import URLError
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from catechism.models import Question, ScripturePassage
+from catechism.models import Catechism, Question, ScripturePassage
 
 # Map abbreviations used in our proof_texts.json to bolls.life book numbers.
 # bolls.life uses sequential book numbering: Genesis=1 ... Revelation=66.
@@ -199,18 +199,25 @@ class Command(BaseCommand):
             help='Only fetch for a specific question number'
         )
         parser.add_argument(
+            '--catechism', type=str, default='',
+            help='Only fetch for a specific catechism slug (e.g. wsc, wlc)'
+        )
+        parser.add_argument(
             '--delay', type=float, default=0.3,
             help='Delay between API requests in seconds (default: 0.3)'
         )
 
     def handle(self, *args, **options):
         question_num = options.get('question')
+        cat_slug = options.get('catechism', '')
         delay = options['delay']
 
+        questions = Question.objects.all()
+        if cat_slug:
+            catechism = Catechism.objects.get(slug=cat_slug)
+            questions = questions.filter(catechism=catechism)
         if question_num:
-            questions = Question.objects.filter(number=question_num)
-        else:
-            questions = Question.objects.all()
+            questions = questions.filter(number=question_num)
 
         total_fetched = 0
         total_failed = 0

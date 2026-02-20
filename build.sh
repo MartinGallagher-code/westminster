@@ -17,4 +17,9 @@ python manage.py load_beattie
 python manage.py load_wallis
 python manage.py load_vincent
 python manage.py load_prooftexts
+
+# Load Larger Catechism and commentary
+python manage.py load_wlc
+python manage.py load_ridgley
+
 python manage.py fetch_scripture --delay=0.3

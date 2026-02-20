@@ -1,14 +1,24 @@
 import json
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from catechism.models import Question
+from catechism.models import Catechism, Question
 
 
 class Command(BaseCommand):
     help = "Load proof text references into Question records"
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--catechism', type=str, default='wsc',
+            help='Catechism slug (default: wsc)'
+        )
+
     def handle(self, *args, **options):
-        data_path = settings.BASE_DIR / "data" / "proof_texts.json"
+        cat_slug = options['catechism']
+        catechism = Catechism.objects.get(slug=cat_slug)
+
+        filename = 'proof_texts.json' if cat_slug == 'wsc' else f'{cat_slug}_proof_texts.json'
+        data_path = settings.BASE_DIR / "data" / filename
         if not data_path.exists():
             self.stderr.write(self.style.WARNING(
                 f"Proof texts file not found: {data_path}. Skipping."
@@ -20,7 +30,11 @@ class Command(BaseCommand):
 
         updated = 0
         for num_str, refs in proof_data.items():
-            count = Question.objects.filter(number=int(num_str)).update(proof_texts=refs)
+            count = Question.objects.filter(
+                catechism=catechism, number=int(num_str)
+            ).update(proof_texts=refs)
             updated += count
 
-        self.stdout.write(self.style.SUCCESS(f"Updated proof texts for {updated} questions"))
+        self.stdout.write(self.style.SUCCESS(
+            f"Updated proof texts for {updated} {catechism.abbreviation} questions"
+        ))

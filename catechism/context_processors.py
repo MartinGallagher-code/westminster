@@ -1,5 +1,8 @@
-from catechism.models import Topic
+from catechism.models import Catechism, Topic
 
 
 def sidebar_topics(request):
-    return {'sidebar_topics': Topic.objects.all()}
+    return {
+        'catechisms': Catechism.objects.all(),
+        'sidebar_topics': Topic.objects.select_related('catechism').all(),
+    }

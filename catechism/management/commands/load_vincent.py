@@ -1,12 +1,13 @@
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from catechism.models import Question, CommentarySource, Commentary
+from catechism.models import Catechism, Question, CommentarySource, Commentary
 
 
 class Command(BaseCommand):
     help = "Load Thomas Vincent commentary from text files"
 
     def handle(self, *args, **options):
+        catechism = Catechism.objects.get(slug='wsc')
         source, _ = CommentarySource.objects.update_or_create(
             slug="vincent",
             defaults={
@@ -34,7 +35,7 @@ class Command(BaseCommand):
             if not text:
                 continue
 
-            question = Question.objects.get(number=num)
+            question = Question.objects.get(catechism=catechism, number=num)
             Commentary.objects.update_or_create(
                 question=question,
                 source=source,

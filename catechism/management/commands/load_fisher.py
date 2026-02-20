@@ -1,13 +1,14 @@
 import json
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from catechism.models import Question, CommentarySource, Commentary, FisherSubQuestion
+from catechism.models import Catechism, Question, CommentarySource, Commentary, FisherSubQuestion
 
 
 class Command(BaseCommand):
     help = "Load Fisher/Erskine commentary from JSON"
 
     def handle(self, *args, **options):
+        catechism = Catechism.objects.get(slug='wsc')
         source, _ = CommentarySource.objects.update_or_create(
             slug="fisher-erskine",
             defaults={
@@ -25,7 +26,7 @@ class Command(BaseCommand):
         total_subs = 0
         for entry in data["Data"]:
             num = int(entry["Number"])
-            question = Question.objects.get(number=num)
+            question = Question.objects.get(catechism=catechism, number=num)
 
             commentary, _ = Commentary.objects.update_or_create(
                 question=question,

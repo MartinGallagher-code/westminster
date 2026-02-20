@@ -1,12 +1,17 @@
 {% extends "base.html" %}
 
-{% block title %}{{ topic.name }} - Westminster Shorter Catechism{% endblock %}
+{% block title %}{{ topic.name }} - {{ catechism.name }}{% endblock %}
 
 {% block content %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{% url 'catechism:home' %}">Home</a></li>
-        <li class="breadcrumb-item"><a href="{% url 'catechism:topic_list' %}">Topics</a></li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'catechism:catechism_home' catechism_slug=catechism.slug %}">{{ catechism.abbreviation }}</a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'catechism:topic_list' catechism_slug=catechism.slug %}">Topics</a>
+        </li>
         <li class="breadcrumb-item active">{{ topic.name }}</li>
     </ol>
 </nav>

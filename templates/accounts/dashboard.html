@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}My Notes - Westminster Shorter Catechism{% endblock %}
+{% block title %}My Notes - Westminster Standards{% endblock %}
 
 {% block content %}
 <h1 class="mb-3">My Notes</h1>
 
 {% if notes %}
-<p class="text-muted">You have {{ notes|length }} note{{ notes|length|pluralize }} across the catechism.</p>
+<p class="text-muted">You have {{ notes|length }} note{{ notes|length|pluralize }} across the catechisms.</p>
 
 <div class="list-group">
     {% for note in notes %}
@@ -14,7 +14,7 @@
         <div class="d-flex w-100 justify-content-between">
             <h6 class="mb-1">
                 <a href="{{ note.question.get_absolute_url }}">
-                    Q{{ note.question.number }}. {{ note.question.question_text }}
+                    {{ note.question.catechism.abbreviation }} Q{{ note.question.number }}. {{ note.question.question_text }}
                 </a>
             </h6>
             <small class="text-muted text-nowrap ms-2">{{ note.updated_at|date:"M j, Y" }}</small>
@@ -27,7 +27,7 @@
 {% else %}
 <div class="text-center text-muted py-5">
     <p>You haven't created any notes yet.</p>
-    <a href="{% url 'catechism:question_list' %}" class="btn btn-outline-primary">
+    <a href="{% url 'catechism:home' %}" class="btn btn-outline-primary">
         Browse Questions to Start
     </a>
 </div>

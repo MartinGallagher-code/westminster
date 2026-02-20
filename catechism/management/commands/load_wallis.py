@@ -4,13 +4,14 @@ import pdfplumber
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from catechism.models import Commentary, CommentarySource, Question
+from catechism.models import Catechism, Commentary, CommentarySource, Question
 
 
 class Command(BaseCommand):
     help = "Load John Wallis's 'A Brief and Easy Explanation of the Shorter Catechism' (1648) from PDF"
 
     def handle(self, *args, **options):
+        catechism = Catechism.objects.get(slug='wsc')
         source, _ = CommentarySource.objects.update_or_create(
             slug="wallis",
             defaults={
@@ -43,7 +44,7 @@ class Command(BaseCommand):
         loaded = 0
         for num, body in sorted(questions.items()):
             try:
-                question = Question.objects.get(number=num)
+                question = Question.objects.get(catechism=catechism, number=num)
             except Question.DoesNotExist:
                 self.stderr.write(self.style.WARNING(
                     f"Question {num} not found in database, skipping."

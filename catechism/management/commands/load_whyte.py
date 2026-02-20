@@ -3,13 +3,14 @@ import re
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from catechism.models import Commentary, CommentarySource, Question
+from catechism.models import Catechism, Commentary, CommentarySource, Question
 
 
 class Command(BaseCommand):
     help = "Load Alexander Whyte's commentary on the Shorter Catechism (1882)"
 
     def handle(self, *args, **options):
+        catechism = Catechism.objects.get(slug='wsc')
         source, _ = CommentarySource.objects.update_or_create(
             slug="whyte",
             defaults={
@@ -59,7 +60,7 @@ class Command(BaseCommand):
                 continue
 
             try:
-                question = Question.objects.get(number=qnum)
+                question = Question.objects.get(catechism=catechism, number=qnum)
             except Question.DoesNotExist:
                 self.stderr.write(self.style.WARNING(
                     f"Question {qnum} not found in database, skipping."

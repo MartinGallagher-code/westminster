@@ -1,13 +1,14 @@
 import json
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from catechism.models import Question, CommentarySource, Commentary, FisherSubQuestion
+from catechism.models import Catechism, Question, CommentarySource, Commentary, FisherSubQuestion
 
 
 class Command(BaseCommand):
     help = "Load Matthew Henry commentary from JSON"
 
     def handle(self, *args, **options):
+        catechism = Catechism.objects.get(slug='wsc')
         source, _ = CommentarySource.objects.update_or_create(
             slug="henry",
             defaults={
@@ -30,7 +31,7 @@ class Command(BaseCommand):
             except (ValueError, TypeError):
                 continue
 
-            question = Question.objects.filter(number=num).first()
+            question = Question.objects.filter(catechism=catechism, number=num).first()
             if not question:
                 continue
 

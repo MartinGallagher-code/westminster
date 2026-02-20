@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
-{% block title %}Topics - Westminster Shorter Catechism{% endblock %}
+{% block title %}Topics - {{ catechism.name }}{% endblock %}
 
 {% block content %}
-<h1 class="mb-3">Topics</h1>
-<p class="text-muted">The 107 questions are organized into six topical sections.</p>
+<h1 class="mb-3">{{ catechism.abbreviation }} &mdash; Topics</h1>
+<p class="text-muted">The {{ catechism.total_questions }} questions are organized into topical sections.</p>
 
 <div class="row g-3">
     {% for topic in topics %}

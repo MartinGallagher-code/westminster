@@ -1,45 +1,59 @@
 {% extends "base.html" %}
 
-{% block title %}Westminster Shorter Catechism{% endblock %}
+{% block title %}Westminster Standards{% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-lg-8">
-        <h1 class="mb-3">Westminster Shorter Catechism</h1>
+        <h1 class="mb-3">Westminster Standards</h1>
         <p class="lead">
-            The Westminster Shorter Catechism, composed in 1647, contains 107 questions and answers
-            summarizing the essential doctrines of the Christian faith. Browse the catechism with
-            commentary from classic Reformed sources.
+            Browse the Westminster Shorter and Larger Catechisms with commentary
+            from classic Reformed sources.
         </p>
 
-        <div class="d-flex gap-2 mb-4">
-            <a href="{% url 'catechism:question_list' %}" class="btn btn-primary">Browse All Questions</a>
-            <a href="{% url 'catechism:topic_list' %}" class="btn btn-outline-secondary">Browse by Topic</a>
-        </div>
-
-        {% if featured_question %}
+        {% for cat in catechisms %}
         <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="mb-0">Question of the Day</h5>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">{{ cat.name }}</h5>
+                <span class="badge bg-secondary">{{ cat.total_questions }} questions</span>
             </div>
             <div class="card-body">
-                <h5 class="card-title">Q{{ featured_question.number }}. {{ featured_question.question_text }}</h5>
-                <p class="card-text answer-text"><strong>A.</strong> {{ featured_question.answer_text }}</p>
-                <a href="{{ featured_question.get_absolute_url }}" class="btn btn-outline-primary btn-sm">
-                    Read Commentary &rarr;
-                </a>
+                {% if cat.description %}
+                <p class="text-muted">{{ cat.description }}</p>
+                {% endif %}
+
+                <div class="d-flex gap-2 mb-3">
+                    <a href="{% url 'catechism:question_list' catechism_slug=cat.slug %}" class="btn btn-primary btn-sm">
+                        Browse All Questions
+                    </a>
+                    <a href="{% url 'catechism:topic_list' catechism_slug=cat.slug %}" class="btn btn-outline-secondary btn-sm">
+                        Browse by Topic
+                    </a>
+                </div>
+
+                {% if cat.featured_question %}
+                <div class="bg-light rounded p-3">
+                    <h6 class="text-muted mb-2">Question of the Day</h6>
+                    <p class="mb-1"><strong>Q{{ cat.featured_question.number }}.</strong> {{ cat.featured_question.question_text }}</p>
+                    <p class="text-muted mb-2"><strong>A.</strong> {{ cat.featured_question.answer_text|truncatewords:30 }}</p>
+                    <a href="{{ cat.featured_question.get_absolute_url }}" class="btn btn-outline-primary btn-sm">
+                        Read More &rarr;
+                    </a>
+                </div>
+                {% endif %}
             </div>
         </div>
-        {% endif %}
+        {% endfor %}
     </div>
 
     <div class="col-lg-4">
-        <div class="card">
+        {% for cat in catechisms %}
+        <div class="card mb-3">
             <div class="card-header">
-                <h5 class="mb-0">Topics</h5>
+                <h6 class="mb-0">{{ cat.abbreviation }} Topics</h6>
             </div>
             <ul class="list-group list-group-flush">
-                {% for topic in topics %}
+                {% for topic in cat.topics_list %}
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <a href="{{ topic.get_absolute_url }}">{{ topic.name }}</a>
                     <span class="badge bg-secondary rounded-pill">
@@ -49,6 +63,7 @@
                 {% endfor %}
             </ul>
         </div>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}

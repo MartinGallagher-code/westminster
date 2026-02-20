@@ -3,7 +3,7 @@ import re
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from catechism.models import Commentary, CommentarySource, Question
+from catechism.models import Catechism, Commentary, CommentarySource, Question
 
 
 # Mapping of section search strings to WSC question number(s).
@@ -224,6 +224,7 @@ class Command(BaseCommand):
     help = "Load Thomas Boston's Exposition of the WSC from PDF"
 
     def handle(self, *args, **options):
+        catechism = Catechism.objects.get(slug='wsc')
         try:
             from PyPDF2 import PdfReader
         except ImportError:
@@ -299,7 +300,7 @@ class Command(BaseCommand):
                 continue
 
             try:
-                question = Question.objects.get(number=num)
+                question = Question.objects.get(catechism=catechism, number=num)
             except Question.DoesNotExist:
                 self.stderr.write(self.style.WARNING(
                     f"  Q{num}: Question not found in database, skipping"

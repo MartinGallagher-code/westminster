@@ -1,13 +1,16 @@
 {% extends "base.html" %}
 {% load catechism_tags %}
 
-{% block title %}Q{{ question.number }} - Westminster Shorter Catechism{% endblock %}
+{% block title %}Q{{ question.number }} - {{ catechism.name }}{% endblock %}
 
 {% block content %}
 <!-- Breadcrumbs -->
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{% url 'catechism:home' %}">Home</a></li>
+        <li class="breadcrumb-item">
+            <a href="{% url 'catechism:catechism_home' catechism_slug=catechism.slug %}">{{ catechism.abbreviation }}</a>
+        </li>
         <li class="breadcrumb-item">
             <a href="{{ question.topic.get_absolute_url }}">{{ question.topic.name }}</a>
         </li>
@@ -141,7 +144,7 @@
                 </div>
                 {% endif %}
 
-                <form method="post" action="{% url 'accounts:note_save' question_number=question.number %}">
+                <form method="post" action="{% url 'accounts:note_save' question_pk=question.pk %}">
                     {% csrf_token %}
                     <div class="mb-2">
                         <textarea name="text" rows="4" class="form-control"

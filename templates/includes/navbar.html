@@ -1,17 +1,21 @@
 <nav class="navbar navbar-expand-md navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'catechism:home' %}">Westminster Shorter Catechism</a>
+        <a class="navbar-brand" href="{% url 'catechism:home' %}">Westminster Standards</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'catechism:question_list' %}">All Questions</a>
+                {% for cat in catechisms %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button"
+                       data-bs-toggle="dropdown">{{ cat.abbreviation }}</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'catechism:question_list' catechism_slug=cat.slug %}">All Questions</a></li>
+                        <li><a class="dropdown-item" href="{% url 'catechism:topic_list' catechism_slug=cat.slug %}">Topics</a></li>
+                    </ul>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'catechism:topic_list' %}">Topics</a>
-                </li>
+                {% endfor %}
             </ul>
             <form class="d-flex me-3" action="{% url 'catechism:search' %}" method="get">
                 <input class="form-control form-control-sm me-2" type="search" name="q"

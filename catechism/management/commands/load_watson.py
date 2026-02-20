@@ -5,7 +5,7 @@ from urllib.request import urlopen, Request
 from urllib.error import URLError
 
 from django.core.management.base import BaseCommand
-from catechism.models import Question, CommentarySource, Commentary
+from catechism.models import Catechism, Question, CommentarySource, Commentary
 
 
 CCEL_BASE = "https://www.ccel.org/ccel/watson/divinity.{}.html"
@@ -175,6 +175,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         delay = options["delay"]
+        catechism = Catechism.objects.get(slug='wsc')
 
         source, _ = CommentarySource.objects.update_or_create(
             slug="watson",
@@ -222,7 +223,7 @@ class Command(BaseCommand):
         saved = 0
         for qnum, chapters in sorted(question_texts.items()):
             try:
-                question = Question.objects.get(number=qnum)
+                question = Question.objects.get(catechism=catechism, number=qnum)
             except Question.DoesNotExist:
                 self.stderr.write(
                     self.style.WARNING(f"  Question {qnum} not found, skipping")

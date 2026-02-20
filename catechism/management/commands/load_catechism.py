@@ -1,7 +1,7 @@
 import json
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from catechism.models import Topic, Question
+from catechism.models import Catechism, Topic, Question
 
 TOPICS = [
     {"name": "God as Creator", "slug": "god-as-creator", "order": 1,
@@ -29,9 +29,21 @@ class Command(BaseCommand):
     help = "Load WSC questions, answers, and topics into the database"
 
     def handle(self, *args, **options):
+        catechism, _ = Catechism.objects.update_or_create(
+            slug='wsc',
+            defaults={
+                'name': 'Westminster Shorter Catechism',
+                'abbreviation': 'WSC',
+                'description': 'The Westminster Shorter Catechism, composed in 1647, contains 107 questions and answers summarizing the essential doctrines of the Christian faith.',
+                'year': 1647,
+                'total_questions': 107,
+            }
+        )
+
         topic_map = {}
         for t in TOPICS:
             topic, created = Topic.objects.update_or_create(
+                catechism=catechism,
                 slug=t["slug"],
                 defaults={
                     "name": t["name"],
@@ -57,6 +69,7 @@ class Command(BaseCommand):
                     break
 
             Question.objects.update_or_create(
+                catechism=catechism,
                 number=num,
                 defaults={
                     "question_text": entry["Question"],
