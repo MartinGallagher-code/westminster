@@ -124,6 +124,14 @@ class Command(BaseCommand):
         text = re.sub(r"(\w)-\s*\n\s*(\w)", r"\1\2", text)
         # Collapse multiple blank lines into at most two newlines
         text = re.sub(r"\n{3,}", "\n\n", text)
-        # Strip leading/trailing whitespace
-        text = text.strip()
+        # Unwrap paragraphs: join lines within each paragraph into a single
+        # line so text reflows to the browser width instead of preserving the
+        # fixed column width from the original printed book.
+        paragraphs = re.split(r"\n\s*\n", text)
+        unwrapped = []
+        for para in paragraphs:
+            joined = re.sub(r"\s*\n\s*", " ", para).strip()
+            if joined:
+                unwrapped.append(joined)
+        text = "\n\n".join(unwrapped)
         return text

@@ -217,6 +217,16 @@ def clean_text(text):
     # Remove lines that are only page numbers
     text = re.sub(r'\n\d{1,4}\n', '\n', text)
 
+    # Unwrap paragraphs: join lines within each paragraph so text reflows
+    # to the browser width instead of preserving fixed column width.
+    paragraphs = re.split(r'\n\s*\n', text)
+    unwrapped = []
+    for para in paragraphs:
+        joined = re.sub(r'\s*\n\s*', ' ', para).strip()
+        if joined:
+            unwrapped.append(joined)
+    text = '\n\n'.join(unwrapped)
+
     return text.strip()
 
 

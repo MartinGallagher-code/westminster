@@ -8,6 +8,21 @@ from django.core.management.base import BaseCommand
 from catechism.models import Catechism, Commentary, CommentarySource, Question
 
 
+def clean_text(text):
+    """Clean up extracted PDF text and unwrap paragraphs."""
+    # Normalize whitespace within lines
+    text = re.sub(r'[ \t]+', ' ', text)
+    # Unwrap paragraphs: join lines within each paragraph so text reflows
+    # to the browser width instead of preserving fixed column width.
+    paragraphs = re.split(r'\n\s*\n', text)
+    unwrapped = []
+    for para in paragraphs:
+        joined = re.sub(r'\s*\n\s*', ' ', para).strip()
+        if joined:
+            unwrapped.append(joined)
+    return '\n\n'.join(unwrapped)
+
+
 class Command(BaseCommand):
     help = "Load Francis R. Beattie's 'The Presbyterian Standards' as WSC commentary"
 
@@ -52,7 +67,7 @@ class Command(BaseCommand):
                 )
                 continue
 
-            body = question_texts[num].strip()
+            body = clean_text(question_texts[num]).strip()
             if not body:
                 continue
 

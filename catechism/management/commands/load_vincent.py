@@ -1,6 +1,19 @@
+import re
+
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from catechism.models import Catechism, Question, CommentarySource, Commentary
+
+
+def clean_text(text):
+    """Unwrap paragraphs so text reflows to browser width."""
+    paragraphs = re.split(r'\n\s*\n', text)
+    unwrapped = []
+    for para in paragraphs:
+        joined = re.sub(r'\s*\n\s*', ' ', para).strip()
+        if joined:
+            unwrapped.append(joined)
+    return '\n\n'.join(unwrapped)
 
 
 class Command(BaseCommand):
@@ -31,7 +44,7 @@ class Command(BaseCommand):
             if not filepath.exists():
                 continue
 
-            text = filepath.read_text(encoding="utf-8").strip()
+            text = clean_text(filepath.read_text(encoding="utf-8")).strip()
             if not text:
                 continue
 

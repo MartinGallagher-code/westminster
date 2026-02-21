@@ -39,6 +39,15 @@ def clean_text(text):
     lines = text.split('\n')
     lines = [line.strip() for line in lines]
     text = '\n'.join(lines)
+    # Unwrap paragraphs: join lines within each paragraph so text reflows
+    # to the browser width instead of preserving fixed column width.
+    paragraphs = re.split(r'\n\s*\n', text)
+    unwrapped = []
+    for para in paragraphs:
+        joined = re.sub(r'\s*\n\s*', ' ', para).strip()
+        if joined:
+            unwrapped.append(joined)
+    text = '\n\n'.join(unwrapped)
     return text.strip()
 
 

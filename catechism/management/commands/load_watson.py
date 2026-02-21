@@ -141,6 +141,15 @@ class HTMLTextExtractor(HTMLParser):
         text = "\n".join(cleaned)
         # Collapse more than 2 consecutive newlines
         text = re.sub(r"\n{3,}", "\n\n", text)
+        # Unwrap paragraphs: join lines within each paragraph so text reflows
+        # to the browser width instead of preserving fixed column width.
+        paragraphs = re.split(r"\n\s*\n", text)
+        unwrapped = []
+        for para in paragraphs:
+            joined = re.sub(r"\s*\n\s*", " ", para).strip()
+            if joined:
+                unwrapped.append(joined)
+        text = "\n\n".join(unwrapped)
         return text.strip()
 
 
