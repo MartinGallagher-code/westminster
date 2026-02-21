@@ -263,7 +263,7 @@ class ScriptureIndex(models.Model):
     book = models.ForeignKey(
         BibleBook, on_delete=models.CASCADE, related_name='index_entries'
     )
-    reference = models.CharField(max_length=100)
+    reference = models.CharField(max_length=255)
 
     class Meta:
         ordering = ['book__book_number', 'question__catechism__abbreviation', 'question__number']
