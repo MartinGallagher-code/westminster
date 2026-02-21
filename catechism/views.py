@@ -1,11 +1,16 @@
+from collections import defaultdict
 from datetime import date
 
-from django.db.models import Q, Prefetch
+from django.db.models import Q, Count, Prefetch
 from django.shortcuts import get_object_or_404, redirect
 from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView
 
-from .models import Catechism, Topic, Question, Commentary, FisherSubQuestion, ScripturePassage, CrossReference
+from .models import (
+    Catechism, Topic, Question, Commentary, FisherSubQuestion,
+    ScripturePassage, CrossReference, StandardCrossReference,
+    BibleBook, ScriptureIndex, ComparisonTheme, ComparisonEntry,
+)
 
 
 class CatechismMixin:
@@ -116,19 +121,27 @@ class QuestionDetailView(CatechismMixin, DetailView):
         else:
             ctx['scripture_map'] = {}
 
-        # Cross-references between WSC and WLC
-        if self.catechism.slug == 'wsc':
-            cross_refs = CrossReference.objects.filter(
-                wsc_question=q
-            ).select_related('wlc_question')
-            ctx['cross_refs'] = [cr.wlc_question for cr in cross_refs]
-            ctx['cross_ref_label'] = 'WLC'
-        elif self.catechism.slug == 'wlc':
-            cross_refs = CrossReference.objects.filter(
-                wlc_question=q
-            ).select_related('wsc_question')
-            ctx['cross_refs'] = [cr.wsc_question for cr in cross_refs]
-            ctx['cross_ref_label'] = 'WSC'
+        # Generic cross-references (any catechism to any catechism)
+        cross_ref_qs = StandardCrossReference.objects.filter(
+            Q(source_question=q) | Q(target_question=q)
+        ).select_related(
+            'source_question__catechism',
+            'target_question__catechism',
+        )
+
+        cross_ref_groups = defaultdict(list)
+        for cr in cross_ref_qs:
+            if cr.source_question_id == q.id:
+                other = cr.target_question
+            else:
+                other = cr.source_question
+            cross_ref_groups[other.catechism.abbreviation].append(other)
+
+        # Sort each group by question number
+        for abbr in cross_ref_groups:
+            cross_ref_groups[abbr].sort(key=lambda x: x.number)
+
+        ctx['cross_ref_groups'] = dict(cross_ref_groups)
 
         if self.request.user.is_authenticated:
             from accounts.models import UserNote
@@ -191,6 +204,85 @@ class SearchView(ListView):
         ctx = super().get_context_data(**kwargs)
         ctx['query'] = self.request.GET.get('q', '')
         ctx['catechisms'] = Catechism.objects.all()
+        return ctx
+
+
+class ScriptureIndexView(TemplateView):
+    template_name = 'catechism/scripture_index.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        books = BibleBook.objects.annotate(
+            citation_count=Count('index_entries')
+        )
+        ctx['ot_books'] = [b for b in books if b.testament == 'OT']
+        ctx['nt_books'] = [b for b in books if b.testament == 'NT']
+        return ctx
+
+
+class ScriptureBookView(DetailView):
+    template_name = 'catechism/scripture_book.html'
+    model = BibleBook
+    slug_url_kwarg = 'book_slug'
+    context_object_name = 'book'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        entries = ScriptureIndex.objects.filter(
+            book=self.object
+        ).select_related('question__catechism', 'question__topic')
+
+        grouped = defaultdict(list)
+        for entry in entries:
+            grouped[entry.question.catechism.abbreviation].append({
+                'question': entry.question,
+                'reference': entry.reference,
+            })
+
+        ctx['grouped_entries'] = dict(grouped)
+        ctx['total_citations'] = entries.count()
+        return ctx
+
+
+class CompareListView(ListView):
+    template_name = 'catechism/compare_list.html'
+    model = ComparisonTheme
+    context_object_name = 'themes'
+
+
+class CompareThemeView(DetailView):
+    template_name = 'catechism/compare_theme.html'
+    model = ComparisonTheme
+    slug_url_kwarg = 'theme_slug'
+    context_object_name = 'theme'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        entries = self.object.entries.select_related('catechism').all()
+
+        columns = []
+        for entry in entries:
+            questions = entry.get_questions()
+            columns.append({
+                'catechism': entry.catechism,
+                'question_start': entry.question_start,
+                'question_end': entry.question_end,
+                'questions': questions,
+            })
+
+        ctx['columns'] = columns
+
+        # Prev/next theme navigation
+        all_themes = list(ComparisonTheme.objects.all())
+        current_idx = None
+        for i, t in enumerate(all_themes):
+            if t.pk == self.object.pk:
+                current_idx = i
+                break
+        if current_idx is not None:
+            ctx['previous_theme'] = all_themes[current_idx - 1] if current_idx > 0 else None
+            ctx['next_theme'] = all_themes[current_idx + 1] if current_idx < len(all_themes) - 1 else None
+
         return ctx
 
 

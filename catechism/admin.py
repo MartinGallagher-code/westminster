@@ -1,10 +1,14 @@
 from django.contrib import admin
-from .models import Catechism, Topic, Question, CommentarySource, Commentary, FisherSubQuestion, ScripturePassage, CrossReference
+from .models import (
+    Catechism, Topic, Question, CommentarySource, Commentary, FisherSubQuestion,
+    ScripturePassage, CrossReference, StandardCrossReference,
+    BibleBook, ScriptureIndex, ComparisonTheme, ComparisonEntry,
+)
 
 
 @admin.register(Catechism)
 class CatechismAdmin(admin.ModelAdmin):
-    list_display = ('abbreviation', 'name', 'total_questions', 'year')
+    list_display = ('abbreviation', 'name', 'total_questions', 'year', 'document_type')
     prepopulated_fields = {'slug': ('abbreviation',)}
 
 
@@ -50,3 +54,34 @@ class ScripturePassageAdmin(admin.ModelAdmin):
 class CrossReferenceAdmin(admin.ModelAdmin):
     list_display = ('wsc_question', 'wlc_question')
     raw_id_fields = ('wsc_question', 'wlc_question')
+
+
+@admin.register(StandardCrossReference)
+class StandardCrossReferenceAdmin(admin.ModelAdmin):
+    list_display = ('source_question', 'target_question')
+    raw_id_fields = ('source_question', 'target_question')
+
+
+@admin.register(BibleBook)
+class BibleBookAdmin(admin.ModelAdmin):
+    list_display = ('name', 'abbreviation', 'book_number', 'testament')
+    list_filter = ('testament',)
+
+
+@admin.register(ScriptureIndex)
+class ScriptureIndexAdmin(admin.ModelAdmin):
+    list_display = ('reference', 'book', 'question')
+    list_filter = ('book',)
+    raw_id_fields = ('question',)
+
+
+class ComparisonEntryInline(admin.TabularInline):
+    model = ComparisonEntry
+    extra = 0
+
+
+@admin.register(ComparisonTheme)
+class ComparisonThemeAdmin(admin.ModelAdmin):
+    list_display = ('name', 'order')
+    prepopulated_fields = {'slug': ('name',)}
+    inlines = [ComparisonEntryInline]

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Delete Note - Westminster Shorter Catechism{% endblock %}
+{% block title %}Delete Note - Westminster Standards{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -9,7 +9,7 @@
         <div class="card">
             <div class="card-body">
                 <p>Are you sure you want to delete your note on
-                    <strong>Q{{ object.question.number }}. {{ object.question.question_text }}</strong>?
+                    <strong>{{ object.question.catechism.item_prefix }}{{ object.question.number }}{% if not object.question.catechism.is_confession %}.{% endif %} {{ object.question.question_text }}</strong>?
                 </p>
                 <p class="text-muted border-start ps-3">{{ object.text|truncatewords:50 }}</p>
                 <form method="post">

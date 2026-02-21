@@ -22,7 +22,8 @@ class UserNote(models.Model):
         unique_together = ('user', 'question')
 
     def __str__(self):
-        return f"Note by {self.user.username} on Q{self.question.number}"
+        prefix = self.question.catechism.item_prefix
+        return f"Note by {self.user.username} on {prefix}{self.question.number}"
 
 
 class Highlight(models.Model):

@@ -23,10 +23,10 @@
                 {% endif %}
 
                 <div class="d-flex gap-2 mb-3">
-                    <a href="{% url 'catechism:question_list' catechism_slug=cat.slug %}" class="btn btn-primary btn-sm">
+                    <a href="{{ cat.get_item_list_url }}" class="btn btn-primary btn-sm">
                         Browse All {{ cat.item_name_plural }}
                     </a>
-                    <a href="{% url 'catechism:topic_list' catechism_slug=cat.slug %}" class="btn btn-outline-secondary btn-sm">
+                    <a href="{{ cat.get_topic_list_url }}" class="btn btn-outline-secondary btn-sm">
                         Browse by {{ cat.topic_name }}
                     </a>
                 </div>

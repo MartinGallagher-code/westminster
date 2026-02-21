@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Scripture Index - Westminster Standards{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'catechism:home' %}">Home</a></li>
+        <li class="breadcrumb-item active">Scripture Index</li>
+    </ol>
+</nav>
+
+<h1 class="mb-4">Scripture Index</h1>
+<p class="text-muted mb-4">Browse all Scripture references cited in the Westminster Standards.</p>
+
+<div class="row">
+    <div class="col-md-6">
+        <h3 class="mb-3">Old Testament</h3>
+        <div class="list-group">
+            {% for book in ot_books %}
+            <a href="{% url 'catechism:scripture_book' book_slug=book.slug %}"
+               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                {{ book.name }}
+                <span class="badge bg-secondary rounded-pill">{{ book.citation_count }}</span>
+            </a>
+            {% empty %}
+            <p class="text-muted">No Old Testament citations indexed yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="col-md-6">
+        <h3 class="mb-3">New Testament</h3>
+        <div class="list-group">
+            {% for book in nt_books %}
+            <a href="{% url 'catechism:scripture_book' book_slug=book.slug %}"
+               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                {{ book.name }}
+                <span class="badge bg-secondary rounded-pill">{{ book.citation_count }}</span>
+            </a>
+            {% empty %}
+            <p class="text-muted">No New Testament citations indexed yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -11,11 +11,19 @@
                     <a class="nav-link dropdown-toggle" href="#" role="button"
                        data-bs-toggle="dropdown">{{ cat.abbreviation }}</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{% url 'catechism:question_list' catechism_slug=cat.slug %}">All {{ cat.item_name_plural }}</a></li>
-                        <li><a class="dropdown-item" href="{% url 'catechism:topic_list' catechism_slug=cat.slug %}">{{ cat.topic_name_plural }}</a></li>
+                        <li><a class="dropdown-item" href="{{ cat.get_item_list_url }}">All {{ cat.item_name_plural }}</a></li>
+                        <li><a class="dropdown-item" href="{{ cat.get_topic_list_url }}">{{ cat.topic_name_plural }}</a></li>
                     </ul>
                 </li>
                 {% endfor %}
+            </ul>
+            <ul class="navbar-nav me-2">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'catechism:scripture_index' %}">Scripture</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'catechism:compare_list' %}">Compare</a>
+                </li>
             </ul>
             <form class="d-flex me-3" action="{% url 'catechism:search' %}" method="get">
                 <input class="form-control form-control-sm me-2" type="search" name="q"
@@ -25,7 +33,7 @@
             <form id="quick-jump-form" class="d-flex me-3">
                 <select id="quick-jump-catechism" class="form-select form-select-sm me-1" style="width: 80px;">
                     {% for cat in catechisms %}
-                    <option value="{{ cat.slug }}" data-max="{{ cat.total_questions }}" data-prefix="{{ cat.item_prefix }}">{{ cat.abbreviation }}</option>
+                    <option value="{{ cat.slug }}" data-max="{{ cat.total_questions }}" data-prefix="{{ cat.item_prefix }}" data-doc-type="{{ cat.document_type }}">{{ cat.abbreviation }}</option>
                     {% endfor %}
                 </select>
                 <input type="number" class="form-control form-control-sm me-1" id="quick-jump-input"

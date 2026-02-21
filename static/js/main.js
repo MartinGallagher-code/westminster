@@ -36,8 +36,10 @@ document.addEventListener('DOMContentLoaded', function() {
             var slug = catSelect ? catSelect.value : 'wsc';
             var selected = catSelect ? catSelect.options[catSelect.selectedIndex] : null;
             var max = selected ? parseInt(selected.getAttribute('data-max')) : 107;
+            var docType = selected ? selected.getAttribute('data-doc-type') : 'catechism';
+            var pathSegment = docType === 'confession' ? 'sections' : 'questions';
             if (num >= 1 && num <= max) {
-                window.location.href = '/' + slug + '/questions/' + num + '/';
+                window.location.href = '/' + slug + '/' + pathSegment + '/' + num + '/';
             }
         });
     }

@@ -43,14 +43,16 @@
         <h2 class="h4 question-text">Q{{ question.number }}. {{ question.question_text }}</h2>
         <p class="lead mt-3 answer-text"><strong>A.</strong> {{ question.answer_text }}</p>
         {% endif %}
-        {% if cross_refs %}
+        {% if cross_ref_groups %}
         <div class="mt-3 pt-3 border-top">
-            <small class="text-muted">
-                <strong>See also in {{ cross_ref_label }}:</strong>
-                {% for ref in cross_refs %}
-                <a href="{{ ref.get_absolute_url }}">Q{{ ref.number }}</a>{% if not forloop.last %}, {% endif %}
+            {% for abbr, refs in cross_ref_groups.items %}
+            <small class="text-muted d-block{% if not forloop.first %} mt-1{% endif %}">
+                <strong>See also in {{ abbr }}:</strong>
+                {% for ref in refs %}
+                <a href="{{ ref.get_absolute_url }}">{{ ref.catechism.item_prefix }}{{ ref.number }}</a>{% if not forloop.last %}, {% endif %}
                 {% endfor %}
             </small>
+            {% endfor %}
         </div>
         {% endif %}
     </div>

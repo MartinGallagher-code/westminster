@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Compare the Standards - Westminster Standards{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'catechism:home' %}">Home</a></li>
+        <li class="breadcrumb-item active">Compare the Standards</li>
+    </ol>
+</nav>
+
+<h1 class="mb-4">Compare the Standards</h1>
+<p class="text-muted mb-4">Explore doctrinal themes side-by-side across the Westminster Shorter Catechism, Larger Catechism, and Confession of Faith.</p>
+
+<div class="list-group">
+    {% for theme in themes %}
+    <a href="{% url 'catechism:compare_theme' theme_slug=theme.slug %}"
+       class="list-group-item list-group-item-action">
+        <h5 class="mb-1">{{ theme.name }}</h5>
+        {% if theme.description %}
+        <p class="mb-0 text-muted small">{{ theme.description }}</p>
+        {% endif %}
+    </a>
+    {% empty %}
+    <p class="text-muted">No comparison themes available yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}

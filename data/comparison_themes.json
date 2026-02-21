@@ -1,0 +1,233 @@
+[
+  {
+    "name": "Man's Chief End",
+    "slug": "mans-chief-end",
+    "description": "The chief and highest end of man: to glorify God and to enjoy Him forever.",
+    "order": 1,
+    "entries": {
+      "wsc": [1, 1],
+      "wlc": [1, 2],
+      "wcf": null
+    }
+  },
+  {
+    "name": "Holy Scripture",
+    "slug": "holy-scripture",
+    "description": "The authority, sufficiency, perspicuity, and interpretation of the Word of God as the rule of faith and life.",
+    "order": 2,
+    "entries": {
+      "wsc": [2, 3],
+      "wlc": [3, 5],
+      "wcf": [1, 10]
+    }
+  },
+  {
+    "name": "God and the Holy Trinity",
+    "slug": "god-and-the-holy-trinity",
+    "description": "The being, attributes, and tri-personal nature of God: Father, Son, and Holy Spirit.",
+    "order": 3,
+    "entries": {
+      "wsc": [4, 6],
+      "wlc": [6, 11],
+      "wcf": [11, 13]
+    }
+  },
+  {
+    "name": "God's Eternal Decree",
+    "slug": "gods-eternal-decree",
+    "description": "The eternal, wise, and holy counsel of God's will, including predestination and election.",
+    "order": 4,
+    "entries": {
+      "wsc": [7, 8],
+      "wlc": [12, 14],
+      "wcf": [14, 21]
+    }
+  },
+  {
+    "name": "Creation",
+    "slug": "creation",
+    "description": "God's work of creating the world and all things therein, especially man in His own image.",
+    "order": 5,
+    "entries": {
+      "wsc": [9, 10],
+      "wlc": [15, 17],
+      "wcf": [22, 23]
+    }
+  },
+  {
+    "name": "Providence",
+    "slug": "providence",
+    "description": "God's most holy, wise, and powerful preserving and governing all His creatures and all their actions.",
+    "order": 6,
+    "entries": {
+      "wsc": [11, 12],
+      "wlc": [18, 20],
+      "wcf": [24, 30]
+    }
+  },
+  {
+    "name": "The Fall, Sin, and Misery",
+    "slug": "fall-sin-and-misery",
+    "description": "The covenant of works, Adam's fall, original sin, and the resulting estate of sin and misery.",
+    "order": 7,
+    "entries": {
+      "wsc": [13, 19],
+      "wlc": [21, 29],
+      "wcf": [31, 36]
+    }
+  },
+  {
+    "name": "The Covenant of Grace",
+    "slug": "covenant-of-grace",
+    "description": "God's free offer of life and salvation through Jesus Christ in the covenant of grace.",
+    "order": 8,
+    "entries": {
+      "wsc": [20, 20],
+      "wlc": [30, 35],
+      "wcf": [37, 42]
+    }
+  },
+  {
+    "name": "Christ the Mediator",
+    "slug": "christ-the-mediator",
+    "description": "The person, natures, offices, and states of the Lord Jesus Christ as the only Mediator between God and man.",
+    "order": 9,
+    "entries": {
+      "wsc": [21, 28],
+      "wlc": [36, 56],
+      "wcf": [43, 50]
+    }
+  },
+  {
+    "name": "Effectual Calling",
+    "slug": "effectual-calling",
+    "description": "The work of God's Spirit in effectually calling sinners, the freedom of the will under grace, and union with Christ by faith.",
+    "order": 10,
+    "entries": {
+      "wsc": [29, 32],
+      "wlc": [57, 69],
+      "wcf": [51, 59]
+    }
+  },
+  {
+    "name": "Justification",
+    "slug": "justification",
+    "description": "God's free pardon of sin and acceptance of sinners as righteous through the imputed righteousness of Christ, received by faith alone.",
+    "order": 11,
+    "entries": {
+      "wsc": [33, 33],
+      "wlc": [70, 73],
+      "wcf": [60, 65]
+    }
+  },
+  {
+    "name": "Adoption",
+    "slug": "adoption",
+    "description": "The privilege of being received into the number and enjoying the liberties and privileges of the sons of God.",
+    "order": 12,
+    "entries": {
+      "wsc": [34, 34],
+      "wlc": [74, 74],
+      "wcf": [66, 66]
+    }
+  },
+  {
+    "name": "Sanctification",
+    "slug": "sanctification",
+    "description": "The renewal of the whole person after the image of God, enabling believers to die more unto sin and live more unto righteousness.",
+    "order": 13,
+    "entries": {
+      "wsc": [35, 36],
+      "wlc": [75, 78],
+      "wcf": [67, 69]
+    }
+  },
+  {
+    "name": "Saving Faith, Repentance, and Good Works",
+    "slug": "saving-faith-repentance-and-good-works",
+    "description": "The nature of saving faith as receiving and resting on Christ, evangelical repentance unto life, and the fruits of faith in good works.",
+    "order": 14,
+    "entries": {
+      "wsc": [85, 87],
+      "wlc": null,
+      "wcf": [70, 85]
+    }
+  },
+  {
+    "name": "Perseverance and Assurance",
+    "slug": "perseverance-and-assurance",
+    "description": "The perseverance of true believers in the state of grace and the grounds and means of assurance of salvation.",
+    "order": 15,
+    "entries": {
+      "wsc": null,
+      "wlc": [79, 81],
+      "wcf": [86, 92]
+    }
+  },
+  {
+    "name": "The Law of God and the Ten Commandments",
+    "slug": "law-of-god",
+    "description": "The moral law as summarized in the Ten Commandments, its uses and rules of interpretation, and the duties required and sins forbidden therein.",
+    "order": 16,
+    "entries": {
+      "wsc": [39, 84],
+      "wlc": [91, 148],
+      "wcf": [93, 99]
+    }
+  },
+  {
+    "name": "Christian Liberty, Worship, and the Christian Life",
+    "slug": "christian-liberty-and-worship",
+    "description": "The freedom of believers under the gospel, the regulation of religious worship and the Sabbath, and the right use of oaths, vows, and lawful authority.",
+    "order": 17,
+    "entries": {
+      "wsc": null,
+      "wlc": null,
+      "wcf": [100, 128]
+    }
+  },
+  {
+    "name": "The Church and the Communion of Saints",
+    "slug": "the-church",
+    "description": "The visible and invisible church, the communion of saints, church government and discipline, and synods and councils.",
+    "order": 18,
+    "entries": {
+      "wsc": null,
+      "wlc": null,
+      "wcf": [129, 166]
+    }
+  },
+  {
+    "name": "The Means of Grace",
+    "slug": "means-of-grace",
+    "description": "The outward and ordinary means by which Christ communicates the benefits of redemption: the Word, sacraments, and prayer.",
+    "order": 19,
+    "entries": {
+      "wsc": [88, 97],
+      "wlc": [149, 177],
+      "wcf": [138, 157]
+    }
+  },
+  {
+    "name": "Prayer and the Lord's Prayer",
+    "slug": "prayer",
+    "description": "The duty of prayer, the rule and pattern given by Christ in the Lord's Prayer, and its several petitions.",
+    "order": 20,
+    "entries": {
+      "wsc": [98, 107],
+      "wlc": [178, 196],
+      "wcf": null
+    }
+  },
+  {
+    "name": "Death, Resurrection, and Last Judgment",
+    "slug": "death-resurrection-and-last-judgment",
+    "description": "The state of men after death, the resurrection of the body, and the final judgment at the last day.",
+    "order": 21,
+    "entries": {
+      "wsc": [37, 38],
+      "wlc": [82, 90],
+      "wcf": [167, 172]
+    }
+  }
+]

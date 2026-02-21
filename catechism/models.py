@@ -53,6 +53,16 @@ class Catechism(models.Model):
     def topic_name_plural(self):
         return 'Chapters' if self.is_confession else 'Topics'
 
+    def get_item_list_url(self):
+        from django.urls import reverse
+        name = 'catechism:section_list' if self.is_confession else 'catechism:question_list'
+        return reverse(name, kwargs={'catechism_slug': self.slug})
+
+    def get_topic_list_url(self):
+        from django.urls import reverse
+        name = 'catechism:chapter_list' if self.is_confession else 'catechism:topic_list'
+        return reverse(name, kwargs={'catechism_slug': self.slug})
+
 
 class Topic(models.Model):
     catechism = models.ForeignKey(
@@ -74,7 +84,8 @@ class Topic(models.Model):
 
     def get_absolute_url(self):
         from django.urls import reverse
-        return reverse('catechism:topic_detail', kwargs={
+        name = 'catechism:chapter_detail' if self.catechism.is_confession else 'catechism:topic_detail'
+        return reverse(name, kwargs={
             'catechism_slug': self.catechism.slug,
             'slug': self.slug,
         })
@@ -100,11 +111,13 @@ class Question(models.Model):
         unique_together = [('catechism', 'number')]
 
     def __str__(self):
-        return f"Q{self.number}: {self.question_text[:60]}"
+        prefix = self.catechism.item_prefix
+        return f"{prefix}{self.number}: {self.question_text[:60]}"
 
     def get_absolute_url(self):
         from django.urls import reverse
-        return reverse('catechism:question_detail', kwargs={
+        name = 'catechism:section_detail' if self.catechism.is_confession else 'catechism:question_detail'
+        return reverse(name, kwargs={
             'catechism_slug': self.catechism.slug,
             'number': self.number,
         })
@@ -155,7 +168,8 @@ class Commentary(models.Model):
         ordering = ['source__slug']
 
     def __str__(self):
-        return f"{self.source.name} on Q{self.question.number}"
+        prefix = self.question.catechism.item_prefix
+        return f"{self.source.name} on {prefix}{self.question.number}"
 
 
 class FisherSubQuestion(models.Model):
@@ -198,3 +212,104 @@ class CrossReference(models.Model):
 
     def __str__(self):
         return f"WSC Q{self.wsc_question.number} ↔ WLC Q{self.wlc_question.number}"
+
+
+class StandardCrossReference(models.Model):
+    source_question = models.ForeignKey(
+        Question, on_delete=models.CASCADE, related_name='cross_refs_from'
+    )
+    target_question = models.ForeignKey(
+        Question, on_delete=models.CASCADE, related_name='cross_refs_to'
+    )
+
+    class Meta:
+        unique_together = ('source_question', 'target_question')
+        ordering = ['source_question__catechism__abbreviation', 'source_question__number']
+
+    def __str__(self):
+        src = self.source_question
+        tgt = self.target_question
+        return (
+            f"{src.catechism.abbreviation} {src.catechism.item_prefix}{src.number} → "
+            f"{tgt.catechism.abbreviation} {tgt.catechism.item_prefix}{tgt.number}"
+        )
+
+
+class BibleBook(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    slug = models.SlugField(unique=True)
+    abbreviation = models.CharField(max_length=20)
+    book_number = models.PositiveIntegerField(unique=True)
+    testament = models.CharField(max_length=2, choices=[
+        ('OT', 'Old Testament'),
+        ('NT', 'New Testament'),
+    ])
+
+    class Meta:
+        ordering = ['book_number']
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('catechism:scripture_book', kwargs={'book_slug': self.slug})
+
+
+class ScriptureIndex(models.Model):
+    question = models.ForeignKey(
+        Question, on_delete=models.CASCADE, related_name='scripture_index_entries'
+    )
+    book = models.ForeignKey(
+        BibleBook, on_delete=models.CASCADE, related_name='index_entries'
+    )
+    reference = models.CharField(max_length=100)
+
+    class Meta:
+        ordering = ['book__book_number', 'question__catechism__abbreviation', 'question__number']
+        unique_together = ('question', 'reference')
+
+    def __str__(self):
+        return f"{self.reference} → {self.question}"
+
+
+class ComparisonTheme(models.Model):
+    name = models.CharField(max_length=200)
+    slug = models.SlugField(unique=True)
+    description = models.TextField(blank=True)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('catechism:compare_theme', kwargs={'theme_slug': self.slug})
+
+
+class ComparisonEntry(models.Model):
+    theme = models.ForeignKey(
+        ComparisonTheme, on_delete=models.CASCADE, related_name='entries'
+    )
+    catechism = models.ForeignKey(
+        Catechism, on_delete=models.CASCADE, related_name='comparison_entries'
+    )
+    question_start = models.PositiveIntegerField()
+    question_end = models.PositiveIntegerField()
+
+    class Meta:
+        ordering = ['catechism__abbreviation']
+        unique_together = ('theme', 'catechism')
+
+    def __str__(self):
+        return f"{self.theme.name} - {self.catechism.abbreviation}"
+
+    def get_questions(self):
+        return Question.objects.filter(
+            catechism=self.catechism,
+            number__gte=self.question_start,
+            number__lte=self.question_end,
+        ).select_related('topic')
