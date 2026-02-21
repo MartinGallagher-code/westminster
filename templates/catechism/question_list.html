@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}All Questions - {{ catechism.name }}{% endblock %}
+{% block title %}All {{ catechism.item_name_plural }} - {{ catechism.name }}{% endblock %}
 
 {% block content %}
-<h1 class="mb-3">{{ catechism.abbreviation }} &mdash; All Questions</h1>
+<h1 class="mb-3">{{ catechism.abbreviation }} &mdash; All {{ catechism.item_name_plural }}</h1>
 
 <div class="mb-3">
     <a href="{% url 'catechism:question_list' catechism_slug=catechism.slug %}"
@@ -22,7 +22,11 @@
     {% for q in questions %}
     <a href="{{ q.get_absolute_url }}" class="list-group-item list-group-item-action">
         <div class="d-flex w-100 justify-content-between">
+            {% if catechism.is_confession %}
+            <h6 class="mb-1">{{ q.question_text }} &sect;{{ q.number }}</h6>
+            {% else %}
             <h6 class="mb-1">Q{{ q.number }}. {{ q.question_text }}</h6>
+            {% endif %}
             <small class="text-muted text-nowrap ms-2">{{ q.topic.name }}</small>
         </div>
     </a>

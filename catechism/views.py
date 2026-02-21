@@ -98,6 +98,10 @@ class QuestionDetailView(CatechismMixin, DetailView):
         ctx['previous_question'] = q.get_previous()
         ctx['next_question'] = q.get_next()
 
+        # For confessions, compute the section number within the chapter
+        if self.catechism.is_confession and q.topic:
+            ctx['section_number'] = q.number - q.topic.question_start + 1
+
         # Build scripture text lookup for proof texts
         refs = q.get_proof_text_list()
         if refs:

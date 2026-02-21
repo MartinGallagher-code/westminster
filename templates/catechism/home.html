@@ -7,7 +7,7 @@
     <div class="col-lg-8">
         <h1 class="mb-3">Westminster Standards</h1>
         <p class="lead">
-            Browse the Westminster Shorter and Larger Catechisms with commentary
+            Browse the Westminster Confession of Faith and Catechisms with commentary
             from classic Reformed sources.
         </p>
 
@@ -15,7 +15,7 @@
         <div class="card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">{{ cat.name }}</h5>
-                <span class="badge bg-secondary">{{ cat.total_questions }} questions</span>
+                <span class="badge bg-secondary">{{ cat.total_questions }} {{ cat.item_name_plural|lower }}</span>
             </div>
             <div class="card-body">
                 {% if cat.description %}
@@ -24,18 +24,23 @@
 
                 <div class="d-flex gap-2 mb-3">
                     <a href="{% url 'catechism:question_list' catechism_slug=cat.slug %}" class="btn btn-primary btn-sm">
-                        Browse All Questions
+                        Browse All {{ cat.item_name_plural }}
                     </a>
                     <a href="{% url 'catechism:topic_list' catechism_slug=cat.slug %}" class="btn btn-outline-secondary btn-sm">
-                        Browse by Topic
+                        Browse by {{ cat.topic_name }}
                     </a>
                 </div>
 
                 {% if cat.featured_question %}
                 <div class="bg-light rounded p-3">
-                    <h6 class="text-muted mb-2">Question of the Day</h6>
+                    <h6 class="text-muted mb-2">{{ cat.item_name }} of the Day</h6>
+                    {% if cat.is_confession %}
+                    <p class="mb-1"><strong>{{ cat.featured_question.question_text }}</strong></p>
+                    <p class="text-muted mb-2">{{ cat.featured_question.answer_text|truncatewords:30 }}</p>
+                    {% else %}
                     <p class="mb-1"><strong>Q{{ cat.featured_question.number }}.</strong> {{ cat.featured_question.question_text }}</p>
                     <p class="text-muted mb-2"><strong>A.</strong> {{ cat.featured_question.answer_text|truncatewords:30 }}</p>
+                    {% endif %}
                     <a href="{{ cat.featured_question.get_absolute_url }}" class="btn btn-outline-primary btn-sm">
                         Read More &rarr;
                     </a>
@@ -50,14 +55,14 @@
         {% for cat in catechisms %}
         <div class="card mb-3">
             <div class="card-header">
-                <h6 class="mb-0">{{ cat.abbreviation }} Topics</h6>
+                <h6 class="mb-0">{{ cat.abbreviation }} {{ cat.topic_name_plural }}</h6>
             </div>
             <ul class="list-group list-group-flush">
                 {% for topic in cat.topics_list %}
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <a href="{{ topic.get_absolute_url }}">{{ topic.name }}</a>
                     <span class="badge bg-secondary rounded-pill">
-                        Q{{ topic.question_start }}&ndash;{{ topic.question_end }}
+                        {{ cat.item_prefix }}{{ topic.question_start }}&ndash;{{ topic.question_end }}
                     </span>
                 </li>
                 {% endfor %}

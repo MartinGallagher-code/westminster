@@ -2,12 +2,22 @@ from django.db import models
 
 
 class Catechism(models.Model):
+    CATECHISM = 'catechism'
+    CONFESSION = 'confession'
+    DOCUMENT_TYPE_CHOICES = [
+        (CATECHISM, 'Catechism'),
+        (CONFESSION, 'Confession'),
+    ]
+
     name = models.CharField(max_length=200)
     abbreviation = models.CharField(max_length=10, unique=True)
     slug = models.SlugField(unique=True)
     description = models.TextField(blank=True)
     year = models.PositiveIntegerField(null=True, blank=True)
     total_questions = models.PositiveIntegerField()
+    document_type = models.CharField(
+        max_length=20, choices=DOCUMENT_TYPE_CHOICES, default=CATECHISM
+    )
 
     class Meta:
         ordering = ['abbreviation']
@@ -18,6 +28,30 @@ class Catechism(models.Model):
     def get_absolute_url(self):
         from django.urls import reverse
         return reverse('catechism:catechism_home', kwargs={'catechism_slug': self.slug})
+
+    @property
+    def is_confession(self):
+        return self.document_type == self.CONFESSION
+
+    @property
+    def item_name(self):
+        return 'Section' if self.is_confession else 'Question'
+
+    @property
+    def item_name_plural(self):
+        return 'Sections' if self.is_confession else 'Questions'
+
+    @property
+    def item_prefix(self):
+        return '§' if self.is_confession else 'Q'
+
+    @property
+    def topic_name(self):
+        return 'Chapter' if self.is_confession else 'Topic'
+
+    @property
+    def topic_name_plural(self):
+        return 'Chapters' if self.is_confession else 'Topics'
 
 
 class Topic(models.Model):

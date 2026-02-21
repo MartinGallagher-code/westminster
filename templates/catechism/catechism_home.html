@@ -9,20 +9,25 @@
         <p class="lead">{{ catechism.description }}</p>
 
         <div class="d-flex gap-2 mb-4">
-            <a href="{% url 'catechism:question_list' catechism_slug=catechism.slug %}" class="btn btn-primary">Browse All Questions</a>
-            <a href="{% url 'catechism:topic_list' catechism_slug=catechism.slug %}" class="btn btn-outline-secondary">Browse by Topic</a>
+            <a href="{% url 'catechism:question_list' catechism_slug=catechism.slug %}" class="btn btn-primary">Browse All {{ catechism.item_name_plural }}</a>
+            <a href="{% url 'catechism:topic_list' catechism_slug=catechism.slug %}" class="btn btn-outline-secondary">Browse by {{ catechism.topic_name }}</a>
         </div>
 
         {% if featured_question %}
         <div class="card mb-4">
             <div class="card-header">
-                <h5 class="mb-0">Question of the Day</h5>
+                <h5 class="mb-0">{{ catechism.item_name }} of the Day</h5>
             </div>
             <div class="card-body">
+                {% if catechism.is_confession %}
+                <h5 class="card-title">{{ featured_question.question_text }}</h5>
+                <p class="card-text answer-text">{{ featured_question.answer_text|truncatewords:50 }}</p>
+                {% else %}
                 <h5 class="card-title">Q{{ featured_question.number }}. {{ featured_question.question_text }}</h5>
                 <p class="card-text answer-text"><strong>A.</strong> {{ featured_question.answer_text }}</p>
+                {% endif %}
                 <a href="{{ featured_question.get_absolute_url }}" class="btn btn-outline-primary btn-sm">
-                    Read Commentary &rarr;
+                    Read More &rarr;
                 </a>
             </div>
         </div>
@@ -32,14 +37,14 @@
     <div class="col-lg-4">
         <div class="card">
             <div class="card-header">
-                <h5 class="mb-0">Topics</h5>
+                <h5 class="mb-0">{{ catechism.topic_name_plural }}</h5>
             </div>
             <ul class="list-group list-group-flush">
                 {% for topic in topics %}
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                     <a href="{{ topic.get_absolute_url }}">{{ topic.name }}</a>
                     <span class="badge bg-secondary rounded-pill">
-                        Q{{ topic.question_start }}&ndash;{{ topic.question_end }}
+                        {{ catechism.item_prefix }}{{ topic.question_start }}&ndash;{{ topic.question_end }}
                     </span>
                 </li>
                 {% endfor %}

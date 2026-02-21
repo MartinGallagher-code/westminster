@@ -11,8 +11,8 @@
                     <a class="nav-link dropdown-toggle" href="#" role="button"
                        data-bs-toggle="dropdown">{{ cat.abbreviation }}</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{% url 'catechism:question_list' catechism_slug=cat.slug %}">All Questions</a></li>
-                        <li><a class="dropdown-item" href="{% url 'catechism:topic_list' catechism_slug=cat.slug %}">Topics</a></li>
+                        <li><a class="dropdown-item" href="{% url 'catechism:question_list' catechism_slug=cat.slug %}">All {{ cat.item_name_plural }}</a></li>
+                        <li><a class="dropdown-item" href="{% url 'catechism:topic_list' catechism_slug=cat.slug %}">{{ cat.topic_name_plural }}</a></li>
                     </ul>
                 </li>
                 {% endfor %}
@@ -25,11 +25,11 @@
             <form id="quick-jump-form" class="d-flex me-3">
                 <select id="quick-jump-catechism" class="form-select form-select-sm me-1" style="width: 80px;">
                     {% for cat in catechisms %}
-                    <option value="{{ cat.slug }}" data-max="{{ cat.total_questions }}">{{ cat.abbreviation }}</option>
+                    <option value="{{ cat.slug }}" data-max="{{ cat.total_questions }}" data-prefix="{{ cat.item_prefix }}">{{ cat.abbreviation }}</option>
                     {% endfor %}
                 </select>
                 <input type="number" class="form-control form-control-sm me-1" id="quick-jump-input"
-                       min="1" max="107" placeholder="Q#" style="width: 70px;">
+                       min="1" max="107" placeholder="#" style="width: 70px;">
                 <button class="btn btn-outline-light btn-sm" type="submit">Go</button>
             </form>
             <ul class="navbar-nav">
