@@ -36,10 +36,5 @@ python manage.py build_scripture_index
 # Comparison themes
 python manage.py load_comparison_themes
 
-# Fetch scripture texts only for uncached refs (skip if too many to avoid build timeout)
-UNCACHED=$(python manage.py fetch_scripture --count-only 2>&1 || echo "0")
-if [ "$UNCACHED" -lt 100 ]; then
-    python manage.py fetch_scripture --delay=0.3
-else
-    echo "Skipping fetch_scripture: $UNCACHED uncached refs (run manually with: python manage.py fetch_scripture)"
-fi
+# Scripture text fetching is slow (external API calls) - run manually via Render shell:
+#   python manage.py fetch_scripture --delay=0.3
