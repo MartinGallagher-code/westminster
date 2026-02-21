@@ -121,7 +121,7 @@
              id="commentary-{{ commentary.source.slug }}" role="tabpanel">
 
             {% if commentary.body %}
-            <div class="commentary-text">{{ commentary.body|linebreaks }}</div>
+            <div class="commentary-text" data-commentary-id="{{ commentary.pk }}">{{ commentary.body|linebreaks }}</div>
             {% endif %}
 
             {% if commentary.sub_questions.all %}
@@ -187,4 +187,18 @@
     </a>
     {% else %}<span></span>{% endif %}
 </div>
+{% endblock %}
+
+{% block extra_js %}
+{% if user.is_authenticated %}
+{% load static %}
+<script>
+    window.HIGHLIGHT_CONFIG = {
+        listCreateUrl: '{% url "accounts:highlight_list_create" %}',
+        deleteUrlTemplate: '/accounts/highlights/{id}/delete/',
+        csrfToken: '{{ csrf_token }}'
+    };
+</script>
+<script src="{% static 'js/highlights.js' %}"></script>
+{% endif %}
 {% endblock %}

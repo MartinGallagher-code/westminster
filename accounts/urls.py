@@ -22,4 +22,7 @@ urlpatterns = [
 
     path('notes/save/<int:question_pk>/', views.NoteSaveView.as_view(), name='note_save'),
     path('notes/<int:pk>/delete/', views.NoteDeleteView.as_view(), name='note_delete'),
+
+    path('highlights/', views.HighlightListCreateView.as_view(), name='highlight_list_create'),
+    path('highlights/<int:pk>/delete/', views.HighlightDeleteView.as_view(), name='highlight_delete'),
 ]

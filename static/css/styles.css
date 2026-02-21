@@ -44,6 +44,18 @@
     border-color: #0d6efd !important;
 }
 
+/* User highlights */
+mark.user-highlight {
+    background-color: #fff3cd;
+    border-radius: 2px;
+    padding: 0 1px;
+    cursor: pointer;
+}
+
+mark.user-highlight:hover {
+    background-color: #ffe69c;
+}
+
 /* Footer spacing */
 footer {
     margin-top: auto;
