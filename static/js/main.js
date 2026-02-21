@@ -25,6 +25,24 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Persist active tab across question navigation
+    var tabButtons = document.querySelectorAll('[data-bs-toggle="tab"]');
+    if (tabButtons.length) {
+        var savedTab = localStorage.getItem('activeTab');
+        if (savedTab) {
+            var target = document.querySelector('[data-bs-target="' + savedTab + '"]');
+            if (target) {
+                var tab = new bootstrap.Tab(target);
+                tab.show();
+            }
+        }
+        tabButtons.forEach(function(btn) {
+            btn.addEventListener('shown.bs.tab', function() {
+                localStorage.setItem('activeTab', btn.getAttribute('data-bs-target'));
+            });
+        });
+    }
+
     // Add Bootstrap classes to Django form inputs that don't have them
     var formInputs = document.querySelectorAll('form input[type="text"], form input[type="email"], form input[type="password"]');
     formInputs.forEach(function(input) {
