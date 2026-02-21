@@ -1,4 +1,21 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Theme toggle
+    var toggleBtn = document.getElementById('theme-toggle');
+    if (toggleBtn) {
+        function updateToggleIcon() {
+            var current = document.documentElement.getAttribute('data-bs-theme');
+            toggleBtn.textContent = current === 'dark' ? '☀️' : '🌙';
+        }
+        updateToggleIcon();
+        toggleBtn.addEventListener('click', function() {
+            var current = document.documentElement.getAttribute('data-bs-theme');
+            var next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-bs-theme', next);
+            localStorage.setItem('theme', next);
+            updateToggleIcon();
+        });
+    }
+
     // Quick Jump form
     var form = document.getElementById('quick-jump-form');
     if (form) {

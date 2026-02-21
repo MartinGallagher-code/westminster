@@ -32,6 +32,10 @@
                        min="1" max="107" placeholder="#" style="width: 70px;">
                 <button class="btn btn-outline-light btn-sm" type="submit">Go</button>
             </form>
+            <button id="theme-toggle" class="btn btn-outline-light btn-sm me-3" type="button"
+                    title="Toggle dark mode" aria-label="Toggle dark mode">
+                ☀️
+            </button>
             <ul class="navbar-nav">
                 {% if user.is_authenticated %}
                 <li class="nav-item">
