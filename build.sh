@@ -24,7 +24,16 @@ python manage.py load_prooftexts --catechism wlc
 # Load Confession of Faith
 python manage.py load_wcf
 
-# Cross-references between WSC and WLC
+# Cross-references between WSC and WLC (legacy)
 python manage.py load_crossrefs
+
+# Generalized cross-references (all three standards)
+python manage.py load_standard_crossrefs
+
+# Scripture index
+python manage.py build_scripture_index
+
+# Comparison themes
+python manage.py load_comparison_themes
 
 python manage.py fetch_scripture --delay=0.3
