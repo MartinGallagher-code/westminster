@@ -21,5 +21,9 @@ python manage.py load_prooftexts
 # Load Larger Catechism and commentary
 python manage.py load_wlc
 python manage.py load_ridgley
+python manage.py load_prooftexts --catechism wlc
+
+# Cross-references between WSC and WLC
+python manage.py load_crossrefs
 
 python manage.py fetch_scripture --delay=0.3

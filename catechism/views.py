@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView
 
-from .models import Catechism, Topic, Question, Commentary, FisherSubQuestion, ScripturePassage
+from .models import Catechism, Topic, Question, Commentary, FisherSubQuestion, ScripturePassage, CrossReference
 
 
 class CatechismMixin:
@@ -111,6 +111,20 @@ class QuestionDetailView(CatechismMixin, DetailView):
                         ctx['scripture_map'][ref] = passage.text
         else:
             ctx['scripture_map'] = {}
+
+        # Cross-references between WSC and WLC
+        if self.catechism.slug == 'wsc':
+            cross_refs = CrossReference.objects.filter(
+                wsc_question=q
+            ).select_related('wlc_question')
+            ctx['cross_refs'] = [cr.wlc_question for cr in cross_refs]
+            ctx['cross_ref_label'] = 'WLC'
+        elif self.catechism.slug == 'wlc':
+            cross_refs = CrossReference.objects.filter(
+                wlc_question=q
+            ).select_related('wsc_question')
+            ctx['cross_refs'] = [cr.wsc_question for cr in cross_refs]
+            ctx['cross_ref_label'] = 'WSC'
 
         if self.request.user.is_authenticated:
             from accounts.models import UserNote

@@ -148,3 +148,19 @@ class ScripturePassage(models.Model):
 
     def __str__(self):
         return self.reference
+
+
+class CrossReference(models.Model):
+    wsc_question = models.ForeignKey(
+        Question, on_delete=models.CASCADE, related_name='wlc_cross_refs'
+    )
+    wlc_question = models.ForeignKey(
+        Question, on_delete=models.CASCADE, related_name='wsc_cross_refs'
+    )
+
+    class Meta:
+        unique_together = ('wsc_question', 'wlc_question')
+        ordering = ['wsc_question__number', 'wlc_question__number']
+
+    def __str__(self):
+        return f"WSC Q{self.wsc_question.number} ↔ WLC Q{self.wlc_question.number}"

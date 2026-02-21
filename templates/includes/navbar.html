@@ -22,6 +22,16 @@
                        placeholder="Search..." value="{{ query|default:'' }}">
                 <button class="btn btn-outline-light btn-sm" type="submit">Search</button>
             </form>
+            <form id="quick-jump-form" class="d-flex me-3">
+                <select id="quick-jump-catechism" class="form-select form-select-sm me-1" style="width: 80px;">
+                    {% for cat in catechisms %}
+                    <option value="{{ cat.slug }}" data-max="{{ cat.total_questions }}">{{ cat.abbreviation }}</option>
+                    {% endfor %}
+                </select>
+                <input type="number" class="form-control form-control-sm me-1" id="quick-jump-input"
+                       min="1" max="107" placeholder="Q#" style="width: 70px;">
+                <button class="btn btn-outline-light btn-sm" type="submit">Go</button>
+            </form>
             <ul class="navbar-nav">
                 {% if user.is_authenticated %}
                 <li class="nav-item">

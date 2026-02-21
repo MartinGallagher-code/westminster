@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Catechism, Topic, Question, CommentarySource, Commentary, FisherSubQuestion, ScripturePassage
+from .models import Catechism, Topic, Question, CommentarySource, Commentary, FisherSubQuestion, ScripturePassage, CrossReference
 
 
 @admin.register(Catechism)
@@ -44,3 +44,9 @@ class CommentaryAdmin(admin.ModelAdmin):
 class ScripturePassageAdmin(admin.ModelAdmin):
     list_display = ('reference',)
     search_fields = ('reference', 'text')
+
+
+@admin.register(CrossReference)
+class CrossReferenceAdmin(admin.ModelAdmin):
+    list_display = ('wsc_question', 'wlc_question')
+    raw_id_fields = ('wsc_question', 'wlc_question')
