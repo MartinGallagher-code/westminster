@@ -206,6 +206,10 @@ class Command(BaseCommand):
             '--delay', type=float, default=0.3,
             help='Delay between API requests in seconds (default: 0.3)'
         )
+        parser.add_argument(
+            '--count-only', action='store_true',
+            help='Only print the count of uncached references, then exit'
+        )
 
     def handle(self, *args, **options):
         question_num = options.get('question')
@@ -218,6 +222,15 @@ class Command(BaseCommand):
             questions = questions.filter(catechism=catechism)
         if question_num:
             questions = questions.filter(number=question_num)
+
+        if options.get('count_only'):
+            uncached = 0
+            for q in questions:
+                for ref in q.get_proof_text_list():
+                    if not ScripturePassage.objects.filter(reference=ref).exists():
+                        uncached += 1
+            self.stdout.write(str(uncached))
+            return
 
         total_fetched = 0
         total_failed = 0
