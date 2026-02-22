@@ -5,29 +5,55 @@
 {% block content %}
 
 {# ── Section 1: Hero / Welcome ── #}
-<div class="text-center py-4 mb-4 border-bottom">
-    <h1 class="display-5 fw-bold">Westminster Standards</h1>
-    <p class="lead col-lg-8 mx-auto">
-        Explore the Westminster Confession of Faith and Catechisms (1647)
-        with Scripture proof texts, cross-references, and commentary
-        from classic Reformed sources.
-    </p>
-    <div class="d-flex justify-content-center gap-2">
-        <a href="{% url 'catechism:catechism_home' catechism_slug='wsc' %}" class="btn btn-primary">
-            Start with the Shorter Catechism
-        </a>
-        <a href="{% url 'catechism:compare_index' %}" class="btn btn-outline-secondary">
-            Compare All Three
-        </a>
+<div class="hero-section text-center py-5 mb-5 position-relative overflow-hidden rounded-3">
+    <div class="hero-bg-pattern position-absolute top-0 start-0 w-100 h-100" aria-hidden="true"></div>
+
+    <div class="position-relative py-4" style="z-index: 1;">
+        <div class="mb-3" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 12" width="80" height="12" class="heading-flourish" style="color: var(--wm-accent);">
+                <circle cx="40" cy="6" r="2.5" fill="currentColor"/>
+                <path d="M34,6 Q24,2 10,6" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+                <path d="M46,6 Q56,2 70,6" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+            </svg>
+        </div>
+
+        <h1 class="display-4 fw-bold mb-3">Westminster Standards</h1>
+        <p class="lead col-lg-7 mx-auto mb-4 text-body-secondary">
+            Explore the Westminster Confession of Faith and Catechisms (1647)
+            with Scripture proof texts, cross-references, and commentary
+            from classic Reformed sources.
+        </p>
+
+        <div class="mb-4" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 20" width="200" height="20" class="ornamental-divider" style="color: var(--wm-accent);">
+                <polygon points="100,2 106,10 100,18 94,10" fill="currentColor"/>
+                <path d="M90,10 Q80,4 60,10 Q50,14 30,10" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                <path d="M30,10 Q20,6 10,10" stroke="currentColor" stroke-width="1" fill="none" stroke-linecap="round"/>
+                <path d="M110,10 Q120,4 140,10 Q150,14 170,10" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                <path d="M170,10 Q180,6 190,10" stroke="currentColor" stroke-width="1" fill="none" stroke-linecap="round"/>
+                <circle cx="8" cy="10" r="2" fill="currentColor"/>
+                <circle cx="192" cy="10" r="2" fill="currentColor"/>
+            </svg>
+        </div>
+
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="{% url 'catechism:catechism_home' catechism_slug='wsc' %}" class="btn btn-primary btn-lg px-4">
+                <i class="bi bi-book me-2"></i>Start with the Shorter Catechism
+            </a>
+            <a href="{% url 'catechism:compare_index' %}" class="btn btn-outline-secondary btn-lg px-4">
+                <i class="bi bi-layout-split me-2"></i>Compare All Three
+            </a>
+        </div>
     </div>
 </div>
 
 {# ── Section 2: Question of the Day ── #}
 {% if featured %}
-<div class="card mb-4 border-primary-subtle">
+<div class="card card-featured mb-4 border-primary-subtle">
     <div class="card-body p-4">
         <div class="d-flex justify-content-between align-items-start mb-2">
             <h5 class="card-title mb-0">
+                <i class="bi bi-star-fill me-1" style="color: var(--wm-accent);"></i>
                 <span class="text-primary">{{ featured.catechism.item_name }} of the Day</span>
             </h5>
             <span class="badge text-bg-primary">{{ featured.catechism.abbreviation }}</span>
@@ -44,13 +70,13 @@
         </p>
         {% endif %}
         <a href="{{ featured.get_absolute_url }}" class="btn btn-primary btn-sm">
-            Read Full {{ featured.catechism.item_name }} &rarr;
+            Read Full {{ featured.catechism.item_name }} <i class="bi bi-chevron-right ms-1"></i>
         </a>
     </div>
 </div>
 
 <details class="mb-4">
-    <summary class="text-body-secondary">All daily readings</summary>
+    <summary class="text-body-secondary"><i class="bi bi-calendar3 me-1"></i>All daily readings</summary>
     <div class="row g-3 mt-2">
         {% for cat in catechisms %}
         {% if cat.featured_question %}
@@ -67,7 +93,7 @@
                     </p>
                     {% endif %}
                     <a href="{{ cat.featured_question.get_absolute_url }}" class="btn btn-outline-secondary btn-sm">
-                        Read &rarr;
+                        Read <i class="bi bi-chevron-right ms-1"></i>
                     </a>
                 </div>
             </div>
@@ -79,7 +105,7 @@
 {% endif %}
 
 {# ── Section 3: The Three Documents ── #}
-<h2 class="h5 text-body-secondary mb-3">The Three Documents</h2>
+<h2 class="h5 text-body-secondary mb-3 section-heading">The Three Documents</h2>
 <div class="row g-3 mb-4">
     {% for cat in catechisms %}
     <div class="col-md-4">
@@ -95,7 +121,7 @@
                 {% endif %}
                 <div class="mt-auto">
                     <a href="{{ cat.get_item_list_url }}" class="btn btn-outline-primary btn-sm">
-                        Browse {{ cat.item_name_plural }}
+                        Browse {{ cat.item_name_plural }} <i class="bi bi-chevron-right ms-1"></i>
                     </a>
                 </div>
             </div>
@@ -105,17 +131,24 @@
 </div>
 
 {# ── Section 4: Explore Features ── #}
-<h2 class="h5 text-body-secondary mb-3">Explore</h2>
+<h2 class="h5 text-body-secondary mb-3 section-heading">Explore</h2>
 <div class="row g-3 mb-4">
     <div class="col-md-4">
         <div class="card h-100 text-center p-3">
             <div class="card-body">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" aria-hidden="true" class="feature-icon" style="color: var(--wm-primary);">
+                    <circle cx="22" cy="22" r="12" fill="currentColor" opacity="0.1" stroke="currentColor" stroke-width="1.5"/>
+                    <line x1="31" y1="31" x2="42" y2="42" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                    <line x1="16" y1="18" x2="28" y2="18" stroke="currentColor" stroke-width="0.8" opacity="0.6"/>
+                    <line x1="16" y1="22" x2="26" y2="22" stroke="currentColor" stroke-width="0.8" opacity="0.6"/>
+                    <line x1="16" y1="26" x2="27" y2="26" stroke="currentColor" stroke-width="0.8" opacity="0.6"/>
+                </svg>
                 <h6 class="card-title">Search</h6>
                 <p class="card-text small text-body-secondary">
                     Search across all three documents by keyword.
                 </p>
                 <a href="{% url 'catechism:search' %}" class="btn btn-outline-primary btn-sm">
-                    Search &rarr;
+                    Search <i class="bi bi-chevron-right ms-1"></i>
                 </a>
             </div>
         </div>
@@ -123,12 +156,24 @@
     <div class="col-md-4">
         <div class="card h-100 text-center p-3">
             <div class="card-body">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" aria-hidden="true" class="feature-icon" style="color: var(--wm-primary);">
+                    <path d="M8 38 V10 Q8 6 12 6 H22 V38 Z" fill="currentColor" opacity="0.15"/>
+                    <path d="M26 6 H36 Q40 6 40 10 V38 H26 Z" fill="currentColor" opacity="0.1"/>
+                    <path d="M8 38 V10 Q8 6 12 6 H22 V38 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                    <path d="M26 6 H36 Q40 6 40 10 V38 H26 Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                    <line x1="24" y1="6" x2="24" y2="38" stroke="currentColor" stroke-width="1.5"/>
+                    <line x1="13" y1="14" x2="20" y2="14" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+                    <line x1="13" y1="18" x2="19" y2="18" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+                    <line x1="13" y1="22" x2="20" y2="22" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+                    <line x1="33" y1="14" x2="33" y2="26" stroke="currentColor" stroke-width="1.2" opacity="0.6"/>
+                    <line x1="29" y1="18" x2="37" y2="18" stroke="currentColor" stroke-width="1.2" opacity="0.6"/>
+                </svg>
                 <h6 class="card-title">Scripture Index</h6>
                 <p class="card-text small text-body-secondary">
                     Find questions and sections by Bible reference.
                 </p>
                 <a href="{% url 'catechism:scripture_index' %}" class="btn btn-outline-primary btn-sm">
-                    Browse Index &rarr;
+                    Browse Index <i class="bi bi-chevron-right ms-1"></i>
                 </a>
             </div>
         </div>
@@ -136,12 +181,20 @@
     <div class="col-md-4">
         <div class="card h-100 text-center p-3">
             <div class="card-body">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" aria-hidden="true" class="feature-icon" style="color: var(--wm-primary);">
+                    <line x1="24" y1="6" x2="24" y2="42" stroke="currentColor" stroke-width="1.5"/>
+                    <line x1="8" y1="14" x2="40" y2="14" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M8,14 L4,28 Q4,32 12,32 L16,28 Z" fill="currentColor" opacity="0.1" stroke="currentColor" stroke-width="1"/>
+                    <path d="M40,14 L36,28 Q36,32 44,32 L48,28 Z" fill="currentColor" opacity="0.1" stroke="currentColor" stroke-width="1"/>
+                    <circle cx="24" cy="8" r="3" fill="currentColor" opacity="0.6"/>
+                    <rect x="18" y="40" width="12" height="2" rx="1" fill="currentColor"/>
+                </svg>
                 <h6 class="card-title">Compare Standards</h6>
                 <p class="card-text small text-body-secondary">
                     See how the Confession and Catechisms treat the same topics.
                 </p>
                 <a href="{% url 'catechism:compare_index' %}" class="btn btn-outline-primary btn-sm">
-                    Compare &rarr;
+                    Compare <i class="bi bi-chevron-right ms-1"></i>
                 </a>
             </div>
         </div>

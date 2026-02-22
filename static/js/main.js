@@ -4,7 +4,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (toggleBtn) {
         function updateToggleIcon() {
             var current = document.documentElement.getAttribute('data-bs-theme');
-            toggleBtn.textContent = current === 'dark' ? '☀️' : '🌙';
+            toggleBtn.innerHTML = current === 'dark'
+                ? '<i class="bi bi-sun-fill"></i>'
+                : '<i class="bi bi-moon-stars-fill"></i>';
         }
         updateToggleIcon();
         toggleBtn.addEventListener('click', function() {

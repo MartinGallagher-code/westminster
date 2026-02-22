@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 
 {% block title %}{{ theme.name }} - {{ comparison_set.name }}{% endblock %}
+{% block meta_description %}Compare what the Westminster Confession, Shorter Catechism, and Larger Catechism teach about {{ theme.name }}.{% endblock %}
+{% block og_title %}{{ theme.name }} - Compare the Westminster Standards{% endblock %}
+{% block og_description %}See how the Westminster Confession, Shorter Catechism, and Larger Catechism treat {{ theme.name }}.{% endblock %}
 
 {% block content %}
 <nav aria-label="breadcrumb">
@@ -16,12 +19,12 @@
 <div class="d-flex justify-content-between mb-3">
     {% if previous_theme %}
     <a href="{{ previous_theme.get_absolute_url }}" class="btn btn-outline-secondary btn-sm">
-        &larr; {{ previous_theme.name|truncatewords:5 }}
+        <i class="bi bi-chevron-left me-1"></i>{{ previous_theme.name|truncatewords:5 }}
     </a>
     {% else %}<span></span>{% endif %}
     {% if next_theme %}
     <a href="{{ next_theme.get_absolute_url }}" class="btn btn-outline-secondary btn-sm">
-        {{ next_theme.name|truncatewords:5 }} &rarr;
+        {{ next_theme.name|truncatewords:5 }}<i class="bi bi-chevron-right ms-1"></i>
     </a>
     {% else %}<span></span>{% endif %}
 </div>
@@ -31,8 +34,8 @@
 <p class="text-muted mb-4">{{ theme.description }}</p>
 {% endif %}
 
+{% with col_count=columns|length %}
 <div class="row">
-    {% with col_count=columns|length %}
     {% for col in columns %}
     <div class="{% if col_count == 1 %}col-lg-12{% elif col_count == 2 %}col-lg-6{% else %}col-lg-4{% endif %} mb-4">
         <div class="card h-100">
@@ -60,19 +63,19 @@
     {% empty %}
     <p class="text-muted">No entries for this theme.</p>
     {% endfor %}
-    {% endwith %}
 </div>
+{% endwith %}
 
 <!-- Prev/Next (bottom) -->
 <div class="d-flex justify-content-between mt-3 mb-4">
     {% if previous_theme %}
     <a href="{{ previous_theme.get_absolute_url }}" class="btn btn-outline-secondary">
-        &larr; {{ previous_theme.name|truncatewords:5 }}
+        <i class="bi bi-chevron-left me-1"></i>{{ previous_theme.name|truncatewords:5 }}
     </a>
     {% else %}<span></span>{% endif %}
     {% if next_theme %}
     <a href="{{ next_theme.get_absolute_url }}" class="btn btn-outline-secondary">
-        {{ next_theme.name|truncatewords:5 }} &rarr;
+        {{ next_theme.name|truncatewords:5 }}<i class="bi bi-chevron-right ms-1"></i>
     </a>
     {% else %}<span></span>{% endif %}
 </div>

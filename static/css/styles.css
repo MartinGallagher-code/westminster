@@ -1,26 +1,433 @@
-/* Catechism text styling */
+/* ================================================================
+   Westminster Standards - Classic & Scholarly Theme
+   ================================================================ */
+
+/* -- Light Mode Palette -- */
+:root {
+    --wm-primary: #6B2737;
+    --wm-primary-hover: #522030;
+    --wm-primary-rgb: 107, 39, 55;
+    --wm-secondary: #4A5568;
+    --wm-secondary-hover: #3D4654;
+    --wm-accent: #B8860B;
+    --wm-accent-hover: #9A7209;
+    --wm-accent-light: #D4A843;
+
+    --wm-body-bg: #FAF6F1;
+    --wm-card-bg: #FFFFFF;
+    --wm-card-border: #E8E0D8;
+    --wm-border: #DDD5CC;
+    --wm-code-bg: #F0EBE4;
+
+    --wm-text: #2D2A26;
+    --wm-text-muted: #6B6560;
+
+    --wm-success: #2D6A4F;
+    --wm-danger: #A4243B;
+
+    /* Override Bootstrap variables */
+    --bs-primary: var(--wm-primary);
+    --bs-primary-rgb: 107, 39, 55;
+    --bs-secondary: var(--wm-secondary);
+    --bs-secondary-rgb: 74, 85, 104;
+    --bs-success: var(--wm-success);
+    --bs-danger: var(--wm-danger);
+
+    --bs-body-bg: var(--wm-body-bg);
+    --bs-body-bg-rgb: 250, 246, 241;
+    --bs-body-color: var(--wm-text);
+    --bs-body-color-rgb: 45, 42, 38;
+    --bs-border-color: var(--wm-border);
+
+    --bs-link-color: var(--wm-primary);
+    --bs-link-color-rgb: 107, 39, 55;
+    --bs-link-hover-color: var(--wm-primary-hover);
+
+    --bs-body-font-family: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
+
+    --bs-breadcrumb-divider: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%236B6560'/%3E%3C/svg%3E");
+}
+
+/* -- Dark Mode Palette -- */
+[data-bs-theme="dark"] {
+    --wm-primary: #D4899A;
+    --wm-primary-hover: #E0A0B0;
+    --wm-primary-rgb: 212, 137, 154;
+    --wm-secondary: #A0AEC0;
+    --wm-accent: #D4A843;
+    --wm-accent-hover: #E0BC5C;
+    --wm-accent-light: #D4A843;
+
+    --wm-body-bg: #1A1816;
+    --wm-card-bg: #242220;
+    --wm-card-border: #3D3835;
+    --wm-border: #3D3835;
+    --wm-code-bg: #2A2725;
+
+    --wm-text: #E8E0D8;
+    --wm-text-muted: #9B9590;
+
+    --wm-success: #52B788;
+    --wm-danger: #E07A8A;
+
+    --bs-primary: var(--wm-primary);
+    --bs-primary-rgb: 212, 137, 154;
+    --bs-body-bg: var(--wm-body-bg);
+    --bs-body-bg-rgb: 26, 24, 22;
+    --bs-body-color: var(--wm-text);
+    --bs-body-color-rgb: 232, 224, 216;
+    --bs-border-color: var(--wm-border);
+    --bs-link-color: var(--wm-primary);
+    --bs-link-color-rgb: 212, 137, 154;
+    --bs-link-hover-color: var(--wm-primary-hover);
+
+    --bs-breadcrumb-divider: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='%239B9590'/%3E%3C/svg%3E");
+}
+
+/* ================================================================
+   Typography
+   ================================================================ */
+
+body {
+    font-family: var(--bs-body-font-family);
+}
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6,
+.display-1, .display-2, .display-3, .display-4, .display-5, .display-6 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+/* ================================================================
+   Bootstrap Component Overrides (Sass-compiled values)
+   ================================================================ */
+
+/* Buttons */
+.btn-primary {
+    --bs-btn-bg: var(--wm-primary);
+    --bs-btn-border-color: var(--wm-primary);
+    --bs-btn-hover-bg: var(--wm-primary-hover);
+    --bs-btn-hover-border-color: var(--wm-primary-hover);
+    --bs-btn-active-bg: var(--wm-primary-hover);
+    --bs-btn-active-border-color: var(--wm-primary-hover);
+    --bs-btn-disabled-bg: var(--wm-primary);
+    --bs-btn-disabled-border-color: var(--wm-primary);
+}
+
+.btn-outline-primary {
+    --bs-btn-color: var(--wm-primary);
+    --bs-btn-border-color: var(--wm-primary);
+    --bs-btn-hover-bg: var(--wm-primary);
+    --bs-btn-hover-border-color: var(--wm-primary);
+    --bs-btn-active-bg: var(--wm-primary);
+    --bs-btn-active-border-color: var(--wm-primary);
+}
+
+.btn-outline-secondary {
+    --bs-btn-color: var(--wm-secondary);
+    --bs-btn-border-color: var(--wm-secondary);
+    --bs-btn-hover-bg: var(--wm-secondary);
+    --bs-btn-hover-border-color: var(--wm-secondary);
+}
+
+/* Text utilities */
+.text-primary { color: var(--wm-primary) !important; }
+.text-secondary { color: var(--wm-secondary) !important; }
+
+/* Background utilities */
+.bg-primary { background-color: var(--wm-primary) !important; }
+
+/* Badges */
+.text-bg-primary {
+    background-color: var(--wm-primary) !important;
+    color: #fff !important;
+}
+
+.text-bg-secondary {
+    background-color: var(--wm-secondary) !important;
+    color: #fff !important;
+}
+
+/* Border */
+.border-primary { border-color: var(--wm-primary) !important; }
+.border-primary-subtle { border-color: color-mix(in srgb, var(--wm-primary) 25%, var(--bs-body-bg)) !important; }
+
+/* ================================================================
+   Links & Transitions
+   ================================================================ */
+
+a {
+    transition: color 0.15s ease;
+}
+
+.btn {
+    transition: all 0.2s ease;
+}
+
+.btn-primary:hover,
+.btn-outline-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(107, 39, 55, 0.25);
+}
+
+.btn-primary:active,
+.btn-outline-primary:active {
+    transform: translateY(0);
+}
+
+/* Breadcrumb links */
+.breadcrumb-item a {
+    color: var(--wm-text-muted);
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.breadcrumb-item a:hover {
+    color: var(--wm-primary);
+}
+
+/* ================================================================
+   Navbar
+   ================================================================ */
+
+.navbar {
+    background-color: #2D2A26 !important;
+    border-bottom: 2px solid var(--wm-accent);
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+}
+
+.navbar-brand {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 1.35rem;
+    letter-spacing: 0.03em;
+    color: #FAF6F1 !important;
+}
+
+.navbar-brand:hover {
+    color: var(--wm-accent-light) !important;
+}
+
+.navbar .nav-link {
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    transition: color 0.15s ease;
+}
+
+.navbar .nav-link:hover {
+    color: var(--wm-accent-light) !important;
+}
+
+/* Search form in navbar */
+.navbar .form-control {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #FAF6F1;
+    font-size: 0.875rem;
+}
+
+.navbar .form-control:focus {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: var(--wm-accent-light);
+    box-shadow: 0 0 0 0.2rem rgba(212, 168, 67, 0.25);
+}
+
+.navbar .form-control::placeholder {
+    color: rgba(250, 246, 241, 0.5);
+}
+
+.navbar .form-select {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #FAF6F1;
+    font-size: 0.875rem;
+}
+
+/* Theme toggle button */
+#theme-toggle {
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #FAF6F1;
+    font-size: 1rem;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-radius: 50%;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+#theme-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--wm-accent-light);
+}
+
+/* ================================================================
+   Cards
+   ================================================================ */
+
+.card {
+    border: 1px solid var(--wm-card-border);
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.card-title {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 600;
+}
+
+.card-body {
+    padding: 1.25rem 1.5rem;
+}
+
+/* Featured card */
+.card-featured {
+    border-left: 4px solid var(--wm-accent) !important;
+}
+
+[data-bs-theme="dark"] .card {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+[data-bs-theme="dark"] .card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* List group items */
+.list-group-item {
+    border-color: var(--wm-card-border);
+    transition: background-color 0.15s ease, padding-left 0.15s ease;
+}
+
+.list-group-item-action:hover {
+    background-color: color-mix(in srgb, var(--wm-primary) 4%, var(--bs-body-bg));
+    padding-left: calc(var(--bs-list-group-item-padding-x) + 4px);
+}
+
+/* ================================================================
+   Hero Section
+   ================================================================ */
+
+.hero-section {
+    background: linear-gradient(
+        180deg,
+        var(--bs-body-bg) 0%,
+        color-mix(in srgb, var(--wm-primary) 6%, var(--bs-body-bg)) 100%
+    );
+    border-bottom: 1px solid var(--wm-border);
+}
+
+.hero-bg-pattern {
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40' width='40' height='40'%3E%3Cpath d='M20,0 L40,20 L20,40 L0,20 Z' fill='none' stroke='%236B2737' stroke-width='0.5'/%3E%3Ccircle cx='20' cy='20' r='1' fill='%236B2737'/%3E%3C/svg%3E");
+    background-size: 40px 40px;
+}
+
+[data-bs-theme="dark"] .hero-bg-pattern {
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40' width='40' height='40'%3E%3Cpath d='M20,0 L40,20 L20,40 L0,20 Z' fill='none' stroke='%23D4899A' stroke-width='0.5'/%3E%3Ccircle cx='20' cy='20' r='1' fill='%23D4899A'/%3E%3C/svg%3E");
+}
+
+.hero-section h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    color: var(--wm-primary);
+}
+
+/* Ornamental divider */
+.ornamental-divider {
+    display: block;
+    margin: 0 auto;
+}
+
+/* Heading flourish */
+.heading-flourish {
+    display: block;
+    margin: 0 auto;
+}
+
+/* Section headings */
+.section-heading {
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--wm-border);
+}
+
+/* ================================================================
+   Feature card icons
+   ================================================================ */
+
+.feature-icon {
+    display: block;
+    margin: 0 auto 1rem;
+}
+
+/* ================================================================
+   Footer
+   ================================================================ */
+
+.site-footer {
+    background-color: color-mix(in srgb, var(--wm-primary) 3%, var(--bs-body-bg));
+    border-top: 1px solid var(--wm-border);
+}
+
+.footer-heading {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    color: var(--wm-primary);
+}
+
+.footer-link {
+    color: var(--wm-text-muted);
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.footer-link:hover {
+    color: var(--wm-primary);
+    text-decoration: underline;
+}
+
+[data-bs-theme="dark"] .site-footer {
+    background-color: color-mix(in srgb, var(--wm-primary) 5%, var(--bs-body-bg));
+}
+
+/* ================================================================
+   Catechism Text Styling
+   ================================================================ */
+
 .question-text {
-    font-family: Georgia, 'Times New Roman', serif;
-    line-height: 1.6;
+    font-family: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
+    line-height: 1.7;
 }
 
 .answer-text {
-    font-family: Georgia, 'Times New Roman', serif;
-    line-height: 1.7;
+    font-family: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
+    line-height: 1.8;
 }
 
 /* Commentary */
 .commentary-text {
     font-size: 0.95rem;
-    line-height: 1.7;
+    line-height: 1.8;
 }
 
 .commentary-text p {
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
 }
 
 .fisher-subquestions .border-start {
-    border-color: #6c757d !important;
+    border-color: var(--wm-secondary) !important;
 }
 
 .fisher-subquestions p {
@@ -30,18 +437,23 @@
 
 /* Scripture text */
 .esv-text {
-    font-family: Georgia, 'Times New Roman', serif;
+    font-family: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
     font-size: 0.93rem;
-    line-height: 1.7;
+    line-height: 1.8;
     color: var(--bs-body-color);
 }
 
 .scripture-ref {
     font-size: 0.95rem;
+    transition: color 0.15s ease;
+}
+
+.scripture-ref:hover {
+    color: var(--wm-primary-hover) !important;
 }
 
 .scripture-passage .border-start {
-    border-color: #0d6efd !important;
+    border-color: var(--wm-primary) !important;
 }
 
 /* User highlights */
@@ -56,25 +468,41 @@ mark.user-highlight:hover {
     background-color: #ffe69c;
 }
 
-/* Footer spacing */
-footer {
-    margin-top: auto;
+[data-bs-theme="dark"] mark.user-highlight {
+    background-color: #664d03;
+    color: #fff;
 }
 
-/* Form input styling for signup */
-.form-control-override {
-    display: block;
-    width: 100%;
-    padding: 0.375rem 0.75rem;
-    font-size: 1rem;
-    line-height: 1.5;
-    color: var(--bs-body-color);
-    background-color: var(--bs-body-bg);
-    border: 1px solid var(--bs-border-color);
-    border-radius: 0.375rem;
+[data-bs-theme="dark"] mark.user-highlight:hover {
+    background-color: #997404;
 }
 
-/* Grouped question/section list navigation */
+/* ================================================================
+   Navigation Components
+   ================================================================ */
+
+/* Tabs */
+.nav-tabs .nav-link {
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--wm-primary);
+    border-bottom-color: var(--wm-primary);
+    font-weight: 500;
+}
+
+/* Accordion */
+.accordion-button {
+    transition: background-color 0.2s ease;
+}
+
+.accordion-button:not(.collapsed) {
+    color: var(--wm-primary);
+    background-color: color-mix(in srgb, var(--wm-primary) 4%, var(--bs-body-bg));
+}
+
+/* Topic jump navigation */
 html {
     scroll-behavior: smooth;
 }
@@ -91,12 +519,13 @@ html {
 .topic-jump-link {
     font-size: 0.8rem;
     padding: 0.25rem 0.5rem;
-    transition: background-color 0.15s;
+    transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
 }
 
 .topic-jump-link:hover {
-    background-color: var(--bs-primary) !important;
+    background-color: var(--wm-primary) !important;
     color: white !important;
+    transform: scale(1.05);
 }
 
 .topic-section {
@@ -115,8 +544,8 @@ html {
 }
 
 #topic-accordion .accordion-button:not(.collapsed) {
-    background-color: var(--bs-body-bg);
-    color: var(--bs-body-color);
+    background-color: color-mix(in srgb, var(--wm-primary) 4%, var(--bs-body-bg));
+    color: var(--wm-primary);
     box-shadow: inset 0 -1px 0 var(--bs-border-color);
 }
 
@@ -125,41 +554,59 @@ html {
     border-color: var(--bs-border-color);
 }
 
+#topic-accordion .accordion-body {
+    padding: 1rem 1.25rem 1.5rem;
+}
+
 #topic-accordion .accordion-body .list-group-item {
     font-size: 0.93rem;
 }
 
-/* Dark mode adjustments */
-[data-bs-theme="dark"] mark.user-highlight {
-    background-color: #664d03;
-    color: #fff;
+/* ================================================================
+   Form Styling
+   ================================================================ */
+
+.form-control-override {
+    display: block;
+    width: 100%;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--bs-body-color);
+    background-color: var(--bs-body-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 0.375rem;
 }
 
-[data-bs-theme="dark"] mark.user-highlight:hover {
-    background-color: #997404;
-}
+/* ================================================================
+   Focus Styles
+   ================================================================ */
 
-/* Focus styles for keyboard navigation */
 :focus-visible {
-    outline: 2px solid var(--bs-primary);
+    outline: 2px solid var(--wm-primary);
     outline-offset: 2px;
 }
 
 .nav-link:focus-visible,
 .btn:focus-visible {
-    outline: 2px solid var(--bs-primary);
+    outline: 2px solid var(--wm-primary);
     outline-offset: 2px;
     box-shadow: none;
 }
 
-/* Print styles */
+/* ================================================================
+   Print Styles
+   ================================================================ */
+
 @media print {
     nav.navbar, footer, .topic-jump-nav, form,
-    .breadcrumb, .highlight-popover { display: none !important; }
+    .breadcrumb, .highlight-popover,
+    .ornamental-divider, .heading-flourish,
+    .hero-bg-pattern { display: none !important; }
     .tab-content > .tab-pane { display: block !important; opacity: 1 !important; }
     .accordion-collapse { display: block !important; height: auto !important; }
     .nav-tabs { display: none !important; }
-    .card { break-inside: avoid; border: 1px solid #ddd !important; }
+    .card { break-inside: avoid; border: 1px solid #ddd !important; box-shadow: none !important; }
     .commentary-text { break-inside: avoid; }
     body { color: #000 !important; background: #fff !important; }
     a { color: #000 !important; text-decoration: none !important; }
