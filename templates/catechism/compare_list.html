@@ -13,13 +13,8 @@
 <h1 class="mb-4">Compare the Standards</h1>
 <p class="text-muted mb-4">Explore doctrinal themes side-by-side across the Westminster Shorter Catechism, Larger Catechism, and Confession of Faith.</p>
 
-{% regroup themes by locus as locus_groups %}
-{% for group in locus_groups %}
-{% if group.grouper %}
-<h4 class="mt-4 mb-3">{{ group.grouper }}</h4>
-{% endif %}
-<div class="list-group mb-3">
-    {% for theme in group.list %}
+<div class="list-group">
+    {% for theme in themes %}
     <a href="{% url 'catechism:compare_theme' theme_slug=theme.slug %}"
        class="list-group-item list-group-item-action">
         <h5 class="mb-1">{{ theme.name }}</h5>
@@ -27,9 +22,8 @@
         <p class="mb-0 text-muted small">{{ theme.description }}</p>
         {% endif %}
     </a>
+    {% empty %}
+    <p class="text-muted">No comparison themes available yet.</p>
     {% endfor %}
 </div>
-{% empty %}
-<p class="text-muted">No comparison themes available yet.</p>
-{% endfor %}
 {% endblock %}
