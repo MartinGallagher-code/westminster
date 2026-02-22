@@ -38,8 +38,9 @@ class HomeView(TemplateView):
                 catechism=cat,
                 number=(day_of_year % cat.total_questions) + 1
             ).select_related('topic').first()
-            cat.topics_list = Topic.objects.filter(catechism=cat)
         ctx['catechisms'] = catechisms
+        hero_cat = catechisms[day_of_year % len(catechisms)]
+        ctx['featured'] = hero_cat.featured_question
         return ctx
 
 
