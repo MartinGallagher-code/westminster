@@ -17,6 +17,9 @@ urlpatterns = [
     path('compare/', views.CompareListView.as_view(), name='compare_list'),
     path('compare/<slug:theme_slug>/', views.CompareThemeView.as_view(), name='compare_theme'),
 
+    # Commentary API (lazy-loading)
+    path('api/commentary/<int:pk>/', views.CommentaryAPIView.as_view(), name='commentary_api'),
+
     # Legacy WSC redirects (preserve old bookmarks)
     path('questions/', RedirectView.as_view(url='/wsc/questions/', permanent=True)),
     path('questions/<int:number>/', views.LegacyQuestionRedirect.as_view(), name='legacy_question'),
