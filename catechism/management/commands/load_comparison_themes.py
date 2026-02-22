@@ -20,6 +20,7 @@ class Command(BaseCommand):
 
         theme_count = 0
         entry_count = 0
+        loaded_slugs = set()
 
         for item in data:
             theme, _ = ComparisonTheme.objects.update_or_create(
@@ -27,9 +28,11 @@ class Command(BaseCommand):
                 defaults={
                     'name': item['name'],
                     'description': item.get('description', ''),
+                    'locus': item.get('locus', ''),
                     'order': item['order'],
                 }
             )
+            loaded_slugs.add(item['slug'])
             theme_count += 1
 
             for cat_slug, range_pair in item.get('entries', {}).items():
@@ -54,6 +57,12 @@ class Command(BaseCommand):
                 )
                 if created:
                     entry_count += 1
+
+        deleted_count, _ = ComparisonTheme.objects.exclude(
+            slug__in=loaded_slugs
+        ).delete()
+        if deleted_count:
+            self.stdout.write(f"Removed {deleted_count} orphaned theme(s)")
 
         mark_data_current("comparison-themes", data_path)
         self.stdout.write(self.style.SUCCESS(
