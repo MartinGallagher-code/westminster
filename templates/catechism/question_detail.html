@@ -43,7 +43,7 @@
         <h2 class="h4 question-text">Q{{ question.number }}. {{ question.question_text }}</h2>
         <p class="lead mt-3 answer-text"><strong>A.</strong> {{ question.answer_text }}</p>
         {% endif %}
-        {% if cross_ref_groups or comparison_themes %}
+        {% if cross_ref_groups %}
         <div class="mt-3 pt-3 border-top">
             {% for abbr, refs in cross_ref_groups.items %}
             <small class="text-muted d-block{% if not forloop.first %} mt-1{% endif %}">
@@ -51,12 +51,6 @@
                 {% for ref in refs %}
                 <a href="{{ ref.get_absolute_url }}">{{ ref.catechism.item_prefix }}{{ ref.display_number }}</a>{% if not forloop.last %}, {% endif %}
                 {% endfor %}
-            </small>
-            {% endfor %}
-            {% for theme in comparison_themes %}
-            <small class="text-muted d-block{% if cross_ref_groups or not forloop.first %} mt-1{% endif %}">
-                <strong>Compare:</strong>
-                <a href="{{ theme.get_absolute_url }}">{{ theme.name }}</a>
             </small>
             {% endfor %}
         </div>
@@ -72,11 +66,9 @@
             {% if proof_texts %}
             <li class="nav-item" role="presentation">
                 <button class="nav-link active"
-                        id="scripture-tab"
                         data-bs-toggle="tab"
                         data-bs-target="#tab-scripture"
-                        type="button" role="tab"
-                        aria-controls="tab-scripture" aria-selected="true">
+                        type="button" role="tab">
                     Scripture Proofs
                 </button>
             </li>
@@ -84,23 +76,18 @@
             {% for commentary in question.commentaries.all %}
             <li class="nav-item" role="presentation">
                 <button class="nav-link {% if not proof_texts and forloop.first %}active{% endif %}"
-                        id="tab-{{ commentary.source.slug }}"
                         data-bs-toggle="tab"
                         data-bs-target="#commentary-{{ commentary.source.slug }}"
-                        type="button" role="tab"
-                        aria-controls="commentary-{{ commentary.source.slug }}"
-                        aria-selected="{% if not proof_texts and forloop.first %}true{% else %}false{% endif %}">
+                        type="button" role="tab">
                     {{ commentary.source.author }}
                 </button>
             </li>
             {% endfor %}
             <li class="nav-item" role="presentation">
                 <button class="nav-link"
-                        id="notes-tab"
                         data-bs-toggle="tab"
                         data-bs-target="#tab-notes"
-                        type="button" role="tab"
-                        aria-controls="tab-notes" aria-selected="false">
+                        type="button" role="tab">
                     My Notes
                 </button>
             </li>
@@ -108,7 +95,7 @@
     </div>
     <div class="card-body tab-content">
         {% if proof_texts %}
-        <div class="tab-pane fade show active" id="tab-scripture" role="tabpanel" aria-labelledby="scripture-tab">
+        <div class="tab-pane fade show active" id="tab-scripture" role="tabpanel">
             <div class="d-flex justify-content-end mb-2">
                 <button class="btn btn-sm btn-outline-secondary" type="button"
                         data-bs-toggle="collapse" data-bs-target="#scripture-texts">
@@ -119,12 +106,10 @@
                 {% for ref in proof_texts %}
                 {% with verse_text=scripture_map|get_item:ref %}
                 <div class="scripture-passage mb-3">
-                    <button class="scripture-ref fw-bold text-primary btn btn-link p-0 text-start text-decoration-none"
-                            type="button"
-                            data-bs-toggle="collapse" data-bs-target="#verse-{{ forloop.counter }}"
-                            aria-expanded="true" aria-controls="verse-{{ forloop.counter }}">
+                    <div class="scripture-ref fw-bold text-primary" style="cursor:pointer"
+                         data-bs-toggle="collapse" data-bs-target="#verse-{{ forloop.counter }}">
                         {{ ref }}
-                    </button>
+                    </div>
                     {% if verse_text %}
                     <div class="collapse show" id="verse-{{ forloop.counter }}">
                         <div class="esv-text ps-3 border-start border-primary mt-1">
@@ -141,23 +126,30 @@
 
         {% for commentary in question.commentaries.all %}
         <div class="tab-pane fade {% if not proof_texts and forloop.first %}show active{% endif %}"
-             id="commentary-{{ commentary.source.slug }}" role="tabpanel"
-             aria-labelledby="tab-{{ commentary.source.slug }}"
-             {% if proof_texts or not forloop.first %}data-lazy-url="{% url 'catechism:commentary_api' pk=commentary.pk %}" data-loaded="false"{% endif %}>
+             id="commentary-{{ commentary.source.slug }}" role="tabpanel">
 
-            {% if not proof_texts and forloop.first %}
-            {% include "catechism/includes/commentary_content.html" with commentary=commentary %}
-            {% else %}
-            <div class="text-center py-4">
-                <div class="spinner-border spinner-border-sm text-secondary" role="status">
-                    <span class="visually-hidden">Loading...</span>
+            {% if commentary.body %}
+            <div class="commentary-text" data-commentary-id="{{ commentary.pk }}">{{ commentary.body|linebreaks }}</div>
+            {% endif %}
+
+            {% if commentary.sub_questions.all %}
+            <div class="fisher-subquestions">
+                {% for sq in commentary.sub_questions.all %}
+                <div class="mb-3 ps-3 border-start border-2">
+                    <p class="mb-1">
+                        <strong>Q{{ sq.number }}.</strong> {{ sq.question_text }}
+                    </p>
+                    <p class="text-muted mb-0">
+                        <strong>A.</strong> {{ sq.answer_text }}
+                    </p>
                 </div>
+                {% endfor %}
             </div>
             {% endif %}
         </div>
         {% endfor %}
 
-        <div class="tab-pane fade" id="tab-notes" role="tabpanel" aria-labelledby="notes-tab">
+        <div class="tab-pane fade" id="tab-notes" role="tabpanel">
             {% if user.is_authenticated %}
                 {% if user_note %}
                 <div class="mb-3 p-3 bg-body-secondary rounded">

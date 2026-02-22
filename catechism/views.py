@@ -1,16 +1,10 @@
 from collections import defaultdict
 from datetime import date
 
-from django.conf import settings
 from django.db.models import Q, Count, Prefetch
-from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
-from django.template.loader import render_to_string
-from django.utils.decorators import method_decorator
 from django.views import View
-from django.views.decorators.cache import cache_page
 from django.views.generic import TemplateView, ListView, DetailView
-from django_ratelimit.decorators import ratelimit
 
 from .models import (
     Catechism, Topic, Question, Commentary, FisherSubQuestion,
@@ -32,7 +26,6 @@ class CatechismMixin:
         return ctx
 
 
-@method_decorator(cache_page(60 * 60 * 24), name='dispatch')
 class HomeView(TemplateView):
     template_name = 'catechism/home.html'
 
@@ -51,7 +44,6 @@ class HomeView(TemplateView):
         return ctx
 
 
-@method_decorator(cache_page(60 * 60 * 24), name='dispatch')
 class CatechismHomeView(CatechismMixin, TemplateView):
     template_name = 'catechism/catechism_home.html'
 
@@ -67,7 +59,6 @@ class CatechismHomeView(CatechismMixin, TemplateView):
         return ctx
 
 
-@method_decorator(cache_page(60 * 60), name='dispatch')
 class QuestionListView(CatechismMixin, ListView):
     template_name = 'catechism/question_list.html'
     context_object_name = 'questions'
@@ -122,6 +113,12 @@ class QuestionDetailView(CatechismMixin, DetailView):
         if refs:
             passages = ScripturePassage.objects.filter(reference__in=refs)
             ctx['scripture_map'] = {p.reference: p.text for p in passages}
+            found_refs = set(ctx['scripture_map'].keys())
+            for ref in refs:
+                if ref not in found_refs:
+                    passage = ScripturePassage.objects.filter(reference=ref).first()
+                    if passage:
+                        ctx['scripture_map'][ref] = passage.text
         else:
             ctx['scripture_map'] = {}
 
@@ -148,13 +145,6 @@ class QuestionDetailView(CatechismMixin, DetailView):
             cross_ref_groups[abbr].sort(key=lambda x: x.number)
 
         ctx['cross_ref_groups'] = dict(cross_ref_groups)
-
-        # Comparison themes that include this question
-        ctx['comparison_themes'] = ComparisonTheme.objects.filter(
-            entries__catechism=q.catechism,
-            entries__question_start__lte=q.number,
-            entries__question_end__gte=q.number,
-        )
 
         if self.request.user.is_authenticated:
             from accounts.models import UserNote
@@ -191,11 +181,10 @@ class TopicDetailView(CatechismMixin, DetailView):
         return ctx
 
 
-@method_decorator(ratelimit(key='ip', rate='30/m', method='GET', block=True), name='get')
 class SearchView(ListView):
     template_name = 'catechism/search_results.html'
     context_object_name = 'results'
-    paginate_by = getattr(settings, 'SEARCH_RESULTS_PER_PAGE', 20)
+    paginate_by = 20
 
     def get_queryset(self):
         query = self.request.GET.get('q', '').strip()
@@ -220,7 +209,6 @@ class SearchView(ListView):
         return ctx
 
 
-@method_decorator(cache_page(60 * 60 * 24), name='dispatch')
 class ScriptureIndexView(TemplateView):
     template_name = 'catechism/scripture_index.html'
 
@@ -258,7 +246,6 @@ class ScriptureBookView(DetailView):
         return ctx
 
 
-@method_decorator(cache_page(60 * 60 * 24), name='dispatch')
 class CompareListView(ListView):
     template_name = 'catechism/compare_list.html'
     model = ComparisonTheme
@@ -303,23 +290,6 @@ class CompareThemeView(DetailView):
             ctx['next_theme'] = all_themes[current_idx + 1] if current_idx < len(all_themes) - 1 else None
 
         return ctx
-
-
-@method_decorator(cache_page(60 * 60), name='dispatch')
-class CommentaryAPIView(View):
-    """Return rendered HTML for a commentary tab (used by lazy-loading)."""
-
-    def get(self, request, pk):
-        commentary = get_object_or_404(
-            Commentary.objects.select_related('source').prefetch_related(
-                Prefetch('sub_questions', queryset=FisherSubQuestion.objects.order_by('number'))
-            ),
-            pk=pk
-        )
-        html = render_to_string('catechism/includes/commentary_content.html', {
-            'commentary': commentary,
-        })
-        return JsonResponse({'html': html})
 
 
 # Legacy redirects
