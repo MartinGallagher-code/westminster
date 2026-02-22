@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load catechism_tags %}
 
-{% block title %}{% if catechism.is_confession %}{{ question.question_text }} §{{ question.number }}{% else %}Q{{ question.number }}{% endif %} - {{ catechism.name }}{% endblock %}
+{% block title %}{% if catechism.is_confession %}{{ question.question_text }} §{{ question.display_number }}{% else %}Q{{ question.number }}{% endif %} - {{ catechism.name }}{% endblock %}
 
 {% block content %}
 <!-- Breadcrumbs -->
@@ -14,7 +14,7 @@
         <li class="breadcrumb-item">
             <a href="{{ question.topic.get_absolute_url }}">{{ question.topic.name }}</a>
         </li>
-        <li class="breadcrumb-item active">{% if catechism.is_confession %}§{{ question.number }}{% else %}Q{{ question.number }}{% endif %}</li>
+        <li class="breadcrumb-item active">{% if catechism.is_confession %}§{{ question.display_number }}{% else %}Q{{ question.number }}{% endif %}</li>
     </ol>
 </nav>
 
@@ -22,12 +22,12 @@
 <div class="d-flex justify-content-between mb-3">
     {% if previous_question %}
     <a href="{{ previous_question.get_absolute_url }}" class="btn btn-outline-secondary btn-sm">
-        &larr; {{ catechism.item_prefix }}{{ previous_question.number }}
+        &larr; {{ catechism.item_prefix }}{{ previous_question.display_number }}
     </a>
     {% else %}<span></span>{% endif %}
     {% if next_question %}
     <a href="{{ next_question.get_absolute_url }}" class="btn btn-outline-secondary btn-sm">
-        {{ catechism.item_prefix }}{{ next_question.number }} &rarr;
+        {{ catechism.item_prefix }}{{ next_question.display_number }} &rarr;
     </a>
     {% else %}<span></span>{% endif %}
 </div>
@@ -37,7 +37,7 @@
     <div class="card-body">
         {% if catechism.is_confession %}
         <h2 class="h4">{{ question.question_text }}</h2>
-        <p class="text-muted mb-3">Section {{ section_number }}</p>
+        <p class="text-muted mb-3">Section {{ question.display_number }}</p>
         <p class="lead mt-3 answer-text">{{ question.answer_text }}</p>
         {% else %}
         <h2 class="h4 question-text">Q{{ question.number }}. {{ question.question_text }}</h2>
@@ -49,7 +49,7 @@
             <small class="text-muted d-block{% if not forloop.first %} mt-1{% endif %}">
                 <strong>See also in {{ abbr }}:</strong>
                 {% for ref in refs %}
-                <a href="{{ ref.get_absolute_url }}">{{ ref.catechism.item_prefix }}{{ ref.number }}</a>{% if not forloop.last %}, {% endif %}
+                <a href="{{ ref.get_absolute_url }}">{{ ref.catechism.item_prefix }}{{ ref.display_number }}</a>{% if not forloop.last %}, {% endif %}
                 {% endfor %}
             </small>
             {% endfor %}
@@ -187,7 +187,7 @@
     {% if previous_question %}
     <a href="{{ previous_question.get_absolute_url }}" class="btn btn-outline-secondary">
         {% if catechism.is_confession %}
-        &larr; §{{ previous_question.number }}
+        &larr; §{{ previous_question.display_number }}
         {% else %}
         &larr; Q{{ previous_question.number }}: {{ previous_question.question_text|truncatewords:8 }}
         {% endif %}
@@ -196,7 +196,7 @@
     {% if next_question %}
     <a href="{{ next_question.get_absolute_url }}" class="btn btn-outline-secondary">
         {% if catechism.is_confession %}
-        §{{ next_question.number }} &rarr;
+        §{{ next_question.display_number }} &rarr;
         {% else %}
         Q{{ next_question.number }}: {{ next_question.question_text|truncatewords:8 }} &rarr;
         {% endif %}

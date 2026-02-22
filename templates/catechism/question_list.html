@@ -23,7 +23,7 @@
     <a href="{{ q.get_absolute_url }}" class="list-group-item list-group-item-action">
         <div class="d-flex w-100 justify-content-between">
             {% if catechism.is_confession %}
-            <h6 class="mb-1">{{ q.question_text }} &sect;{{ q.number }}</h6>
+            <h6 class="mb-1">{{ q.question_text }} &sect;{{ q.display_number }}</h6>
             {% else %}
             <h6 class="mb-1">Q{{ q.number }}. {{ q.question_text }}</h6>
             {% endif %}

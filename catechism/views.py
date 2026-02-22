@@ -37,7 +37,7 @@ class HomeView(TemplateView):
             cat.featured_question = Question.objects.filter(
                 catechism=cat,
                 number=(day_of_year % cat.total_questions) + 1
-            ).first()
+            ).select_related('topic').first()
             cat.topics_list = Topic.objects.filter(catechism=cat)
         ctx['catechisms'] = catechisms
         return ctx
@@ -54,7 +54,7 @@ class CatechismHomeView(CatechismMixin, TemplateView):
         ctx['featured_question'] = Question.objects.filter(
             catechism=self.catechism,
             number=(day_of_year % self.catechism.total_questions) + 1
-        ).first()
+        ).select_related('topic').first()
         return ctx
 
 
@@ -103,10 +103,6 @@ class QuestionDetailView(CatechismMixin, DetailView):
         ctx['previous_question'] = q.get_previous()
         ctx['next_question'] = q.get_next()
 
-        # For confessions, compute the section number within the chapter
-        if self.catechism.is_confession and q.topic:
-            ctx['section_number'] = q.number - q.topic.question_start + 1
-
         # Build scripture text lookup for proof texts
         refs = q.get_proof_text_list()
         if refs:
@@ -126,7 +122,9 @@ class QuestionDetailView(CatechismMixin, DetailView):
             Q(source_question=q) | Q(target_question=q)
         ).select_related(
             'source_question__catechism',
+            'source_question__topic',
             'target_question__catechism',
+            'target_question__topic',
         )
 
         cross_ref_groups = defaultdict(list)
@@ -263,10 +261,14 @@ class CompareThemeView(DetailView):
         columns = []
         for entry in entries:
             questions = entry.get_questions()
+            first_q = questions.first()
+            last_q = questions.last()
             columns.append({
                 'catechism': entry.catechism,
                 'question_start': entry.question_start,
                 'question_end': entry.question_end,
+                'display_start': first_q.display_number if first_q else str(entry.question_start),
+                'display_end': last_q.display_number if last_q else str(entry.question_end),
                 'questions': questions,
             })
 

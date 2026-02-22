@@ -18,13 +18,13 @@
 
 <h1 class="mb-2">{{ topic.name }}</h1>
 <p class="text-muted mb-3">{{ topic.description }}</p>
-<p class="text-muted small">{{ catechism.item_name_plural }} {{ topic.question_start }}&ndash;{{ topic.question_end }}</p>
+<p class="text-muted small">{{ catechism.item_name_plural }} {{ topic.display_start }}&ndash;{{ topic.display_end }}</p>
 
 <div class="list-group">
     {% for q in questions %}
     <a href="{{ q.get_absolute_url }}" class="list-group-item list-group-item-action">
         {% if catechism.is_confession %}
-        <h6 class="mb-1">Section {{ forloop.counter }}</h6>
+        <h6 class="mb-1">Section {{ q.display_number }}</h6>
         <p class="mb-0 text-muted small">{{ q.answer_text|truncatewords:25 }}</p>
         {% else %}
         <h6 class="mb-1">Q{{ q.number }}. {{ q.question_text }}</h6>

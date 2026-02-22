@@ -37,7 +37,7 @@
             <div class="card-header">
                 <strong>{{ col.catechism.abbreviation }}</strong>
                 <small class="text-muted ms-1">
-                    {{ col.catechism.item_prefix }}{{ col.question_start }}{% if col.question_start != col.question_end %}&ndash;{{ col.question_end }}{% endif %}
+                    {{ col.catechism.item_prefix }}{{ col.display_start }}{% if col.question_start != col.question_end %}&ndash;{{ col.display_end }}{% endif %}
                 </small>
             </div>
             <div class="list-group list-group-flush">

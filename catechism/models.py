@@ -82,6 +82,21 @@ class Topic(models.Model):
     def __str__(self):
         return self.name
 
+    @property
+    def display_start(self):
+        """Returns chapter.1 for confessions, plain start number for catechisms."""
+        if self.catechism.is_confession:
+            return f"{self.order}.1"
+        return str(self.question_start)
+
+    @property
+    def display_end(self):
+        """Returns chapter.N for confessions, plain end number for catechisms."""
+        if self.catechism.is_confession:
+            count = self.question_end - self.question_start + 1
+            return f"{self.order}.{count}"
+        return str(self.question_end)
+
     def get_absolute_url(self):
         from django.urls import reverse
         name = 'catechism:chapter_detail' if self.catechism.is_confession else 'catechism:topic_detail'
@@ -114,6 +129,14 @@ class Question(models.Model):
         prefix = self.catechism.item_prefix
         return f"{prefix}{self.number}: {self.question_text[:60]}"
 
+    @property
+    def display_number(self):
+        """Returns chapter.section for confessions (e.g. '1.5'), plain number for catechisms."""
+        if self.catechism.is_confession and self.topic:
+            section = self.number - self.topic.question_start + 1
+            return f"{self.topic.order}.{section}"
+        return str(self.number)
+
     def get_absolute_url(self):
         from django.urls import reverse
         name = 'catechism:section_detail' if self.catechism.is_confession else 'catechism:question_detail'
@@ -127,14 +150,14 @@ class Question(models.Model):
             return None
         return Question.objects.filter(
             catechism=self.catechism, number=self.number - 1
-        ).first()
+        ).select_related('topic').first()
 
     def get_next(self):
         if self.number >= self.catechism.total_questions:
             return None
         return Question.objects.filter(
             catechism=self.catechism, number=self.number + 1
-        ).first()
+        ).select_related('topic').first()
 
     def get_proof_text_list(self):
         if not self.proof_texts:
