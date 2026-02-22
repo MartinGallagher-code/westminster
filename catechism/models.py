@@ -67,7 +67,7 @@ class Topic(models.Model):
     catechism = models.ForeignKey(
         Catechism, on_delete=models.CASCADE, related_name='topics'
     )
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=200)
     slug = models.SlugField()
     description = models.TextField(blank=True)
     order = models.PositiveIntegerField()
