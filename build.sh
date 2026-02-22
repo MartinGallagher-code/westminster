@@ -11,7 +11,6 @@ python manage.py load_fisher
 python manage.py load_flavel
 python manage.py load_henry
 python manage.py load_watson
-python manage.py load_whyte
 python manage.py load_wallis
 python manage.py load_vincent
 python manage.py load_prooftexts
@@ -29,7 +28,7 @@ python manage.py load_hodge
 # Remove stale commentary sources not loaded by any command above
 python manage.py shell -c "
 from catechism.models import CommentarySource
-keep = ['fisher-erskine','flavel','henry','watson','whyte','wallis','vincent','ridgley','shaw','hodge']
+keep = ['fisher-erskine','flavel','henry','watson','wallis','vincent','ridgley','shaw','hodge']
 deleted, _ = CommentarySource.objects.exclude(slug__in=keep).delete()
 if deleted: print(f'Deleted {deleted} stale commentary record(s)')
 "
