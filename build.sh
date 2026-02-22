@@ -4,6 +4,7 @@ set -o errexit
 pip install -r requirements.txt
 python manage.py collectstatic --noinput
 python manage.py migrate
+python manage.py createcachetable
 
 # Load data (each command skips automatically if source data unchanged)
 python manage.py load_catechism
@@ -26,12 +27,7 @@ python manage.py load_shaw
 python manage.py load_hodge
 
 # Remove stale commentary sources not loaded by any command above
-python manage.py shell -c "
-from catechism.models import CommentarySource
-keep = ['fisher-erskine','flavel','henry','watson','wallis','vincent','ridgley','shaw','hodge']
-deleted, _ = CommentarySource.objects.exclude(slug__in=keep).delete()
-if deleted: print(f'Deleted {deleted} stale commentary record(s)')
-"
+python manage.py cleanup_stale_sources
 
 # Cross-references between WSC and WLC (legacy)
 python manage.py load_crossrefs
@@ -44,6 +40,9 @@ python manage.py build_scripture_index
 
 # Comparison themes
 python manage.py load_comparison_themes
+
+# Clear cache after data load to ensure fresh content
+python manage.py clear_cache
 
 # These commands fetch from external APIs - run manually via Render shell:
 #   python manage.py fetch_watson --delay=0.3

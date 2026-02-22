@@ -327,10 +327,8 @@ class Command(BaseCommand):
         # Assign text from last commentary marker to end of chapter.
         if pending_sections:
             # Find the last commentary marker position
-            last_commentary_end = 0
             for marker in reversed(markers):
                 if marker[0] == 'commentary':
-                    last_commentary_end = marker[1]
                     break
 
             # Use text from the first pending section to end of chapter

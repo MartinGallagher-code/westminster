@@ -8,8 +8,8 @@ from django.views.generic import TemplateView, ListView, DetailView
 
 from .models import (
     Catechism, Topic, Question, Commentary, FisherSubQuestion,
-    ScripturePassage, CrossReference, StandardCrossReference,
-    BibleBook, ScriptureIndex, ComparisonTheme, ComparisonEntry,
+    ScripturePassage, StandardCrossReference,
+    BibleBook, ScriptureIndex, ComparisonTheme,
 )
 
 

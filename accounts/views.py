@@ -1,16 +1,20 @@
 import json
 
+import bleach
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, ListView, DeleteView, View
 from django.http import HttpResponseRedirect, JsonResponse
+from django_ratelimit.decorators import ratelimit
 
 from .models import UserNote, Highlight
-from .forms import NoteForm, SignupForm
+from .forms import SignupForm
 from catechism.models import Question, Commentary
 
 
+@method_decorator(ratelimit(key='ip', rate='5/m', method='POST', block=True), name='post')
 class SignupView(CreateView):
     form_class = SignupForm
     template_name = 'accounts/signup.html'
@@ -55,6 +59,7 @@ class NoteDeleteView(LoginRequiredMixin, DeleteView):
         return self.object.question.get_absolute_url()
 
 
+@method_decorator(ratelimit(key='user', rate='60/m', method='POST', block=True), name='post')
 class HighlightListCreateView(LoginRequiredMixin, View):
     def get(self, request):
         commentary_ids = request.GET.getlist('commentary_id')
@@ -71,7 +76,7 @@ class HighlightListCreateView(LoginRequiredMixin, View):
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
 
         commentary_id = data.get('commentary_id')
-        selected_text = data.get('selected_text', '').strip()
+        selected_text = bleach.clean(data.get('selected_text', '').strip())
         occurrence_index = data.get('occurrence_index', 0)
 
         if not commentary_id or not selected_text:

@@ -21,7 +21,10 @@ class Command(BaseCommand):
                 "name": "A Scripture Catechism",
                 "author": "Matthew Henry",
                 "year": 1703,
-                "description": "Scripture-based exposition with sub-questions illuminating each answer from the Word of God.",
+                "description": (
+                    "Scripture-based exposition with sub-questions illuminating each answer"
+                    " from the Word of God."
+                ),
             }
         )
 

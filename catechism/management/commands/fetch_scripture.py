@@ -4,7 +4,6 @@ import time
 from urllib.request import urlopen, Request
 from urllib.error import URLError
 
-from django.conf import settings
 from django.core.management.base import BaseCommand
 from catechism.models import Catechism, Question, ScripturePassage
 
@@ -100,7 +99,7 @@ def fetch_chapter(book_num, chapter):
         verses = {v['verse']: v['text'].strip() for v in data}
         _chapter_cache[key] = verses
         return verses
-    except (URLError, json.JSONDecodeError, KeyError) as e:
+    except (URLError, json.JSONDecodeError, KeyError):
         return None
 
 

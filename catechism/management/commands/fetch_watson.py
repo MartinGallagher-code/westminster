@@ -191,7 +191,7 @@ class Command(BaseCommand):
                 continue
 
             if not text:
-                self.stderr.write(self.style.WARNING(f"    EMPTY page"))
+                self.stderr.write(self.style.WARNING("    EMPTY page"))
                 failures += 1
                 continue
 

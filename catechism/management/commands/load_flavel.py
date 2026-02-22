@@ -21,7 +21,10 @@ class Command(BaseCommand):
                 "name": "An Exposition of the Assemblies Catechism",
                 "author": "John Flavel",
                 "year": 1688,
-                "description": "A thorough exposition with sub-questions covering all 107 questions of the Shorter Catechism.",
+                "description": (
+                    "A thorough exposition with sub-questions covering all 107 questions"
+                    " of the Shorter Catechism."
+                ),
             }
         )
 

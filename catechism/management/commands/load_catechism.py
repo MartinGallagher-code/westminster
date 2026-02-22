@@ -40,7 +40,10 @@ class Command(BaseCommand):
             defaults={
                 'name': 'Westminster Shorter Catechism',
                 'abbreviation': 'WSC',
-                'description': 'The Westminster Shorter Catechism, composed in 1647, contains 107 questions and answers summarizing the essential doctrines of the Christian faith.',
+                'description': (
+                    'The Westminster Shorter Catechism, composed in 1647, contains 107 questions'
+                    ' and answers summarizing the essential doctrines of the Christian faith.'
+                ),
                 'year': 1647,
                 'total_questions': 107,
             }

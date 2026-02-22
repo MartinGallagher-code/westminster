@@ -5,36 +5,47 @@ document.addEventListener('DOMContentLoaded', function() {
     var highlightData = {};
 
     // ── 1. Load existing highlights ──
-    var containers = document.querySelectorAll('.commentary-text[data-commentary-id]');
-    if (!containers.length) return;
+    function initHighlightsForContainers(containers) {
+        if (!containers.length) return;
 
-    var ids = [];
-    containers.forEach(function(el) {
-        ids.push(el.getAttribute('data-commentary-id'));
-    });
-
-    var url = config.listCreateUrl + '?' + ids.map(function(id) {
-        return 'commentary_id=' + id;
-    }).join('&');
-
-    fetch(url, { credentials: 'same-origin' })
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-            data.highlights.forEach(function(h) {
-                if (!highlightData[h.commentary_id]) {
-                    highlightData[h.commentary_id] = [];
-                }
-                highlightData[h.commentary_id].push(h);
-            });
-            containers.forEach(function(el) {
-                var cid = el.getAttribute('data-commentary-id');
-                if (highlightData[cid]) {
-                    highlightData[cid].forEach(function(h) {
-                        applyHighlight(el, h);
-                    });
-                }
-            });
+        var ids = [];
+        containers.forEach(function(el) {
+            ids.push(el.getAttribute('data-commentary-id'));
         });
+
+        var url = config.listCreateUrl + '?' + ids.map(function(id) {
+            return 'commentary_id=' + id;
+        }).join('&');
+
+        fetch(url, { credentials: 'same-origin' })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                data.highlights.forEach(function(h) {
+                    if (!highlightData[h.commentary_id]) {
+                        highlightData[h.commentary_id] = [];
+                    }
+                    highlightData[h.commentary_id].push(h);
+                });
+                containers.forEach(function(el) {
+                    var cid = el.getAttribute('data-commentary-id');
+                    if (highlightData[cid]) {
+                        highlightData[cid].forEach(function(h) {
+                            applyHighlight(el, h);
+                        });
+                    }
+                });
+            });
+    }
+
+    // Init highlights for all commentary containers on the page
+    var containers = document.querySelectorAll('.commentary-text[data-commentary-id]');
+    initHighlightsForContainers(containers);
+
+    // Expose function for lazy-loaded panes
+    window.initHighlightsForPane = function(pane) {
+        var paneContainers = pane.querySelectorAll('.commentary-text[data-commentary-id]');
+        initHighlightsForContainers(paneContainers);
+    };
 
     // ── 2. Apply a highlight to the DOM ──
     function applyHighlight(container, highlightObj) {

@@ -22,11 +22,15 @@ document.addEventListener('DOMContentLoaded', function() {
         var catSelect = document.getElementById('quick-jump-catechism');
         var numInput = document.getElementById('quick-jump-input');
 
-        // Update max when catechism selection changes
+        // Set initial max and update when catechism selection changes
         if (catSelect) {
+            if (catSelect.options.length) {
+                var initSelected = catSelect.options[catSelect.selectedIndex];
+                numInput.max = initSelected.getAttribute('data-max') || 999;
+            }
             catSelect.addEventListener('change', function() {
                 var selected = catSelect.options[catSelect.selectedIndex];
-                numInput.max = selected.getAttribute('data-max') || 107;
+                numInput.max = selected.getAttribute('data-max') || 999;
             });
         }
 
@@ -35,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
             var num = parseInt(numInput.value);
             var slug = catSelect ? catSelect.value : 'wsc';
             var selected = catSelect ? catSelect.options[catSelect.selectedIndex] : null;
-            var max = selected ? parseInt(selected.getAttribute('data-max')) : 107;
+            var max = selected ? parseInt(selected.getAttribute('data-max')) : 999;
             var docType = selected ? selected.getAttribute('data-doc-type') : 'catechism';
             var pathSegment = docType === 'confession' ? 'sections' : 'questions';
             if (num >= 1 && num <= max) {
@@ -58,6 +62,19 @@ document.addEventListener('DOMContentLoaded', function() {
         tabButtons.forEach(function(btn) {
             btn.addEventListener('shown.bs.tab', function() {
                 localStorage.setItem('activeTab', btn.getAttribute('data-bs-target'));
+                // Lazy-load commentary content
+                var pane = document.querySelector(btn.getAttribute('data-bs-target'));
+                if (pane && pane.dataset.lazyUrl && pane.dataset.loaded !== 'true') {
+                    fetch(pane.dataset.lazyUrl)
+                        .then(function(r) { return r.json(); })
+                        .then(function(data) {
+                            pane.innerHTML = data.html;
+                            pane.dataset.loaded = 'true';
+                            if (window.initHighlightsForPane) {
+                                window.initHighlightsForPane(pane);
+                            }
+                        });
+                }
             });
         });
     }

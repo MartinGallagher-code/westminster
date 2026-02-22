@@ -1,7 +1,8 @@
 <nav class="navbar navbar-expand-md navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="{% url 'catechism:home' %}">Westminster Standards</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
@@ -22,17 +23,20 @@
             </ul>
             <form class="d-flex me-3" action="{% url 'catechism:search' %}" method="get">
                 <input class="form-control form-control-sm me-2" type="search" name="q"
-                       placeholder="Search..." value="{{ query|default:'' }}">
+                       placeholder="Search..." value="{{ query|default:'' }}"
+                       aria-label="Search the Westminster Standards">
                 <button class="btn btn-outline-light btn-sm" type="submit">Search</button>
             </form>
             <form id="quick-jump-form" class="d-flex me-3">
-                <select id="quick-jump-catechism" class="form-select form-select-sm me-1" style="width: 80px;">
+                <select id="quick-jump-catechism" class="form-select form-select-sm me-1" style="width: 80px;"
+                        aria-label="Select catechism">
                     {% for cat in catechisms %}
                     <option value="{{ cat.slug }}" data-max="{{ cat.total_questions }}" data-prefix="{{ cat.item_prefix }}" data-doc-type="{{ cat.document_type }}">{{ cat.abbreviation }}</option>
                     {% endfor %}
                 </select>
                 <input type="number" class="form-control form-control-sm me-1" id="quick-jump-input"
-                       min="1" max="107" placeholder="#" style="width: 70px;">
+                       min="1" placeholder="#" style="width: 70px;"
+                       aria-label="Question or section number">
                 <button class="btn btn-outline-light btn-sm" type="submit">Go</button>
             </form>
             <button id="theme-toggle" class="btn btn-outline-light btn-sm me-3" type="button"

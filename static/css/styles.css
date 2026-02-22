@@ -112,3 +112,30 @@ html {
 [data-bs-theme="dark"] mark.user-highlight:hover {
     background-color: #997404;
 }
+
+/* Focus styles for keyboard navigation */
+:focus-visible {
+    outline: 2px solid var(--bs-primary);
+    outline-offset: 2px;
+}
+
+.nav-link:focus-visible,
+.btn:focus-visible {
+    outline: 2px solid var(--bs-primary);
+    outline-offset: 2px;
+    box-shadow: none;
+}
+
+/* Print styles */
+@media print {
+    nav.navbar, footer, .topic-jump-nav, form,
+    .breadcrumb, .highlight-popover { display: none !important; }
+    .tab-content > .tab-pane { display: block !important; opacity: 1 !important; }
+    .nav-tabs { display: none !important; }
+    .card { break-inside: avoid; border: 1px solid #ddd !important; }
+    .commentary-text { break-inside: avoid; }
+    body { color: #000 !important; background: #fff !important; }
+    a { color: #000 !important; text-decoration: none !important; }
+    a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.8em; color: #666; }
+    .container { max-width: 100% !important; }
+}
