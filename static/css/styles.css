@@ -1,8 +1,8 @@
 /* ================================================================
-   Westminster Standards - Classic & Scholarly Theme
+   Studying the Reformed Standards - Classic & Scholarly Theme
    ================================================================ */
 
-/* -- Light Mode Palette -- */
+/* -- Light Mode Palette (Classic - default) -- */
 :root {
     --wm-primary: #6B2737;
     --wm-primary-hover: #522030;
@@ -12,6 +12,7 @@
     --wm-accent: #B8860B;
     --wm-accent-hover: #9A7209;
     --wm-accent-light: #D4A843;
+    --wm-accent-rgb: 184, 134, 11;
 
     --wm-body-bg: #FAF6F1;
     --wm-card-bg: #FFFFFF;
@@ -24,6 +25,8 @@
 
     --wm-success: #2D6A4F;
     --wm-danger: #A4243B;
+
+    --wm-navbar-bg: #2D2A26;
 
     /* Override Bootstrap variables */
     --bs-primary: var(--wm-primary);
@@ -85,11 +88,256 @@
 }
 
 /* ================================================================
+   Color Schemes
+   ================================================================ */
+
+/* -- Ocean -- */
+[data-color-scheme="ocean"] {
+    --wm-primary: #1B4965;
+    --wm-primary-hover: #143B52;
+    --wm-primary-rgb: 27, 73, 101;
+    --wm-secondary: #5A7D8F;
+    --wm-secondary-hover: #4A6A7A;
+    --wm-accent: #2A9D8F;
+    --wm-accent-hover: #228176;
+    --wm-accent-light: #52B5A5;
+    --wm-accent-rgb: 42, 157, 143;
+    --wm-body-bg: #F5F9FA;
+    --wm-card-bg: #FFFFFF;
+    --wm-card-border: #D6E3E8;
+    --wm-border: #C8D8DE;
+    --wm-code-bg: #E8F0F2;
+    --wm-text: #1A2A32;
+    --wm-text-muted: #5A6F78;
+    --wm-navbar-bg: #1A2A32;
+    --bs-primary: var(--wm-primary);
+    --bs-primary-rgb: 27, 73, 101;
+    --bs-body-bg: var(--wm-body-bg);
+    --bs-body-bg-rgb: 245, 249, 250;
+    --bs-body-color: var(--wm-text);
+    --bs-body-color-rgb: 26, 42, 50;
+    --bs-border-color: var(--wm-border);
+    --bs-link-color: var(--wm-primary);
+    --bs-link-color-rgb: 27, 73, 101;
+    --bs-link-hover-color: var(--wm-primary-hover);
+}
+
+[data-color-scheme="ocean"][data-bs-theme="dark"] {
+    --wm-primary: #7EB8D0;
+    --wm-primary-hover: #96CAE0;
+    --wm-primary-rgb: 126, 184, 208;
+    --wm-secondary: #90AFC0;
+    --wm-accent: #52B5A5;
+    --wm-accent-hover: #6FC8BA;
+    --wm-accent-light: #52B5A5;
+    --wm-accent-rgb: 82, 181, 165;
+    --wm-body-bg: #141D22;
+    --wm-card-bg: #1C2830;
+    --wm-card-border: #2E4050;
+    --wm-border: #2E4050;
+    --wm-code-bg: #1E2C35;
+    --wm-text: #DEE8ED;
+    --wm-text-muted: #8A9DA8;
+    --wm-navbar-bg: #1A2A32;
+    --bs-primary: var(--wm-primary);
+    --bs-primary-rgb: 126, 184, 208;
+    --bs-body-bg: var(--wm-body-bg);
+    --bs-body-bg-rgb: 20, 29, 34;
+    --bs-body-color: var(--wm-text);
+    --bs-body-color-rgb: 222, 232, 237;
+    --bs-border-color: var(--wm-border);
+    --bs-link-color: var(--wm-primary);
+    --bs-link-color-rgb: 126, 184, 208;
+    --bs-link-hover-color: var(--wm-primary-hover);
+}
+
+/* -- Forest -- */
+[data-color-scheme="forest"] {
+    --wm-primary: #2D5016;
+    --wm-primary-hover: #234010;
+    --wm-primary-rgb: 45, 80, 22;
+    --wm-secondary: #5C6B4F;
+    --wm-secondary-hover: #4D5A42;
+    --wm-accent: #C07D1A;
+    --wm-accent-hover: #A06A14;
+    --wm-accent-light: #D4993D;
+    --wm-accent-rgb: 192, 125, 26;
+    --wm-body-bg: #F7F5F0;
+    --wm-card-bg: #FFFFFF;
+    --wm-card-border: #DDD8CE;
+    --wm-border: #D0CBBC;
+    --wm-code-bg: #ECE8DF;
+    --wm-text: #2A2820;
+    --wm-text-muted: #68645A;
+    --wm-navbar-bg: #1E2218;
+    --bs-primary: var(--wm-primary);
+    --bs-primary-rgb: 45, 80, 22;
+    --bs-body-bg: var(--wm-body-bg);
+    --bs-body-bg-rgb: 247, 245, 240;
+    --bs-body-color: var(--wm-text);
+    --bs-body-color-rgb: 42, 40, 32;
+    --bs-border-color: var(--wm-border);
+    --bs-link-color: var(--wm-primary);
+    --bs-link-color-rgb: 45, 80, 22;
+    --bs-link-hover-color: var(--wm-primary-hover);
+}
+
+[data-color-scheme="forest"][data-bs-theme="dark"] {
+    --wm-primary: #8FBF75;
+    --wm-primary-hover: #A5D08E;
+    --wm-primary-rgb: 143, 191, 117;
+    --wm-secondary: #A0AE90;
+    --wm-accent: #D4993D;
+    --wm-accent-hover: #E0AD55;
+    --wm-accent-light: #D4993D;
+    --wm-accent-rgb: 212, 153, 61;
+    --wm-body-bg: #181A14;
+    --wm-card-bg: #222418;
+    --wm-card-border: #3A3D30;
+    --wm-border: #3A3D30;
+    --wm-code-bg: #262820;
+    --wm-text: #E0DED6;
+    --wm-text-muted: #969488;
+    --wm-navbar-bg: #1E2218;
+    --bs-primary: var(--wm-primary);
+    --bs-primary-rgb: 143, 191, 117;
+    --bs-body-bg: var(--wm-body-bg);
+    --bs-body-bg-rgb: 24, 26, 20;
+    --bs-body-color: var(--wm-text);
+    --bs-body-color-rgb: 224, 222, 214;
+    --bs-border-color: var(--wm-border);
+    --bs-link-color: var(--wm-primary);
+    --bs-link-color-rgb: 143, 191, 117;
+    --bs-link-hover-color: var(--wm-primary-hover);
+}
+
+/* -- Stone -- */
+[data-color-scheme="stone"] {
+    --wm-primary: #4A4440;
+    --wm-primary-hover: #3A3430;
+    --wm-primary-rgb: 74, 68, 64;
+    --wm-secondary: #6B6560;
+    --wm-secondary-hover: #5A5450;
+    --wm-accent: #B5703C;
+    --wm-accent-hover: #9A5F30;
+    --wm-accent-light: #CB8C5A;
+    --wm-accent-rgb: 181, 112, 60;
+    --wm-body-bg: #F5F3F0;
+    --wm-card-bg: #FFFFFF;
+    --wm-card-border: #E0DCD6;
+    --wm-border: #D4CFC8;
+    --wm-code-bg: #EEEBE6;
+    --wm-text: #2E2C28;
+    --wm-text-muted: #787068;
+    --wm-navbar-bg: #2A2826;
+    --bs-primary: var(--wm-primary);
+    --bs-primary-rgb: 74, 68, 64;
+    --bs-body-bg: var(--wm-body-bg);
+    --bs-body-bg-rgb: 245, 243, 240;
+    --bs-body-color: var(--wm-text);
+    --bs-body-color-rgb: 46, 44, 40;
+    --bs-border-color: var(--wm-border);
+    --bs-link-color: var(--wm-primary);
+    --bs-link-color-rgb: 74, 68, 64;
+    --bs-link-hover-color: var(--wm-primary-hover);
+}
+
+[data-color-scheme="stone"][data-bs-theme="dark"] {
+    --wm-primary: #B0A8A0;
+    --wm-primary-hover: #C0B8B0;
+    --wm-primary-rgb: 176, 168, 160;
+    --wm-secondary: #908880;
+    --wm-accent: #CB8C5A;
+    --wm-accent-hover: #D8A06E;
+    --wm-accent-light: #CB8C5A;
+    --wm-accent-rgb: 203, 140, 90;
+    --wm-body-bg: #1A1918;
+    --wm-card-bg: #242220;
+    --wm-card-border: #3D3835;
+    --wm-border: #3D3835;
+    --wm-code-bg: #2A2725;
+    --wm-text: #E0DCD6;
+    --wm-text-muted: #989088;
+    --wm-navbar-bg: #2A2826;
+    --bs-primary: var(--wm-primary);
+    --bs-primary-rgb: 176, 168, 160;
+    --bs-body-bg: var(--wm-body-bg);
+    --bs-body-bg-rgb: 26, 25, 24;
+    --bs-body-color: var(--wm-text);
+    --bs-body-color-rgb: 224, 220, 214;
+    --bs-border-color: var(--wm-border);
+    --bs-link-color: var(--wm-primary);
+    --bs-link-color-rgb: 176, 168, 160;
+    --bs-link-hover-color: var(--wm-primary-hover);
+}
+
+/* -- Royal -- */
+[data-color-scheme="royal"] {
+    --wm-primary: #4A2060;
+    --wm-primary-hover: #3A1850;
+    --wm-primary-rgb: 74, 32, 96;
+    --wm-secondary: #5C5070;
+    --wm-secondary-hover: #4C4260;
+    --wm-accent: #C8963C;
+    --wm-accent-hover: #B08030;
+    --wm-accent-light: #D8AE5C;
+    --wm-accent-rgb: 200, 150, 60;
+    --wm-body-bg: #F8F5FA;
+    --wm-card-bg: #FFFFFF;
+    --wm-card-border: #E2D8E8;
+    --wm-border: #D6CCE0;
+    --wm-code-bg: #F0EAF4;
+    --wm-text: #2A2430;
+    --wm-text-muted: #6A6075;
+    --wm-navbar-bg: #221E28;
+    --bs-primary: var(--wm-primary);
+    --bs-primary-rgb: 74, 32, 96;
+    --bs-body-bg: var(--wm-body-bg);
+    --bs-body-bg-rgb: 248, 245, 250;
+    --bs-body-color: var(--wm-text);
+    --bs-body-color-rgb: 42, 36, 48;
+    --bs-border-color: var(--wm-border);
+    --bs-link-color: var(--wm-primary);
+    --bs-link-color-rgb: 74, 32, 96;
+    --bs-link-hover-color: var(--wm-primary-hover);
+}
+
+[data-color-scheme="royal"][data-bs-theme="dark"] {
+    --wm-primary: #C098D8;
+    --wm-primary-hover: #D0AEE4;
+    --wm-primary-rgb: 192, 152, 216;
+    --wm-secondary: #A090B8;
+    --wm-accent: #D8AE5C;
+    --wm-accent-hover: #E4C070;
+    --wm-accent-light: #D8AE5C;
+    --wm-accent-rgb: 216, 174, 92;
+    --wm-body-bg: #1A161E;
+    --wm-card-bg: #24202A;
+    --wm-card-border: #3D3548;
+    --wm-border: #3D3548;
+    --wm-code-bg: #2A2530;
+    --wm-text: #E4DCE8;
+    --wm-text-muted: #9890A0;
+    --wm-navbar-bg: #221E28;
+    --bs-primary: var(--wm-primary);
+    --bs-primary-rgb: 192, 152, 216;
+    --bs-body-bg: var(--wm-body-bg);
+    --bs-body-bg-rgb: 26, 22, 30;
+    --bs-body-color: var(--wm-text);
+    --bs-body-color-rgb: 228, 220, 232;
+    --bs-border-color: var(--wm-border);
+    --bs-link-color: var(--wm-primary);
+    --bs-link-color-rgb: 192, 152, 216;
+    --bs-link-hover-color: var(--wm-primary-hover);
+}
+
+/* ================================================================
    Typography
    ================================================================ */
 
 body {
     font-family: var(--bs-body-font-family);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 h1, h2, h3, h4, h5, h6,
@@ -167,7 +415,7 @@ a {
 .btn-primary:hover,
 .btn-outline-primary:hover {
     transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(107, 39, 55, 0.25);
+    box-shadow: 0 2px 8px rgba(var(--wm-primary-rgb), 0.25);
 }
 
 .btn-primary:active,
@@ -191,7 +439,7 @@ a {
    ================================================================ */
 
 .navbar {
-    background-color: #2D2A26 !important;
+    background-color: var(--wm-navbar-bg) !important;
     border-bottom: 2px solid var(--wm-accent);
     padding-top: 0.75rem;
     padding-bottom: 0.75rem;
@@ -233,7 +481,7 @@ a {
 .navbar .form-control:focus {
     background-color: rgba(255, 255, 255, 0.15);
     border-color: var(--wm-accent-light);
-    box-shadow: 0 0 0 0.2rem rgba(212, 168, 67, 0.25);
+    box-shadow: 0 0 0 0.2rem rgba(var(--wm-accent-rgb), 0.25);
 }
 
 .navbar .form-control::placeholder {
@@ -247,24 +495,47 @@ a {
     font-size: 0.875rem;
 }
 
-/* Theme toggle button */
-#theme-toggle {
+/* Appearance dropdown */
+#appearance-dropdown {
     border-color: rgba(255, 255, 255, 0.2);
     color: #FAF6F1;
     font-size: 1rem;
-    width: 38px;
-    height: 38px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    border-radius: 50%;
     transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
-#theme-toggle:hover {
+#appearance-dropdown:hover {
     background-color: rgba(255, 255, 255, 0.1);
     border-color: var(--wm-accent-light);
+}
+
+#appearance-dropdown::after {
+    display: none;
+}
+
+.appearance-menu {
+    min-width: 200px;
+    padding: 0.5rem 0;
+}
+
+.scheme-swatch {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid rgba(128, 128, 128, 0.3);
+    flex-shrink: 0;
+}
+
+.scheme-check {
+    display: none;
+}
+
+.scheme-option.active .scheme-check {
+    display: inline;
+}
+
+.scheme-option.active {
+    font-weight: 500;
 }
 
 /* ================================================================
@@ -275,7 +546,7 @@ a {
     border: 1px solid var(--wm-card-border);
     border-radius: 0.5rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    transition: box-shadow 0.2s ease, transform 0.2s ease, background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .card:hover {

@@ -1,6 +1,6 @@
-# Westminster Standards
+# Studying the Reformed Standards
 
-A Django web application for studying the Westminster Standards (1647) — the Shorter Catechism (WSC), Larger Catechism (WLC), and Confession of Faith (WCF) — with historical commentaries, scripture proofs, cross-references, and personal study tools.
+A Django web application for studying the great Reformed confessional standards — including the Westminster Standards, Three Forms of Unity, and more — with historical commentaries, scripture proofs, cross-references, and personal study tools.
 
 ## Features
 
