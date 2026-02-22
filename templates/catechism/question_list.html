@@ -16,39 +16,56 @@
     </div>
 </nav>
 
+<div class="accordion" id="topic-accordion">
 {% for group in grouped %}
-<section id="{{ group.topic.slug }}" class="mb-4 topic-section">
-    <div class="d-flex justify-content-between align-items-baseline border-bottom pb-2 mb-2">
-        <h2 class="h5 mb-0">
-            {% if catechism.is_confession %}
-            Chapter {{ group.topic.order }}: {{ group.topic.name }}
-            {% else %}
-            {{ group.topic.name }}
+<div class="accordion-item" id="{{ group.topic.slug }}">
+    <h2 class="accordion-header">
+        <button class="accordion-button collapsed" type="button"
+                data-bs-toggle="collapse" data-bs-target="#collapse-{{ group.topic.slug }}"
+                aria-expanded="false" aria-controls="collapse-{{ group.topic.slug }}">
+            <span class="me-auto">
+                {% if catechism.is_confession %}
+                Chapter {{ group.topic.order }}: {{ group.topic.name }}
+                {% else %}
+                {{ group.topic.name }}
+                {% endif %}
+            </span>
+            <span class="badge bg-body-secondary text-body-emphasis ms-2 me-2">
+                {{ group.questions|length }}
+            </span>
+        </button>
+    </h2>
+    <div id="collapse-{{ group.topic.slug }}" class="accordion-collapse collapse"
+         data-bs-parent="#topic-accordion">
+        <div class="accordion-body pt-2 pb-3">
+            {% if group.topic.description %}
+            <p class="text-body-secondary small mb-2">{{ group.topic.description }}</p>
             {% endif %}
-        </h2>
-        <a href="{{ group.topic.get_absolute_url }}" class="text-body-secondary small text-decoration-none text-nowrap ms-2">
-            {{ catechism.item_name_plural }} {{ group.topic.display_start }}&ndash;{{ group.topic.display_end }}
-        </a>
+            <div class="d-flex justify-content-end mb-2">
+                <a href="{{ group.topic.get_absolute_url }}" class="text-body-secondary small text-decoration-none text-nowrap">
+                    {{ catechism.item_name_plural }} {{ group.topic.display_start }}&ndash;{{ group.topic.display_end }}
+                </a>
+            </div>
+            <div class="list-group list-group-flush">
+                {% for q in group.questions %}
+                <a href="{{ q.get_absolute_url }}" class="list-group-item list-group-item-action py-2 px-0 border-0">
+                    {% if catechism.is_confession %}
+                    <span class="text-body-secondary me-2">&sect;{{ q.display_number }}</span>
+                    {{ q.answer_text|truncatewords:20 }}
+                    {% else %}
+                    <span class="fw-semibold me-1">Q{{ q.number }}.</span>
+                    {{ q.question_text|truncatewords:20 }}
+                    {% endif %}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
     </div>
-    {% if group.topic.description %}
-    <p class="text-body-secondary small mb-2">{{ group.topic.description }}</p>
-    {% endif %}
-
-    <div class="list-group list-group-flush">
-        {% for q in group.questions %}
-        <a href="{{ q.get_absolute_url }}" class="list-group-item list-group-item-action py-2 px-0 border-0">
-            {% if catechism.is_confession %}
-            <span class="text-body-secondary me-2">&sect;{{ q.display_number }}</span>
-            {{ q.answer_text|truncatewords:20 }}
-            {% else %}
-            <span class="fw-semibold me-1">Q{{ q.number }}.</span>
-            {{ q.question_text|truncatewords:20 }}
-            {% endif %}
-        </a>
-        {% endfor %}
-    </div>
-</section>
+</div>
+{% empty %}
+<p class="text-muted">No comparison themes available yet.</p>
 {% endfor %}
+</div>
 
 <div class="text-center mt-3 mb-4">
     <a href="#" class="text-body-secondary small">&uarr; Back to top</a>
