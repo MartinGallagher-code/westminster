@@ -43,7 +43,7 @@ class Catechism(models.Model):
 
     @property
     def item_prefix(self):
-        return '§' if self.is_confession else 'Q'
+        return '' if self.is_confession else 'Q'
 
     @property
     def topic_name(self):

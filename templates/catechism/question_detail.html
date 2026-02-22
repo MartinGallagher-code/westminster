@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load catechism_tags %}
 
-{% block title %}{% if catechism.is_confession %}{{ question.question_text }} §{{ question.display_number }}{% else %}Q{{ question.number }}{% endif %} - {{ catechism.name }}{% endblock %}
+{% block title %}{% if catechism.is_confession %}{{ question.question_text }} {{ question.display_number }}{% else %}Q{{ question.number }}{% endif %} - {{ catechism.name }}{% endblock %}
 
 {% block content %}
 <!-- Breadcrumbs -->
@@ -14,7 +14,7 @@
         <li class="breadcrumb-item">
             <a href="{{ question.topic.get_absolute_url }}">{{ question.topic.name }}</a>
         </li>
-        <li class="breadcrumb-item active">{% if catechism.is_confession %}§{{ question.display_number }}{% else %}Q{{ question.number }}{% endif %}</li>
+        <li class="breadcrumb-item active">{% if catechism.is_confession %}{{ question.display_number }}{% else %}Q{{ question.number }}{% endif %}</li>
     </ol>
 </nav>
 
@@ -187,7 +187,7 @@
     {% if previous_question %}
     <a href="{{ previous_question.get_absolute_url }}" class="btn btn-outline-secondary">
         {% if catechism.is_confession %}
-        &larr; §{{ previous_question.display_number }}
+        &larr; {{ previous_question.display_number }}
         {% else %}
         &larr; Q{{ previous_question.number }}: {{ previous_question.question_text|truncatewords:8 }}
         {% endif %}
@@ -196,7 +196,7 @@
     {% if next_question %}
     <a href="{{ next_question.get_absolute_url }}" class="btn btn-outline-secondary">
         {% if catechism.is_confession %}
-        §{{ next_question.display_number }} &rarr;
+        {{ next_question.display_number }} &rarr;
         {% else %}
         Q{{ next_question.number }}: {{ next_question.question_text|truncatewords:8 }} &rarr;
         {% endif %}
