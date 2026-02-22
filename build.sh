@@ -21,8 +21,10 @@ python manage.py load_wlc
 python manage.py load_ridgley
 python manage.py load_prooftexts --catechism wlc
 
-# Load Confession of Faith
+# Load Confession of Faith and commentaries
 python manage.py load_wcf
+python manage.py load_shaw
+python manage.py load_hodge
 
 # Cross-references between WSC and WLC (legacy)
 python manage.py load_crossrefs
