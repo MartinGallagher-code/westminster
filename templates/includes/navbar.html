@@ -1,6 +1,14 @@
-<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+<nav class="navbar navbar-expand-md" data-bs-theme="dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'catechism:home' %}">Westminster Standards</a>
+        <a class="navbar-brand d-flex align-items-center" href="{% url 'catechism:home' %}">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 28" width="24" height="28" aria-hidden="true" class="brand-shield">
+                <path d="M12,1 L22,5 L22,14 Q22,22 12,27 Q2,22 2,14 L2,5 Z" fill="#6B2737" stroke="#B8860B" stroke-width="1"/>
+                <line x1="12" y1="7" x2="12" y2="21" stroke="#FAF6F1" stroke-width="1.5"/>
+                <line x1="7" y1="12" x2="17" y2="12" stroke="#FAF6F1" stroke-width="1.5"/>
+                <path d="M9,17 L12,15 L15,17 L12,19 Z" fill="#B8860B"/>
+            </svg>
+            <span class="ms-2">Westminster Standards</span>
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -15,17 +23,17 @@
             </ul>
             <ul class="navbar-nav me-2">
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'catechism:scripture_index' %}">Scripture</a>
+                    <a class="nav-link" href="{% url 'catechism:scripture_index' %}"><i class="bi bi-book me-1"></i>Scripture</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'catechism:compare_index' %}">Compare</a>
+                    <a class="nav-link" href="{% url 'catechism:compare_index' %}"><i class="bi bi-layout-split me-1"></i>Compare</a>
                 </li>
             </ul>
             <form class="d-flex me-3" action="{% url 'catechism:search' %}" method="get">
                 <input class="form-control form-control-sm me-2" type="search" name="q"
                        placeholder="Search..." value="{{ query|default:'' }}"
                        aria-label="Search the Westminster Standards">
-                <button class="btn btn-outline-light btn-sm" type="submit">Search</button>
+                <button class="btn btn-outline-light btn-sm" type="submit"><i class="bi bi-search"></i></button>
             </form>
             <form id="quick-jump-form" class="d-flex me-3">
                 <select id="quick-jump-catechism" class="form-select form-select-sm me-1" style="width: 80px;"
@@ -37,32 +45,32 @@
                 <input type="number" class="form-control form-control-sm me-1" id="quick-jump-input"
                        min="1" placeholder="#" style="width: 70px;"
                        aria-label="Question or section number">
-                <button class="btn btn-outline-light btn-sm" type="submit">Go</button>
+                <button class="btn btn-outline-light btn-sm" type="submit"><i class="bi bi-arrow-right-circle"></i></button>
             </form>
             <button id="theme-toggle" class="btn btn-outline-light btn-sm me-3" type="button"
                     title="Toggle dark mode" aria-label="Toggle dark mode">
-                ☀️
+                <i class="bi bi-moon-stars-fill"></i>
             </button>
             <ul class="navbar-nav">
                 {% if user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'accounts:dashboard' %}">My Notes</a>
+                    <a class="nav-link" href="{% url 'accounts:dashboard' %}"><i class="bi bi-journal-text me-1"></i>My Notes</a>
                 </li>
                 <li class="nav-item">
-                    <span class="nav-link text-light-emphasis">{{ user.username }}</span>
+                    <span class="nav-link text-light-emphasis"><i class="bi bi-person-circle me-1"></i>{{ user.username }}</span>
                 </li>
                 <li class="nav-item">
                     <form method="post" action="{% url 'accounts:logout' %}" class="d-inline">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-outline-light btn-sm nav-link">Logout</button>
+                        <button type="submit" class="btn btn-outline-light btn-sm nav-link"><i class="bi bi-box-arrow-right me-1"></i>Logout</button>
                     </form>
                 </li>
                 {% else %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'accounts:login' %}">Login</a>
+                    <a class="nav-link" href="{% url 'accounts:login' %}"><i class="bi bi-box-arrow-in-right me-1"></i>Login</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'accounts:signup' %}">Sign Up</a>
+                    <a class="nav-link" href="{% url 'accounts:signup' %}"><i class="bi bi-person-plus me-1"></i>Sign Up</a>
                 </li>
                 {% endif %}
             </ul>

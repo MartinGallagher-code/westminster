@@ -3,6 +3,10 @@
 
 {% block title %}{% if catechism.is_confession %}{{ question.question_text }} {{ question.display_number }}{% else %}Q{{ question.number }}{% endif %} - {{ catechism.name }}{% endblock %}
 
+{% block meta_description %}{{ catechism.abbreviation }} {% if catechism.is_confession %}{{ question.display_number }}: {{ question.question_text }}{% else %}Q{{ question.number }}: {{ question.question_text }}{% endif %} — {{ question.answer_text|truncatewords:25 }}{% endblock %}
+{% block og_title %}{% if catechism.is_confession %}{{ question.question_text }} {{ question.display_number }}{% else %}Q{{ question.number }}. {{ question.question_text }}{% endif %} - {{ catechism.name }}{% endblock %}
+{% block og_description %}{{ question.answer_text|truncatewords:40 }}{% endblock %}
+
 {% block content %}
 <!-- Breadcrumbs -->
 <nav aria-label="breadcrumb">
@@ -22,12 +26,12 @@
 <div class="d-flex justify-content-between mb-3">
     {% if previous_question %}
     <a href="{{ previous_question.get_absolute_url }}" class="btn btn-outline-secondary btn-sm">
-        &larr; {{ catechism.item_prefix }}{{ previous_question.display_number }}
+        <i class="bi bi-chevron-left me-1"></i>{{ catechism.item_prefix }}{{ previous_question.display_number }}
     </a>
     {% else %}<span></span>{% endif %}
     {% if next_question %}
     <a href="{{ next_question.get_absolute_url }}" class="btn btn-outline-secondary btn-sm">
-        {{ catechism.item_prefix }}{{ next_question.display_number }} &rarr;
+        {{ catechism.item_prefix }}{{ next_question.display_number }}<i class="bi bi-chevron-right ms-1"></i>
     </a>
     {% else %}<span></span>{% endif %}
 </div>
@@ -77,7 +81,7 @@
                         data-bs-toggle="tab"
                         data-bs-target="#tab-scripture"
                         type="button" role="tab">
-                    Scripture Proofs
+                    <i class="bi bi-book me-1"></i>Scripture Proofs
                 </button>
             </li>
             {% endif %}
@@ -96,7 +100,7 @@
                         data-bs-toggle="tab"
                         data-bs-target="#tab-notes"
                         type="button" role="tab">
-                    My Notes
+                    <i class="bi bi-journal-text me-1"></i>My Notes
                 </button>
             </li>
         </ul>
@@ -165,7 +169,7 @@
                     <small class="text-muted">Last updated: {{ user_note.updated_at|date:"M j, Y g:i a" }}</small>
                     <div class="mt-2">
                         <a href="{% url 'accounts:note_delete' pk=user_note.pk %}"
-                           class="btn btn-sm btn-outline-danger">Delete Note</a>
+                           class="btn btn-sm btn-outline-danger"><i class="bi bi-trash me-1"></i>Delete Note</a>
                     </div>
                 </div>
                 {% endif %}
@@ -195,18 +199,18 @@
     {% if previous_question %}
     <a href="{{ previous_question.get_absolute_url }}" class="btn btn-outline-secondary">
         {% if catechism.is_confession %}
-        &larr; {{ previous_question.display_number }}
+        <i class="bi bi-chevron-left me-1"></i>{{ previous_question.display_number }}
         {% else %}
-        &larr; Q{{ previous_question.number }}: {{ previous_question.question_text|truncatewords:8 }}
+        <i class="bi bi-chevron-left me-1"></i>Q{{ previous_question.number }}: {{ previous_question.question_text|truncatewords:8 }}
         {% endif %}
     </a>
     {% else %}<span></span>{% endif %}
     {% if next_question %}
     <a href="{{ next_question.get_absolute_url }}" class="btn btn-outline-secondary">
         {% if catechism.is_confession %}
-        {{ next_question.display_number }} &rarr;
+        {{ next_question.display_number }}<i class="bi bi-chevron-right ms-1"></i>
         {% else %}
-        Q{{ next_question.number }}: {{ next_question.question_text|truncatewords:8 }} &rarr;
+        Q{{ next_question.number }}: {{ next_question.question_text|truncatewords:8 }}<i class="bi bi-chevron-right ms-1"></i>
         {% endif %}
     </a>
     {% else %}<span></span>{% endif %}

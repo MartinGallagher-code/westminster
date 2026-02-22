@@ -1,8 +1,62 @@
-<footer class="bg-body-secondary border-top mt-5 py-3">
-    <div class="container text-center text-muted small">
-        <p class="mb-1">Westminster Standards (1647)</p>
-        <p class="mb-0">
-            Catechism data from <a href="https://github.com/NonlinearFruit/Creeds.json" target="_blank" rel="noopener noreferrer">Creeds.json</a>.
-        </p>
+<footer class="site-footer mt-5 pt-5 pb-4">
+    <div class="text-center mb-4" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 20" width="200" height="20" class="ornamental-divider">
+            <polygon points="100,2 106,10 100,18 94,10" fill="currentColor"/>
+            <path d="M90,10 Q80,4 60,10 Q50,14 30,10" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <path d="M30,10 Q20,6 10,10" stroke="currentColor" stroke-width="1" fill="none" stroke-linecap="round"/>
+            <path d="M110,10 Q120,4 140,10 Q150,14 170,10" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <path d="M170,10 Q180,6 190,10" stroke="currentColor" stroke-width="1" fill="none" stroke-linecap="round"/>
+            <circle cx="8" cy="10" r="2" fill="currentColor"/>
+            <circle cx="192" cy="10" r="2" fill="currentColor"/>
+        </svg>
+    </div>
+
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <h6 class="footer-heading text-uppercase fw-semibold mb-3">About</h6>
+                <p class="small mb-2">
+                    A study tool for the Westminster Standards (1647) &mdash; the Confession of Faith,
+                    Shorter Catechism, and Larger Catechism &mdash; with Scripture proofs and
+                    commentary from classic Reformed theologians.
+                </p>
+            </div>
+            <div class="col-md-4">
+                <h6 class="footer-heading text-uppercase fw-semibold mb-3">Documents</h6>
+                <ul class="list-unstyled small">
+                    {% for cat in catechisms %}
+                    <li class="mb-1">
+                        <a href="{{ cat.get_item_list_url }}" class="footer-link">{{ cat.name }}</a>
+                    </li>
+                    {% endfor %}
+                    <li class="mb-1">
+                        <a href="{% url 'catechism:scripture_index' %}" class="footer-link">
+                            <i class="bi bi-book-half me-1"></i>Scripture Index
+                        </a>
+                    </li>
+                    <li class="mb-1">
+                        <a href="{% url 'catechism:compare_index' %}" class="footer-link">
+                            <i class="bi bi-layout-split me-1"></i>Compare Standards
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h6 class="footer-heading text-uppercase fw-semibold mb-3">Resources</h6>
+                <ul class="list-unstyled small">
+                    <li class="mb-1">
+                        <a href="https://github.com/NonlinearFruit/Creeds.json"
+                           target="_blank" rel="noopener noreferrer" class="footer-link">
+                            Creeds.json <i class="bi bi-box-arrow-up-right ms-1"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <hr class="mt-4 mb-3" style="border-color: var(--wm-border);">
+        <div class="text-center small text-body-secondary">
+            <p class="mb-0">Westminster Standards (1647) &middot; <em>Soli Deo Gloria</em></p>
+        </div>
     </div>
 </footer>
