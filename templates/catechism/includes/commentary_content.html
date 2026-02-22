@@ -1,0 +1,18 @@
+{% if commentary.body %}
+<div class="commentary-text" data-commentary-id="{{ commentary.pk }}">{{ commentary.body|linebreaks }}</div>
+{% endif %}
+
+{% if commentary.sub_questions.all %}
+<div class="fisher-subquestions">
+    {% for sq in commentary.sub_questions.all %}
+    <div class="mb-3 ps-3 border-start border-2">
+        <p class="mb-1">
+            <strong>Q{{ sq.number }}.</strong> {{ sq.question_text }}
+        </p>
+        <p class="text-muted mb-0">
+            <strong>A.</strong> {{ sq.answer_text }}
+        </p>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
