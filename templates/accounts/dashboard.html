@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}My Notes - Westminster Standards{% endblock %}
+{% block title %}My Notes - Studying the Reformed Standards{% endblock %}
 
 {% block content %}
 <h1 class="mb-3">My Notes</h1>
 
 {% if notes %}
-<p class="text-muted">You have {{ notes|length }} note{{ notes|length|pluralize }} across the Westminster Standards.</p>
+<p class="text-muted">You have {{ notes|length }} note{{ notes|length|pluralize }} across the Reformed standards.</p>
 
 <div class="list-group">
     {% for note in notes %}
