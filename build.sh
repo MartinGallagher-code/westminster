@@ -26,6 +26,14 @@ python manage.py load_wcf
 python manage.py load_shaw
 python manage.py load_hodge
 
+# Remove stale commentary sources not loaded by any command above
+python manage.py shell -c "
+from catechism.models import CommentarySource
+keep = ['fisher-erskine','flavel','henry','watson','whyte','wallis','vincent','ridgley','shaw','hodge']
+deleted, _ = CommentarySource.objects.exclude(slug__in=keep).delete()
+if deleted: print(f'Deleted {deleted} stale commentary record(s)')
+"
+
 # Cross-references between WSC and WLC (legacy)
 python manage.py load_crossrefs
 
