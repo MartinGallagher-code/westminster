@@ -1,22 +1,78 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Theme toggle
+    // ── Theme (light/dark) toggle ──
     var toggleBtn = document.getElementById('theme-toggle');
-    if (toggleBtn) {
-        function updateToggleIcon() {
-            var current = document.documentElement.getAttribute('data-bs-theme');
-            toggleBtn.innerHTML = current === 'dark'
-                ? '<i class="bi bi-sun-fill"></i>'
-                : '<i class="bi bi-moon-stars-fill"></i>';
+    var toggleIcon = document.getElementById('theme-toggle-icon');
+    var toggleLabel = document.getElementById('theme-toggle-label');
+
+    function updateToggleUI() {
+        var current = document.documentElement.getAttribute('data-bs-theme');
+        if (toggleIcon) {
+            toggleIcon.className = current === 'dark'
+                ? 'bi bi-sun-fill me-2'
+                : 'bi bi-moon-stars-fill me-2';
         }
-        updateToggleIcon();
+        if (toggleLabel) {
+            toggleLabel.textContent = current === 'dark' ? 'Light mode' : 'Dark mode';
+        }
+    }
+
+    if (toggleBtn) {
+        updateToggleUI();
         toggleBtn.addEventListener('click', function() {
             var current = document.documentElement.getAttribute('data-bs-theme');
             var next = current === 'dark' ? 'light' : 'dark';
             document.documentElement.setAttribute('data-bs-theme', next);
             localStorage.setItem('theme', next);
-            updateToggleIcon();
+            updateToggleUI();
         });
     }
+
+    // ── Color scheme selector ──
+    var SCHEME_COLORS = {
+        classic: { primary: '#6B2737', accent: '#B8860B' },
+        ocean:   { primary: '#1B4965', accent: '#2A9D8F' },
+        forest:  { primary: '#2D5016', accent: '#C07D1A' },
+        stone:   { primary: '#4A4440', accent: '#B5703C' },
+        royal:   { primary: '#4A2060', accent: '#C8963C' }
+    };
+
+    function setColorScheme(scheme) {
+        if (scheme === 'classic') {
+            document.documentElement.removeAttribute('data-color-scheme');
+        } else {
+            document.documentElement.setAttribute('data-color-scheme', scheme);
+        }
+        localStorage.setItem('colorScheme', scheme);
+
+        // Update active states in dropdown
+        document.querySelectorAll('.scheme-option').forEach(function(btn) {
+            btn.classList.toggle('active', btn.getAttribute('data-scheme') === scheme);
+        });
+
+        // Update brand shield SVG colors
+        var shield = document.querySelector('.brand-shield');
+        if (shield && SCHEME_COLORS[scheme]) {
+            var paths = shield.querySelectorAll('path');
+            if (paths[0]) {
+                paths[0].setAttribute('fill', SCHEME_COLORS[scheme].primary);
+                paths[0].setAttribute('stroke', SCHEME_COLORS[scheme].accent);
+            }
+            if (paths[1]) {
+                paths[1].setAttribute('fill', SCHEME_COLORS[scheme].accent);
+            }
+        }
+    }
+
+    // Initialize color scheme from localStorage
+    var savedScheme = localStorage.getItem('colorScheme') || 'classic';
+    setColorScheme(savedScheme);
+
+    // Bind scheme option buttons
+    document.querySelectorAll('.scheme-option').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            setColorScheme(this.getAttribute('data-scheme'));
+        });
+    });
 
     // Quick Jump form
     var form = document.getElementById('quick-jump-form');
