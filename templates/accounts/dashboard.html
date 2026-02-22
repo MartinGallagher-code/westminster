@@ -8,13 +8,16 @@
 {% if notes %}
 <p class="text-muted">You have {{ notes|length }} note{{ notes|length|pluralize }} across the Reformed standards.</p>
 
-<div class="list-group">
-    {% for note in notes %}
+{% regroup notes by question.catechism as catechism_groups %}
+{% for group in catechism_groups %}
+<h5 class="mt-4 mb-2">{{ group.grouper.name }}</h5>
+<div class="list-group mb-3">
+    {% for note in group.list %}
     <div class="list-group-item">
         <div class="d-flex w-100 justify-content-between">
             <h6 class="mb-1">
                 <a href="{{ note.question.get_absolute_url }}">
-                    {{ note.question.catechism.abbreviation }} {{ note.question.catechism.item_prefix }}{{ note.question.number }}{% if not note.question.catechism.is_confession %}.{% endif %} {{ note.question.question_text }}
+                    {{ note.question.catechism.item_prefix }}{{ note.question.display_number }}{% if not note.question.catechism.is_confession %}.{% endif %} {{ note.question.question_text }}
                 </a>
             </h6>
             <small class="text-muted text-nowrap ms-2">{{ note.updated_at|date:"M j, Y" }}</small>
@@ -24,6 +27,7 @@
     </div>
     {% endfor %}
 </div>
+{% endfor %}
 {% else %}
 <div class="text-center text-muted py-5">
     <p>You haven't created any notes yet.</p>

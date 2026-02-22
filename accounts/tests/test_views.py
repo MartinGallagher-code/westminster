@@ -75,6 +75,31 @@ class TestDashboardView:
         assert resp.status_code == 200
         assert len(resp.context['notes']) == 1
 
+    def test_shows_notes_from_multiple_documents(
+        self, authenticated_client, user, setup_data, heidelberg_setup, belgic_setup
+    ):
+        _, _, wsc_q, _, _ = setup_data
+        _, _, hc_q = heidelberg_setup
+        _, _, bc_q = belgic_setup
+        UserNoteFactory(user=user, question=wsc_q, text='WSC note')
+        UserNoteFactory(user=user, question=hc_q, text='HC note')
+        UserNoteFactory(user=user, question=bc_q, text='BC note')
+        resp = authenticated_client.get('/accounts/dashboard/')
+        assert resp.status_code == 200
+        assert len(resp.context['notes']) == 3
+
+    def test_notes_grouped_by_catechism(
+        self, authenticated_client, user, setup_data, heidelberg_setup
+    ):
+        _, _, wsc_q, _, _ = setup_data
+        _, _, hc_q = heidelberg_setup
+        UserNoteFactory(user=user, question=wsc_q, text='WSC note')
+        UserNoteFactory(user=user, question=hc_q, text='HC note')
+        resp = authenticated_client.get('/accounts/dashboard/')
+        notes = list(resp.context['notes'])
+        # Notes should be ordered by catechism name, then question number
+        assert notes[0].question.catechism.name < notes[1].question.catechism.name
+
 
 @pytest.mark.django_db
 class TestNoteSaveView:
@@ -97,6 +122,18 @@ class TestNoteSaveView:
         note = UserNote.objects.get(user=user, question=q1)
         assert note.text == 'Updated'
 
+    def test_creates_note_heidelberg(self, authenticated_client, user, heidelberg_setup):
+        _, _, q = heidelberg_setup
+        resp = authenticated_client.post(f'/accounts/notes/save/{q.pk}/', {'text': 'HC note'})
+        assert resp.status_code == 302
+        assert UserNote.objects.filter(user=user, question=q).exists()
+
+    def test_creates_note_belgic_confession(self, authenticated_client, user, belgic_setup):
+        _, _, q = belgic_setup
+        resp = authenticated_client.post(f'/accounts/notes/save/{q.pk}/', {'text': 'BC note'})
+        assert resp.status_code == 302
+        assert UserNote.objects.filter(user=user, question=q).exists()
+
 
 @pytest.mark.django_db
 class TestNoteDeleteView:
@@ -113,6 +150,13 @@ class TestNoteDeleteView:
         resp = authenticated_client.post(f'/accounts/notes/{note.pk}/delete/')
         assert resp.status_code == 404
         assert UserNote.objects.filter(pk=note.pk).exists()
+
+    def test_delete_non_westminster_note(self, authenticated_client, user, heidelberg_setup):
+        _, _, q = heidelberg_setup
+        note = UserNoteFactory(user=user, question=q)
+        resp = authenticated_client.post(f'/accounts/notes/{note.pk}/delete/')
+        assert resp.status_code == 302
+        assert not UserNote.objects.filter(pk=note.pk).exists()
 
 
 @pytest.mark.django_db

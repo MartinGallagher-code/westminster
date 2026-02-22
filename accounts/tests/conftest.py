@@ -6,7 +6,7 @@ from django.test import Client
 from accounts.models import UserNote, Highlight
 from catechism.models import Catechism
 from catechism.tests.conftest import (
-    TopicFactory, QuestionFactory,
+    CatechismFactory, TopicFactory, QuestionFactory,
     CommentarySourceFactory, CommentaryFactory,
 )
 
@@ -76,3 +76,47 @@ def setup_data(db):
     )
     commentary = CommentaryFactory(question=q1, source=source, body='Commentary body text.')
     return cat, topic, q1, source, commentary
+
+
+@pytest.fixture
+def heidelberg_setup(db):
+    """Create a Heidelberg Catechism (non-Westminster catechism) with a topic and question."""
+    cat = CatechismFactory(
+        name='Heidelberg Catechism',
+        abbreviation='HC',
+        slug='hc',
+        total_questions=129,
+        document_type=Catechism.CATECHISM,
+    )
+    topic = TopicFactory(
+        catechism=cat, name="Of Man's Misery", slug='of-mans-misery',
+        order=1, question_start=1, question_end=2,
+    )
+    q = QuestionFactory(
+        catechism=cat, number=1, topic=topic,
+        question_text='What is your only comfort in life and death?',
+        answer_text='That I am not my own, but belong to my faithful Savior Jesus Christ.',
+    )
+    return cat, topic, q
+
+
+@pytest.fixture
+def belgic_setup(db):
+    """Create a Belgic Confession (non-Westminster confession) with a topic and question."""
+    cat = CatechismFactory(
+        name='Belgic Confession',
+        abbreviation='BC',
+        slug='bc',
+        total_questions=37,
+        document_type=Catechism.CONFESSION,
+    )
+    topic = TopicFactory(
+        catechism=cat, name='The Only God', slug='the-only-god',
+        order=1, question_start=1, question_end=1,
+    )
+    q = QuestionFactory(
+        catechism=cat, number=1, topic=topic,
+        question_text='The Only God',
+        answer_text='We all believe with the heart and confess with the mouth...',
+    )
+    return cat, topic, q

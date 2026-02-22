@@ -28,7 +28,9 @@ class DashboardView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return UserNote.objects.filter(
             user=self.request.user
-        ).select_related('question', 'question__topic', 'question__catechism').order_by('question__number')
+        ).select_related(
+            'question', 'question__topic', 'question__catechism'
+        ).order_by('question__catechism__name', 'question__number')
 
 
 class NoteSaveView(LoginRequiredMixin, View):
