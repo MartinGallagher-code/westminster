@@ -43,7 +43,7 @@
         <h2 class="h4 question-text">Q{{ question.number }}. {{ question.question_text }}</h2>
         <p class="lead mt-3 answer-text"><strong>A.</strong> {{ question.answer_text }}</p>
         {% endif %}
-        {% if cross_ref_groups %}
+        {% if cross_ref_groups or comparison_themes %}
         <div class="mt-3 pt-3 border-top">
             {% for abbr, refs in cross_ref_groups.items %}
             <small class="text-muted d-block{% if not forloop.first %} mt-1{% endif %}">
@@ -53,6 +53,14 @@
                 {% endfor %}
             </small>
             {% endfor %}
+            {% if comparison_themes %}
+            <small class="text-muted d-block{% if cross_ref_groups %} mt-1{% endif %}">
+                <strong>Compare:</strong>
+                {% for theme in comparison_themes %}
+                <a href="{% url 'catechism:compare_set_theme' set_slug=theme.comparison_set.slug theme_slug=theme.slug %}">{{ theme.name }}</a>{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </small>
+            {% endif %}
         </div>
         {% endif %}
     </div>

@@ -1,17 +1,18 @@
 {% extends "base.html" %}
 
-{% block title %}Compare the Standards - Westminster Standards{% endblock %}
+{% block title %}{{ comparison_set.name }} - Compare{% endblock %}
 
 {% block content %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{% url 'catechism:home' %}">Home</a></li>
-        <li class="breadcrumb-item active">Compare the Standards</li>
+        <li class="breadcrumb-item"><a href="{% url 'catechism:compare_index' %}">Compare</a></li>
+        <li class="breadcrumb-item active">{{ comparison_set.name }}</li>
     </ol>
 </nav>
 
-<h1 class="mb-4">Compare the Standards</h1>
-<p class="text-muted mb-4">Explore doctrinal themes side-by-side across the Westminster Shorter Catechism, Larger Catechism, and Confession of Faith.</p>
+<h1 class="mb-3">{{ comparison_set.name }}</h1>
+<p class="text-muted mb-4">{{ comparison_set.description }}</p>
 
 {% regroup themes by locus as locus_groups %}
 {% for group in locus_groups %}
@@ -20,7 +21,7 @@
 {% endif %}
 <div class="list-group mb-3">
     {% for theme in group.list %}
-    <a href="{% url 'catechism:compare_theme' theme_slug=theme.slug %}"
+    <a href="{{ theme.get_absolute_url }}"
        class="list-group-item list-group-item-action">
         <h5 class="mb-1">{{ theme.name }}</h5>
         {% if theme.description %}

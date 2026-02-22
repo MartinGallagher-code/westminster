@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import (
     Catechism, Topic, Question, CommentarySource, Commentary, FisherSubQuestion,
     ScripturePassage, CrossReference, StandardCrossReference,
-    BibleBook, ScriptureIndex, ComparisonTheme, ComparisonEntry,
+    BibleBook, ScriptureIndex, ComparisonSet, ComparisonTheme, ComparisonEntry,
 )
 
 
@@ -75,6 +75,12 @@ class ScriptureIndexAdmin(admin.ModelAdmin):
     raw_id_fields = ('question',)
 
 
+@admin.register(ComparisonSet)
+class ComparisonSetAdmin(admin.ModelAdmin):
+    list_display = ('name', 'slug', 'order')
+    prepopulated_fields = {'slug': ('name',)}
+
+
 class ComparisonEntryInline(admin.TabularInline):
     model = ComparisonEntry
     extra = 0
@@ -82,6 +88,7 @@ class ComparisonEntryInline(admin.TabularInline):
 
 @admin.register(ComparisonTheme)
 class ComparisonThemeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'order')
+    list_display = ('name', 'comparison_set', 'locus', 'order')
+    list_filter = ('comparison_set', 'locus')
     prepopulated_fields = {'slug': ('name',)}
     inlines = [ComparisonEntryInline]

@@ -2,17 +2,76 @@ import json
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from catechism.management.commands._helpers import data_is_current, mark_data_current
-from catechism.models import Catechism, ComparisonTheme, ComparisonEntry
+from catechism.models import Catechism, ComparisonSet, ComparisonTheme, ComparisonEntry
+
+COMPARISON_SETS = {
+    'westminster': {
+        'name': 'Westminster Standards',
+        'description': (
+            'Compare doctrinal themes side-by-side across the Westminster '
+            'Shorter Catechism, Larger Catechism, and Confession of Faith.'
+        ),
+        'order': 1,
+        'file': 'comparison_themes.json',
+        'data_version_key': 'comparison-themes',
+    },
+    'three-forms': {
+        'name': 'Three Forms of Unity',
+        'description': (
+            'Compare doctrinal themes across the Heidelberg Catechism, '
+            'Belgic Confession, and Canons of Dort — the confessional '
+            'standards of the Continental Reformed churches.'
+        ),
+        'order': 2,
+        'file': 'comparison_themes_tfu.json',
+        'data_version_key': 'comparison-themes-tfu',
+    },
+    '1689-baptist': {
+        'name': 'Reformed Baptist Confessions',
+        'description': (
+            'Compare the Westminster Confession of Faith with the 1689 '
+            'London Baptist Confession side-by-side, highlighting key '
+            'differences on baptism, church government, and the covenant.'
+        ),
+        'order': 3,
+        'file': 'comparison_themes_1689.json',
+        'data_version_key': 'comparison-themes-1689',
+    },
+}
 
 
 class Command(BaseCommand):
-    help = "Load comparison themes mapping doctrinal topics across all three standards"
+    help = "Load comparison themes mapping doctrinal topics across standards"
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--set',
+            type=str,
+            default='westminster',
+            choices=COMPARISON_SETS.keys(),
+            help='Which comparison set to load (default: westminster)',
+        )
 
     def handle(self, *args, **options):
-        data_path = settings.BASE_DIR / "data" / "comparison_themes.json"
-        if data_is_current("comparison-themes", data_path):
-            self.stdout.write("Comparison themes unchanged, skipping.")
+        set_slug = options['set']
+        set_config = COMPARISON_SETS[set_slug]
+
+        data_path = settings.BASE_DIR / "data" / set_config['file']
+        version_key = set_config['data_version_key']
+
+        if data_is_current(version_key, data_path):
+            self.stdout.write(f"{set_config['name']} themes unchanged, skipping.")
             return
+
+        # Get or create the ComparisonSet
+        comparison_set, _ = ComparisonSet.objects.update_or_create(
+            slug=set_slug,
+            defaults={
+                'name': set_config['name'],
+                'description': set_config['description'],
+                'order': set_config['order'],
+            },
+        )
 
         catechisms = {c.slug: c for c in Catechism.objects.all()}
         with open(data_path) as f:
@@ -24,6 +83,7 @@ class Command(BaseCommand):
 
         for item in data:
             theme, _ = ComparisonTheme.objects.update_or_create(
+                comparison_set=comparison_set,
                 slug=item['slug'],
                 defaults={
                     'name': item['name'],
@@ -37,9 +97,11 @@ class Command(BaseCommand):
 
             for cat_slug, range_pair in item.get('entries', {}).items():
                 if range_pair is None:
-                    ComparisonEntry.objects.filter(
-                        theme=theme, catechism=catechisms[cat_slug]
-                    ).delete()
+                    cat = catechisms.get(cat_slug)
+                    if cat:
+                        ComparisonEntry.objects.filter(
+                            theme=theme, catechism=cat
+                        ).delete()
                     continue
 
                 cat = catechisms.get(cat_slug)
@@ -58,13 +120,16 @@ class Command(BaseCommand):
                 if created:
                     entry_count += 1
 
-        deleted_count, _ = ComparisonTheme.objects.exclude(
+        # Only delete orphaned themes within this comparison set
+        deleted_count, _ = ComparisonTheme.objects.filter(
+            comparison_set=comparison_set
+        ).exclude(
             slug__in=loaded_slugs
         ).delete()
         if deleted_count:
             self.stdout.write(f"Removed {deleted_count} orphaned theme(s)")
 
-        mark_data_current("comparison-themes", data_path)
+        mark_data_current(version_key, data_path)
         self.stdout.write(self.style.SUCCESS(
-            f"Loaded {theme_count} comparison themes with {entry_count} new entries"
+            f"Loaded {theme_count} {set_config['name']} themes with {entry_count} new entries"
         ))

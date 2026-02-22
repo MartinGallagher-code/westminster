@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from catechism.models import (
     Catechism, Topic, Question, CommentarySource, Commentary,
     FisherSubQuestion, ScripturePassage, BibleBook, ScriptureIndex,
-    ComparisonTheme, ComparisonEntry,
+    ComparisonSet, ComparisonTheme, ComparisonEntry,
 )
 
 
@@ -101,10 +101,20 @@ class ScriptureIndexFactory(factory.django.DjangoModelFactory):
     reference = factory.Sequence(lambda n: f'Genesis {n}:1')
 
 
+class ComparisonSetFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ComparisonSet
+
+    name = factory.Sequence(lambda n: f'Set {n}')
+    slug = factory.Sequence(lambda n: f'set-{n}')
+    order = factory.Sequence(lambda n: n)
+
+
 class ComparisonThemeFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ComparisonTheme
 
+    comparison_set = factory.SubFactory(ComparisonSetFactory)
     name = factory.Sequence(lambda n: f'Theme {n}')
     slug = factory.Sequence(lambda n: f'theme-{n}')
     description = 'Test theme'

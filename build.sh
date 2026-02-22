@@ -38,8 +38,18 @@ python manage.py load_standard_crossrefs
 # Scripture index
 python manage.py build_scripture_index
 
-# Comparison themes
+# Three Forms of Unity
+python manage.py load_heidelberg
+python manage.py load_belgic
+python manage.py load_dort
+
+# 1689 London Baptist Confession
+python manage.py load_1689
+
+# Comparison themes (all sets)
 python manage.py load_comparison_themes
+python manage.py load_comparison_themes --set three-forms
+python manage.py load_comparison_themes --set 1689-baptist
 
 # Clear cache after data load to ensure fresh content
 python manage.py clear_cache
