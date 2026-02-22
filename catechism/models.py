@@ -295,11 +295,10 @@ class ScriptureIndex(models.Model):
         return f"{self.reference} → {self.question}"
 
 
-class ComparisonTheme(models.Model):
+class ComparisonSet(models.Model):
     name = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
     description = models.TextField(blank=True)
-    locus = models.CharField(max_length=100, blank=True)
     order = models.PositiveIntegerField(default=0)
 
     class Meta:
@@ -310,7 +309,32 @@ class ComparisonTheme(models.Model):
 
     def get_absolute_url(self):
         from django.urls import reverse
-        return reverse('catechism:compare_theme', kwargs={'theme_slug': self.slug})
+        return reverse('catechism:compare_set', kwargs={'set_slug': self.slug})
+
+
+class ComparisonTheme(models.Model):
+    comparison_set = models.ForeignKey(
+        ComparisonSet, on_delete=models.CASCADE, related_name='themes',
+    )
+    name = models.CharField(max_length=200)
+    slug = models.SlugField()
+    description = models.TextField(blank=True)
+    locus = models.CharField(max_length=100, blank=True)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+        unique_together = ('comparison_set', 'slug')
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('catechism:compare_set_theme', kwargs={
+            'set_slug': self.comparison_set.slug,
+            'theme_slug': self.slug,
+        })
 
 
 class ComparisonEntry(models.Model):

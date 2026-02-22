@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Compare the Standards - Westminster Standards{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'catechism:home' %}">Home</a></li>
+        <li class="breadcrumb-item active">Compare</li>
+    </ol>
+</nav>
+
+<h1 class="mb-3">Compare the Standards</h1>
+<p class="text-muted mb-4">Explore doctrinal themes side-by-side across the great Reformed confessional documents, organized by the loci of systematic theology.</p>
+
+<div class="row">
+    {% for cs in comparison_sets %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ cs.name }}</h5>
+                <p class="card-text text-muted small">{{ cs.description }}</p>
+            </div>
+            <div class="card-footer">
+                <a href="{{ cs.get_absolute_url }}" class="btn btn-outline-primary btn-sm">View Comparison</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p class="text-muted">No comparison sets available yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}

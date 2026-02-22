@@ -1,0 +1,321 @@
+[
+  {
+    "name": "Of the Holy Scriptures",
+    "slug": "of-the-holy-scriptures",
+    "description": "The authority, sufficiency, and perspicuity of Holy Scripture as the rule of faith and life.",
+    "locus": "Prolegomena",
+    "order": 1,
+    "entries": {
+      "wcf": [1, 10],
+      "1689": [1, 10]
+    }
+  },
+  {
+    "name": "Of God and of the Holy Trinity",
+    "slug": "of-god-and-the-holy-trinity",
+    "description": "The being, attributes, and tri-personal nature of God: Father, Son, and Holy Spirit.",
+    "locus": "Theology Proper",
+    "order": 2,
+    "entries": {
+      "wcf": [11, 13],
+      "1689": [11, 13]
+    }
+  },
+  {
+    "name": "Of God's Eternal Decree",
+    "slug": "of-gods-eternal-decree",
+    "description": "The eternal, wise, and holy counsel of God's will, including predestination and election.",
+    "locus": "Theology Proper",
+    "order": 3,
+    "entries": {
+      "wcf": [14, 21],
+      "1689": [14, 20]
+    }
+  },
+  {
+    "name": "Of Creation",
+    "slug": "of-creation",
+    "description": "God's work of creating the world and all things therein, especially man in His own image.",
+    "locus": "Creation and Providence",
+    "order": 4,
+    "entries": {
+      "wcf": [22, 23],
+      "1689": [21, 23]
+    }
+  },
+  {
+    "name": "Of Providence",
+    "slug": "of-providence",
+    "description": "God's most holy, wise, and powerful preserving and governing all His creatures and all their actions.",
+    "locus": "Creation and Providence",
+    "order": 5,
+    "entries": {
+      "wcf": [24, 30],
+      "1689": [24, 30]
+    }
+  },
+  {
+    "name": "Of the Fall, Sin, and Punishment",
+    "slug": "of-the-fall-sin-and-punishment",
+    "description": "The fall of man, original sin, and the punishment thereof.",
+    "locus": "Hamartiology",
+    "order": 6,
+    "entries": {
+      "wcf": [31, 36],
+      "1689": [31, 35]
+    }
+  },
+  {
+    "name": "Of God's Covenant",
+    "slug": "of-gods-covenant",
+    "description": "The covenant of works and the covenant of grace. Note: the 1689 teaches one covenant of grace, while the WCF distinguishes two administrations.",
+    "locus": "Christology and Covenant",
+    "order": 7,
+    "entries": {
+      "wcf": [37, 42],
+      "1689": [36, 38]
+    }
+  },
+  {
+    "name": "Of Christ the Mediator",
+    "slug": "of-christ-the-mediator",
+    "description": "The person, natures, offices, and states of the Lord Jesus Christ as the only Mediator between God and man.",
+    "locus": "Christology and Covenant",
+    "order": 8,
+    "entries": {
+      "wcf": [43, 50],
+      "1689": [39, 48]
+    }
+  },
+  {
+    "name": "Of Free Will",
+    "slug": "of-free-will",
+    "description": "The state of man's will in its various conditions: creation, fall, grace, and glory.",
+    "locus": "Soteriology",
+    "order": 9,
+    "entries": {
+      "wcf": [51, 55],
+      "1689": [49, 53]
+    }
+  },
+  {
+    "name": "Of Effectual Calling",
+    "slug": "of-effectual-calling",
+    "description": "The work of God's Spirit in effectually calling sinners and uniting them to Christ by faith.",
+    "locus": "Soteriology",
+    "order": 10,
+    "entries": {
+      "wcf": [56, 59],
+      "1689": [54, 57]
+    }
+  },
+  {
+    "name": "Of Justification",
+    "slug": "of-justification",
+    "description": "God's free pardon of sin and acceptance of sinners as righteous through the imputed righteousness of Christ, received by faith alone.",
+    "locus": "Soteriology",
+    "order": 11,
+    "entries": {
+      "wcf": [60, 65],
+      "1689": [58, 63]
+    }
+  },
+  {
+    "name": "Of Adoption",
+    "slug": "of-adoption",
+    "description": "The privilege of being received into the number and enjoying the liberties of the sons of God.",
+    "locus": "Soteriology",
+    "order": 12,
+    "entries": {
+      "wcf": [66, 66],
+      "1689": [64, 64]
+    }
+  },
+  {
+    "name": "Of Sanctification",
+    "slug": "of-sanctification",
+    "description": "The renewal of the whole person after the image of God, enabling believers to die more unto sin and live more unto righteousness.",
+    "locus": "Soteriology",
+    "order": 13,
+    "entries": {
+      "wcf": [67, 69],
+      "1689": [65, 67]
+    }
+  },
+  {
+    "name": "Of Saving Faith",
+    "slug": "of-saving-faith",
+    "description": "The nature of saving faith as receiving and resting on Christ for salvation.",
+    "locus": "Soteriology",
+    "order": 14,
+    "entries": {
+      "wcf": [70, 72],
+      "1689": [68, 70]
+    }
+  },
+  {
+    "name": "Of Repentance unto Life",
+    "slug": "of-repentance-unto-life",
+    "description": "The evangelical grace of repentance unto life and the forgiveness of sins.",
+    "locus": "Soteriology",
+    "order": 15,
+    "entries": {
+      "wcf": [73, 78],
+      "1689": [71, 75]
+    }
+  },
+  {
+    "name": "Of Good Works",
+    "slug": "of-good-works",
+    "description": "Good works as the fruit of faith and obedience to God's commands.",
+    "locus": "Soteriology",
+    "order": 16,
+    "entries": {
+      "wcf": [79, 85],
+      "1689": [76, 82]
+    }
+  },
+  {
+    "name": "Of Perseverance of the Saints",
+    "slug": "of-perseverance-of-the-saints",
+    "description": "The perseverance of true believers in the state of grace to the end.",
+    "locus": "Soteriology",
+    "order": 17,
+    "entries": {
+      "wcf": [86, 88],
+      "1689": [83, 85]
+    }
+  },
+  {
+    "name": "Of Assurance of Grace and Salvation",
+    "slug": "of-assurance-of-grace-and-salvation",
+    "description": "The grounds and means of assurance of salvation.",
+    "locus": "Soteriology",
+    "order": 18,
+    "entries": {
+      "wcf": [89, 92],
+      "1689": [86, 89]
+    }
+  },
+  {
+    "name": "Of the Law of God",
+    "slug": "of-the-law-of-god",
+    "description": "The moral law as the rule of obedience for all men and its uses under the covenant of grace.",
+    "locus": "The Law of God",
+    "order": 19,
+    "entries": {
+      "wcf": [93, 99],
+      "1689": [90, 96]
+    }
+  },
+  {
+    "name": "Of the Gospel",
+    "slug": "of-the-gospel",
+    "description": "The gospel of grace and its extent. This chapter is unique to the 1689 Confession and has no WCF counterpart.",
+    "locus": "The Law of God",
+    "order": 20,
+    "entries": {
+      "wcf": null,
+      "1689": [97, 100]
+    }
+  },
+  {
+    "name": "Of Christian Liberty",
+    "slug": "of-christian-liberty",
+    "description": "The freedom of believers under the gospel and liberty of conscience.",
+    "locus": "Christian Life and Liberty",
+    "order": 21,
+    "entries": {
+      "wcf": [100, 103],
+      "1689": [101, 103]
+    }
+  },
+  {
+    "name": "Of Religious Worship and the Sabbath",
+    "slug": "of-religious-worship-and-sabbath",
+    "description": "The acceptable way of worshipping God and the sanctification of the Lord's Day.",
+    "locus": "Christian Life and Liberty",
+    "order": 22,
+    "entries": {
+      "wcf": [104, 111],
+      "1689": [104, 111]
+    }
+  },
+  {
+    "name": "Of Lawful Oaths and Vows",
+    "slug": "of-lawful-oaths-and-vows",
+    "description": "The right use of lawful oaths and vows.",
+    "locus": "Christian Life and Liberty",
+    "order": 23,
+    "entries": {
+      "wcf": [112, 118],
+      "1689": [112, 116]
+    }
+  },
+  {
+    "name": "Of the Civil Magistrate",
+    "slug": "of-the-civil-magistrate",
+    "description": "The authority and duties of the civil magistrate in relation to the church.",
+    "locus": "Christian Life and Liberty",
+    "order": 24,
+    "entries": {
+      "wcf": [119, 122],
+      "1689": [117, 119]
+    }
+  },
+  {
+    "name": "Of Marriage",
+    "slug": "of-marriage",
+    "description": "The institution, purposes, and regulation of marriage.",
+    "locus": "Christian Life and Liberty",
+    "order": 25,
+    "entries": {
+      "wcf": [123, 128],
+      "1689": [120, 123]
+    }
+  },
+  {
+    "name": "Of the Church and the Communion of Saints",
+    "slug": "of-the-church-and-communion-of-saints",
+    "description": "The visible and invisible church, its Head the Lord Jesus Christ, and the fellowship of believers. The 1689 has a significantly expanded ecclesiology.",
+    "locus": "Ecclesiology",
+    "order": 26,
+    "entries": {
+      "wcf": [129, 137],
+      "1689": [124, 140]
+    }
+  },
+  {
+    "name": "Of the Sacraments, Baptism, and the Lord's Supper",
+    "slug": "of-the-sacraments-baptism-and-lords-supper",
+    "description": "The sacraments, baptism, and the Lord's Supper. Key divergence: the 1689 teaches believer's baptism only, while the WCF includes infant baptism.",
+    "locus": "Ecclesiology",
+    "order": 27,
+    "entries": {
+      "wcf": [138, 157],
+      "1689": [141, 154]
+    }
+  },
+  {
+    "name": "Of Church Government",
+    "slug": "of-church-government",
+    "description": "Church censures and governance. The WCF teaches presbyterian government with synods and councils; the 1689 omits these chapters (congregationalist polity).",
+    "locus": "Ecclesiology",
+    "order": 28,
+    "entries": {
+      "wcf": [158, 166],
+      "1689": null
+    }
+  },
+  {
+    "name": "Death, Resurrection, and Last Judgment",
+    "slug": "death-resurrection-and-last-judgment",
+    "description": "The state of men after death, the resurrection of the body, and the final judgment at the last day.",
+    "locus": "Eschatology",
+    "order": 29,
+    "entries": {
+      "wcf": [167, 172],
+      "1689": [155, 160]
+    }
+  }
+]

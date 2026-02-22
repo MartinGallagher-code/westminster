@@ -9,7 +9,7 @@ from django.views.generic import TemplateView, ListView, DetailView
 from .models import (
     Catechism, Topic, Question, Commentary, FisherSubQuestion,
     ScripturePassage, StandardCrossReference,
-    BibleBook, ScriptureIndex, ComparisonTheme,
+    BibleBook, ScriptureIndex, ComparisonSet, ComparisonTheme,
 )
 
 
@@ -146,6 +146,13 @@ class QuestionDetailView(CatechismMixin, DetailView):
 
         ctx['cross_ref_groups'] = dict(cross_ref_groups)
 
+        # Comparison themes that include this question
+        ctx['comparison_themes'] = ComparisonTheme.objects.filter(
+            entries__catechism=q.catechism,
+            entries__question_start__lte=q.number,
+            entries__question_end__gte=q.number,
+        )
+
         if self.request.user.is_authenticated:
             from accounts.models import UserNote
             from accounts.forms import NoteForm
@@ -246,17 +253,48 @@ class ScriptureBookView(DetailView):
         return ctx
 
 
-class CompareListView(ListView):
+class CompareIndexView(ListView):
+    template_name = 'catechism/compare_index.html'
+    model = ComparisonSet
+    context_object_name = 'comparison_sets'
+
+
+class CompareSetView(ListView):
     template_name = 'catechism/compare_list.html'
-    model = ComparisonTheme
     context_object_name = 'themes'
 
+    def get(self, request, *args, **kwargs):
+        try:
+            self.comparison_set = ComparisonSet.objects.get(slug=kwargs['set_slug'])
+        except ComparisonSet.DoesNotExist:
+            # Legacy redirect: treat as old Westminster theme slug
+            theme = get_object_or_404(
+                ComparisonTheme,
+                slug=kwargs['set_slug'],
+                comparison_set__slug='westminster',
+            )
+            return redirect(theme.get_absolute_url(), permanent=True)
+        return super().get(request, *args, **kwargs)
 
-class CompareThemeView(DetailView):
+    def get_queryset(self):
+        return self.comparison_set.themes.all()
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['comparison_set'] = self.comparison_set
+        return ctx
+
+
+class CompareSetThemeView(DetailView):
     template_name = 'catechism/compare_theme.html'
-    model = ComparisonTheme
-    slug_url_kwarg = 'theme_slug'
     context_object_name = 'theme'
+
+    def get_object(self):
+        return get_object_or_404(
+            ComparisonTheme,
+            slug=self.kwargs['theme_slug'],
+            comparison_set__slug=self.kwargs['set_slug'],
+        )
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -277,9 +315,10 @@ class CompareThemeView(DetailView):
             })
 
         ctx['columns'] = columns
+        ctx['comparison_set'] = self.object.comparison_set
 
-        # Prev/next theme navigation
-        all_themes = list(ComparisonTheme.objects.all())
+        # Prev/next theme navigation within the same set
+        all_themes = list(self.object.comparison_set.themes.all())
         current_idx = None
         for i, t in enumerate(all_themes):
             if t.pk == self.object.pk:

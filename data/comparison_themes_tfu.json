@@ -1,0 +1,218 @@
+[
+  {
+    "name": "Man's Comfort and Knowledge of God",
+    "slug": "mans-comfort-and-knowledge-of-god",
+    "description": "The only comfort of the believer in life and death, and the means by which we know God through creation and His Word.",
+    "locus": "Prolegomena",
+    "order": 1,
+    "entries": {
+      "heidelberg": [1, 2],
+      "belgic": [1, 2],
+      "dort": null
+    }
+  },
+  {
+    "name": "Holy Scripture",
+    "slug": "holy-scripture",
+    "description": "The canonical books of Scripture as the authoritative, sufficient, and clear rule of faith and life.",
+    "locus": "Prolegomena",
+    "order": 2,
+    "entries": {
+      "heidelberg": null,
+      "belgic": [3, 7],
+      "dort": null
+    }
+  },
+  {
+    "name": "God and the Holy Trinity",
+    "slug": "god-and-the-holy-trinity",
+    "description": "The one true God: His being, attributes, and the three distinct persons of the Trinity.",
+    "locus": "Theology Proper",
+    "order": 3,
+    "entries": {
+      "heidelberg": [8, 25],
+      "belgic": [8, 11],
+      "dort": null
+    }
+  },
+  {
+    "name": "Creation and Providence",
+    "slug": "creation-and-providence",
+    "description": "God's work of creating the world, and His ongoing preservation and government of all things.",
+    "locus": "Creation and Providence",
+    "order": 4,
+    "entries": {
+      "heidelberg": [26, 28],
+      "belgic": [12, 13],
+      "dort": null
+    }
+  },
+  {
+    "name": "The Fall and Original Sin",
+    "slug": "fall-and-original-sin",
+    "description": "The fall of man into sin, the corruption of human nature, and the misery that follows.",
+    "locus": "Hamartiology",
+    "order": 5,
+    "entries": {
+      "heidelberg": [3, 11],
+      "belgic": [14, 15],
+      "dort": null
+    }
+  },
+  {
+    "name": "Election and Predestination",
+    "slug": "election-and-predestination",
+    "description": "God's eternal, unconditional election of a people to salvation in Christ, and the reprobation of those passed by.",
+    "locus": "Soteriology",
+    "order": 6,
+    "entries": {
+      "heidelberg": null,
+      "belgic": [16, 16],
+      "dort": [1, 27]
+    }
+  },
+  {
+    "name": "Christ the Redeemer",
+    "slug": "christ-the-redeemer",
+    "description": "The incarnation, person, natures, and saving work of the Lord Jesus Christ.",
+    "locus": "Christology",
+    "order": 7,
+    "entries": {
+      "heidelberg": [29, 52],
+      "belgic": [17, 21],
+      "dort": null
+    }
+  },
+  {
+    "name": "The Atonement",
+    "slug": "the-atonement",
+    "description": "The death of Christ as a sufficient sacrifice for sin, and the definite redemption of the elect.",
+    "locus": "Soteriology",
+    "order": 8,
+    "entries": {
+      "heidelberg": [37, 44],
+      "belgic": [20, 21],
+      "dort": [28, 43]
+    }
+  },
+  {
+    "name": "Regeneration and Conversion",
+    "slug": "regeneration-and-conversion",
+    "description": "The total corruption of man, and God's sovereign work of regeneration and effectual calling through the Spirit.",
+    "locus": "Soteriology",
+    "order": 9,
+    "entries": {
+      "heidelberg": [53, 58],
+      "belgic": [22, 24],
+      "dort": [44, 69]
+    }
+  },
+  {
+    "name": "Justification by Faith",
+    "slug": "justification-by-faith",
+    "description": "The free justification of sinners by grace alone through faith alone in the righteousness of Christ alone.",
+    "locus": "Soteriology",
+    "order": 10,
+    "entries": {
+      "heidelberg": [59, 64],
+      "belgic": [22, 24],
+      "dort": null
+    }
+  },
+  {
+    "name": "Sanctification and Good Works",
+    "slug": "sanctification-and-good-works",
+    "description": "The renewal of believers in the image of God and the necessity and nature of good works as fruits of faith.",
+    "locus": "Soteriology",
+    "order": 11,
+    "entries": {
+      "heidelberg": [86, 91],
+      "belgic": [24, 26],
+      "dort": null
+    }
+  },
+  {
+    "name": "Perseverance of the Saints",
+    "slug": "perseverance-of-the-saints",
+    "description": "The certain preservation of true believers in the state of grace to final salvation.",
+    "locus": "Soteriology",
+    "order": 12,
+    "entries": {
+      "heidelberg": null,
+      "belgic": null,
+      "dort": [70, 93]
+    }
+  },
+  {
+    "name": "The Church",
+    "slug": "the-church",
+    "description": "The nature, marks, and government of the one holy catholic church.",
+    "locus": "Ecclesiology",
+    "order": 13,
+    "entries": {
+      "heidelberg": [54, 55],
+      "belgic": [27, 32],
+      "dort": null
+    }
+  },
+  {
+    "name": "Church Discipline",
+    "slug": "church-discipline",
+    "description": "The office of the keys and the exercise of church discipline.",
+    "locus": "Ecclesiology",
+    "order": 14,
+    "entries": {
+      "heidelberg": [83, 85],
+      "belgic": [30, 32],
+      "dort": null
+    }
+  },
+  {
+    "name": "The Sacraments, Baptism, and the Lord's Supper",
+    "slug": "sacraments-baptism-and-lords-supper",
+    "description": "The sacraments as visible signs and seals of God's promises, and the right administration of Baptism and the Lord's Supper.",
+    "locus": "Ecclesiology",
+    "order": 15,
+    "entries": {
+      "heidelberg": [65, 82],
+      "belgic": [33, 35],
+      "dort": null
+    }
+  },
+  {
+    "name": "The Ten Commandments",
+    "slug": "the-ten-commandments",
+    "description": "The duties required and sins forbidden in each of the Ten Commandments, as the rule of grateful obedience.",
+    "locus": "The Law of God",
+    "order": 16,
+    "entries": {
+      "heidelberg": [92, 115],
+      "belgic": null,
+      "dort": null
+    }
+  },
+  {
+    "name": "Prayer and the Lord's Prayer",
+    "slug": "prayer-and-lords-prayer",
+    "description": "The duty of prayer as the chief part of thankfulness, and the six petitions of the Lord's Prayer.",
+    "locus": "Christian Life",
+    "order": 17,
+    "entries": {
+      "heidelberg": [116, 129],
+      "belgic": null,
+      "dort": null
+    }
+  },
+  {
+    "name": "The Civil Magistrate and the Last Judgment",
+    "slug": "civil-magistrate-and-last-judgment",
+    "description": "The office of the civil magistrate and the final judgment at the last day.",
+    "locus": "Eschatology",
+    "order": 18,
+    "entries": {
+      "heidelberg": null,
+      "belgic": [36, 37],
+      "dort": null
+    }
+  }
+]

@@ -13,9 +13,10 @@ urlpatterns = [
     path('scripture/', views.ScriptureIndexView.as_view(), name='scripture_index'),
     path('scripture/<slug:book_slug>/', views.ScriptureBookView.as_view(), name='scripture_book'),
 
-    # Comparison view
-    path('compare/', views.CompareListView.as_view(), name='compare_list'),
-    path('compare/<slug:theme_slug>/', views.CompareThemeView.as_view(), name='compare_theme'),
+    # Comparison views
+    path('compare/', views.CompareIndexView.as_view(), name='compare_index'),
+    path('compare/<slug:set_slug>/', views.CompareSetView.as_view(), name='compare_set'),
+    path('compare/<slug:set_slug>/<slug:theme_slug>/', views.CompareSetThemeView.as_view(), name='compare_set_theme'),
 
     # Legacy WSC redirects (preserve old bookmarks)
     path('questions/', RedirectView.as_view(url='/wsc/questions/', permanent=True)),

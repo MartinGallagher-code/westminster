@@ -2,7 +2,7 @@ import pytest
 from django.contrib.auth.models import User
 from django.test import Client
 
-from catechism.models import Catechism
+from catechism.models import Catechism, ComparisonSet
 from .conftest import (
     TopicFactory, QuestionFactory,
     BibleBookFactory, ScriptureIndexFactory,
@@ -164,19 +164,33 @@ class TestScriptureBookView:
 
 @pytest.mark.django_db
 class TestCompareViews:
-    def test_compare_list(self, client, db):
-        ComparisonThemeFactory(name='God', slug='god')
+    def test_compare_index(self, client, db):
         resp = client.get('/compare/')
+        assert resp.status_code == 200
+        assert len(resp.context['comparison_sets']) == 1  # seeded by migration
+
+    def test_compare_set(self, client, db):
+        cs = ComparisonSet.objects.get(slug='westminster')
+        ComparisonThemeFactory(name='God', slug='god', comparison_set=cs)
+        resp = client.get('/compare/westminster/')
         assert resp.status_code == 200
         assert len(resp.context['themes']) == 1
 
     def test_compare_theme(self, client, setup_catechism):
         cat, topic, q1, q2 = setup_catechism
-        theme = ComparisonThemeFactory(name='God', slug='god')
+        cs = ComparisonSet.objects.get(slug='westminster')
+        theme = ComparisonThemeFactory(name='God', slug='god', comparison_set=cs)
         ComparisonEntryFactory(theme=theme, catechism=cat, question_start=1, question_end=2)
-        resp = client.get('/compare/god/')
+        resp = client.get('/compare/westminster/god/')
         assert resp.status_code == 200
         assert len(resp.context['columns']) == 1
+
+    def test_legacy_theme_slug_redirects(self, client, db):
+        cs = ComparisonSet.objects.get(slug='westminster')
+        ComparisonThemeFactory(name='God', slug='god', comparison_set=cs)
+        resp = client.get('/compare/god/')
+        assert resp.status_code == 301
+        assert '/compare/westminster/god/' in resp.url
 
 
 @pytest.mark.django_db
