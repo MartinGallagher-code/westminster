@@ -45,10 +45,10 @@
                 <a href="{{ q.get_absolute_url }}" class="list-group-item list-group-item-action">
                     {% if col.catechism.is_confession %}
                     <p class="mb-1 small"><strong>{{ q.question_text }}</strong></p>
-                    <p class="mb-0 text-muted small">{{ q.answer_text|truncatewords:20 }}</p>
+                    <p class="mb-0 text-muted small">{{ q.answer_text }}</p>
                     {% else %}
-                    <p class="mb-1 small"><strong>Q{{ q.number }}.</strong> {{ q.question_text|truncatewords:15 }}</p>
-                    <p class="mb-0 text-muted small"><strong>A.</strong> {{ q.answer_text|truncatewords:20 }}</p>
+                    <p class="mb-1 small"><strong>Q{{ q.number }}.</strong> {{ q.question_text }}</p>
+                    <p class="mb-0 text-muted small"><strong>A.</strong> {{ q.answer_text }}</p>
                     {% endif %}
                 </a>
                 {% endfor %}
