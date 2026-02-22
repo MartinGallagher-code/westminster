@@ -287,6 +287,13 @@ a {
     font-weight: 600;
 }
 
+.card-header {
+    background-color: color-mix(in srgb, var(--wm-primary) 4%, var(--bs-body-bg));
+    border-bottom: 1px solid var(--wm-card-border);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 600;
+}
+
 .card-body {
     padding: 1.25rem 1.5rem;
 }
