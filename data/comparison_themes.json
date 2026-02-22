@@ -1,23 +1,13 @@
 [
   {
-    "name": "Man's Chief End",
-    "slug": "mans-chief-end",
-    "description": "The chief and highest end of man: to glorify God and to enjoy Him forever.",
+    "name": "Man's Chief End and Holy Scripture",
+    "slug": "mans-chief-end-and-holy-scripture",
+    "description": "The chief end of man\u2014to glorify God and enjoy Him forever\u2014and the authority, sufficiency, and perspicuity of Holy Scripture as the rule of faith and life.",
+    "locus": "Prolegomena",
     "order": 1,
     "entries": {
-      "wsc": [1, 1],
-      "wlc": [1, 2],
-      "wcf": null
-    }
-  },
-  {
-    "name": "Holy Scripture",
-    "slug": "holy-scripture",
-    "description": "The authority, sufficiency, perspicuity, and interpretation of the Word of God as the rule of faith and life.",
-    "order": 2,
-    "entries": {
-      "wsc": [2, 3],
-      "wlc": [3, 5],
+      "wsc": [1, 3],
+      "wlc": [1, 5],
       "wcf": [1, 10]
     }
   },
@@ -25,7 +15,8 @@
     "name": "God and the Holy Trinity",
     "slug": "god-and-the-holy-trinity",
     "description": "The being, attributes, and tri-personal nature of God: Father, Son, and Holy Spirit.",
-    "order": 3,
+    "locus": "Theology Proper",
+    "order": 2,
     "entries": {
       "wsc": [4, 6],
       "wlc": [6, 11],
@@ -36,7 +27,8 @@
     "name": "God's Eternal Decree",
     "slug": "gods-eternal-decree",
     "description": "The eternal, wise, and holy counsel of God's will, including predestination and election.",
-    "order": 4,
+    "locus": "Theology Proper",
+    "order": 3,
     "entries": {
       "wsc": [7, 8],
       "wlc": [12, 14],
@@ -47,7 +39,8 @@
     "name": "Creation",
     "slug": "creation",
     "description": "God's work of creating the world and all things therein, especially man in His own image.",
-    "order": 5,
+    "locus": "Creation and Providence",
+    "order": 4,
     "entries": {
       "wsc": [9, 10],
       "wlc": [15, 17],
@@ -58,7 +51,8 @@
     "name": "Providence",
     "slug": "providence",
     "description": "God's most holy, wise, and powerful preserving and governing all His creatures and all their actions.",
-    "order": 6,
+    "locus": "Creation and Providence",
+    "order": 5,
     "entries": {
       "wsc": [11, 12],
       "wlc": [18, 20],
@@ -69,7 +63,8 @@
     "name": "The Fall, Sin, and Misery",
     "slug": "fall-sin-and-misery",
     "description": "The covenant of works, Adam's fall, original sin, and the resulting estate of sin and misery.",
-    "order": 7,
+    "locus": "Hamartiology",
+    "order": 6,
     "entries": {
       "wsc": [13, 19],
       "wlc": [21, 29],
@@ -80,7 +75,8 @@
     "name": "The Covenant of Grace",
     "slug": "covenant-of-grace",
     "description": "God's free offer of life and salvation through Jesus Christ in the covenant of grace.",
-    "order": 8,
+    "locus": "Christology and Covenant",
+    "order": 7,
     "entries": {
       "wsc": [20, 20],
       "wlc": [30, 35],
@@ -91,7 +87,8 @@
     "name": "Christ the Mediator",
     "slug": "christ-the-mediator",
     "description": "The person, natures, offices, and states of the Lord Jesus Christ as the only Mediator between God and man.",
-    "order": 9,
+    "locus": "Christology and Covenant",
+    "order": 8,
     "entries": {
       "wsc": [21, 28],
       "wlc": [36, 56],
@@ -102,7 +99,8 @@
     "name": "Effectual Calling",
     "slug": "effectual-calling",
     "description": "The work of God's Spirit in effectually calling sinners, the freedom of the will under grace, and union with Christ by faith.",
-    "order": 10,
+    "locus": "Soteriology",
+    "order": 9,
     "entries": {
       "wsc": [29, 32],
       "wlc": [57, 69],
@@ -113,7 +111,8 @@
     "name": "Justification",
     "slug": "justification",
     "description": "God's free pardon of sin and acceptance of sinners as righteous through the imputed righteousness of Christ, received by faith alone.",
-    "order": 11,
+    "locus": "Soteriology",
+    "order": 10,
     "entries": {
       "wsc": [33, 33],
       "wlc": [70, 73],
@@ -124,7 +123,8 @@
     "name": "Adoption",
     "slug": "adoption",
     "description": "The privilege of being received into the number and enjoying the liberties and privileges of the sons of God.",
-    "order": 12,
+    "locus": "Soteriology",
+    "order": 11,
     "entries": {
       "wsc": [34, 34],
       "wlc": [74, 74],
@@ -135,7 +135,8 @@
     "name": "Sanctification",
     "slug": "sanctification",
     "description": "The renewal of the whole person after the image of God, enabling believers to die more unto sin and live more unto righteousness.",
-    "order": 13,
+    "locus": "Soteriology",
+    "order": 12,
     "entries": {
       "wsc": [35, 36],
       "wlc": [75, 78],
@@ -146,7 +147,8 @@
     "name": "Saving Faith, Repentance, and Good Works",
     "slug": "saving-faith-repentance-and-good-works",
     "description": "The nature of saving faith as receiving and resting on Christ, evangelical repentance unto life, and the fruits of faith in good works.",
-    "order": 14,
+    "locus": "Soteriology",
+    "order": 13,
     "entries": {
       "wsc": [85, 87],
       "wlc": null,
@@ -157,7 +159,8 @@
     "name": "Perseverance and Assurance",
     "slug": "perseverance-and-assurance",
     "description": "The perseverance of true believers in the state of grace and the grounds and means of assurance of salvation.",
-    "order": 15,
+    "locus": "Soteriology",
+    "order": 14,
     "entries": {
       "wsc": null,
       "wlc": [79, 81],
@@ -165,43 +168,83 @@
     }
   },
   {
-    "name": "The Law of God and the Ten Commandments",
-    "slug": "law-of-god",
-    "description": "The moral law as summarized in the Ten Commandments, its uses and rules of interpretation, and the duties required and sins forbidden therein.",
-    "order": 16,
+    "name": "The Moral Law",
+    "slug": "the-moral-law",
+    "description": "The moral law as the rule of obedience for all men, its uses under the covenant of grace, and the rules for rightly understanding the Ten Commandments.",
+    "locus": "The Law of God",
+    "order": 15,
     "entries": {
-      "wsc": [39, 84],
-      "wlc": [91, 148],
+      "wsc": [39, 44],
+      "wlc": [91, 99],
       "wcf": [93, 99]
     }
   },
   {
-    "name": "Christian Liberty, Worship, and the Christian Life",
-    "slug": "christian-liberty-and-worship",
-    "description": "The freedom of believers under the gospel, the regulation of religious worship and the Sabbath, and the right use of oaths, vows, and lawful authority.",
+    "name": "The Ten Commandments Expounded",
+    "slug": "the-ten-commandments-expounded",
+    "description": "The duties required and sins forbidden in each of the Ten Commandments, from the first through the tenth.",
+    "locus": "The Law of God",
+    "order": 16,
+    "entries": {
+      "wsc": [45, 84],
+      "wlc": [100, 148],
+      "wcf": null
+    }
+  },
+  {
+    "name": "Christian Liberty",
+    "slug": "christian-liberty",
+    "description": "The freedom of believers under the gospel, delivered from the guilt of sin, the condemning wrath of God, and the yoke of the ceremonial law, with liberty of conscience in matters not commanded or forbidden in Scripture.",
+    "locus": "Christian Life and Liberty",
     "order": 17,
     "entries": {
       "wsc": null,
       "wlc": null,
-      "wcf": [100, 128]
+      "wcf": [100, 103]
+    }
+  },
+  {
+    "name": "Religious Worship and the Sabbath",
+    "slug": "religious-worship-and-sabbath",
+    "description": "The acceptable way of worshipping God according to Scripture, the regulative principle, and the sanctification of the Lord's Day.",
+    "locus": "Christian Life and Liberty",
+    "order": 18,
+    "entries": {
+      "wsc": null,
+      "wlc": null,
+      "wcf": [104, 111]
+    }
+  },
+  {
+    "name": "Oaths, the Civil Magistrate, and Marriage",
+    "slug": "oaths-magistrate-and-marriage",
+    "description": "The right use of lawful oaths and vows, the authority and duties of the civil magistrate in relation to the church, and the ordinance of marriage.",
+    "locus": "Christian Life and Liberty",
+    "order": 19,
+    "entries": {
+      "wsc": null,
+      "wlc": null,
+      "wcf": [112, 128]
     }
   },
   {
     "name": "The Church and the Communion of Saints",
     "slug": "the-church",
-    "description": "The visible and invisible church, the communion of saints, church government and discipline, and synods and councils.",
-    "order": 18,
+    "description": "The visible and invisible church, its Head the Lord Jesus Christ, and the fellowship of believers united to Him.",
+    "locus": "Ecclesiology",
+    "order": 20,
     "entries": {
       "wsc": null,
       "wlc": null,
-      "wcf": [129, 166]
+      "wcf": [129, 137]
     }
   },
   {
-    "name": "The Means of Grace",
-    "slug": "means-of-grace",
-    "description": "The outward and ordinary means by which Christ communicates the benefits of redemption: the Word, sacraments, and prayer.",
-    "order": 19,
+    "name": "The Sacraments and Means of Grace",
+    "slug": "sacraments-and-means-of-grace",
+    "description": "The outward and ordinary means by which Christ communicates the benefits of redemption: the Word, sacraments, and prayer; the nature, subjects, and administration of Baptism and the Lord's Supper.",
+    "locus": "Ecclesiology",
+    "order": 21,
     "entries": {
       "wsc": [88, 97],
       "wlc": [149, 177],
@@ -209,10 +252,23 @@
     }
   },
   {
+    "name": "Church Government and Discipline",
+    "slug": "church-government-and-discipline",
+    "description": "The necessity and purposes of church censures and discipline, and the calling and authority of synods and councils.",
+    "locus": "Ecclesiology",
+    "order": 22,
+    "entries": {
+      "wsc": null,
+      "wlc": null,
+      "wcf": [158, 166]
+    }
+  },
+  {
     "name": "Prayer and the Lord's Prayer",
     "slug": "prayer",
     "description": "The duty of prayer, the rule and pattern given by Christ in the Lord's Prayer, and its several petitions.",
-    "order": 20,
+    "locus": "Ecclesiology",
+    "order": 23,
     "entries": {
       "wsc": [98, 107],
       "wlc": [178, 196],
@@ -223,7 +279,8 @@
     "name": "Death, Resurrection, and Last Judgment",
     "slug": "death-resurrection-and-last-judgment",
     "description": "The state of men after death, the resurrection of the body, and the final judgment at the last day.",
-    "order": 21,
+    "locus": "Eschatology",
+    "order": 24,
     "entries": {
       "wsc": [37, 38],
       "wlc": [82, 90],
