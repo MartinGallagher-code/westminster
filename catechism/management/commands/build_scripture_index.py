@@ -1,5 +1,7 @@
 import re
+from django.conf import settings
 from django.core.management.base import BaseCommand
+from catechism.management.commands._helpers import data_is_current, mark_data_current
 from catechism.models import Question, BibleBook, ScriptureIndex
 
 # Canonical list of Bible books: (number, name, abbreviation, slug, testament)
@@ -176,6 +178,17 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        # Skip if proof text source files haven't changed
+        proof_paths = [
+            settings.BASE_DIR / "data" / "proof_texts.json",
+            settings.BASE_DIR / "data" / "wlc_proof_texts.json",
+            settings.BASE_DIR / "data" / "wcf_proof_texts.json",
+        ]
+        existing = [p for p in proof_paths if p.exists()]
+        if not options['rebuild'] and data_is_current("scripture-index", *existing):
+            self.stdout.write("Scripture index unchanged, skipping.")
+            return
+
         # 1. Ensure all BibleBook rows exist
         for num, name, abbrev, slug, testament in BIBLE_BOOKS:
             BibleBook.objects.update_or_create(
@@ -241,6 +254,7 @@ class Command(BaseCommand):
                     if created:
                         created_count += 1
 
+        mark_data_current("scripture-index", *existing)
         self.stdout.write(self.style.SUCCESS(
             f"Created {created_count} index entries ({skipped_count} refs skipped)"
         ))

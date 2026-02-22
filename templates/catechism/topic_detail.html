@@ -10,7 +10,7 @@
             <a href="{% url 'catechism:catechism_home' catechism_slug=catechism.slug %}">{{ catechism.abbreviation }}</a>
         </li>
         <li class="breadcrumb-item">
-            <a href="{{ catechism.get_topic_list_url }}">{{ catechism.topic_name_plural }}</a>
+            <a href="{{ catechism.get_item_list_url }}">All {{ catechism.item_name_plural }}</a>
         </li>
         <li class="breadcrumb-item active">{{ topic.name }}</li>
     </ol>

@@ -93,12 +93,9 @@
                 {% if cat.description %}
                 <p class="card-text small flex-grow-1">{{ cat.description|truncatewords:25 }}</p>
                 {% endif %}
-                <div class="d-flex gap-2 mt-auto">
+                <div class="mt-auto">
                     <a href="{{ cat.get_item_list_url }}" class="btn btn-outline-primary btn-sm">
                         Browse {{ cat.item_name_plural }}
-                    </a>
-                    <a href="{{ cat.get_topic_list_url }}" class="btn btn-outline-secondary btn-sm">
-                        {{ cat.topic_name_plural }}
                     </a>
                 </div>
             </div>

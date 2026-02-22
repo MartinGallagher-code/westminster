@@ -5,7 +5,7 @@ pip install -r requirements.txt
 python manage.py collectstatic --noinput
 python manage.py migrate
 
-# Load Shorter Catechism data (idempotent - safe to run on every deploy)
+# Load data (each command skips automatically if source data unchanged)
 python manage.py load_catechism
 python manage.py load_fisher
 python manage.py load_flavel
@@ -45,5 +45,6 @@ python manage.py build_scripture_index
 # Comparison themes
 python manage.py load_comparison_themes
 
-# Scripture text fetching is slow (external API calls) - run manually via Render shell:
+# These commands fetch from external APIs - run manually via Render shell:
+#   python manage.py fetch_watson --delay=0.3
 #   python manage.py fetch_scripture --delay=0.3

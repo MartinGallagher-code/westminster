@@ -1,6 +1,7 @@
 import json
 from django.conf import settings
 from django.core.management.base import BaseCommand
+from catechism.management.commands._helpers import data_is_current, mark_data_current
 from catechism.models import Catechism, Question
 
 
@@ -25,6 +26,11 @@ class Command(BaseCommand):
             ))
             return
 
+        version_name = f"prooftexts-{cat_slug}"
+        if data_is_current(version_name, data_path):
+            self.stdout.write(f"{catechism.abbreviation} proof texts unchanged, skipping.")
+            return
+
         with open(data_path) as f:
             proof_data = json.load(f)
 
@@ -35,6 +41,7 @@ class Command(BaseCommand):
             ).update(proof_texts=refs)
             updated += count
 
+        mark_data_current(version_name, data_path)
         self.stdout.write(self.style.SUCCESS(
             f"Updated proof texts for {updated} {catechism.abbreviation} questions"
         ))

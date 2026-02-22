@@ -64,16 +64,20 @@ class QuestionListView(CatechismMixin, ListView):
     context_object_name = 'questions'
 
     def get_queryset(self):
-        qs = Question.objects.filter(catechism=self.catechism).select_related('topic')
-        topic_slug = self.request.GET.get('topic')
-        if topic_slug:
-            qs = qs.filter(topic__slug=topic_slug)
-        return qs
+        return Question.objects.filter(
+            catechism=self.catechism
+        ).select_related('topic')
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['topics'] = Topic.objects.filter(catechism=self.catechism)
-        ctx['active_topic'] = self.request.GET.get('topic', '')
+        topics = Topic.objects.filter(catechism=self.catechism)
+        questions_by_topic = defaultdict(list)
+        for q in ctx['questions']:
+            questions_by_topic[q.topic_id].append(q)
+        ctx['grouped'] = [
+            {'topic': topic, 'questions': questions_by_topic.get(topic.id, [])}
+            for topic in topics
+        ]
         return ctx
 
 
@@ -153,12 +157,11 @@ class QuestionDetailView(CatechismMixin, DetailView):
         return ctx
 
 
-class TopicListView(CatechismMixin, ListView):
-    template_name = 'catechism/topic_list.html'
-    context_object_name = 'topics'
+class TopicListRedirectView(CatechismMixin, View):
+    """Redirect old topic/chapter list to the unified grouped list."""
 
-    def get_queryset(self):
-        return Topic.objects.filter(catechism=self.catechism)
+    def get(self, request, *args, **kwargs):
+        return redirect(self.catechism.get_item_list_url())
 
 
 class TopicDetailView(CatechismMixin, DetailView):

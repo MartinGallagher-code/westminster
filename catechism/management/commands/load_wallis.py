@@ -4,6 +4,7 @@ import pdfplumber
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
+from catechism.management.commands._helpers import data_is_current, mark_data_current
 from catechism.models import Catechism, Commentary, CommentarySource, Question
 
 
@@ -11,6 +12,11 @@ class Command(BaseCommand):
     help = "Load John Wallis's 'A Brief and Easy Explanation of the Shorter Catechism' (1648) from PDF"
 
     def handle(self, *args, **options):
+        pdf_path = settings.BASE_DIR / "data" / "wallis_wsc.pdf"
+        if data_is_current("wallis", pdf_path):
+            self.stdout.write("Wallis data unchanged, skipping.")
+            return
+
         catechism = Catechism.objects.get(slug='wsc')
         source, _ = CommentarySource.objects.update_or_create(
             slug="wallis",
@@ -58,6 +64,7 @@ class Command(BaseCommand):
             )
             loaded += 1
 
+        mark_data_current("wallis", pdf_path)
         self.stdout.write(self.style.SUCCESS(
             f"Loaded Wallis commentary for {loaded} questions"
         ))

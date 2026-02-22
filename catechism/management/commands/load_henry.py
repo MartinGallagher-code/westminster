@@ -1,6 +1,7 @@
 import json
 from django.conf import settings
 from django.core.management.base import BaseCommand
+from catechism.management.commands._helpers import data_is_current, mark_data_current
 from catechism.models import Catechism, Question, CommentarySource, Commentary, FisherSubQuestion
 
 
@@ -8,6 +9,11 @@ class Command(BaseCommand):
     help = "Load Matthew Henry commentary from JSON"
 
     def handle(self, *args, **options):
+        data_path = settings.BASE_DIR / "data" / "matthew_henrys_scripture_catechism.json"
+        if data_is_current("henry", data_path):
+            self.stdout.write("Henry data unchanged, skipping.")
+            return
+
         catechism = Catechism.objects.get(slug='wsc')
         source, _ = CommentarySource.objects.update_or_create(
             slug="henry",
@@ -54,6 +60,7 @@ class Command(BaseCommand):
 
             loaded += 1
 
+        mark_data_current("henry", data_path)
         self.stdout.write(self.style.SUCCESS(
             f"Loaded Henry: {loaded} entries, {total_subs} sub-questions"
         ))

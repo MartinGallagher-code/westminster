@@ -3,6 +3,7 @@ import re
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
+from catechism.management.commands._helpers import data_is_current, mark_data_current
 from catechism.models import Catechism, Commentary, CommentarySource, Question
 
 
@@ -90,6 +91,11 @@ class Command(BaseCommand):
     help = "Load A.A. Hodge's Commentary on the Westminster Confession of Faith"
 
     def handle(self, *args, **options):
+        data_path = settings.BASE_DIR / "data" / "hodge_wcf.txt"
+        if data_is_current("hodge", data_path):
+            self.stdout.write("Hodge data unchanged, skipping.")
+            return
+
         catechism = Catechism.objects.get(slug='wcf')
 
         source, _ = CommentarySource.objects.update_or_create(
@@ -220,6 +226,7 @@ class Command(BaseCommand):
                     ))
                     skipped += 1
 
+        mark_data_current("hodge", data_path)
         self.stdout.write(self.style.SUCCESS(
             f"Loaded Hodge commentary for {loaded} sections ({skipped} skipped)"
         ))

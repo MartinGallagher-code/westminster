@@ -1,6 +1,7 @@
 import json
 from django.conf import settings
 from django.core.management.base import BaseCommand
+from catechism.management.commands._helpers import data_is_current, mark_data_current
 from catechism.models import Catechism, ComparisonTheme, ComparisonEntry
 
 
@@ -8,9 +9,12 @@ class Command(BaseCommand):
     help = "Load comparison themes mapping doctrinal topics across all three standards"
 
     def handle(self, *args, **options):
-        catechisms = {c.slug: c for c in Catechism.objects.all()}
-
         data_path = settings.BASE_DIR / "data" / "comparison_themes.json"
+        if data_is_current("comparison-themes", data_path):
+            self.stdout.write("Comparison themes unchanged, skipping.")
+            return
+
+        catechisms = {c.slug: c for c in Catechism.objects.all()}
         with open(data_path) as f:
             data = json.load(f)
 
@@ -51,6 +55,7 @@ class Command(BaseCommand):
                 if created:
                     entry_count += 1
 
+        mark_data_current("comparison-themes", data_path)
         self.stdout.write(self.style.SUCCESS(
             f"Loaded {theme_count} comparison themes with {entry_count} new entries"
         ))

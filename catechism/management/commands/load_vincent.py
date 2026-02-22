@@ -2,6 +2,7 @@ import re
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
+from catechism.management.commands._helpers import data_is_current, mark_data_current
 from catechism.models import Catechism, Question, CommentarySource, Commentary
 
 
@@ -38,6 +39,10 @@ class Command(BaseCommand):
             ))
             return
 
+        if data_is_current("vincent", vincent_dir):
+            self.stdout.write("Vincent data unchanged, skipping.")
+            return
+
         loaded = 0
         for num in range(1, 108):
             filepath = vincent_dir / f"q{num:03d}.txt"
@@ -56,4 +61,5 @@ class Command(BaseCommand):
             )
             loaded += 1
 
+        mark_data_current("vincent", vincent_dir)
         self.stdout.write(self.style.SUCCESS(f"Loaded Vincent commentary for {loaded} questions"))

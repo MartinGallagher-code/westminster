@@ -59,9 +59,8 @@ class Catechism(models.Model):
         return reverse(name, kwargs={'catechism_slug': self.slug})
 
     def get_topic_list_url(self):
-        from django.urls import reverse
-        name = 'catechism:chapter_list' if self.is_confession else 'catechism:topic_list'
-        return reverse(name, kwargs={'catechism_slug': self.slug})
+        """Points to the unified grouped list (same as item list)."""
+        return self.get_item_list_url()
 
 
 class Topic(models.Model):
@@ -336,3 +335,13 @@ class ComparisonEntry(models.Model):
             number__gte=self.question_start,
             number__lte=self.question_end,
         ).select_related('topic')
+
+
+class DataVersion(models.Model):
+    """Tracks the hash of source data files to skip unchanged loads on deploy."""
+    name = models.CharField(max_length=100, unique=True)
+    data_hash = models.CharField(max_length=64)
+    loaded_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.name} ({self.data_hash[:8]}…)"

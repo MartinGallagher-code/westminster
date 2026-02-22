@@ -1,6 +1,7 @@
 import json
 from django.conf import settings
 from django.core.management.base import BaseCommand
+from catechism.management.commands._helpers import data_is_current, mark_data_current
 from catechism.models import Catechism, Topic, Question
 
 WCF_CHAPTERS = [
@@ -111,6 +112,11 @@ class Command(BaseCommand):
     help = "Load Westminster Confession of Faith chapters and sections into the database"
 
     def handle(self, *args, **options):
+        data_path = settings.BASE_DIR / "data" / "westminster_confession_of_faith.json"
+        if data_is_current("catechism-wcf", data_path):
+            self.stdout.write("WCF data unchanged, skipping.")
+            return
+
         catechism, _ = Catechism.objects.update_or_create(
             slug='wcf',
             defaults={
@@ -166,4 +172,5 @@ class Command(BaseCommand):
                 }
             )
 
+        mark_data_current("catechism-wcf", data_path)
         self.stdout.write(self.style.SUCCESS(f"Loaded {len(data['Data'])} WCF sections"))

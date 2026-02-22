@@ -1,6 +1,7 @@
 import json
 from django.conf import settings
 from django.core.management.base import BaseCommand
+from catechism.management.commands._helpers import data_is_current, mark_data_current
 from catechism.models import Catechism, Topic, Question
 
 TOPICS = [
@@ -29,6 +30,11 @@ class Command(BaseCommand):
     help = "Load WSC questions, answers, and topics into the database"
 
     def handle(self, *args, **options):
+        data_path = settings.BASE_DIR / "data" / "westminster_shorter_catechism.json"
+        if data_is_current("catechism-wsc", data_path):
+            self.stdout.write("WSC data unchanged, skipping.")
+            return
+
         catechism, _ = Catechism.objects.update_or_create(
             slug='wsc',
             defaults={
@@ -78,4 +84,5 @@ class Command(BaseCommand):
                 }
             )
 
+        mark_data_current("catechism-wsc", data_path)
         self.stdout.write(self.style.SUCCESS(f"Loaded {len(data['Data'])} questions"))

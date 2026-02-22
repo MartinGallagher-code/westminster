@@ -1,6 +1,7 @@
 import json
 from django.conf import settings
 from django.core.management.base import BaseCommand
+from catechism.management.commands._helpers import data_is_current, mark_data_current
 from catechism.models import Catechism, Question, CrossReference
 
 
@@ -8,6 +9,11 @@ class Command(BaseCommand):
     help = "Load cross-references between WSC and WLC questions"
 
     def handle(self, *args, **options):
+        data_path = settings.BASE_DIR / "data" / "cross_references.json"
+        if data_is_current("crossrefs", data_path):
+            self.stdout.write("Cross-references unchanged, skipping.")
+            return
+
         try:
             wsc = Catechism.objects.get(slug='wsc')
             wlc = Catechism.objects.get(slug='wlc')
@@ -42,6 +48,7 @@ class Command(BaseCommand):
                 if created:
                     created_count += 1
 
+        mark_data_current("crossrefs", data_path)
         self.stdout.write(self.style.SUCCESS(
             f"Loaded {created_count} cross-references"
         ))

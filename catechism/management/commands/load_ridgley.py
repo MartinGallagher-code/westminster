@@ -4,6 +4,7 @@ from collections import defaultdict
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
+from catechism.management.commands._helpers import data_is_current, mark_data_current
 from catechism.models import Catechism, Commentary, CommentarySource, Question
 
 
@@ -55,6 +56,14 @@ class Command(BaseCommand):
     help = "Load Thomas Ridgley's Body of Divinity commentary on the WLC"
 
     def handle(self, *args, **options):
+        data_paths = [
+            settings.BASE_DIR / "data" / f"ridgley_vol{v}.txt"
+            for v in range(1, 5)
+        ]
+        if data_is_current("ridgley", *data_paths):
+            self.stdout.write("Ridgley data unchanged, skipping.")
+            return
+
         catechism = Catechism.objects.get(slug='wlc')
 
         source, _ = CommentarySource.objects.update_or_create(
@@ -122,6 +131,7 @@ class Command(BaseCommand):
             )
             loaded += 1
 
+        mark_data_current("ridgley", *data_paths)
         self.stdout.write(self.style.SUCCESS(
             f"Loaded Ridgley commentary for {loaded} questions"
         ))

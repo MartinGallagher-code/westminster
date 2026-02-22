@@ -1,6 +1,7 @@
 import json
 from django.conf import settings
 from django.core.management.base import BaseCommand
+from catechism.management.commands._helpers import data_is_current, mark_data_current
 from catechism.models import Catechism, Question, StandardCrossReference
 
 
@@ -8,11 +9,17 @@ class Command(BaseCommand):
     help = "Load all cross-references into StandardCrossReference table"
 
     def handle(self, *args, **options):
+        data_path = settings.BASE_DIR / "data" / "cross_references.json"
+        wcf_path = settings.BASE_DIR / "data" / "wcf_cross_references.json"
+        paths = [data_path] + ([wcf_path] if wcf_path.exists() else [])
+        if data_is_current("standard-crossrefs", *paths):
+            self.stdout.write("Standard cross-references unchanged, skipping.")
+            return
+
         catechisms = {c.slug: c for c in Catechism.objects.all()}
         created_count = 0
 
         # 1. Load WSC <-> WLC from existing file
-        data_path = settings.BASE_DIR / "data" / "cross_references.json"
         with open(data_path) as f:
             data = json.load(f)
 
@@ -77,6 +84,7 @@ class Command(BaseCommand):
                         wcf_count += 1
 
         self.stdout.write(f"WCF cross-refs: {wcf_count}")
+        mark_data_current("standard-crossrefs", *paths)
         self.stdout.write(self.style.SUCCESS(
             f"Total: {created_count + wcf_count} cross-references loaded"
         ))
