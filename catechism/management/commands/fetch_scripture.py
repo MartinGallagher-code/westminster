@@ -80,6 +80,9 @@ BOOK_MAP = {
     'rev': 66, 'revelation': 66,
 }
 
+# Single-chapter books: the number after the book name is a verse, not a chapter.
+SINGLE_CHAPTER_BOOKS = {31, 57, 63, 64, 65}  # Obadiah, Philemon, 2 John, 3 John, Jude
+
 # Chapter cache to avoid refetching the same chapter
 _chapter_cache = {}
 
@@ -103,6 +106,15 @@ def fetch_chapter(book_num, chapter):
         return None
 
 
+def _normalize_roman_prefix(ref_str):
+    """Convert Roman numeral book prefixes (I, II, III) to Arabic (1, 2, 3)."""
+    m = re.match(r'^(III|II|I)\s+', ref_str)
+    if m:
+        roman_to_arabic = {'I': '1', 'II': '2', 'III': '3'}
+        ref_str = roman_to_arabic[m.group(1)] + ref_str[m.end(1):]
+    return ref_str
+
+
 def parse_reference(ref_str, last_book_num=None):
     """
     Parse a reference string like '1 Cor. 10:31' into (book_num, chapter, verses).
@@ -111,6 +123,19 @@ def parse_reference(ref_str, last_book_num=None):
     If ref_str has no book name (e.g. '15:4'), last_book_num is used.
     """
     ref_str = ref_str.strip().rstrip('.')
+    ref_str = _normalize_roman_prefix(ref_str)
+
+    # Normalise "ver." / "vv." notation (e.g. "Jude ver. 4" -> "Jude 1:4")
+    ref_str = re.sub(r'\s+ve?r\.?\s+', ' 1:', ref_str)
+    ref_str = re.sub(r'\s+vv\.?\s+', ' 1:', ref_str)
+
+    # Rewrite single-chapter book references to explicit chapter 1
+    # e.g. "Jude 6, 7" -> "Jude 1:6, 7", "3 John 8-10" -> "3 John 1:8-10"
+    sc_match = re.match(r'^(\d?\s*\w+)\.?\s+(\d[\d,\s-]*)$', ref_str)
+    if sc_match:
+        book_check = sc_match.group(1).strip().lower().rstrip('.')
+        if BOOK_MAP.get(book_check) in SINGLE_CHAPTER_BOOKS:
+            ref_str = f"{sc_match.group(1)} 1:{sc_match.group(2).strip()}"
 
     # Handle bare chapter:verse references (e.g. "15:4" continuing from previous book)
     bare_match = re.match(r'^(\d+):(.+)$', ref_str)
@@ -142,6 +167,11 @@ def parse_reference(ref_str, last_book_num=None):
         book_num = BOOK_MAP.get(book_raw.rstrip('s'))
     if book_num is None:
         return None
+
+    # Single-chapter books: number after book name is a verse, not a chapter
+    if book_num in SINGLE_CHAPTER_BOOKS and verse_part is None:
+        verses = _parse_verses(str(chapter))
+        return (book_num, 1, verses)
 
     if verse_part is None:
         return (book_num, chapter, None)

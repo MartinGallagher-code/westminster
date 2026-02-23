@@ -145,11 +145,21 @@ ABBREV_MAP = {
 }
 
 
+def _normalize_roman_prefix(ref_str):
+    """Convert Roman numeral book prefixes (I, II, III) to Arabic (1, 2, 3)."""
+    m = re.match(r'^(III|II|I)\s+', ref_str)
+    if m:
+        roman_to_arabic = {'I': '1', 'II': '2', 'III': '3'}
+        ref_str = roman_to_arabic[m.group(1)] + ref_str[m.end(1):]
+    return ref_str
+
+
 def extract_book_number(ref_str):
     """Extract the Bible book number from a reference string like 'Rom. 2:14, 15'."""
     ref_str = ref_str.strip()
     if not ref_str:
         return None
+    ref_str = _normalize_roman_prefix(ref_str)
 
     # Handle "with" references - take the first part
     if ' with ' in ref_str:
