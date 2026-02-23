@@ -42,7 +42,7 @@
         {% if catechism.is_confession %}
         <h2 class="h4" data-annotatable data-content-type="question" data-question-id="{{ question.pk }}">{{ question.question_text }}</h2>
         <p class="text-muted mb-3">Section {{ question.display_number }}</p>
-        <p class="lead mt-3 answer-text" data-annotatable data-content-type="answer" data-question-id="{{ question.pk }}">{{ question.answer_text }}</p>
+        <div class="lead mt-3 answer-text" data-annotatable data-content-type="answer" data-question-id="{{ question.pk }}">{{ question.answer_text|format_confession_sections }}</div>
         {% else %}
         <h2 class="h4 question-text" data-annotatable data-content-type="question" data-question-id="{{ question.pk }}">Q{{ question.number }}. {{ question.question_text }}</h2>
         <p class="lead mt-3 answer-text" data-annotatable data-content-type="answer" data-question-id="{{ question.pk }}"><strong>A.</strong> {{ question.answer_text }}</p>

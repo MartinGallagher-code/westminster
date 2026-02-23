@@ -10,7 +10,7 @@
 
 5. **Missing scripture proof texts** — Some scripture references do not have the full Bible text attached. Audit and fill in the gaps.
 
-6. **SHC section formatting** — The Second Helvetic Confession has sections that start with all-caps text. These should be preceded by a line break and treated as the start of new sections.
+6. ~~**SHC section formatting** — The Second Helvetic Confession has sections that start with all-caps text. These should be preceded by a line break and treated as the start of new sections.~~ ✓
 
 7. ~~**Align section/question counts on document pages** — On the main page for each document, the number of sections or questions does not appear at a consistent distance, causing a staggered/ragged layout. Fix alignment.~~ ✓
 

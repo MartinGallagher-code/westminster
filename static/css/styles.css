@@ -694,6 +694,12 @@ a {
     line-height: 1.8;
 }
 
+/* Confession section headers (e.g., Second Helvetic all-caps headers) */
+.confession-section-header {
+    color: var(--wm-primary);
+    letter-spacing: 0.02em;
+}
+
 /* Commentary */
 .commentary-text {
     font-size: 0.95rem;
