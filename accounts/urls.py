@@ -27,4 +27,8 @@ urlpatterns = [
 
     path('highlights/', views.HighlightListCreateView.as_view(), name='highlight_list_create'),
     path('highlights/<int:pk>/delete/', views.HighlightDeleteView.as_view(), name='highlight_delete'),
+
+    path('comments/', views.InlineCommentListCreateView.as_view(), name='comment_list_create'),
+    path('comments/<int:pk>/update/', views.InlineCommentUpdateView.as_view(), name='comment_update'),
+    path('comments/<int:pk>/delete/', views.InlineCommentDeleteView.as_view(), name='comment_delete'),
 ]

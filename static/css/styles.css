@@ -755,6 +755,59 @@ mark.user-highlight:hover {
     background-color: #997404;
 }
 
+/* User annotations (inline comments) */
+mark.user-annotation {
+    background-color: color-mix(in srgb, var(--wm-accent) 20%, transparent);
+    border-bottom: 2px solid var(--wm-accent);
+    border-radius: 2px;
+    padding: 0 1px;
+    cursor: pointer;
+    position: relative;
+}
+
+mark.user-annotation:hover {
+    background-color: color-mix(in srgb, var(--wm-accent) 35%, transparent);
+}
+
+mark.user-annotation::after {
+    content: '\F249';
+    font-family: 'bootstrap-icons';
+    font-size: 0.6em;
+    vertical-align: super;
+    margin-left: 2px;
+    color: var(--wm-accent);
+    opacity: 0.7;
+}
+
+[data-bs-theme="dark"] mark.user-annotation {
+    background-color: color-mix(in srgb, var(--wm-accent) 25%, transparent);
+}
+
+[data-bs-theme="dark"] mark.user-annotation::after {
+    opacity: 0.9;
+}
+
+.annotation-popover {
+    background: var(--wm-card-bg, #fff);
+    border: 1px solid var(--wm-border, #dee2e6);
+    border-radius: 8px;
+    padding: 12px;
+    max-width: 320px;
+    z-index: 1060;
+    position: absolute;
+}
+
+.annotation-popover-header {
+    border-bottom: 1px solid var(--wm-border, #dee2e6);
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+}
+
+.annotation-popover textarea {
+    font-family: var(--bs-body-font-family);
+    font-size: 0.875rem;
+}
+
 /* ================================================================
    Navigation Components
    ================================================================ */
@@ -878,9 +931,11 @@ html {
 
 @media print {
     nav.navbar, footer, .topic-jump-nav, form,
-    .breadcrumb, .highlight-popover,
+    .breadcrumb, .highlight-popover, .annotation-popover,
     .ornamental-divider, .heading-flourish,
     .hero-bg-pattern { display: none !important; }
+    mark.user-annotation { background: none !important; border: none !important; }
+    mark.user-annotation::after { display: none !important; }
     .tab-content > .tab-pane { display: block !important; opacity: 1 !important; }
     .accordion-collapse { display: block !important; height: auto !important; }
     .nav-tabs { display: none !important; }

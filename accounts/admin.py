@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import UserNote, Highlight
+from .models import UserNote, Highlight, InlineComment
 
 
 @admin.register(UserNote)
@@ -18,3 +18,14 @@ class HighlightAdmin(admin.ModelAdmin):
     def text_preview(self, obj):
         return obj.selected_text[:80] + '...' if len(obj.selected_text) > 80 else obj.selected_text
     text_preview.short_description = 'Text'
+
+
+@admin.register(InlineComment)
+class InlineCommentAdmin(admin.ModelAdmin):
+    list_display = ('user', 'question', 'content_type_tag', 'comment_preview', 'created_at')
+    list_filter = ('user', 'content_type_tag')
+    raw_id_fields = ('question', 'commentary')
+
+    def comment_preview(self, obj):
+        return obj.comment_text[:80] + '...' if len(obj.comment_text) > 80 else obj.comment_text
+    comment_preview.short_description = 'Comment'
