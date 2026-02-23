@@ -40,16 +40,33 @@ python manage.py build_scripture_index
 
 # Three Forms of Unity
 python manage.py load_heidelberg
+python manage.py load_prooftexts --catechism heidelberg
+python manage.py load_ursinus
+python manage.py load_thelemann
 python manage.py load_belgic
+python manage.py load_prooftexts --catechism belgic
 python manage.py load_dort
+python manage.py load_prooftexts --catechism dort
 
 # 1689 London Baptist Confession
 python manage.py load_1689
+python manage.py load_prooftexts --catechism 1689
+
+# Pre-Westminster and Congregationalist Confessions
+python manage.py load_scots
+python manage.py load_prooftexts --catechism scots
+python manage.py load_irish
+python manage.py load_prooftexts --catechism irish
+python manage.py load_second_helvetic
+python manage.py load_prooftexts --catechism second-helvetic
+python manage.py load_savoy
+python manage.py load_prooftexts --catechism savoy
 
 # Comparison themes (all sets)
 python manage.py load_comparison_themes
 python manage.py load_comparison_themes --set three-forms
 python manage.py load_comparison_themes --set 1689-baptist
+python manage.py load_comparison_themes --set pre-westminster
 
 # Clear cache after data load to ensure fresh content
 python manage.py clear_cache
