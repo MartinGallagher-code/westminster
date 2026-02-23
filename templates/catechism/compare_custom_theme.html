@@ -1,17 +1,15 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}{{ theme.name }} - {{ comparison_set.name }}{% endblock %}
-{% block meta_description %}Compare what the Westminster Confession, Shorter Catechism, and Larger Catechism teach about {{ theme.name }}.{% endblock %}
-{% block og_title %}{{ theme.name }} - Compare the Reformed Standards{% endblock %}
-{% block og_description %}See how the Westminster Confession, Shorter Catechism, and Larger Catechism treat {{ theme.name }}.{% endblock %}
+{% block title %}{{ theme.name }} - Custom Comparison{% endblock %}
+{% block meta_description %}Compare what different Reformed confessions and catechisms teach about {{ theme.name }}.{% endblock %}
 
 {% block content %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{% url 'catechism:home' %}">Home</a></li>
         <li class="breadcrumb-item"><a href="{% url 'catechism:compare_index' %}">Compare</a></li>
-        <li class="breadcrumb-item"><a href="{% url 'catechism:compare_set' set_slug=comparison_set.slug %}">{{ comparison_set.name }}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'catechism:compare_custom' %}?docs={{ docs_param }}">Custom</a></li>
         <li class="breadcrumb-item active">{{ theme.name }}</li>
     </ol>
 </nav>
@@ -19,12 +17,12 @@
 <!-- Prev/Next theme navigation -->
 <div class="d-flex justify-content-between mb-3">
     {% if previous_theme %}
-    <a href="{{ previous_theme.get_absolute_url }}" class="btn btn-outline-secondary btn-sm">
+    <a href="{% url 'catechism:compare_custom_theme' theme_slug=previous_theme.slug %}?docs={{ docs_param }}" class="btn btn-outline-secondary btn-sm">
         <i class="bi bi-chevron-left me-1"></i>{{ previous_theme.name|truncatewords:5 }}
     </a>
     {% else %}<span></span>{% endif %}
     {% if next_theme %}
-    <a href="{{ next_theme.get_absolute_url }}" class="btn btn-outline-secondary btn-sm">
+    <a href="{% url 'catechism:compare_custom_theme' theme_slug=next_theme.slug %}?docs={{ docs_param }}" class="btn btn-outline-secondary btn-sm">
         {{ next_theme.name|truncatewords:5 }}<i class="bi bi-chevron-right ms-1"></i>
     </a>
     {% else %}<span></span>{% endif %}
@@ -32,7 +30,7 @@
 
 <h1 class="mb-2">{{ theme.name }}</h1>
 {% if theme.description %}
-<p class="text-muted mb-4">{{ theme.description }}</p>
+<p class="text-muted mb-3">{{ theme.description }}</p>
 {% endif %}
 
 {# Column visibility toggles #}
@@ -79,7 +77,7 @@
         </div>
     </div>
     {% empty %}
-    <p class="text-muted">No entries for this theme.</p>
+    <p class="text-muted">No entries for this theme with your selected documents.</p>
     {% endfor %}
 </div>
 {% endwith %}
@@ -87,12 +85,12 @@
 <!-- Prev/Next (bottom) -->
 <div class="d-flex justify-content-between mt-3 mb-4">
     {% if previous_theme %}
-    <a href="{{ previous_theme.get_absolute_url }}" class="btn btn-outline-secondary">
+    <a href="{% url 'catechism:compare_custom_theme' theme_slug=previous_theme.slug %}?docs={{ docs_param }}" class="btn btn-outline-secondary">
         <i class="bi bi-chevron-left me-1"></i>{{ previous_theme.name|truncatewords:5 }}
     </a>
     {% else %}<span></span>{% endif %}
     {% if next_theme %}
-    <a href="{{ next_theme.get_absolute_url }}" class="btn btn-outline-secondary">
+    <a href="{% url 'catechism:compare_custom_theme' theme_slug=next_theme.slug %}?docs={{ docs_param }}" class="btn btn-outline-secondary">
         {{ next_theme.name|truncatewords:5 }}<i class="bi bi-chevron-right ms-1"></i>
     </a>
     {% else %}<span></span>{% endif %}

@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Support - Studying the Reformed Standards{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <h1 class="mb-3"><i class="bi bi-heart me-2"></i>Support This Project</h1>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <p>
+                    <strong>Studying the Reformed Standards</strong> is a free resource for everyone.
+                    All features &mdash; notes, annotations, highlights, comparisons, commentary &mdash;
+                    are and will remain completely free.
+                </p>
+                <p class="mb-0">
+                    If this tool has been a blessing to your study of God&rsquo;s Word and you would
+                    like to help keep it running, consider becoming a monthly supporter.
+                    You choose the amount.
+                </p>
+            </div>
+        </div>
+
+        {% if subscription and subscription.is_active %}
+        <div class="alert alert-success" role="alert">
+            <h5 class="alert-heading">
+                <i class="bi bi-bookmark-star-fill me-2"></i>Thank you, supporter!
+            </h5>
+            <p class="mb-1">
+                Your subscription is <strong>{{ subscription.get_status_display }}</strong>.
+            </p>
+            {% if subscription.current_period_end %}
+            <p class="mb-0 small text-muted">
+                Current period ends: {{ subscription.current_period_end|date:"F j, Y" }}
+            </p>
+            {% endif %}
+        </div>
+
+        <form method="post" action="{% url 'accounts:support_portal' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-primary">
+                <i class="bi bi-gear me-1"></i>Manage Subscription
+            </button>
+        </form>
+
+        {% elif subscription and subscription.status == 'canceled' %}
+        <div class="alert alert-secondary" role="alert">
+            <p class="mb-0">
+                Your previous subscription has ended. Thank you for your past support!
+                You can resubscribe below.
+            </p>
+        </div>
+
+        <form method="post" action="{% url 'accounts:support_checkout' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary btn-lg">
+                <i class="bi bi-heart-fill me-2"></i>Subscribe Again
+            </button>
+        </form>
+
+        {% else %}
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center py-4">
+                <h4 class="card-title">Monthly Supporter</h4>
+                <p class="text-muted my-3">Choose your own monthly amount</p>
+                <ul class="list-unstyled text-start mx-auto" style="max-width: 300px;">
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Supporter badge on your profile</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Help keep the site running</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Cancel anytime</li>
+                </ul>
+                <form method="post" action="{% url 'accounts:support_checkout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary btn-lg mt-3">
+                        <i class="bi bi-heart-fill me-2"></i>Become a Supporter
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

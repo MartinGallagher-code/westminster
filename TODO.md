@@ -8,7 +8,7 @@
 
 4. ~~**Expand document name abbreviations** — Use full document names where it makes sense, rather than only showing abbreviations.~~ ✓
 
-5. **Missing scripture proof texts** — Some scripture references do not have the full Bible text attached. Audit and fill in the gaps.
+5. ~~**Missing scripture proof texts** — Some scripture references do not have the full Bible text attached. Audit and fill in the gaps.~~ ✓
 
 6. ~~**SHC section formatting** — The Second Helvetic Confession has sections that start with all-caps text. These should be preceded by a line break and treated as the start of new sections.~~ ✓
 
@@ -18,7 +18,7 @@
 
 9. ~~**Rename "Compare All Three" button** — On the home page, the "Compare All Three" button no longer makes sense now that there are more than three documents. Rename it to something like "Compare Documents".~~ ✓
 
-10. **Update scripture index** — Ensure the scripture index includes all scripture references from all documents.
+10. ~~**Update scripture index** — Ensure the scripture index includes all scripture references from all documents.~~ ✓
 
 11. ~~**Full document names on search results** — On the search results page, use the full name of the document rather than its abbreviation.~~ ✓
 

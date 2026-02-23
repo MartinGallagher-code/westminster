@@ -12,17 +12,6 @@
 </div>
 {% endif %}
 
-<nav class="mb-4 topic-jump-nav" aria-label="{{ catechism.topic_name }} navigation">
-    <div class="d-flex flex-wrap gap-1 align-items-center">
-        <span class="text-body-secondary small fw-semibold me-1">Jump to:</span>
-        {% for group in grouped %}
-        <a href="#{{ group.topic.slug }}" class="badge text-decoration-none bg-body-secondary text-body-emphasis topic-jump-link">
-            {% if catechism.is_confession %}Ch. {{ group.topic.order }}{% else %}{{ group.topic.name|truncatewords:4 }}{% endif %}
-        </a>
-        {% endfor %}
-    </div>
-</nav>
-
 <div class="accordion" id="topic-accordion">
 {% for group in grouped %}
 <div class="accordion-item" id="{{ group.topic.slug }}">

@@ -5,6 +5,21 @@
 {% block content %}
 <h1 class="mb-3">My Notes & Annotations</h1>
 
+{% if is_supporter %}
+<div class="alert alert-success d-flex align-items-center mb-4" role="alert">
+    <i class="bi bi-bookmark-star-fill me-2 fs-4" style="color: var(--wm-accent);"></i>
+    <div>
+        <strong>Supporter</strong> &mdash; Thank you for supporting this project!
+        <a href="{% url 'accounts:support' %}" class="alert-link ms-2">Manage subscription</a>
+    </div>
+</div>
+{% else %}
+<div class="alert alert-light border mb-4" role="alert">
+    <i class="bi bi-heart me-2"></i>
+    Enjoying the site? <a href="{% url 'accounts:support' %}" class="alert-link">Become a supporter</a> to help keep it running.
+</div>
+{% endif %}
+
 {% if notes or inline_comments %}
 <p class="text-muted">
     You have {{ notes|length }} note{{ notes|length|pluralize }}

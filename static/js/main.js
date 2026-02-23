@@ -106,28 +106,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Topic accordion: expand + scroll when jump-to link clicked or URL has hash
-    function openAccordionForHash(hash) {
-        if (!hash) return;
-        var item = document.querySelector(hash + '.accordion-item');
-        if (!item) return;
-        var collapse = item.querySelector('.accordion-collapse');
-        if (collapse && !collapse.classList.contains('show')) {
-            var bsCollapse = new bootstrap.Collapse(collapse, { toggle: true });
-        }
-        setTimeout(function() { item.scrollIntoView({ behavior: 'smooth' }); }, 150);
-    }
-    if (window.location.hash && document.getElementById('topic-accordion')) {
-        openAccordionForHash(window.location.hash);
-    }
-    document.querySelectorAll('.topic-jump-link').forEach(function(link) {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            var hash = this.getAttribute('href');
-            history.replaceState(null, '', hash);
-            openAccordionForHash(hash);
-        });
-    });
 
     // Add Bootstrap classes to Django form inputs that don't have them
     var formInputs = document.querySelectorAll('form input[type="text"], form input[type="email"], form input[type="password"]');

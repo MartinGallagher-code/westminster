@@ -1,17 +1,26 @@
 import json
+import logging
+from datetime import datetime, timezone
 
 import bleach
+import stripe
+from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 from django.views.generic import CreateView, ListView, DeleteView, View
 from django.http import HttpResponseRedirect, JsonResponse
 from django_ratelimit.decorators import ratelimit
 
-from .models import UserNote, Highlight, InlineComment
+from .models import UserNote, Highlight, InlineComment, SupporterSubscription
 from .forms import SignupForm
 from catechism.models import Question, Commentary
+
+logger = logging.getLogger(__name__)
 
 
 @method_decorator(ratelimit(key='ip', rate='5/m', method='POST', block=True), name='post')
@@ -199,3 +208,224 @@ class InlineCommentDeleteView(LoginRequiredMixin, View):
         if deleted:
             return JsonResponse({'deleted': True})
         return JsonResponse({'error': 'Not found'}, status=404)
+
+
+# --- Supporter subscription views ---
+
+
+class SupportPageView(LoginRequiredMixin, View):
+    """Display the support page with subscription status and checkout button."""
+
+    def get(self, request):
+        subscription = SupporterSubscription.objects.filter(
+            user=request.user
+        ).first()
+        return render(request, 'accounts/support.html', {
+            'subscription': subscription,
+        })
+
+
+class CreateCheckoutSessionView(LoginRequiredMixin, View):
+    """Create a Stripe Checkout session and redirect the user to it."""
+
+    def post(self, request):
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+
+        subscription = SupporterSubscription.objects.filter(
+            user=request.user
+        ).first()
+
+        if subscription and subscription.is_active:
+            messages.info(request, 'You already have an active subscription.')
+            return HttpResponseRedirect(reverse_lazy('accounts:support'))
+
+        if subscription and subscription.stripe_customer_id:
+            customer_id = subscription.stripe_customer_id
+        else:
+            customer = stripe.Customer.create(
+                email=request.user.email,
+                metadata={'django_user_id': str(request.user.pk)},
+            )
+            customer_id = customer.id
+            SupporterSubscription.objects.update_or_create(
+                user=request.user,
+                defaults={
+                    'stripe_customer_id': customer_id,
+                    'status': 'incomplete',
+                }
+            )
+
+        domain = request.build_absolute_uri('/')[:-1]
+
+        checkout_session = stripe.checkout.Session.create(
+            customer=customer_id,
+            payment_method_types=['card'],
+            line_items=[{
+                'price': settings.STRIPE_PRICE_ID,
+                'quantity': 1,
+            }],
+            mode='subscription',
+            success_url=domain + '/accounts/support/success/'
+            '?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url=domain + '/accounts/support/cancel/',
+            metadata={'django_user_id': str(request.user.pk)},
+        )
+
+        return HttpResponseRedirect(checkout_session.url)
+
+
+class CheckoutSuccessView(LoginRequiredMixin, View):
+    """Display a thank-you page after successful checkout."""
+
+    def get(self, request):
+        return render(request, 'accounts/support_success.html')
+
+
+class CheckoutCancelView(LoginRequiredMixin, View):
+    """Display a page when the user cancels checkout."""
+
+    def get(self, request):
+        messages.info(
+            request,
+            'Checkout was cancelled. You can subscribe any time.'
+        )
+        return HttpResponseRedirect(reverse_lazy('accounts:support'))
+
+
+class CustomerPortalView(LoginRequiredMixin, View):
+    """Redirect authenticated user to the Stripe Customer Portal."""
+
+    def post(self, request):
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        subscription = SupporterSubscription.objects.filter(
+            user=request.user
+        ).first()
+
+        if not subscription or not subscription.stripe_customer_id:
+            messages.error(request, 'No subscription found.')
+            return HttpResponseRedirect(reverse_lazy('accounts:support'))
+
+        domain = request.build_absolute_uri('/')[:-1]
+        portal_session = stripe.billing_portal.Session.create(
+            customer=subscription.stripe_customer_id,
+            return_url=domain + '/accounts/dashboard/',
+        )
+        return HttpResponseRedirect(portal_session.url)
+
+
+@csrf_exempt
+@require_POST
+def stripe_webhook(request):
+    """Handle Stripe webhook events for subscription lifecycle."""
+    payload = request.body
+    sig_header = request.META.get('HTTP_STRIPE_SIGNATURE', '')
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
+        )
+    except ValueError:
+        logger.warning('Stripe webhook: invalid payload')
+        return JsonResponse({'error': 'Invalid payload'}, status=400)
+    except stripe.error.SignatureVerificationError:
+        logger.warning('Stripe webhook: invalid signature')
+        return JsonResponse({'error': 'Invalid signature'}, status=400)
+
+    event_type = event['type']
+    data_object = event['data']['object']
+
+    if event_type == 'checkout.session.completed':
+        _handle_checkout_completed(data_object)
+    elif event_type == 'customer.subscription.updated':
+        _handle_subscription_updated(data_object)
+    elif event_type == 'customer.subscription.deleted':
+        _handle_subscription_deleted(data_object)
+    elif event_type == 'invoice.payment_failed':
+        _handle_payment_failed(data_object)
+    else:
+        logger.info('Stripe webhook: unhandled event type %s', event_type)
+
+    return JsonResponse({'status': 'ok'})
+
+
+def _handle_checkout_completed(session):
+    """Checkout completed -- link subscription to user."""
+    customer_id = session.get('customer')
+    subscription_id = session.get('subscription')
+
+    if not customer_id or not subscription_id:
+        return
+
+    try:
+        sub = SupporterSubscription.objects.get(
+            stripe_customer_id=customer_id
+        )
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        stripe_sub = stripe.Subscription.retrieve(subscription_id)
+
+        sub.stripe_subscription_id = subscription_id
+        sub.status = stripe_sub.status
+        sub.current_period_end = datetime.fromtimestamp(
+            stripe_sub.current_period_end, tz=timezone.utc
+        )
+        sub.save()
+    except SupporterSubscription.DoesNotExist:
+        logger.warning(
+            'Stripe webhook: no SupporterSubscription for customer %s',
+            customer_id
+        )
+
+
+def _handle_subscription_updated(subscription):
+    """Subscription status changed (e.g., renewed, past_due)."""
+    subscription_id = subscription.get('id')
+    try:
+        sub = SupporterSubscription.objects.get(
+            stripe_subscription_id=subscription_id
+        )
+        sub.status = subscription.get('status', sub.status)
+        period_end = subscription.get('current_period_end')
+        if period_end:
+            sub.current_period_end = datetime.fromtimestamp(
+                period_end, tz=timezone.utc
+            )
+        sub.save()
+    except SupporterSubscription.DoesNotExist:
+        logger.warning(
+            'Stripe webhook: no SupporterSubscription for subscription %s',
+            subscription_id
+        )
+
+
+def _handle_subscription_deleted(subscription):
+    """Subscription canceled/ended."""
+    subscription_id = subscription.get('id')
+    try:
+        sub = SupporterSubscription.objects.get(
+            stripe_subscription_id=subscription_id
+        )
+        sub.status = 'canceled'
+        sub.save()
+    except SupporterSubscription.DoesNotExist:
+        logger.warning(
+            'Stripe webhook: no SupporterSubscription for subscription %s',
+            subscription_id
+        )
+
+
+def _handle_payment_failed(invoice):
+    """Mark subscription as past_due when payment fails."""
+    subscription_id = invoice.get('subscription')
+    if not subscription_id:
+        return
+    try:
+        sub = SupporterSubscription.objects.get(
+            stripe_subscription_id=subscription_id
+        )
+        sub.status = 'past_due'
+        sub.save()
+    except SupporterSubscription.DoesNotExist:
+        logger.warning(
+            'Stripe webhook: no SupporterSubscription for subscription %s',
+            subscription_id
+        )

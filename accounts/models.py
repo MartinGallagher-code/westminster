@@ -87,3 +87,39 @@ class InlineComment(models.Model):
     def __str__(self):
         preview = self.comment_text[:50] + '...' if len(self.comment_text) > 50 else self.comment_text
         return f"Comment by {self.user.username}: {preview}"
+
+
+class SupporterSubscription(models.Model):
+    STATUS_CHOICES = [
+        ('active', 'Active'),
+        ('past_due', 'Past Due'),
+        ('canceled', 'Canceled'),
+        ('incomplete', 'Incomplete'),
+    ]
+
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='supporter_subscription'
+    )
+    stripe_customer_id = models.CharField(max_length=255, unique=True)
+    stripe_subscription_id = models.CharField(
+        max_length=255, unique=True, null=True, blank=True
+    )
+    status = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default='incomplete'
+    )
+    current_period_end = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Supporter Subscription'
+        verbose_name_plural = 'Supporter Subscriptions'
+
+    def __str__(self):
+        return f"{self.user.username} - {self.status}"
+
+    @property
+    def is_active(self):
+        return self.status in ('active', 'past_due')
