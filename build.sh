@@ -40,6 +40,8 @@ python manage.py build_scripture_index
 
 # Three Forms of Unity
 python manage.py load_heidelberg
+python manage.py load_ursinus
+python manage.py load_thelemann
 python manage.py load_belgic
 python manage.py load_dort
 
