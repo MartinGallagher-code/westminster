@@ -21,6 +21,6 @@ services:
           name: westminster-db
           property: connectionURI
       - key: ALLOWED_HOSTS
-        value: .onrender.com
+        value: .onrender.com,.studyreformed.com
       - key: PYTHON_VERSION
         value: 3.12.0
