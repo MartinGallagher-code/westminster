@@ -179,11 +179,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # Skip if proof text source files haven't changed
-        proof_paths = [
-            settings.BASE_DIR / "data" / "proof_texts.json",
-            settings.BASE_DIR / "data" / "wlc_proof_texts.json",
-            settings.BASE_DIR / "data" / "wcf_proof_texts.json",
-        ]
+        proof_paths = sorted(
+            p for p in (settings.BASE_DIR / "data").glob("*proof_texts*.json")
+            if ' ' not in p.name  # skip duplicate/backup files
+        )
         existing = [p for p in proof_paths if p.exists()]
         if not options['rebuild'] and data_is_current("scripture-index", *existing):
             self.stdout.write("Scripture index unchanged, skipping.")

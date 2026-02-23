@@ -209,6 +209,10 @@ class Command(BaseCommand):
             '--count-only', action='store_true',
             help='Only print the count of uncached references, then exit'
         )
+        parser.add_argument(
+            '--audit', action='store_true',
+            help='Print a detailed report of missing and unparseable references by document'
+        )
 
     def handle(self, *args, **options):
         question_num = options.get('question')
@@ -229,6 +233,10 @@ class Command(BaseCommand):
                     if not ScripturePassage.objects.filter(reference=ref).exists():
                         uncached += 1
             self.stdout.write(str(uncached))
+            return
+
+        if options.get('audit'):
+            self._audit(questions)
             return
 
         total_fetched = 0
@@ -294,3 +302,68 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(
             f"\nDone: {total_fetched} fetched, {total_failed} failed"
         ))
+
+    def _audit(self, questions):
+        """Print a detailed report of missing and unparseable references."""
+        cached_refs = set(
+            ScripturePassage.objects.values_list('reference', flat=True)
+        )
+        # Group by catechism
+        by_cat = {}
+        for q in questions.select_related('catechism'):
+            refs = q.get_proof_text_list()
+            if not refs:
+                continue
+            abbr = q.catechism.abbreviation
+            if abbr not in by_cat:
+                by_cat[abbr] = {
+                    'total': 0, 'cached': 0,
+                    'missing': [], 'unparseable': [],
+                }
+            entry = by_cat[abbr]
+            last_book_num = None
+            for ref in refs:
+                entry['total'] += 1
+                if ref in cached_refs:
+                    parsed = parse_reference(ref, last_book_num)
+                    if parsed:
+                        last_book_num = parsed[0]
+                    entry['cached'] += 1
+                else:
+                    parsed = parse_reference(ref, last_book_num)
+                    if parsed:
+                        last_book_num = parsed[0]
+                        entry['missing'].append(
+                            f"  {q.catechism.item_prefix}{q.display_number}: {ref}"
+                        )
+                    else:
+                        entry['unparseable'].append(
+                            f"  {q.catechism.item_prefix}{q.display_number}: {ref}"
+                        )
+
+        grand_total = sum(e['total'] for e in by_cat.values())
+        grand_cached = sum(e['cached'] for e in by_cat.values())
+        grand_missing = sum(len(e['missing']) for e in by_cat.values())
+        grand_unparse = sum(len(e['unparseable']) for e in by_cat.values())
+
+        self.stdout.write(f"\nScripture Proof Text Audit")
+        self.stdout.write(f"{'=' * 50}")
+
+        for abbr in sorted(by_cat):
+            e = by_cat[abbr]
+            missing_count = len(e['missing'])
+            unparse_count = len(e['unparseable'])
+            self.stdout.write(
+                f"\n{abbr}: {e['cached']}/{e['total']} cached"
+                f" ({missing_count} missing, {unparse_count} unparseable)"
+            )
+            for line in e['missing']:
+                self.stdout.write(self.style.WARNING(line))
+            for line in e['unparseable']:
+                self.stdout.write(self.style.ERROR(line))
+
+        self.stdout.write(f"\n{'=' * 50}")
+        self.stdout.write(
+            f"Total: {grand_cached}/{grand_total} cached"
+            f" ({grand_missing} missing, {grand_unparse} unparseable)"
+        )
