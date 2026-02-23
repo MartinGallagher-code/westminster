@@ -79,7 +79,7 @@ ABBREV_MAP = {
     'gen': 1, 'genesis': 1,
     'ex': 2, 'exod': 2, 'exodus': 2,
     'lev': 3, 'leviticus': 3,
-    'num': 4, 'numbers': 4,
+    'num': 4, 'numbers': 4, 'numb': 4,
     'deut': 5, 'deuteronomy': 5,
     'josh': 6, 'joshua': 6,
     'judg': 7, 'judges': 7,
@@ -96,7 +96,7 @@ ABBREV_MAP = {
     'job': 18,
     'ps': 19, 'psalm': 19, 'psalms': 19, 'psa': 19,
     'prov': 20, 'proverbs': 20,
-    'ecc': 21, 'eccl': 21, 'ecclesiastes': 21,
+    'ecc': 21, 'eccl': 21, 'ecclesiastes': 21, 'eccles': 21,
     'song': 22, 'song of solomon': 22, 'cant': 22,
     'isa': 23, 'isaiah': 23,
     'jer': 24, 'jeremiah': 24,
@@ -124,7 +124,7 @@ ABBREV_MAP = {
     '1 cor': 46, '1 corinthians': 46,
     '2 cor': 47, '2 corinthians': 47,
     'gal': 48, 'galatians': 48,
-    'eph': 49, 'ephesians': 49,
+    'eph': 49, 'ephesians': 49, 'ephes': 49,
     'phil': 50, 'philippians': 50,
     'col': 51, 'colossians': 51,
     '1 thess': 52, '1 thessalonians': 52,
@@ -134,7 +134,7 @@ ABBREV_MAP = {
     'titus': 56, 'tit': 56,
     'philem': 57, 'philemon': 57,
     'heb': 58, 'hebrews': 58,
-    'jas': 59, 'james': 59,
+    'jas': 59, 'james': 59, 'jam': 59,
     '1 pet': 60, '1 peter': 60,
     '2 pet': 61, '2 peter': 61,
     '1 john': 62,
@@ -160,6 +160,7 @@ def extract_book_number(ref_str):
     if not ref_str:
         return None
     ref_str = _normalize_roman_prefix(ref_str)
+    ref_str = re.sub(r'^Song\s+of\s+Solomon\b', 'Song', ref_str, flags=re.IGNORECASE)
 
     # Handle "with" references - take the first part
     if ' with ' in ref_str:

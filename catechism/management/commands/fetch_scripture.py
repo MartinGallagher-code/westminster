@@ -14,7 +14,7 @@ BOOK_MAP = {
     'gen': 1, 'genesis': 1,
     'ex': 2, 'exod': 2, 'exodus': 2,
     'lev': 3, 'leviticus': 3,
-    'num': 4, 'numbers': 4,
+    'num': 4, 'numbers': 4, 'numb': 4,
     'deut': 5, 'deuteronomy': 5,
     'josh': 6, 'joshua': 6,
     'judg': 7, 'judges': 7,
@@ -31,8 +31,8 @@ BOOK_MAP = {
     'job': 18,
     'ps': 19, 'psalm': 19, 'psalms': 19, 'psa': 19,
     'prov': 20, 'proverbs': 20,
-    'ecc': 21, 'eccl': 21, 'ecclesiastes': 21,
-    'song': 22, 'song of solomon': 22,
+    'ecc': 21, 'eccl': 21, 'ecclesiastes': 21, 'eccles': 21,
+    'song': 22, 'song of solomon': 22, 'cant': 22,
     'isa': 23, 'isaiah': 23,
     'jer': 24, 'jeremiah': 24,
     'lam': 25, 'lamentations': 25,
@@ -60,17 +60,17 @@ BOOK_MAP = {
     '1 cor': 46, '1 corinthians': 46,
     '2 cor': 47, '2 corinthians': 47,
     'gal': 48, 'galatians': 48,
-    'eph': 49, 'ephesians': 49,
+    'eph': 49, 'ephesians': 49, 'ephes': 49,
     'phil': 50, 'philippians': 50,
     'col': 51, 'colossians': 51,
     '1 thess': 52, '1 thessalonians': 52,
     '2 thess': 53, '2 thessalonians': 53,
     '1 tim': 54, '1 timothy': 54,
     '2 tim': 55, '2 timothy': 55,
-    'titus': 56,
+    'titus': 56, 'tit': 56,
     'philem': 57, 'philemon': 57,
     'heb': 58, 'hebrews': 58,
-    'jas': 59, 'james': 59,
+    'jas': 59, 'james': 59, 'jam': 59,
     '1 pet': 60, '1 peter': 60,
     '2 pet': 61, '2 peter': 61,
     '1 john': 62,
@@ -115,6 +115,75 @@ def _normalize_roman_prefix(ref_str):
     return ref_str
 
 
+def _normalize_ref(ref_str):
+    """Normalize non-standard reference suffixes and dashes."""
+    # Normalize multi-word book names
+    ref_str = re.sub(r'^Song\s+of\s+Solomon\b', 'Song', ref_str, flags=re.IGNORECASE)
+    # Strip "throughout"
+    ref_str = re.sub(r'\s+throughout$', '', ref_str, flags=re.IGNORECASE)
+    # Strip "chap.", "chaps.", "chapters", "chapter"
+    ref_str = re.sub(r'\s+chaps?\.?$', '', ref_str, flags=re.IGNORECASE)
+    ref_str = re.sub(r'\s+chapters?$', '', ref_str, flags=re.IGNORECASE)
+    # Normalize em-dash / en-dash to hyphen
+    ref_str = ref_str.replace('\u2013', '-').replace('\u2014', '-')
+    # Handle "to the end" by converting to a large verse range
+    m = re.search(r':(\d+)\s+to\s+the\s+end$', ref_str, flags=re.IGNORECASE)
+    if m:
+        start_verse = m.group(1)
+        ref_str = ref_str[:m.start()] + ':' + start_verse + '-200'
+    return ref_str.strip()
+
+
+def expand_references(ref_str):
+    """
+    Expand a complex reference string into a list of simple ones.
+
+    Handles connectors (with/and/&), chapter ranges (Gen. 1-2),
+    comma-separated chapters (Rev. 2, 3), and suffixes (throughout,
+    chap., to the end).
+    """
+    # Split on connectors: "with", "and", "&"
+    parts = re.split(r',?\s+(?:with|and|&)\s+', ref_str)
+
+    result = []
+    for part in parts:
+        part = part.strip().rstrip(',').strip()
+        if not part:
+            continue
+
+        part = _normalize_ref(part)
+
+        # Cross-reference range: "2 Cor. 8-2 Cor. 9" (book on both sides)
+        m = re.match(r'^(.+?\s+\d+)\s*-\s*(.+?\s+\d+)$', part)
+        if m and ':' not in part:
+            result.append(m.group(1).strip())
+            result.append(m.group(2).strip())
+            continue
+
+        # Simple chapter range: "Gen. 1-2", "Job 38-41" (no colon)
+        m = re.match(r'^(.+?)\s+(\d+)\s*-\s*(\d+)$', part)
+        if m and ':' not in part:
+            book = m.group(1)
+            for ch in range(int(m.group(2)), int(m.group(3)) + 1):
+                result.append(f"{book} {ch}")
+            continue
+
+        # Comma-separated chapters: "Rev. 2, 3" (no colon, not single-chapter book)
+        m = re.match(r'^(.+?)\s+(\d+(?:\s*,\s*\d+)+)$', part)
+        if m and ':' not in part:
+            book = m.group(1)
+            book_clean = book.strip().lower().rstrip('.')
+            book_num = BOOK_MAP.get(book_clean) or BOOK_MAP.get(book_clean.rstrip('s'))
+            if book_num and book_num not in SINGLE_CHAPTER_BOOKS:
+                for ch in m.group(2).split(','):
+                    result.append(f"{book} {ch.strip()}")
+                continue
+
+        result.append(part)
+
+    return result if result else [ref_str]
+
+
 def parse_reference(ref_str, last_book_num=None):
     """
     Parse a reference string like '1 Cor. 10:31' into (book_num, chapter, verses).
@@ -124,6 +193,9 @@ def parse_reference(ref_str, last_book_num=None):
     """
     ref_str = ref_str.strip().rstrip('.')
     ref_str = _normalize_roman_prefix(ref_str)
+    # Normalize multi-word book names and dashes
+    ref_str = re.sub(r'^Song\s+of\s+Solomon\b', 'Song', ref_str, flags=re.IGNORECASE)
+    ref_str = ref_str.replace('\u2013', '-').replace('\u2014', '-')
 
     # Normalise "ver." / "vv." notation (e.g. "Jude ver. 4" -> "Jude 1:4")
     ref_str = re.sub(r'\s+ve?r\.?\s+', ' 1:', ref_str)
@@ -279,14 +351,10 @@ class Command(BaseCommand):
 
             self.stdout.write(f"\nQ{q.number}: {len(refs)} references")
 
-            # Expand "with" references: "Heb. 12:25 with 2 Cor. 13:3" -> two refs
+            # Expand compound references into simple ones
             expanded_refs = []
             for ref_str in refs:
-                if ' with ' in ref_str:
-                    parts = ref_str.split(' with ')
-                    expanded_refs.extend(p.strip() for p in parts)
-                else:
-                    expanded_refs.append(ref_str)
+                expanded_refs.extend(expand_references(ref_str))
 
             last_book_num = None
 
@@ -353,23 +421,25 @@ class Command(BaseCommand):
             entry = by_cat[abbr]
             last_book_num = None
             for ref in refs:
-                entry['total'] += 1
-                if ref in cached_refs:
-                    parsed = parse_reference(ref, last_book_num)
-                    if parsed:
-                        last_book_num = parsed[0]
-                    entry['cached'] += 1
-                else:
-                    parsed = parse_reference(ref, last_book_num)
-                    if parsed:
-                        last_book_num = parsed[0]
-                        entry['missing'].append(
-                            f"  {q.catechism.item_prefix}{q.display_number}: {ref}"
-                        )
+                expanded = expand_references(ref)
+                for sub_ref in expanded:
+                    entry['total'] += 1
+                    if sub_ref in cached_refs:
+                        parsed = parse_reference(sub_ref, last_book_num)
+                        if parsed:
+                            last_book_num = parsed[0]
+                        entry['cached'] += 1
                     else:
-                        entry['unparseable'].append(
-                            f"  {q.catechism.item_prefix}{q.display_number}: {ref}"
-                        )
+                        parsed = parse_reference(sub_ref, last_book_num)
+                        if parsed:
+                            last_book_num = parsed[0]
+                            entry['missing'].append(
+                                f"  {q.catechism.item_prefix}{q.display_number}: {sub_ref}"
+                            )
+                        else:
+                            entry['unparseable'].append(
+                                f"  {q.catechism.item_prefix}{q.display_number}: {sub_ref}"
+                            )
 
         grand_total = sum(e['total'] for e in by_cat.values())
         grand_cached = sum(e['cached'] for e in by_cat.values())
