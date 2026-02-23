@@ -74,37 +74,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Quick Jump form
-    var form = document.getElementById('quick-jump-form');
-    if (form) {
-        var catSelect = document.getElementById('quick-jump-catechism');
-        var numInput = document.getElementById('quick-jump-input');
-
-        // Set initial max and update when catechism selection changes
-        if (catSelect) {
-            if (catSelect.options.length) {
-                var initSelected = catSelect.options[catSelect.selectedIndex];
-                numInput.max = initSelected.getAttribute('data-max') || 999;
-            }
-            catSelect.addEventListener('change', function() {
-                var selected = catSelect.options[catSelect.selectedIndex];
-                numInput.max = selected.getAttribute('data-max') || 999;
-            });
-        }
-
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            var num = parseInt(numInput.value);
-            var slug = catSelect ? catSelect.value : 'wsc';
-            var selected = catSelect ? catSelect.options[catSelect.selectedIndex] : null;
-            var max = selected ? parseInt(selected.getAttribute('data-max')) : 999;
-            var docType = selected ? selected.getAttribute('data-doc-type') : 'catechism';
-            var pathSegment = docType === 'confession' ? 'sections' : 'questions';
-            if (num >= 1 && num <= max) {
-                window.location.href = '/' + slug + '/' + pathSegment + '/' + num + '/';
-            }
-        });
-    }
 
     // Persist active tab across question navigation
     var tabButtons = document.querySelectorAll('[data-bs-toggle="tab"]');

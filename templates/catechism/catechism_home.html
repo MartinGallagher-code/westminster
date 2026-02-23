@@ -41,8 +41,8 @@
             <ul class="list-group list-group-flush">
                 {% for topic in topics %}
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <a href="{{ topic.get_absolute_url }}">{{ topic.name }}</a>
-                    <span class="badge bg-secondary rounded-pill">
+                    <a href="{{ topic.get_absolute_url }}" class="text-truncate me-2">{{ topic.name }}</a>
+                    <span class="badge bg-secondary rounded-pill text-nowrap flex-shrink-0">
                         {{ catechism.item_prefix }}{{ topic.display_start }}&ndash;{{ topic.display_end }}
                     </span>
                 </li>

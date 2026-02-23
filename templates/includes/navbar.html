@@ -15,11 +15,16 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
-                {% for cat in catechisms %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ cat.get_item_list_url }}">{{ cat.abbreviation }}</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-journal-bookmark me-1"></i>Documents
+                    </a>
+                    <ul class="dropdown-menu">
+                        {% for cat in catechisms %}
+                        <li><a class="dropdown-item" href="{{ cat.get_item_list_url }}">{{ cat.name }}</a></li>
+                        {% endfor %}
+                    </ul>
                 </li>
-                {% endfor %}
             </ul>
             <ul class="navbar-nav me-2">
                 <li class="nav-item">
@@ -34,18 +39,6 @@
                        placeholder="Search..." value="{{ query|default:'' }}"
                        aria-label="Search the Reformed Standards">
                 <button class="btn btn-outline-light btn-sm" type="submit"><i class="bi bi-search"></i></button>
-            </form>
-            <form id="quick-jump-form" class="d-flex me-3">
-                <select id="quick-jump-catechism" class="form-select form-select-sm me-1" style="width: 80px;"
-                        aria-label="Select catechism">
-                    {% for cat in catechisms %}
-                    <option value="{{ cat.slug }}" data-max="{{ cat.total_questions }}" data-prefix="{{ cat.item_prefix }}" data-doc-type="{{ cat.document_type }}">{{ cat.abbreviation }}</option>
-                    {% endfor %}
-                </select>
-                <input type="number" class="form-control form-control-sm me-1" id="quick-jump-input"
-                       min="1" placeholder="#" style="width: 70px;"
-                       aria-label="Question or section number">
-                <button class="btn btn-outline-light btn-sm" type="submit"><i class="bi bi-arrow-right-circle"></i></button>
             </form>
             <div class="dropdown me-3">
                 <button class="btn btn-outline-light btn-sm" type="button"

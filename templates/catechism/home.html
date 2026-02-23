@@ -41,7 +41,7 @@
                 <i class="bi bi-book me-2"></i>Start with the Shorter Catechism
             </a>
             <a href="{% url 'catechism:compare_index' %}" class="btn btn-outline-secondary btn-lg px-4">
-                <i class="bi bi-layout-split me-2"></i>Compare All Three
+                <i class="bi bi-layout-split me-2"></i>Compare Documents
             </a>
         </div>
     </div>
@@ -104,8 +104,8 @@
 </details>
 {% endif %}
 
-{# ── Section 3: The Three Documents ── #}
-<h2 class="h5 text-body-secondary mb-3 section-heading">The Three Documents</h2>
+{# ── Section 3: Documents ── #}
+<h2 class="h5 text-body-secondary mb-3 section-heading">Documents</h2>
 <div class="row g-3 mb-4">
     {% for cat in catechisms %}
     <div class="col-md-4">
@@ -145,7 +145,7 @@
                 </svg>
                 <h6 class="card-title">Search</h6>
                 <p class="card-text small text-body-secondary">
-                    Search across all three documents by keyword.
+                    Search across all documents by keyword.
                 </p>
                 <a href="{% url 'catechism:search' %}" class="btn btn-outline-primary btn-sm">
                     Search <i class="bi bi-chevron-right ms-1"></i>
@@ -191,7 +191,7 @@
                 </svg>
                 <h6 class="card-title">Compare Standards</h6>
                 <p class="card-text small text-body-secondary">
-                    See how the Confession and Catechisms treat the same topics.
+                    Compare how different documents treat the same topics.
                 </p>
                 <a href="{% url 'catechism:compare_index' %}" class="btn btn-outline-primary btn-sm">
                     Compare <i class="bi bi-chevron-right ms-1"></i>

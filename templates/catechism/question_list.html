@@ -50,7 +50,7 @@
                 {% for q in group.questions %}
                 <a href="{{ q.get_absolute_url }}" class="list-group-item list-group-item-action py-2 px-0 border-0">
                     {% if catechism.is_confession %}
-                    <span class="text-body-secondary me-2">&sect;{{ q.display_number }}</span>
+                    <span class="text-body-secondary me-2">{{ q.display_number }}</span>
                     {{ q.answer_text|truncatewords:20 }}
                     {% else %}
                     <span class="fw-semibold me-1">Q{{ q.number }}.</span>
