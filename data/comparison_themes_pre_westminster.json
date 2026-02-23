@@ -1,0 +1,158 @@
+[
+  {
+    "name": "Holy Scripture",
+    "slug": "holy-scripture",
+    "description": "The authority, sufficiency, and interpretation of Holy Scripture as the rule of faith and life.",
+    "locus": "Prolegomena",
+    "order": 1,
+    "entries": {
+      "wcf": [1, 10],
+      "scots": [19, 19],
+      "irish": [1, 7],
+      "second-helvetic": [1, 2]
+    }
+  },
+  {
+    "name": "God and the Holy Trinity",
+    "slug": "god-and-the-holy-trinity",
+    "description": "The one true God: His being, attributes, and the three persons of the Trinity.",
+    "locus": "Theology Proper",
+    "order": 2,
+    "entries": {
+      "wcf": [11, 13],
+      "scots": [1, 1],
+      "irish": [8, 10],
+      "second-helvetic": [3, 5]
+    }
+  },
+  {
+    "name": "God's Eternal Decree and Predestination",
+    "slug": "gods-eternal-decree",
+    "description": "The eternal, wise, and holy counsel of God's will, including election, predestination, and reprobation.",
+    "locus": "Theology Proper",
+    "order": 3,
+    "entries": {
+      "wcf": [14, 21],
+      "scots": [8, 8],
+      "irish": [11, 17],
+      "second-helvetic": [10, 10]
+    }
+  },
+  {
+    "name": "Creation and Providence",
+    "slug": "creation-and-providence",
+    "description": "God's work of creating all things and His ongoing preservation and government of the world.",
+    "locus": "Creation and Providence",
+    "order": 4,
+    "entries": {
+      "wcf": [22, 30],
+      "scots": [2, 2],
+      "irish": [18, 21],
+      "second-helvetic": [6, 7]
+    }
+  },
+  {
+    "name": "The Fall and Original Sin",
+    "slug": "fall-and-original-sin",
+    "description": "The fall of man, original sin, the corruption of human nature, and the state of free will.",
+    "locus": "Hamartiology",
+    "order": 5,
+    "entries": {
+      "wcf": [31, 55],
+      "scots": [3, 3],
+      "irish": [22, 28],
+      "second-helvetic": [8, 9]
+    }
+  },
+  {
+    "name": "Christ the Mediator",
+    "slug": "christ-the-mediator",
+    "description": "The person, natures, offices, and saving work of the Lord Jesus Christ as the only Mediator between God and man.",
+    "locus": "Christology",
+    "order": 6,
+    "entries": {
+      "wcf": [37, 50],
+      "scots": [4, 11],
+      "irish": [29, 33],
+      "second-helvetic": [11, 11]
+    }
+  },
+  {
+    "name": "Salvation: Calling, Justification, and Sanctification",
+    "slug": "salvation",
+    "description": "The application of redemption: effectual calling, justification by faith alone, adoption, sanctification, repentance, and perseverance of the saints.",
+    "locus": "Soteriology",
+    "order": 7,
+    "entries": {
+      "wcf": [56, 92],
+      "scots": [12, 15],
+      "irish": [34, 45],
+      "second-helvetic": [14, 16]
+    }
+  },
+  {
+    "name": "The Law and the Gospel",
+    "slug": "the-law-and-the-gospel",
+    "description": "The moral law of God, its uses under the covenant of grace, and the gospel of Jesus Christ.",
+    "locus": "The Law of God",
+    "order": 8,
+    "entries": {
+      "wcf": [93, 111],
+      "scots": null,
+      "irish": [46, 56],
+      "second-helvetic": [12, 13]
+    }
+  },
+  {
+    "name": "The Church and Its Government",
+    "slug": "the-church",
+    "description": "The visible and invisible church, its marks, officers, councils, and the communion of saints.",
+    "locus": "Ecclesiology",
+    "order": 9,
+    "entries": {
+      "wcf": [129, 166],
+      "scots": [16, 20],
+      "irish": [68, 84],
+      "second-helvetic": [17, 18]
+    }
+  },
+  {
+    "name": "The Sacraments: Baptism and the Lord's Supper",
+    "slug": "the-sacraments",
+    "description": "The nature and efficacy of the sacraments, the administration of baptism, and the Lord's Supper.",
+    "locus": "Ecclesiology",
+    "order": 10,
+    "entries": {
+      "wcf": [138, 157],
+      "scots": [21, 23],
+      "irish": [85, 100],
+      "second-helvetic": [19, 21]
+    }
+  },
+  {
+    "name": "The Civil Magistrate",
+    "slug": "the-civil-magistrate",
+    "description": "The authority and duties of the civil magistrate in relation to the church, oaths, and marriage.",
+    "locus": "Christian Life",
+    "order": 11,
+    "entries": {
+      "wcf": [112, 128],
+      "scots": [24, 24],
+      "irish": [57, 67],
+      "second-helvetic": [29, 30]
+    }
+  },
+  {
+    "name": "Death, Resurrection, and Last Judgment",
+    "slug": "death-resurrection-and-last-judgment",
+    "description": "The state of souls after death, the resurrection of the body, and the final judgment at the last day.",
+    "locus": "Eschatology",
+    "order": 12,
+    "entries": {
+      "wcf": [167, 172],
+      "scots": [17, 17],
+      "irish": [101, 104],
+      "second-helvetic": [26, 26]
+    }
+  }
+]

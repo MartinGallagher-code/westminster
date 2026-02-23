@@ -27,15 +27,29 @@ COMPARISON_SETS = {
         'data_version_key': 'comparison-themes-tfu',
     },
     '1689-baptist': {
-        'name': 'Reformed Baptist Confessions',
+        'name': 'Confessional Lineage: Westminster to Baptist',
         'description': (
-            'Compare the Westminster Confession of Faith with the 1689 '
-            'London Baptist Confession side-by-side, highlighting key '
-            'differences on baptism, church government, and the covenant.'
+            'Compare the Westminster Confession of Faith (1646), the '
+            'Savoy Declaration (1658), and the 1689 London Baptist '
+            'Confession side-by-side, tracing the evolution of Reformed '
+            'confessional theology from Presbyterian to Congregationalist '
+            'to Baptist polity.'
         ),
         'order': 3,
         'file': 'comparison_themes_1689.json',
         'data_version_key': 'comparison-themes-1689',
+    },
+    'pre-westminster': {
+        'name': 'Pre-Westminster Confessions',
+        'description': (
+            'Compare the Westminster Confession with its historical '
+            'predecessors: the Scots Confession (1560), Second Helvetic '
+            'Confession (1566), and Irish Articles of Religion (1615) — '
+            'documents that shaped the Westminster Assembly\'s work.'
+        ),
+        'order': 4,
+        'file': 'comparison_themes_pre_westminster.json',
+        'data_version_key': 'comparison-themes-pre-westminster',
     },
 }
 

@@ -1,0 +1,210 @@
+#!/usr/bin/env python3
+"""Generate 1689 LBCF proof texts JSON from the lwalen/lbcf markdown source.
+
+The proof texts are from the CC0-licensed lwalen/lbcf repository.
+"""
+import json
+import re
+import sys
+from pathlib import Path
+
+# 1689 proof texts keyed by (chapter, paragraph)
+# Extracted from https://github.com/lwalen/lbcf (CC0 license)
+PROOF_TEXTS = {
+    (1, 1): "2 Timothy 3:15-17; Isaiah 8:20; Luke 16:29, 31; Ephesians 2:20; Romans 1:19-21; Romans 2:14, 15; Psalms 19:1-3; Hebrews 1:1; Proverbs 22:19-21; Romans 15:4; 2 Peter 1:19, 20",
+    (1, 2): "2 Timothy 3:16",
+    (1, 3): "Luke 24:27, 44; Romans 3:2",
+    (1, 4): "2 Peter 1:19-21; 2 Timothy 3:16; 2 Thessalonians 2:13; 1 John 5:9",
+    (1, 5): "John 16:13, 14; 1 Corinthians 2:10-12; 1 John 2:20, 27",
+    (1, 6): "2 Timothy 3:15-17; Galatians 1:8, 9; John 6:45; 1 Corinthians 2:9-12; 1 Corinthians 11:13, 14; 1 Corinthians 14:26, 40",
+    (1, 7): "2 Peter 3:16; Psalms 19:7; Psalms 119:130",
+    (1, 8): "Romans 3:2; Isaiah 8:20; Acts 15:15; John 5:39; 1 Corinthians 14:6, 9, 11, 12, 24, 28; Colossians 3:16",
+    (1, 9): "2 Peter 1:20, 21; Acts 15:15, 16",
+    (1, 10): "Matthew 22:29, 31, 32; Ephesians 2:20; Acts 28:23",
+    (2, 1): "1 Corinthians 8:4, 6; Deuteronomy 6:4; Jeremiah 10:10; Isaiah 48:12; Exodus 3:14; John 4:24; 1 Timothy 1:17; Deuteronomy 4:15, 16; Malachi 3:6; 1 Kings 8:27; Jeremiah 23:23; Psalms 90:2; Genesis 17:1; Isaiah 6:3; Psalms 115:3; Isaiah 46:10; Proverbs 16:4; Romans 11:36; Exodus 34:6, 7; Hebrews 11:6; Nehemiah 9:32, 33; Psalms 5:5, 6; Exodus 34:7; Nahum 1:2, 3",
+    (2, 2): "John 5:26; Psalms 148:13; Psalms 119:68; Job 22:2, 3; Romans 11:34-36; Daniel 4:25, 34, 35; Hebrews 4:13; Ezekiel 11:5; Acts 15:18; Psalms 145:17; Revelation 5:12-14",
+    (2, 3): "1 John 5:7; Matthew 28:19; 2 Corinthians 13:14; Exodus 3:14; John 14:11; 1 Corinthians 8:6; John 1:14, 18; John 15:26; Galatians 4:6",
+    (3, 1): "Isaiah 46:10; Ephesians 1:11; Hebrews 6:17; Romans 9:15, 18; James 1:13; 1 John 1:5; Acts 4:27, 28; John 19:11; Numbers 23:19; Ephesians 1:3-5",
+    (3, 2): "Acts 15:18; Romans 9:11, 13, 16, 18",
+    (3, 3): "1 Timothy 5:21; Matthew 25:34; Ephesians 1:5, 6; Romans 9:22, 23; Jude 4",
+    (3, 4): "2 Timothy 2:19; John 13:18",
+    (3, 5): "Ephesians 1:4, 9, 11; Romans 8:30; 2 Timothy 1:9; 1 Thessalonians 5:9; Romans 9:13, 16; Ephesians 2:5, 12",
+    (3, 6): "1 Peter 1:2; 2 Thessalonians 2:13; 1 Thessalonians 5:9, 10; Romans 8:30; 2 Thessalonians 2:13; 1 Peter 1:5; John 10:26; John 17:9; John 6:64",
+    (3, 7): "1 Thessalonians 1:4, 5; 2 Peter 1:10; Ephesians 1:6; Romans 11:33; Romans 11:5, 6, 20; Luke 10:20",
+    (4, 1): "John 1:2, 3; Hebrews 1:2; Job 26:13; Romans 1:20; Colossians 1:16; Genesis 1:31",
+    (4, 2): "Genesis 1:27; Genesis 2:7; Ecclesiastes 7:29; Genesis 1:26; Romans 2:14, 15; Genesis 3:6",
+    (4, 3): "Genesis 2:17; Genesis 1:26, 28",
+    (5, 1): "Hebrews 1:3; Job 38:11; Isaiah 46:10, 11; Psalms 135:6; Matthew 10:29-31; Ephesians 1:11",
+    (5, 2): "Acts 2:23; Proverbs 16:33; Genesis 8:22",
+    (5, 3): "Acts 27:31, 44; Isaiah 55:10, 11; Hosea 1:7; Romans 4:19-21; Daniel 3:27",
+    (5, 4): "Romans 11:32-34; 2 Samuel 24:1; 1 Chronicles 21:1; 2 Kings 19:28; Psalms 76:10; Genesis 1:20; Isaiah 10:6, 7, 12; Psalms 1:21; 1 John 2:16",
+    (5, 5): "2 Chronicles 32:25, 26, 31; 2 Corinthians 12:7-9; Romans 8:28",
+    (5, 6): "Romans 1:24-26, 28; Romans 11:7, 8; Deuteronomy 29:4; Matthew 13:12; Deuteronomy 2:30; 2 Kings 8:12, 13; Psalms 81:11, 12; 2 Thessalonians 2:10-12; Exodus 8:15, 32; Isaiah 6:9, 10; 1 Peter 2:7, 8",
+    (5, 7): "1 Timothy 4:10; Amos 9:8, 9; Isaiah 43:3-5",
+    (6, 1): "Genesis 2:16, 17; Genesis 3:12, 13; 2 Corinthians 11:3",
+    (6, 2): "Romans 3:23; Romans 5:12; Titus 1:15; Genesis 6:5; Jeremiah 17:9; Romans 3:10-19",
+    (6, 3): "Romans 5:12-19; 1 Corinthians 15:21, 22, 45, 49; Psalms 51:5; Job 14:4; Ephesians 2:3; Romans 6:20; Romans 5:12; Hebrews 2:14, 15; 1 Thessalonians 1:10",
+    (6, 4): "Romans 8:7; Colossians 1:21; James 1:14, 15; Matthew 15:19",
+    (6, 5): "Romans 7:18, 23; Ecclesiastes 7:20; 1 John 1:8; Romans 7:23-25; Galatians 5:17",
+    (7, 1): "Luke 17:10; Job 35:7, 8",
+    (7, 2): "Genesis 2:17; Galatians 3:10; Romans 3:20, 21; Romans 8:3; Mark 16:15, 16; John 3:16; Ezekiel 36:26, 27; John 6:44, 45; Psalms 110:3",
+    (7, 3): "Genesis 3:15; Hebrews 1:1; 2 Timothy 1:9; Titus 1:2; Hebrews 11:6, 13; Romans 4:1, 2; Acts 4:12; John 8:56",
+    (8, 1): "Isaiah 42:1; 1 Peter 1:19, 20; Acts 3:22; Hebrews 5:5, 6; Psalms 2:6; Luke 1:33; Ephesians 1:22, 23; Hebrews 1:2; Acts 17:31; Isaiah 53:10; John 17:6; Romans 8:30",
+    (8, 2): "John 1:14; Galatians 4:4; Romans 8:3; Hebrews 2:14, 16, 17; Hebrews 4:15; Matthew 1:22, 23; Luke 1:27, 31, 35; Romans 9:5; 1 Timothy 2:5",
+    (8, 3): "Psalms 45:7; Acts 10:38; John 3:34; Colossians 2:3; Colossians 1:19; Hebrews 7:26; John 1:14; Hebrews 7:22; Hebrews 5:5; John 5:22, 27; Matthew 28:18; Acts 2:36",
+    (8, 4): "Psalms 40:7, 8; Hebrews 10:5-10; John 10:18; Galatians 4:4; Matthew 3:15; Galatians 3:13; Isaiah 53:6; 1 Peter 3:18; 2 Corinthians 5:21; Matthew 26:37, 38; Luke 22:44; Matthew 27:46; Acts 13:37; 1 Corinthians 15:3, 4; John 20:25, 27; Mark 16:19; Acts 1:9-11; Romans 8:34; Hebrews 9:24; Acts 10:42; Romans 14:9, 10; Acts 1:11; 2 Peter 2:4",
+    (8, 5): "Hebrews 9:14; Hebrews 10:14; Romans 3:25, 26; John 17:2; Hebrews 9:15",
+    (8, 6): "1 Corinthians 4:10; Hebrews 4:2; 1 Peter 1:10, 11; Revelation 13:8; Hebrews 13:8",
+    (8, 7): "John 3:13; Acts 20:28",
+    (8, 8): "John 6:37; John 10:15, 16; John 17:9; Romans 5:10; John 17:6; Ephesians 1:9; 1 John 5:20; Romans 8:9, 14; Psalms 110:1; 1 Corinthians 15:25, 26; John 3:8; Ephesians 1:8",
+    (8, 9): "1 Timothy 2:5",
+    (8, 10): "John 1:18; Colossians 1:21; Galatians 5:17; John 16:8; Psalms 110:3; Luke 1:74, 75",
+    (9, 1): "Matthew 17:12; James 1:14; Deuteronomy 30:19",
+    (9, 2): "Ecclesiastes 7:29; Genesis 3:6",
+    (9, 3): "Romans 5:6; Romans 8:7; Ephesians 2:1, 5; Titus 3:3-5; John 6:44",
+    (9, 4): "Colossians 1:13; John 8:36; Philippians 2:13; Romans 7:15, 18, 19, 21, 23",
+    (9, 5): "Ephesians 4:13",
+    (10, 1): "Romans 8:30; Romans 11:7; Ephesians 1:10, 11; 2 Thessalonians 2:13, 14; Ephesians 2:1-6; Acts 26:18; Ephesians 1:17, 18; Ezekiel 36:26; Deuteronomy 30:6; Ezekiel 36:27; Ephesians 1:19; Psalm 110:3; Song of Solomon 1:4",
+    (10, 2): "2 Timothy 1:9; Ephesians 2:8; 1 Corinthians 2:14; Ephesians 2:5; John 5:25; Ephesians 1:19, 20",
+    (10, 3): "John 3:3, 5, 6; John 3:8",
+    (10, 4): "Matthew 22:14; Matthew 13:20, 21; Hebrews 6:4, 5; John 6:44, 45, 65; 1 John 2:24, 25; Acts 4:12; John 4:22; John 17:3",
+    (11, 1): "Romans 3:24; Romans 8:30; Romans 4:5-8; Ephesians 1:7; 1 Corinthians 1:30, 31; Romans 5:17-19; Philippians 3:8, 9; Ephesians 2:8-10; John 1:12; Romans 5:17",
+    (11, 2): "Romans 3:28; Galatians 5:6; James 2:17, 22, 26",
+    (11, 3): "Hebrews 10:14; 1 Peter 1:18, 19; Isaiah 53:5, 6; Romans 8:32; 2 Corinthians 5:21; Romans 3:26; Ephesians 1:6, 7; Ephesians 2:7",
+    (11, 4): "Galatians 3:8; 1 Peter 1:2; 1 Timothy 2:6; Romans 4:25; Colossians 1:21, 22; Titus 3:4-7",
+    (11, 5): "Matthew 6:12; 1 John 1:7, 9; John 10:28; Psalms 89:31-33; Psalms 32:5; Psalms 51; Matthew 26:75",
+    (11, 6): "Galatians 3:9; Romans 4:22-24",
+    (12, 1): "Ephesians 1:5; Galatians 4:4, 5; John 1:12; Romans 8:17; 2 Corinthians 6:18; Revelation 3:12; Romans 8:15; Galatians 4:6; Ephesians 2:18; Psalms 103:13; Proverbs 14:26; 1 Peter 5:7; Hebrews 12:6; Isaiah 54:8, 9; Lamentations 3:31; Ephesians 4:30; Hebrews 1:14; Hebrews 6:12",
+    (13, 1): "Acts 20:32; Romans 6:5, 6; John 17:17; Ephesians 3:16-19; 1 Thessalonians 5:21-23; Romans 6:14; Galatians 5:24; Colossians 1:11; 2 Corinthians 7:1; Hebrews 12:14",
+    (13, 2): "1 Thessalonians 5:23; Romans 7:18, 23; Galatians 5:17; 1 Peter 2:11",
+    (13, 3): "Romans 7:23; Romans 6:14; Ephesians 4:15, 16; 2 Corinthians 3:18; 2 Corinthians 7:1",
+    (14, 1): "2 Corinthians 4:13; Ephesians 2:8; Romans 10:14, 17; Luke 17:5; 1 Peter 2:2; Acts 20:32",
+    (14, 2): "Acts 24:14; Psalms 27:7-10; Psalms 119:72; 2 Timothy 1:12; John 14:14; Isaiah 66:2; Hebrews 11:13; John 1:12; Acts 16:31; Galatians 2:20; Acts 15:11",
+    (14, 3): "Hebrews 5:13, 14; Matthew 6:30; Romans 4:19, 20; 2 Peter 1:1; Ephesians 6:16; 1 John 5:4, 5; Hebrews 6:11, 12; Colossians 2:2; Hebrews 12:2",
+    (15, 1): "Titus 3:2-5",
+    (15, 2): "Ecclesiastes 7:20; Luke 22:31, 32",
+    (15, 3): "Zechariah 12:10; Acts 11:18; Ezekiel 36:31; 2 Corinthians 7:11; Psalms 119:6; Psalms 119:128",
+    (15, 4): "Luke 19:8; 1 Timothy 1:13, 15",
+    (15, 5): "Romans 6:23; Isaiah 1:16-18; Isaiah 55:7",
+    (16, 1): "Micah 6:8; Hebrews 13:21; Matthew 15:9; Isaiah 29:13",
+    (16, 2): "James 2:18, 22; Psalms 116:12, 13; 1 John 2:3, 5; 2 Peter 1:5-11; Matthew 5:16; 1 Timothy 6:1; 1 Peter 2:15; Philippians 1:11; Ephesians 2:10; Romans 6:22",
+    (16, 3): "John 15:4, 5; 2 Corinthians 3:5; Philippians 2:13; Philippians 2:12; Hebrews 6:11, 12; Isaiah 64:7",
+    (16, 4): "Job 9:2, 3; Galatians 5:17; Luke 17:10",
+    (16, 5): "Romans 3:20; Ephesians 2:8, 9; Romans 4:6; Galatians 5:22, 23; Isaiah 64:6; Psalms 143:2",
+    (16, 6): "Ephesians 1:6; 1 Peter 2:5; Matthew 25:21, 23; Hebrews 6:10",
+    (16, 7): "2 Kings 10:30; 1 Kings 21:27, 29; Genesis 4:5; Hebrews 11:4, 6; 1 Corinthians 13:1; Matthew 6:2, 5; Amos 5:21, 22; Romans 9:16; Titus 3:5; Job 21:14, 15; Matthew 25:41-43",
+    (17, 1): "John 10:28, 29; Philippians 1:6; 2 Timothy 2:19; 1 John 2:19; Psalms 89:31, 32; 1 Corinthians 11:32; Malachi 3:6",
+    (17, 2): "Romans 8:30; Romans 9:11, 16; Romans 5:9, 10; John 14:19; Hebrews 6:17, 18; 1 John 3:9; Jeremiah 32:40",
+    (17, 3): "Matthew 26:70, 72, 74; Isaiah 64:5, 9; Ephesians 4:30; Psalms 51:10, 12; Psalms 32:3, 4; 2 Samuel 12:14; Luke 22:32, 61, 62",
+    (18, 1): "Job 8:13, 14; Matthew 7:22, 23; 1 John 2:3; 1 John 3:14, 18, 19, 21, 24; 1 John 5:13; Romans 5:2, 5",
+    (18, 2): "Hebrews 6:11, 19; Hebrews 6:17, 18; 2 Peter 1:4, 5, 10, 11; Romans 8:15, 16; 1 John 3:1-3",
+    (18, 3): "Isaiah 50:10; Psalms 88; Psalms 77:1-12; 1 John 4:13; Hebrews 6:11, 12; Romans 5:1, 2, 5; Romans 14:17; Psalms 119:32; Romans 6:1, 2; Titus 2:11, 12, 14",
+    (18, 4): "Song of Solomon 5:2, 3, 6; Psalms 51:8, 12, 14; Psalms 116:11; Psalms 77:7, 8; Psalms 31:22; Psalms 30:7; 1 John 3:9; Luke 22:32; Psalms 42:5, 11; Lamentations 3:26-31",
+    (19, 1): "Genesis 1:27; Ecclesiastes 7:29; Romans 10:5; Galatians 3:10, 12",
+    (19, 2): "Romans 2:14, 15; Deuteronomy 10:4",
+    (19, 3): "Hebrews 10:1; Colossians 2:17; 1 Corinthians 5:7; Colossians 2:14, 16, 17; Ephesians 2:14, 16",
+    (19, 4): "1 Corinthians 9:8-10",
+    (19, 5): "Romans 13:8-10; James 2:8, 10-12; James 2:10, 11; Matthew 5:17-19; Romans 3:31",
+    (19, 6): "Romans 6:14; Galatians 2:16; Romans 8:1; Romans 10:4; Romans 3:20; Romans 7:7; Romans 6:12-14; 1 Peter 3:8-13",
+    (19, 7): "Galatians 3:21; Ezekiel 36:27",
+    (20, 1): "Genesis 3:15; Revelation 13:8",
+    (20, 2): "Romans 1:17; Romans 10:14, 15, 17; Proverbs 29:18; Isaiah 25:7; Isaiah 60:2, 3",
+    (20, 3): "Psalms 147:20; Acts 16:7; Romans 1:18-32",
+    (20, 4): "Psalms 110:3; 1 Corinthians 2:14; Ephesians 1:19, 20; John 6:44; 2 Corinthians 4:4, 6",
+    (21, 1): "Galatians 3:13; Galatians 1:4; Acts 26:18; Romans 8:3; Romans 8:28; 1 Corinthians 15:54-57; 2 Thessalonians 1:10; Romans 8:15; Luke 1:73-75; 1 John 4:18; Galatians 3:9, 14; John 7:38, 39; Hebrews 10:19-21",
+    (21, 2): "James 4:12; Romans 14:4; Acts 4:19, 29; 1 Corinthians 7:23; Matthew 15:9; Colossians 2:20, 22, 23; 1 Corinthians 3:5; 2 Corinthians 1:24",
+    (21, 3): "Romans 6:1, 2; Galatians 5:13; 2 Peter 2:18, 21",
+    (22, 1): "Jeremiah 10:7; Mark 12:33; Deuteronomy 12:32; Exodus 20:4-6",
+    (22, 2): "Matthew 4:9, 10; John 6:23; Matthew 28:19; Romans 1:25; Colossians 2:18; Revelation 19:10; John 14:6; 1 Timothy 2:5",
+    (22, 3): "Psalms 95:1-7; Psalms 65:2; John 14:13, 14; Romans 8:26; 1 John 5:14; 1 Corinthians 14:16, 17",
+    (22, 4): "1 Timothy 2:1, 2; 2 Samuel 7:29; 2 Samuel 12:21-23; 1 John 5:16",
+    (22, 5): "1 Timothy 4:13; 2 Timothy 4:2; Luke 8:18; Colossians 3:16; Ephesians 5:19; Matthew 28:19, 20; 1 Corinthians 11:26; Esther 4:16; Joel 2:12; Exodus 15:1-19; Psalms 107",
+    (22, 6): "John 4:21; Malachi 1:11; 1 Timothy 2:8; Acts 10:2; Matthew 6:11; Psalms 55:17; Matthew 6:6; Hebrews 10:25; Acts 2:42",
+    (22, 7): "Exodus 20:8; 1 Corinthians 16:1, 2; Acts 20:7; Revelation 1:10",
+    (22, 8): "Isaiah 58:13; Nehemiah 13:15-22; Matthew 12:1-13",
+    (23, 1): "Exodus 20:7; Deuteronomy 10:20; Jeremiah 4:2; 2 Chronicles 6:22, 23",
+    (23, 2): "Matthew 5:34, 37; James 5:12; Hebrews 6:16; 2 Corinthians 1:23; Nehemiah 13:25",
+    (23, 3): "Leviticus 19:12; Jeremiah 23:10",
+    (23, 4): "Psalms 24:4",
+    (23, 5): "Psalms 76:11; Genesis 28:20-22; 1 Corinthians 7:2, 9; Ephesians 4:28; Matthew 19:11",
+    (24, 1): "Romans 13:1-4",
+    (24, 2): "2 Samuel 23:3; Psalms 82:3, 4; Luke 3:14",
+    (24, 3): "Romans 13:5-7; 1 Peter 2:17; 1 Timothy 2:1, 2",
+    (25, 1): "Genesis 2:24; Malachi 2:15; Matthew 19:5, 6",
+    (25, 2): "Genesis 2:18; Genesis 1:28; 1 Corinthians 7:2, 9",
+    (25, 3): "Hebrews 13:4; 1 Timothy 4:3; 1 Corinthians 7:39; Nehemiah 13:25-27",
+    (25, 4): "Leviticus 18; Mark 6:18; 1 Corinthians 5:1",
+    (26, 1): "Hebrews 12:23; Colossians 1:18; Ephesians 1:10, 22, 23; Ephesians 5:23, 27, 32",
+    (26, 2): "1 Corinthians 1:2; Acts 11:26; Romans 1:7; Ephesians 1:20-22",
+    (26, 3): "1 Corinthians 5; Revelation 2; Revelation 3; Revelation 18:2; 2 Thessalonians 2:11, 12; Matthew 16:18; Psalms 72:17; Psalm 102:28; Revelation 12:17",
+    (26, 4): "Colossians 1:18; Matthew 28:18-20; Ephesians 4:11, 12; 2 Thessalonians 2:2-9",
+    (26, 5): "John 10:16; John 12:32; Matthew 28:20; Matthew 18:15-20",
+    (26, 6): "Romans 1:7; 1 Corinthians 1:2; Acts 2:41, 42; Acts 5:13, 14; 2 Corinthians 9:13",
+    (26, 7): "Matthew 18:17, 18; 1 Corinthians 5:4, 5; 1 Corinthians 5:13; 2 Corinthians 2:6-8",
+    (26, 8): "Acts 20:17, 28; Philippians 1:1",
+    (26, 9): "Acts 14:23; 1 Timothy 4:14; Acts 6:3, 5, 6",
+    (26, 10): "Acts 6:4; Hebrews 13:17; 1 Timothy 5:17, 18; Galatians 6:6, 7; 2 Timothy 2:4; 1 Timothy 3:2; 1 Corinthians 9:6-14",
+    (26, 11): "Acts 11:19-21; 1 Peter 4:10, 11",
+    (26, 12): "1 Thessalonians 5:14; 2 Thessalonians 3:6, 14, 15",
+    (26, 13): "Matthew 18:15-17; Ephesians 4:2, 3",
+    (26, 14): "Ephesians 6:18; Psalms 122:6; Romans 16:1, 2; 3 John 8-10",
+    (26, 15): "Acts 15:2, 4, 6, 22, 23, 25; 2 Corinthians 1:24; 1 John 4:1",
+    (27, 1): "1 John 1:3; John 1:16; Philippians 3:10; Romans 6:5, 6; Ephesians 4:15, 16; 1 Corinthians 12:7; 1 Corinthians 3:21-23; 1 Thessalonians 5:11, 14; Romans 1:12; 1 John 3:17, 18; Galatians 6:10",
+    (27, 2): "Hebrews 10:24, 25; Hebrews 3:12, 13; Acts 11:29, 30; Ephesians 6:4; 1 Corinthians 12:14-27; Acts 5:4; Ephesians 4:28",
+    (28, 1): "Matthew 28:19, 20; 1 Corinthians 11:26",
+    (28, 2): "Matthew 28:19; 1 Corinthians 4:1",
+    (29, 1): "Romans 6:3-5; Colossians 2:12; Galatians 3:27; Mark 1:4; Acts 22:16; Romans 6:4",
+    (29, 2): "Mark 16:16; Acts 8:36, 37; Acts 2:41; Acts 8:12; Acts 18:8",
+    (29, 3): "Matthew 28:19, 20; Acts 8:38",
+    (29, 4): "Matthew 3:16; John 3:23",
+    (30, 1): "1 Corinthians 11:23-26; 1 Corinthians 10:16, 17, 21",
+    (30, 2): "Hebrews 9:25, 26, 28; 1 Corinthians 11:24; Matthew 26:26, 27",
+    (30, 3): "1 Corinthians 11:23-26",
+    (30, 4): "Matthew 26:26-28; Matthew 15:9; Exodus 20:4, 5",
+    (30, 5): "1 Corinthians 11:27; 1 Corinthians 11:26-28",
+    (30, 6): "Acts 3:21; Luke 24:6, 39; 1 Corinthians 11:24, 25",
+    (30, 7): "1 Corinthians 10:16; 1 Corinthians 11:23-26",
+    (30, 8): "2 Corinthians 6:14, 15; 1 Corinthians 11:29; Matthew 7:6",
+    (31, 1): "Genesis 3:19; Acts 13:36; Ecclesiastes 12:7; Luke 23:43; 2 Corinthians 5:1, 6, 8; Philippians 1:23; Hebrews 12:23; Jude 6, 7; 1 Peter 3:19; Luke 16:23, 24",
+    (31, 2): "1 Corinthians 15:51, 52; 1 Thessalonians 4:17; Job 19:26, 27; 1 Corinthians 15:42, 43",
+    (31, 3): "Acts 24:15; John 5:28, 29; Philippians 3:21",
+    (32, 1): "Acts 17:31; John 5:22, 27; 1 Corinthians 6:3; Jude 6; 2 Corinthians 5:10; Ecclesiastes 12:14; Matthew 12:36; Romans 14:10, 12; Matthew 25:32-46",
+    (32, 2): "Romans 9:22, 23; Matthew 25:21, 34; 2 Timothy 4:8; Matthew 25:46; Mark 9:48; 2 Thessalonians 1:7-10",
+    (32, 3): "2 Corinthians 5:10, 11; 2 Thessalonians 1:5-7; Mark 13:35-37; Luke 12:35-40; Revelation 22:20",
+}
+
+
+def main():
+    base_dir = Path(__file__).resolve().parent.parent
+    data_path = base_dir / "data" / "london_baptist_1689.json"
+
+    with open(data_path) as f:
+        data = json.load(f)
+
+    proof_texts = {}
+    seq = 0
+    missing = []
+    for ch in data["Data"]:
+        ch_num = int(ch["Chapter"])
+        for sec in ch["Sections"]:
+            seq += 1
+            sec_num = int(sec["Section"])
+            key = (ch_num, sec_num)
+            if key in PROOF_TEXTS:
+                proof_texts[str(seq)] = PROOF_TEXTS[key]
+            else:
+                missing.append(f"Ch{ch_num}.{sec_num} (seq={seq})")
+
+    output_path = base_dir / "data" / "1689_proof_texts.json"
+    with open(output_path, "w") as f:
+        json.dump(proof_texts, f, indent=2)
+
+    print(f"Generated proof texts for {len(proof_texts)}/{seq} sections")
+    if missing:
+        print(f"Missing proof texts for: {missing}")
+    else:
+        print("All sections have proof texts!")
+
+
+if __name__ == "__main__":
+    main()
