@@ -7,6 +7,12 @@ DEBUG = False
 SECRET_KEY = os.environ.get('SECRET_KEY', 'change-me-in-production')
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '.onrender.com').split(',')
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://studyreformed.com',
+    'https://www.studyreformed.com',
+    'https://*.onrender.com',
+]
+
 # Use DATABASE_URL if set, otherwise fall back to SQLite
 DATABASE_URL = os.environ.get('DATABASE_URL')
 if DATABASE_URL:
