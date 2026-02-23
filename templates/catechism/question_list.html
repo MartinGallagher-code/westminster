@@ -3,7 +3,14 @@
 {% block title %}All {{ catechism.item_name_plural }} - {{ catechism.name }}{% endblock %}
 
 {% block content %}
-<h1 class="mb-3">{{ catechism.abbreviation }} &mdash; All {{ catechism.item_name_plural }}</h1>
+<h1 class="mb-3">{{ catechism.name }}</h1>
+
+{% if catechism.description or catechism.year %}
+<div class="mb-4">
+    {% if catechism.year %}<p class="text-body-secondary mb-1">Adopted {{ catechism.year }}</p>{% endif %}
+    {% if catechism.description %}<p class="lead">{{ catechism.description }}</p>{% endif %}
+</div>
+{% endif %}
 
 <nav class="mb-4 topic-jump-nav" aria-label="{{ catechism.topic_name }} navigation">
     <div class="d-flex flex-wrap gap-1 align-items-center">
@@ -29,9 +36,6 @@
                 {% else %}
                 {{ group.topic.name }}
                 {% endif %}
-            </span>
-            <span class="badge bg-body-secondary text-body-emphasis ms-2 me-2">
-                {{ group.questions|length }}
             </span>
         </button>
     </h2>
