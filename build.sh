@@ -68,6 +68,9 @@ python manage.py load_comparison_themes --set three-forms
 python manage.py load_comparison_themes --set 1689-baptist
 python manage.py load_comparison_themes --set pre-westminster
 
+# Theme-based cross-references (derived from comparison themes)
+python manage.py generate_theme_crossrefs
+
 # Clear cache after data load to ensure fresh content
 python manage.py clear_cache
 

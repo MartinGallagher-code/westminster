@@ -140,9 +140,12 @@ class QuestionDetailView(CatechismMixin, DetailView):
                 other = cr.source_question
             cross_ref_groups[other.catechism.abbreviation].append(other)
 
-        # Sort each group by question number
+        # Sort each group by question number and cap display size
+        MAX_CROSSREFS_PER_GROUP = 8
         for abbr in cross_ref_groups:
             cross_ref_groups[abbr].sort(key=lambda x: x.number)
+            if len(cross_ref_groups[abbr]) > MAX_CROSSREFS_PER_GROUP:
+                cross_ref_groups[abbr] = cross_ref_groups[abbr][:MAX_CROSSREFS_PER_GROUP]
 
         ctx['cross_ref_groups'] = dict(cross_ref_groups)
 
