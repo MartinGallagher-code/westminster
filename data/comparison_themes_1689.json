@@ -6,8 +6,18 @@
     "locus": "Prolegomena",
     "order": 1,
     "entries": {
-      "wcf": [1, 10],
-      "1689": [1, 10]
+      "wcf": [
+        1,
+        10
+      ],
+      "1689": [
+        1,
+        10
+      ],
+      "savoy": [
+        1,
+        10
+      ]
     }
   },
   {
@@ -17,8 +27,18 @@
     "locus": "Theology Proper",
     "order": 2,
     "entries": {
-      "wcf": [11, 13],
-      "1689": [11, 13]
+      "wcf": [
+        11,
+        13
+      ],
+      "1689": [
+        11,
+        13
+      ],
+      "savoy": [
+        11,
+        13
+      ]
     }
   },
   {
@@ -28,8 +48,18 @@
     "locus": "Theology Proper",
     "order": 3,
     "entries": {
-      "wcf": [14, 21],
-      "1689": [14, 20]
+      "wcf": [
+        14,
+        21
+      ],
+      "1689": [
+        14,
+        20
+      ],
+      "savoy": [
+        14,
+        21
+      ]
     }
   },
   {
@@ -39,8 +69,18 @@
     "locus": "Creation and Providence",
     "order": 4,
     "entries": {
-      "wcf": [22, 23],
-      "1689": [21, 23]
+      "wcf": [
+        22,
+        23
+      ],
+      "1689": [
+        21,
+        23
+      ],
+      "savoy": [
+        22,
+        23
+      ]
     }
   },
   {
@@ -50,8 +90,18 @@
     "locus": "Creation and Providence",
     "order": 5,
     "entries": {
-      "wcf": [24, 30],
-      "1689": [24, 30]
+      "wcf": [
+        24,
+        30
+      ],
+      "1689": [
+        24,
+        30
+      ],
+      "savoy": [
+        24,
+        30
+      ]
     }
   },
   {
@@ -61,8 +111,18 @@
     "locus": "Hamartiology",
     "order": 6,
     "entries": {
-      "wcf": [31, 36],
-      "1689": [31, 35]
+      "wcf": [
+        31,
+        36
+      ],
+      "1689": [
+        31,
+        35
+      ],
+      "savoy": [
+        31,
+        36
+      ]
     }
   },
   {
@@ -72,8 +132,18 @@
     "locus": "Christology and Covenant",
     "order": 7,
     "entries": {
-      "wcf": [37, 42],
-      "1689": [36, 38]
+      "wcf": [
+        37,
+        42
+      ],
+      "1689": [
+        36,
+        38
+      ],
+      "savoy": [
+        37,
+        41
+      ]
     }
   },
   {
@@ -83,8 +153,18 @@
     "locus": "Christology and Covenant",
     "order": 8,
     "entries": {
-      "wcf": [43, 50],
-      "1689": [39, 48]
+      "wcf": [
+        43,
+        50
+      ],
+      "1689": [
+        39,
+        48
+      ],
+      "savoy": [
+        42,
+        49
+      ]
     }
   },
   {
@@ -94,8 +174,18 @@
     "locus": "Soteriology",
     "order": 9,
     "entries": {
-      "wcf": [51, 55],
-      "1689": [49, 53]
+      "wcf": [
+        51,
+        55
+      ],
+      "1689": [
+        49,
+        53
+      ],
+      "savoy": [
+        50,
+        54
+      ]
     }
   },
   {
@@ -105,8 +195,18 @@
     "locus": "Soteriology",
     "order": 10,
     "entries": {
-      "wcf": [56, 59],
-      "1689": [54, 57]
+      "wcf": [
+        56,
+        59
+      ],
+      "1689": [
+        54,
+        57
+      ],
+      "savoy": [
+        55,
+        58
+      ]
     }
   },
   {
@@ -116,8 +216,18 @@
     "locus": "Soteriology",
     "order": 11,
     "entries": {
-      "wcf": [60, 65],
-      "1689": [58, 63]
+      "wcf": [
+        60,
+        65
+      ],
+      "1689": [
+        58,
+        63
+      ],
+      "savoy": [
+        59,
+        64
+      ]
     }
   },
   {
@@ -127,8 +237,18 @@
     "locus": "Soteriology",
     "order": 12,
     "entries": {
-      "wcf": [66, 66],
-      "1689": [64, 64]
+      "wcf": [
+        66,
+        66
+      ],
+      "1689": [
+        64,
+        64
+      ],
+      "savoy": [
+        65,
+        65
+      ]
     }
   },
   {
@@ -138,8 +258,18 @@
     "locus": "Soteriology",
     "order": 13,
     "entries": {
-      "wcf": [67, 69],
-      "1689": [65, 67]
+      "wcf": [
+        67,
+        69
+      ],
+      "1689": [
+        65,
+        67
+      ],
+      "savoy": [
+        66,
+        68
+      ]
     }
   },
   {
@@ -149,8 +279,18 @@
     "locus": "Soteriology",
     "order": 14,
     "entries": {
-      "wcf": [70, 72],
-      "1689": [68, 70]
+      "wcf": [
+        70,
+        72
+      ],
+      "1689": [
+        68,
+        70
+      ],
+      "savoy": [
+        69,
+        71
+      ]
     }
   },
   {
@@ -160,8 +300,18 @@
     "locus": "Soteriology",
     "order": 15,
     "entries": {
-      "wcf": [73, 78],
-      "1689": [71, 75]
+      "wcf": [
+        73,
+        78
+      ],
+      "1689": [
+        71,
+        75
+      ],
+      "savoy": [
+        72,
+        76
+      ]
     }
   },
   {
@@ -171,8 +321,18 @@
     "locus": "Soteriology",
     "order": 16,
     "entries": {
-      "wcf": [79, 85],
-      "1689": [76, 82]
+      "wcf": [
+        79,
+        85
+      ],
+      "1689": [
+        76,
+        82
+      ],
+      "savoy": [
+        77,
+        83
+      ]
     }
   },
   {
@@ -182,8 +342,18 @@
     "locus": "Soteriology",
     "order": 17,
     "entries": {
-      "wcf": [86, 88],
-      "1689": [83, 85]
+      "wcf": [
+        86,
+        88
+      ],
+      "1689": [
+        83,
+        85
+      ],
+      "savoy": [
+        84,
+        86
+      ]
     }
   },
   {
@@ -193,8 +363,18 @@
     "locus": "Soteriology",
     "order": 18,
     "entries": {
-      "wcf": [89, 92],
-      "1689": [86, 89]
+      "wcf": [
+        89,
+        92
+      ],
+      "1689": [
+        86,
+        89
+      ],
+      "savoy": [
+        87,
+        90
+      ]
     }
   },
   {
@@ -204,19 +384,36 @@
     "locus": "The Law of God",
     "order": 19,
     "entries": {
-      "wcf": [93, 99],
-      "1689": [90, 96]
+      "wcf": [
+        93,
+        99
+      ],
+      "1689": [
+        90,
+        96
+      ],
+      "savoy": [
+        91,
+        97
+      ]
     }
   },
   {
     "name": "Of the Gospel",
     "slug": "of-the-gospel",
-    "description": "The gospel of grace and its extent. This chapter is unique to the 1689 Confession and has no WCF counterpart.",
+    "description": "The gospel of grace and its extent. This chapter appears in both the Savoy Declaration and the 1689 Confession but has no WCF counterpart.",
     "locus": "The Law of God",
     "order": 20,
     "entries": {
       "wcf": null,
-      "1689": [97, 100]
+      "1689": [
+        97,
+        100
+      ],
+      "savoy": [
+        98,
+        101
+      ]
     }
   },
   {
@@ -226,8 +423,18 @@
     "locus": "Christian Life and Liberty",
     "order": 21,
     "entries": {
-      "wcf": [100, 103],
-      "1689": [101, 103]
+      "wcf": [
+        100,
+        103
+      ],
+      "1689": [
+        101,
+        103
+      ],
+      "savoy": [
+        102,
+        104
+      ]
     }
   },
   {
@@ -237,8 +444,18 @@
     "locus": "Christian Life and Liberty",
     "order": 22,
     "entries": {
-      "wcf": [104, 111],
-      "1689": [104, 111]
+      "wcf": [
+        104,
+        111
+      ],
+      "1689": [
+        104,
+        111
+      ],
+      "savoy": [
+        105,
+        111
+      ]
     }
   },
   {
@@ -248,8 +465,18 @@
     "locus": "Christian Life and Liberty",
     "order": 23,
     "entries": {
-      "wcf": [112, 118],
-      "1689": [112, 116]
+      "wcf": [
+        112,
+        118
+      ],
+      "1689": [
+        112,
+        116
+      ],
+      "savoy": [
+        112,
+        117
+      ]
     }
   },
   {
@@ -259,8 +486,18 @@
     "locus": "Christian Life and Liberty",
     "order": 24,
     "entries": {
-      "wcf": [119, 122],
-      "1689": [117, 119]
+      "wcf": [
+        119,
+        122
+      ],
+      "1689": [
+        117,
+        119
+      ],
+      "savoy": [
+        118,
+        121
+      ]
     }
   },
   {
@@ -270,8 +507,18 @@
     "locus": "Christian Life and Liberty",
     "order": 25,
     "entries": {
-      "wcf": [123, 128],
-      "1689": [120, 123]
+      "wcf": [
+        123,
+        128
+      ],
+      "1689": [
+        120,
+        123
+      ],
+      "savoy": [
+        122,
+        125
+      ]
     }
   },
   {
@@ -281,8 +528,18 @@
     "locus": "Ecclesiology",
     "order": 26,
     "entries": {
-      "wcf": [129, 137],
-      "1689": [124, 140]
+      "wcf": [
+        129,
+        137
+      ],
+      "1689": [
+        124,
+        140
+      ],
+      "savoy": [
+        126,
+        132
+      ]
     }
   },
   {
@@ -292,8 +549,18 @@
     "locus": "Ecclesiology",
     "order": 27,
     "entries": {
-      "wcf": [138, 157],
-      "1689": [141, 154]
+      "wcf": [
+        138,
+        157
+      ],
+      "1689": [
+        141,
+        154
+      ],
+      "savoy": [
+        133,
+        152
+      ]
     }
   },
   {
@@ -303,8 +570,12 @@
     "locus": "Ecclesiology",
     "order": 28,
     "entries": {
-      "wcf": [158, 166],
-      "1689": null
+      "wcf": [
+        158,
+        166
+      ],
+      "1689": null,
+      "savoy": null
     }
   },
   {
@@ -314,8 +585,18 @@
     "locus": "Eschatology",
     "order": 29,
     "entries": {
-      "wcf": [167, 172],
-      "1689": [155, 160]
+      "wcf": [
+        167,
+        172
+      ],
+      "1689": [
+        155,
+        160
+      ],
+      "savoy": [
+        153,
+        158
+      ]
     }
   }
 ]

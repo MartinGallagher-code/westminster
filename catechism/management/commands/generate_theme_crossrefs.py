@@ -171,6 +171,9 @@ class Command(BaseCommand):
                     count += self._crossrefs_for_ranges(
                         s1, start1, end1, s2, start2, end2,
                     )
+                    count += self._crossrefs_for_ranges(
+                        s2, start2, end2, s1, start1, end1,
+                    )
         return count
 
     # ------------------------------------------------------------------
@@ -213,6 +216,10 @@ class Command(BaseCommand):
                         count += self._crossrefs_for_ranges(
                             w_slug, w_start, w_end,
                             t_slug, t_start, t_end,
+                        )
+                        count += self._crossrefs_for_ranges(
+                            t_slug, t_start, t_end,
+                            w_slug, w_start, w_end,
                         )
         return count
 
@@ -260,6 +267,10 @@ class Command(BaseCommand):
                             '1689', e1689_range[0], e1689_range[1],
                             w_slug, w_start, w_end,
                         )
+                        count += self._crossrefs_for_ranges(
+                            w_slug, w_start, w_end,
+                            '1689', e1689_range[0], e1689_range[1],
+                        )
 
                 # 3b: 1689 <-> TFU via Westminster -> TFU mapping
                 tfu_slugs = WESTMINSTER_TO_TFU.get(wt.slug, [])
@@ -272,6 +283,10 @@ class Command(BaseCommand):
                             count += self._crossrefs_for_ranges(
                                 '1689', e1689_range[0], e1689_range[1],
                                 t_slug, t_start, t_end,
+                            )
+                            count += self._crossrefs_for_ranges(
+                                t_slug, t_start, t_end,
+                                '1689', e1689_range[0], e1689_range[1],
                             )
 
         return count

@@ -5,7 +5,7 @@ from catechism.management.commands._helpers import data_is_current, mark_data_cu
 from catechism.models import Catechism, Topic, Question
 
 CHAPTERS = [
-    {"name": "Of the Holy Scriptures", "slug": "of-the-holy-scriptures",
+    {"name": "Of the Holy Scripture", "slug": "of-the-holy-scripture",
      "order": 1, "description": "The authority, sufficiency, and perspicuity of Scripture"},
     {"name": "Of God and of the Holy Trinity", "slug": "of-god-and-the-holy-trinity",
      "order": 2, "description": "The being, attributes, and persons of the Godhead"},
@@ -18,7 +18,7 @@ CHAPTERS = [
     {"name": "Of the Fall of Man, of Sin, and of the Punishment thereof",
      "slug": "of-the-fall-of-man",
      "order": 6, "description": "The fall and original sin"},
-    {"name": "Of God's Covenant", "slug": "of-gods-covenant",
+    {"name": "Of God's Covenant with Man", "slug": "of-gods-covenant-with-man",
      "order": 7, "description": "The covenant of works and the covenant of grace"},
     {"name": "Of Christ the Mediator", "slug": "of-christ-the-mediator",
      "order": 8, "description": "The person and offices of Christ as Mediator"},
@@ -50,10 +50,10 @@ CHAPTERS = [
     {"name": "Of the Gospel, and of the Extent of the Grace Thereof",
      "slug": "of-the-gospel",
      "order": 20, "description": "The gospel of grace and its universal offer"},
-    {"name": "Of Christian Liberty and Liberty of Conscience",
+    {"name": "Of Christian Liberty, and Liberty of Conscience",
      "slug": "of-christian-liberty",
      "order": 21, "description": "The liberty purchased by Christ for believers"},
-    {"name": "Of Religious Worship and the Sabbath Day",
+    {"name": "Of Religious Worship, and the Sabbath Day",
      "slug": "of-religious-worship",
      "order": 22, "description": "The regulation of worship and the Sabbath"},
     {"name": "Of Lawful Oaths and Vows", "slug": "of-lawful-oaths-and-vows",
