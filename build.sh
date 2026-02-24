@@ -61,6 +61,10 @@ python manage.py load_prooftexts --catechism second-helvetic
 python manage.py load_savoy
 python manage.py load_prooftexts --catechism savoy
 
+# Systematic Theologies
+python manage.py load_calvins_institutes
+python manage.py load_hodge_outlines
+
 # Comparison themes (all sets)
 python manage.py load_comparison_themes
 python manage.py load_comparison_themes --set three-forms

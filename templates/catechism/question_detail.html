@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% load catechism_tags static %}
 
-{% block title %}{% if catechism.is_confession %}{{ question.question_text }} {{ question.display_number }}{% else %}Q{{ question.number }}{% endif %} - {{ catechism.name }}{% endblock %}
+{% block title %}{% if catechism.is_prose_document %}{{ question.question_text }} {{ question.display_number }}{% else %}Q{{ question.number }}{% endif %} - {{ catechism.name }}{% endblock %}
 
-{% block meta_description %}{{ catechism.abbreviation }} {% if catechism.is_confession %}{{ question.display_number }}: {{ question.question_text }}{% else %}Q{{ question.number }}: {{ question.question_text }}{% endif %} — {{ question.answer_text|truncatewords:25 }}{% endblock %}
-{% block og_title %}{% if catechism.is_confession %}{{ question.question_text }} {{ question.display_number }}{% else %}Q{{ question.number }}. {{ question.question_text }}{% endif %} - {{ catechism.name }}{% endblock %}
+{% block meta_description %}{{ catechism.abbreviation }} {% if catechism.is_prose_document %}{{ question.display_number }}: {{ question.question_text }}{% else %}Q{{ question.number }}: {{ question.question_text }}{% endif %} — {{ question.answer_text|truncatewords:25 }}{% endblock %}
+{% block og_title %}{% if catechism.is_prose_document %}{{ question.question_text }} {{ question.display_number }}{% else %}Q{{ question.number }}. {{ question.question_text }}{% endif %} - {{ catechism.name }}{% endblock %}
 {% block og_description %}{{ question.answer_text|truncatewords:40 }}{% endblock %}
 
 {% block content %}
@@ -18,7 +18,7 @@
         <li class="breadcrumb-item">
             <a href="{{ question.topic.get_absolute_url }}">{{ question.topic.name }}</a>
         </li>
-        <li class="breadcrumb-item active">{% if catechism.is_confession %}{{ question.display_number }}{% else %}Q{{ question.number }}{% endif %}</li>
+        <li class="breadcrumb-item active">{% if catechism.is_prose_document %}{{ question.display_number }}{% else %}Q{{ question.number }}{% endif %}</li>
     </ol>
 </nav>
 
@@ -42,9 +42,9 @@
 <!-- Question and Answer -->
 <div class="card mb-4">
     <div class="card-body">
-        {% if catechism.is_confession %}
+        {% if catechism.is_prose_document %}
         <h2 class="h4" data-annotatable data-content-type="question" data-question-id="{{ question.pk }}">{{ question.question_text }}</h2>
-        <p class="text-muted mb-3">Section {{ question.display_number }}</p>
+        <p class="text-muted mb-3">{{ catechism.item_name }} {{ question.display_number }}</p>
         <div class="lead mt-3 answer-text" data-annotatable data-content-type="answer" data-question-id="{{ question.pk }}">{{ question.answer_text|format_confession_sections }}</div>
         {% else %}
         <h2 class="h4 question-text" data-annotatable data-content-type="question" data-question-id="{{ question.pk }}">Q{{ question.number }}. {{ question.question_text }}</h2>
@@ -201,7 +201,7 @@
 <div class="d-flex justify-content-between mt-4 mb-4">
     {% if previous_question %}
     <a href="{{ previous_question.get_absolute_url }}" class="btn btn-outline-secondary">
-        {% if catechism.is_confession %}
+        {% if catechism.is_prose_document %}
         <i class="bi bi-chevron-left me-1"></i>{{ previous_question.display_number }}
         {% else %}
         <i class="bi bi-chevron-left me-1"></i>Q{{ previous_question.number }}: {{ previous_question.question_text|truncatewords:8 }}
@@ -210,7 +210,7 @@
     {% else %}<span></span>{% endif %}
     {% if next_question %}
     <a href="{{ next_question.get_absolute_url }}" class="btn btn-outline-secondary">
-        {% if catechism.is_confession %}
+        {% if catechism.is_prose_document %}
         {{ next_question.display_number }}<i class="bi bi-chevron-right ms-1"></i>
         {% else %}
         Q{{ next_question.number }}: {{ next_question.question_text|truncatewords:8 }}<i class="bi bi-chevron-right ms-1"></i>
