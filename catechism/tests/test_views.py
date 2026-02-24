@@ -67,22 +67,23 @@ class TestCatechismHomeView:
         assert 'topics' in resp.context
         assert 'featured_question' in resp.context
 
+    def test_grouped_context(self, client, setup_catechism):
+        resp = client.get('/wsc/')
+        assert 'grouped' in resp.context
+        assert len(resp.context['grouped']) == 1
+        assert len(resp.context['grouped'][0]['questions']) == 2
+
     def test_404_invalid_slug(self, client, setup_catechism):
         resp = client.get('/nonexistent/')
         assert resp.status_code == 404
 
 
 @pytest.mark.django_db
-class TestQuestionListView:
-    def test_status_200(self, client, setup_catechism):
+class TestQuestionListRedirect:
+    def test_redirects_to_home(self, client, setup_catechism):
         resp = client.get('/wsc/questions/')
-        assert resp.status_code == 200
-
-    def test_grouped_context(self, client, setup_catechism):
-        resp = client.get('/wsc/questions/')
-        assert 'grouped' in resp.context
-        assert len(resp.context['grouped']) == 1
-        assert len(resp.context['grouped'][0]['questions']) == 2
+        assert resp.status_code == 302
+        assert resp.url == '/wsc/'
 
 
 @pytest.mark.django_db

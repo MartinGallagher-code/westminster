@@ -12,7 +12,6 @@ python manage.py load_fisher
 python manage.py load_flavel
 python manage.py load_henry
 python manage.py load_watson
-python manage.py load_wallis
 python manage.py load_vincent
 python manage.py load_prooftexts
 

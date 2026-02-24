@@ -52,8 +52,22 @@ class CatechismHomeView(CatechismMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['topics'] = Topic.objects.filter(catechism=self.catechism)
-        ctx['question_count'] = Question.objects.filter(catechism=self.catechism).count()
+        topics = Topic.objects.filter(catechism=self.catechism)
+        ctx['topics'] = topics
+
+        questions = Question.objects.filter(
+            catechism=self.catechism
+        ).select_related('topic')
+        ctx['question_count'] = questions.count()
+
+        questions_by_topic = defaultdict(list)
+        for q in questions:
+            questions_by_topic[q.topic_id].append(q)
+        ctx['grouped'] = [
+            {'topic': topic, 'questions': questions_by_topic.get(topic.id, [])}
+            for topic in topics
+        ]
+
         day_of_year = date.today().timetuple().tm_yday
         ctx['featured_question'] = Question.objects.filter(
             catechism=self.catechism,
@@ -61,27 +75,6 @@ class CatechismHomeView(CatechismMixin, TemplateView):
         ).select_related('topic').first()
         return ctx
 
-
-class QuestionListView(CatechismMixin, ListView):
-    template_name = 'catechism/question_list.html'
-    context_object_name = 'questions'
-
-    def get_queryset(self):
-        return Question.objects.filter(
-            catechism=self.catechism
-        ).select_related('topic')
-
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        topics = Topic.objects.filter(catechism=self.catechism)
-        questions_by_topic = defaultdict(list)
-        for q in ctx['questions']:
-            questions_by_topic[q.topic_id].append(q)
-        ctx['grouped'] = [
-            {'topic': topic, 'questions': questions_by_topic.get(topic.id, [])}
-            for topic in topics
-        ]
-        return ctx
 
 
 class QuestionDetailView(CatechismMixin, DetailView):
@@ -171,10 +164,10 @@ class QuestionDetailView(CatechismMixin, DetailView):
 
 
 class TopicListRedirectView(CatechismMixin, View):
-    """Redirect old topic/chapter list to the unified grouped list."""
+    """Redirect old topic/chapter list to the home page."""
 
     def get(self, request, *args, **kwargs):
-        return redirect(self.catechism.get_item_list_url())
+        return redirect(self.catechism.get_absolute_url())
 
 
 class TopicDetailView(CatechismMixin, DetailView):
