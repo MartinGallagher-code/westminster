@@ -1,4 +1,4 @@
-# Studying the Reformed Standards
+# Study Reformed
 
 A Django web application for studying the great Reformed confessional standards — including the Westminster Standards, Three Forms of Unity, and more — with historical commentaries, scripture proofs, cross-references, and personal study tools.
 
