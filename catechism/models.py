@@ -54,13 +54,10 @@ class Catechism(models.Model):
         return 'Chapters' if self.is_confession else 'Topics'
 
     def get_item_list_url(self):
-        from django.urls import reverse
-        name = 'catechism:section_list' if self.is_confession else 'catechism:question_list'
-        return reverse(name, kwargs={'catechism_slug': self.slug})
+        return self.get_absolute_url()
 
     def get_topic_list_url(self):
-        """Points to the unified grouped list (same as item list)."""
-        return self.get_item_list_url()
+        return self.get_absolute_url()
 
 
 class Topic(models.Model):

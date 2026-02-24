@@ -28,13 +28,13 @@ urlpatterns = [
 
     # Per-catechism routes
     path('<slug:catechism_slug>/', views.CatechismHomeView.as_view(), name='catechism_home'),
-    path('<slug:catechism_slug>/questions/', views.QuestionListView.as_view(), name='question_list'),
+    path('<slug:catechism_slug>/questions/', views.TopicListRedirectView.as_view(), name='question_list'),
     path('<slug:catechism_slug>/questions/<int:number>/', views.QuestionDetailView.as_view(), name='question_detail'),
     path('<slug:catechism_slug>/topics/', views.TopicListRedirectView.as_view(), name='topic_list'),
     path('<slug:catechism_slug>/topics/<slug:slug>/', views.TopicDetailView.as_view(), name='topic_detail'),
 
     # Confession-specific routes (chapters & sections instead of topics & questions)
-    path('<slug:catechism_slug>/sections/', views.QuestionListView.as_view(), name='section_list'),
+    path('<slug:catechism_slug>/sections/', views.TopicListRedirectView.as_view(), name='section_list'),
     path('<slug:catechism_slug>/sections/<int:number>/', views.QuestionDetailView.as_view(), name='section_detail'),
     path('<slug:catechism_slug>/chapters/', views.TopicListRedirectView.as_view(), name='chapter_list'),
     path('<slug:catechism_slug>/chapters/<slug:slug>/', views.TopicDetailView.as_view(), name='chapter_detail'),

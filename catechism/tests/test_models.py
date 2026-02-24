@@ -33,9 +33,8 @@ class TestCatechism:
         assert confession.topic_name == 'Chapter'
 
     def test_get_item_list_url(self, catechism, confession):
-        assert catechism.get_item_list_url() == '/wsc/questions/'
-        TopicFactory(catechism=confession, order=1, question_start=1, question_end=3)
-        assert confession.get_item_list_url() == '/wcf/sections/'
+        assert catechism.get_item_list_url() == '/wsc/'
+        assert confession.get_item_list_url() == '/wcf/'
 
 
 @pytest.mark.django_db
