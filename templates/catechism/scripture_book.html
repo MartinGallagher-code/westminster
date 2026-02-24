@@ -23,7 +23,7 @@
             <div class="d-flex justify-content-between">
                 <span>
                     <strong>{{ entry.question.catechism.item_prefix }}{{ entry.question.display_number }}</strong>
-                    {% if not entry.question.catechism.is_confession %}&mdash; {{ entry.question.question_text|truncatewords:12 }}{% endif %}
+                    {% if not entry.question.catechism.is_prose_document %}&mdash; {{ entry.question.question_text|truncatewords:12 }}{% endif %}
                 </span>
                 <small class="text-muted">{{ entry.reference }}</small>
             </div>

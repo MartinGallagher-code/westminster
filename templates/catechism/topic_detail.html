@@ -23,8 +23,11 @@
 <div class="list-group">
     {% for q in questions %}
     <a href="{{ q.get_absolute_url }}" class="list-group-item list-group-item-action">
-        {% if catechism.is_confession %}
-        <h6 class="mb-1">Section {{ q.display_number }}</h6>
+        {% if catechism.is_systematic_theology %}
+        <h6 class="mb-1">{{ catechism.item_name }} {{ q.display_number }}: {{ q.question_text }}</h6>
+        <p class="mb-0 text-muted small">{{ q.answer_text|truncatewords:20 }}</p>
+        {% elif catechism.is_confession %}
+        <h6 class="mb-1">{{ catechism.item_name }} {{ q.display_number }}</h6>
         <p class="mb-0 text-muted small">{{ q.answer_text|truncatewords:25 }}</p>
         {% else %}
         <h6 class="mb-1">Q{{ q.number }}. {{ q.question_text }}</h6>

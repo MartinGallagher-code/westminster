@@ -14,7 +14,7 @@
                 <h5 class="mb-0">{{ catechism.item_name }} of the Day</h5>
             </div>
             <div class="card-body">
-                {% if catechism.is_confession %}
+                {% if catechism.is_prose_document %}
                 <h5 class="card-title">{{ featured_question.question_text }}</h5>
                 <p class="card-text answer-text">{{ featured_question.answer_text|truncatewords:50 }}</p>
                 {% else %}
@@ -37,8 +37,8 @@
                         data-bs-toggle="collapse" data-bs-target="#collapse-{{ group.topic.slug }}"
                         aria-expanded="false" aria-controls="collapse-{{ group.topic.slug }}">
                     <span class="me-auto">
-                        {% if catechism.is_confession %}
-                        Chapter {{ group.topic.order }}: {{ group.topic.name }}
+                        {% if catechism.is_prose_document %}
+                        {{ catechism.topic_name }} {{ group.topic.order }}: {{ group.topic.name }}
                         {% else %}
                         {{ group.topic.name }}
                         {% endif %}
@@ -59,9 +59,9 @@
                     <div class="list-group list-group-flush">
                         {% for q in group.questions %}
                         <a href="{{ q.get_absolute_url }}" class="list-group-item list-group-item-action py-2 px-0 border-0">
-                            {% if catechism.is_confession %}
+                            {% if catechism.is_prose_document %}
                             <span class="text-body-secondary me-2">{{ q.display_number }}</span>
-                            {{ q.answer_text|truncatewords:20 }}
+                            {% if catechism.is_systematic_theology %}{{ q.question_text }}{% else %}{{ q.answer_text|truncatewords:20 }}{% endif %}
                             {% else %}
                             <span class="fw-semibold me-1">Q{{ q.number }}.</span>
                             {{ q.question_text|truncatewords:20 }}
