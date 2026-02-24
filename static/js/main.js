@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var foucStyle = document.getElementById('tradition-filter-fouc');
         if (foucStyle) foucStyle.parentNode.removeChild(foucStyle);
 
-        document.querySelectorAll('[data-tradition]').forEach(function(el) {
+        document.querySelectorAll('[data-tradition]:not(.tradition-toggle)').forEach(function(el) {
             var tradition = el.getAttribute('data-tradition');
             if (filters[tradition]) {
                 el.classList.remove('doc-tradition-hidden');
