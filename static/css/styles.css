@@ -557,6 +557,26 @@ a {
     font-weight: 500;
 }
 
+/* Collapsed navbar: right-justify all items */
+@media (max-width: 767.98px) {
+    .navbar-collapse .navbar-nav {
+        align-items: flex-end;
+    }
+
+    .navbar-collapse .navbar-nav .nav-link,
+    .navbar-collapse .navbar-nav .nav-item {
+        text-align: right;
+    }
+
+    .navbar-collapse form.d-flex {
+        justify-content: flex-end;
+    }
+
+    .navbar-collapse .dropdown {
+        align-self: flex-end;
+    }
+}
+
 /* ================================================================
    Cards
    ================================================================ */
