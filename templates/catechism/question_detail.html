@@ -13,7 +13,7 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{% url 'catechism:home' %}">Home</a></li>
         <li class="breadcrumb-item">
-            <a href="{% url 'catechism:catechism_home' catechism_slug=catechism.slug %}">{{ catechism.abbreviation }}</a>
+            <a href="{% url 'catechism:catechism_home' catechism_slug=catechism.slug %}">{{ catechism.name }}</a>
         </li>
         <li class="breadcrumb-item">
             <a href="{{ question.topic.get_absolute_url }}">{{ question.topic.name }}</a>
