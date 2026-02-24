@@ -5,7 +5,7 @@ A Django web application for studying the great Reformed confessional standards 
 ## Features
 
 - Browse all three Westminster Standards with topic/chapter navigation
-- Historical commentaries from Fisher, Flavel, Henry, Watson, Wallis, Vincent, Ridgley, Shaw, and Hodge
+- Historical commentaries from Fisher, Flavel, Henry, Watson, Vincent, Ridgley, Shaw, and Hodge
 - ESV scripture proof texts inline with each question/section
 - Cross-references between standards and thematic comparisons
 - Full-text search across all standards
@@ -41,7 +41,6 @@ python manage.py load_catechism
 python manage.py load_fisher
 python manage.py load_flavel
 python manage.py load_henry
-python manage.py load_wallis
 python manage.py load_vincent
 python manage.py load_prooftexts
 python manage.py load_wlc
