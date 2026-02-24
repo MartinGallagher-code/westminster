@@ -130,6 +130,7 @@ class Command(BaseCommand):
                 'year': 1646,
                 'total_questions': 172,
                 'document_type': Catechism.CONFESSION,
+                'tradition': Catechism.WESTMINSTER,
             }
         )
 

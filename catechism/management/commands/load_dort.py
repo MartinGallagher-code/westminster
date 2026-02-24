@@ -42,6 +42,7 @@ class Command(BaseCommand):
                 'year': 1619,
                 'total_questions': total,
                 'document_type': Catechism.CONFESSION,
+                'tradition': Catechism.THREE_FORMS_OF_UNITY,
             }
         )
 

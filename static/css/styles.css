@@ -979,3 +979,12 @@ mark.user-annotation::after {
 #preview-answer {
     line-height: 1.6;
 }
+
+/* ── Tradition filter ── */
+.doc-tradition-hidden {
+    display: none !important;
+}
+
+.tradition-check {
+    visibility: hidden;
+}

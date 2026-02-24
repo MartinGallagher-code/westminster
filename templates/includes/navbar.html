@@ -21,7 +21,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         {% for cat in catechisms %}
-                        <li><a class="dropdown-item" href="{{ cat.get_item_list_url }}">{{ cat.name }}</a></li>
+                        <li data-tradition="{{ cat.tradition }}"><a class="dropdown-item" href="{{ cat.get_item_list_url }}">{{ cat.name }}</a></li>
                         {% endfor %}
                     </ul>
                 </li>
@@ -89,6 +89,26 @@
                             <span class="scheme-swatch me-2" style="background: #4A2060;"></span>
                             Royal
                             <i class="bi bi-check2 ms-auto scheme-check"></i>
+                        </button>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><h6 class="dropdown-header">Document Collections</h6></li>
+                    <li>
+                        <button class="dropdown-item tradition-toggle d-flex align-items-center" data-tradition="westminster" type="button">
+                            Westminster Standards
+                            <i class="bi bi-check2 ms-auto tradition-check"></i>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="dropdown-item tradition-toggle d-flex align-items-center" data-tradition="three_forms_of_unity" type="button">
+                            Three Forms of Unity
+                            <i class="bi bi-check2 ms-auto tradition-check"></i>
+                        </button>
+                    </li>
+                    <li>
+                        <button class="dropdown-item tradition-toggle d-flex align-items-center" data-tradition="other" type="button">
+                            Other Documents
+                            <i class="bi bi-check2 ms-auto tradition-check"></i>
                         </button>
                     </li>
                 </ul>

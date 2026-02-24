@@ -13,6 +13,25 @@
             if (scheme && scheme !== 'classic') {
                 document.documentElement.setAttribute('data-color-scheme', scheme);
             }
+            // Inject tradition filter styles early to prevent flash of hidden content
+            try {
+                var rawFilters = localStorage.getItem('docFilters');
+                var filters = rawFilters ? JSON.parse(rawFilters) : null;
+                // Default: westminster only
+                if (!filters || (!filters.westminster && !filters.three_forms_of_unity && !filters.other)) {
+                    filters = {westminster: true, three_forms_of_unity: false, other: false};
+                }
+                var hidden = [];
+                if (!filters.westminster) hidden.push('[data-tradition="westminster"]');
+                if (!filters.three_forms_of_unity) hidden.push('[data-tradition="three_forms_of_unity"]');
+                if (!filters.other) hidden.push('[data-tradition="other"]');
+                if (hidden.length) {
+                    var style = document.createElement('style');
+                    style.id = 'tradition-filter-fouc';
+                    style.textContent = hidden.join(',') + '{display:none!important}';
+                    document.head.appendChild(style);
+                }
+            } catch(e) {}
         })();
     </script>
     <title>{% block title %}Study Reformed{% endblock %}</title>

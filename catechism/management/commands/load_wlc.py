@@ -62,6 +62,7 @@ class Command(BaseCommand):
                 ),
                 'year': 1648,
                 'total_questions': 196,
+                'tradition': Catechism.WESTMINSTER,
             }
         )
 

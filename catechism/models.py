@@ -4,9 +4,20 @@ from django.db import models
 class Catechism(models.Model):
     CATECHISM = 'catechism'
     CONFESSION = 'confession'
+    SYSTEMATIC_THEOLOGY = 'systematic_theology'
     DOCUMENT_TYPE_CHOICES = [
         (CATECHISM, 'Catechism'),
         (CONFESSION, 'Confession'),
+        (SYSTEMATIC_THEOLOGY, 'Systematic Theology'),
+    ]
+
+    WESTMINSTER = 'westminster'
+    THREE_FORMS_OF_UNITY = 'three_forms_of_unity'
+    OTHER = 'other'
+    TRADITION_CHOICES = [
+        (WESTMINSTER, 'Westminster Standards'),
+        (THREE_FORMS_OF_UNITY, 'Three Forms of Unity'),
+        (OTHER, 'Other'),
     ]
 
     name = models.CharField(max_length=200)
@@ -17,6 +28,9 @@ class Catechism(models.Model):
     total_questions = models.PositiveIntegerField()
     document_type = models.CharField(
         max_length=20, choices=DOCUMENT_TYPE_CHOICES, default=CATECHISM
+    )
+    tradition = models.CharField(
+        max_length=30, choices=TRADITION_CHOICES, default=OTHER
     )
 
     class Meta:
@@ -34,24 +48,49 @@ class Catechism(models.Model):
         return self.document_type == self.CONFESSION
 
     @property
+    def is_systematic_theology(self):
+        return self.document_type == self.SYSTEMATIC_THEOLOGY
+
+    @property
+    def is_prose_document(self):
+        """True for confessions and systematic theologies (prose chapters, not Q&A)."""
+        return self.is_confession or self.is_systematic_theology
+
+    @property
     def item_name(self):
-        return 'Section' if self.is_confession else 'Question'
+        if self.is_confession:
+            return 'Section'
+        if self.is_systematic_theology:
+            return 'Chapter'
+        return 'Question'
 
     @property
     def item_name_plural(self):
-        return 'Sections' if self.is_confession else 'Questions'
+        if self.is_confession:
+            return 'Sections'
+        if self.is_systematic_theology:
+            return 'Chapters'
+        return 'Questions'
 
     @property
     def item_prefix(self):
-        return '' if self.is_confession else 'Q'
+        return '' if self.is_prose_document else 'Q'
 
     @property
     def topic_name(self):
-        return 'Chapter' if self.is_confession else 'Topic'
+        if self.is_confession:
+            return 'Chapter'
+        if self.is_systematic_theology:
+            return 'Book'
+        return 'Topic'
 
     @property
     def topic_name_plural(self):
-        return 'Chapters' if self.is_confession else 'Topics'
+        if self.is_confession:
+            return 'Chapters'
+        if self.is_systematic_theology:
+            return 'Books'
+        return 'Topics'
 
     def get_item_list_url(self):
         return self.get_absolute_url()
@@ -80,15 +119,15 @@ class Topic(models.Model):
 
     @property
     def display_start(self):
-        """Returns chapter.1 for confessions, plain start number for catechisms."""
-        if self.catechism.is_confession:
+        """Returns order.1 for prose documents (confessions/sys theologies), plain start for catechisms."""
+        if self.catechism.is_prose_document:
             return f"{self.order}.1"
         return str(self.question_start)
 
     @property
     def display_end(self):
-        """Returns chapter.N for confessions, plain end number for catechisms."""
-        if self.catechism.is_confession:
+        """Returns order.N for prose documents (confessions/sys theologies), plain end for catechisms."""
+        if self.catechism.is_prose_document:
             count = self.question_end - self.question_start + 1
             return f"{self.order}.{count}"
         return str(self.question_end)
@@ -127,8 +166,8 @@ class Question(models.Model):
 
     @property
     def display_number(self):
-        """Returns chapter.section for confessions (e.g. '1.5'), plain number for catechisms."""
-        if self.catechism.is_confession and self.topic:
+        """Returns book/chapter.item for prose documents (e.g. '1.5'), plain number for catechisms."""
+        if self.catechism.is_prose_document and self.topic:
             section = self.number - self.topic.question_start + 1
             return f"{self.topic.order}.{section}"
         return str(self.number)

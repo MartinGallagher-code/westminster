@@ -58,7 +58,7 @@
             </h5>
             <span class="badge text-bg-primary">{{ featured.catechism.abbreviation }}</span>
         </div>
-        {% if featured.catechism.is_confession %}
+        {% if featured.catechism.is_prose_document %}
         <p class="question-text fs-5 mb-2">{{ featured.question_text }}</p>
         <p class="answer-text text-body-secondary">{{ featured.answer_text|truncatewords:40 }}</p>
         {% else %}
@@ -80,11 +80,11 @@
     <div class="row g-3 mt-2">
         {% for cat in catechisms %}
         {% if cat.featured_question %}
-        <div class="col-md-4">
+        <div class="col-md-4" data-tradition="{{ cat.tradition }}">
             <div class="card">
                 <div class="card-body">
                     <h6 class="card-title">{{ cat.abbreviation }} {{ cat.item_name }} of the Day</h6>
-                    {% if cat.is_confession %}
+                    {% if cat.is_prose_document %}
                     <p class="small mb-1"><strong>{{ cat.featured_question.question_text|truncatewords:15 }}</strong></p>
                     {% else %}
                     <p class="small mb-1">
@@ -108,7 +108,7 @@
 <h2 class="h5 text-body-secondary mb-3 section-heading">Documents</h2>
 <div class="row g-3 mb-4">
     {% for cat in catechisms %}
-    <div class="col-md-4">
+    <div class="col-md-4" data-tradition="{{ cat.tradition }}">
         <div class="card h-100">
             <div class="card-body d-flex flex-column">
                 <h5 class="card-title">{{ cat.name }}</h5>

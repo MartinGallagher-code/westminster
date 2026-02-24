@@ -55,6 +55,7 @@ class Command(BaseCommand):
                 ),
                 'year': 1563,
                 'total_questions': 129,
+                'tradition': Catechism.THREE_FORMS_OF_UNITY,
             }
         )
 
