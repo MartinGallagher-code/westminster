@@ -10,3 +10,5 @@ build/
 staticfiles/
 *.log
 .DS_Store
+.coverage
+htmlcov/
