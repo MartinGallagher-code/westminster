@@ -938,3 +938,24 @@ mark.user-annotation::after {
 .supporter-badge i {
     font-size: 0.65rem;
 }
+
+/* ================================================================
+   See-also preview panel
+   ================================================================ */
+.see-also-preview-panel {
+    position: sticky;
+    top: 1rem;
+}
+
+.see-also-link.active {
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+.btn-close-sm {
+    font-size: 0.6rem;
+}
+
+#preview-answer {
+    line-height: 1.6;
+}

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load catechism_tags %}
+{% load catechism_tags static %}
 
 {% block title %}{% if catechism.is_confession %}{{ question.question_text }} {{ question.display_number }}{% else %}Q{{ question.number }}{% endif %} - {{ catechism.name }}{% endblock %}
 
@@ -21,6 +21,9 @@
         <li class="breadcrumb-item active">{% if catechism.is_confession %}{{ question.display_number }}{% else %}Q{{ question.number }}{% endif %}</li>
     </ol>
 </nav>
+
+<div class="row">
+<div id="main-col" class="col-12">
 
 <!-- Prev/Next navigation (top) -->
 <div class="d-flex justify-content-between mb-3">
@@ -53,7 +56,7 @@
             <small class="text-muted d-block{% if not forloop.first %} mt-1{% endif %}">
                 <strong>See also in {{ abbr }}:</strong>
                 {% for ref in refs %}
-                <a href="{{ ref.get_absolute_url }}">{{ ref.catechism.item_prefix }}{{ ref.display_number }}</a>{% if not forloop.last %}, {% endif %}
+                <a href="{{ ref.get_absolute_url }}" class="see-also-link" data-preview-pk="{{ ref.pk }}">{{ ref.catechism.item_prefix }}{{ ref.display_number }}</a>{% if not forloop.last %}, {% endif %}
                 {% endfor %}
             </small>
             {% endfor %}
@@ -215,11 +218,36 @@
     </a>
     {% else %}<span></span>{% endif %}
 </div>
+
+</div><!-- /main-col -->
+
+<!-- See-also preview panel (right column, hidden by default) -->
+<div id="preview-col" class="col-lg-4 d-none">
+    <div class="see-also-preview-panel">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center py-2">
+                <strong id="preview-title" class="small"></strong>
+                <button type="button" class="btn-close btn-close-sm" id="preview-close" aria-label="Close preview"></button>
+            </div>
+            <div class="card-body">
+                <div id="preview-question" class="h6 mb-2"></div>
+                <div id="preview-answer" class="small"></div>
+                <div class="mt-3">
+                    <a id="preview-link" href="#" class="btn btn-outline-primary btn-sm">
+                        Go to full page <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div><!-- /row -->
 {% endblock %}
 
 {% block extra_js %}
+<script src="{% static 'js/see-also-preview.js' %}"></script>
 {% if user.is_authenticated %}
-{% load static %}
 <script>
     window.HIGHLIGHT_CONFIG = {
         listCreateUrl: '{% url "accounts:highlight_list_create" %}',

@@ -3,7 +3,7 @@ from collections import defaultdict
 from datetime import date
 
 from django.db.models import Q, Count, Prefetch
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView
@@ -503,6 +503,24 @@ class CompareSetThemeView(DetailView):
             ctx['next_theme'] = all_themes[current_idx + 1] if current_idx < len(all_themes) - 1 else None
 
         return ctx
+
+
+def question_preview_json(request, pk):
+    """Return lightweight JSON for the see-also preview panel."""
+    q = get_object_or_404(
+        Question.objects.select_related('catechism'),
+        pk=pk,
+    )
+    return JsonResponse({
+        'catechism_name': q.catechism.name,
+        'abbreviation': q.catechism.abbreviation,
+        'item_prefix': q.catechism.item_prefix,
+        'display_number': q.display_number,
+        'is_confession': q.catechism.is_confession,
+        'question_text': q.question_text,
+        'answer_text': q.answer_text,
+        'url': q.get_absolute_url(),
+    })
 
 
 # Legacy redirects

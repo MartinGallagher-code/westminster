@@ -5,6 +5,9 @@ from . import views
 app_name = 'catechism'
 
 urlpatterns = [
+    # API
+    path('api/question/<int:pk>/preview/', views.question_preview_json, name='question_preview'),
+
     # Site-wide
     path('', views.HomeView.as_view(), name='home'),
     path('search/', views.SearchView.as_view(), name='search'),
