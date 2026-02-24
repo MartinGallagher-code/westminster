@@ -470,25 +470,6 @@ a {
     color: var(--wm-accent-light) !important;
 }
 
-/* Two-row navbar on tablets: search gets its own full-width row */
-@media (min-width: 768px) and (max-width: 1199.98px) {
-    #navbarNav {
-        flex-wrap: wrap;
-    }
-
-    #navbarNav > form.d-flex {
-        order: 99;
-        flex: 1 1 100%;
-        margin: 0.5rem 0 0 !important;
-        padding-top: 0.5rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    #navbarNav > form.d-flex .form-control {
-        flex: 1;
-    }
-}
-
 /* Search form in navbar */
 .navbar .form-control {
     background-color: rgba(255, 255, 255, 0.1);
@@ -558,7 +539,7 @@ a {
 }
 
 /* Collapsed navbar: right-justify all items */
-@media (max-width: 767.98px) {
+@media (max-width: 991.98px) {
     .navbar-collapse .navbar-nav {
         align-items: flex-end;
     }
