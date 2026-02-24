@@ -222,7 +222,7 @@ class ScriptureIndexView(TemplateView):
         ctx = super().get_context_data(**kwargs)
         books = BibleBook.objects.annotate(
             citation_count=Count('index_entries')
-        )
+        ).order_by('book_number')
         ctx['ot_books'] = [b for b in books if b.testament == 'OT']
         ctx['nt_books'] = [b for b in books if b.testament == 'NT']
         return ctx
