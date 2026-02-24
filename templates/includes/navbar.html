@@ -9,6 +9,85 @@
             </svg>
             <span class="ms-2">Study Reformed</span>
         </a>
+        <form class="d-flex me-2" action="{% url 'catechism:search' %}" method="get">
+            <input class="form-control form-control-sm me-1" type="search" name="q"
+                   placeholder="Search..." value="{{ query|default:'' }}"
+                   aria-label="Search the Reformed Standards">
+            <button class="btn btn-outline-light btn-sm" type="submit"><i class="bi bi-search"></i></button>
+        </form>
+        <div class="dropdown me-2">
+            <button class="btn btn-outline-light btn-sm" type="button"
+                    id="appearance-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside"
+                    aria-expanded="false" title="Appearance" aria-label="Appearance settings">
+                <i class="bi bi-palette"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end appearance-menu" aria-labelledby="appearance-dropdown">
+                <li><h6 class="dropdown-header">Mode</h6></li>
+                <li>
+                    <button class="dropdown-item d-flex align-items-center" id="theme-toggle" type="button">
+                        <i class="bi bi-moon-stars-fill me-2" id="theme-toggle-icon"></i>
+                        <span id="theme-toggle-label">Dark mode</span>
+                    </button>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li><h6 class="dropdown-header">Color Scheme</h6></li>
+                <li>
+                    <button class="dropdown-item scheme-option d-flex align-items-center" data-scheme="classic" type="button">
+                        <span class="scheme-swatch me-2" style="background: #6B2737;"></span>
+                        Classic
+                        <i class="bi bi-check2 ms-auto scheme-check"></i>
+                    </button>
+                </li>
+                <li>
+                    <button class="dropdown-item scheme-option d-flex align-items-center" data-scheme="ocean" type="button">
+                        <span class="scheme-swatch me-2" style="background: #1B4965;"></span>
+                        Ocean
+                        <i class="bi bi-check2 ms-auto scheme-check"></i>
+                    </button>
+                </li>
+                <li>
+                    <button class="dropdown-item scheme-option d-flex align-items-center" data-scheme="forest" type="button">
+                        <span class="scheme-swatch me-2" style="background: #2D5016;"></span>
+                        Forest
+                        <i class="bi bi-check2 ms-auto scheme-check"></i>
+                    </button>
+                </li>
+                <li>
+                    <button class="dropdown-item scheme-option d-flex align-items-center" data-scheme="stone" type="button">
+                        <span class="scheme-swatch me-2" style="background: #4A4440;"></span>
+                        Stone
+                        <i class="bi bi-check2 ms-auto scheme-check"></i>
+                    </button>
+                </li>
+                <li>
+                    <button class="dropdown-item scheme-option d-flex align-items-center" data-scheme="royal" type="button">
+                        <span class="scheme-swatch me-2" style="background: #4A2060;"></span>
+                        Royal
+                        <i class="bi bi-check2 ms-auto scheme-check"></i>
+                    </button>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li><h6 class="dropdown-header">Document Collections</h6></li>
+                <li>
+                    <button class="dropdown-item tradition-toggle d-flex align-items-center" data-tradition="westminster" type="button">
+                        Westminster Standards
+                        <i class="bi bi-check2 ms-auto tradition-check"></i>
+                    </button>
+                </li>
+                <li>
+                    <button class="dropdown-item tradition-toggle d-flex align-items-center" data-tradition="three_forms_of_unity" type="button">
+                        Three Forms of Unity
+                        <i class="bi bi-check2 ms-auto tradition-check"></i>
+                    </button>
+                </li>
+                <li>
+                    <button class="dropdown-item tradition-toggle d-flex align-items-center" data-tradition="other" type="button">
+                        Other Documents
+                        <i class="bi bi-check2 ms-auto tradition-check"></i>
+                    </button>
+                </li>
+            </ul>
+        </div>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -34,85 +113,6 @@
                     <a class="nav-link" href="{% url 'catechism:compare_index' %}"><i class="bi bi-layout-split me-1"></i>Compare</a>
                 </li>
             </ul>
-            <form class="d-flex me-3" action="{% url 'catechism:search' %}" method="get">
-                <input class="form-control form-control-sm me-2" type="search" name="q"
-                       placeholder="Search..." value="{{ query|default:'' }}"
-                       aria-label="Search the Reformed Standards">
-                <button class="btn btn-outline-light btn-sm" type="submit"><i class="bi bi-search"></i></button>
-            </form>
-            <div class="dropdown me-3">
-                <button class="btn btn-outline-light btn-sm" type="button"
-                        id="appearance-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside"
-                        aria-expanded="false" title="Appearance" aria-label="Appearance settings">
-                    <i class="bi bi-palette"></i>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end appearance-menu" aria-labelledby="appearance-dropdown">
-                    <li><h6 class="dropdown-header">Mode</h6></li>
-                    <li>
-                        <button class="dropdown-item d-flex align-items-center" id="theme-toggle" type="button">
-                            <i class="bi bi-moon-stars-fill me-2" id="theme-toggle-icon"></i>
-                            <span id="theme-toggle-label">Dark mode</span>
-                        </button>
-                    </li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><h6 class="dropdown-header">Color Scheme</h6></li>
-                    <li>
-                        <button class="dropdown-item scheme-option d-flex align-items-center" data-scheme="classic" type="button">
-                            <span class="scheme-swatch me-2" style="background: #6B2737;"></span>
-                            Classic
-                            <i class="bi bi-check2 ms-auto scheme-check"></i>
-                        </button>
-                    </li>
-                    <li>
-                        <button class="dropdown-item scheme-option d-flex align-items-center" data-scheme="ocean" type="button">
-                            <span class="scheme-swatch me-2" style="background: #1B4965;"></span>
-                            Ocean
-                            <i class="bi bi-check2 ms-auto scheme-check"></i>
-                        </button>
-                    </li>
-                    <li>
-                        <button class="dropdown-item scheme-option d-flex align-items-center" data-scheme="forest" type="button">
-                            <span class="scheme-swatch me-2" style="background: #2D5016;"></span>
-                            Forest
-                            <i class="bi bi-check2 ms-auto scheme-check"></i>
-                        </button>
-                    </li>
-                    <li>
-                        <button class="dropdown-item scheme-option d-flex align-items-center" data-scheme="stone" type="button">
-                            <span class="scheme-swatch me-2" style="background: #4A4440;"></span>
-                            Stone
-                            <i class="bi bi-check2 ms-auto scheme-check"></i>
-                        </button>
-                    </li>
-                    <li>
-                        <button class="dropdown-item scheme-option d-flex align-items-center" data-scheme="royal" type="button">
-                            <span class="scheme-swatch me-2" style="background: #4A2060;"></span>
-                            Royal
-                            <i class="bi bi-check2 ms-auto scheme-check"></i>
-                        </button>
-                    </li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><h6 class="dropdown-header">Document Collections</h6></li>
-                    <li>
-                        <button class="dropdown-item tradition-toggle d-flex align-items-center" data-tradition="westminster" type="button">
-                            Westminster Standards
-                            <i class="bi bi-check2 ms-auto tradition-check"></i>
-                        </button>
-                    </li>
-                    <li>
-                        <button class="dropdown-item tradition-toggle d-flex align-items-center" data-tradition="three_forms_of_unity" type="button">
-                            Three Forms of Unity
-                            <i class="bi bi-check2 ms-auto tradition-check"></i>
-                        </button>
-                    </li>
-                    <li>
-                        <button class="dropdown-item tradition-toggle d-flex align-items-center" data-tradition="other" type="button">
-                            Other Documents
-                            <i class="bi bi-check2 ms-auto tradition-check"></i>
-                        </button>
-                    </li>
-                </ul>
-            </div>
             <ul class="navbar-nav">
                 {% if user.is_authenticated %}
                 <li class="nav-item">
