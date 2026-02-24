@@ -165,14 +165,22 @@ class TestScriptureBookView:
 
 @pytest.mark.django_db
 class TestCompareViews:
-    def test_compare_index(self, client, db):
+    def test_compare_index(self, client, setup_catechism):
+        # A set is only shown when it has entries in an active-tradition catechism.
+        cat, topic, q1, q2 = setup_catechism
+        cs = ComparisonSet.objects.get(slug='westminster')
+        theme = ComparisonThemeFactory(name='Index Theme', slug='index-theme', comparison_set=cs)
+        ComparisonEntryFactory(theme=theme, catechism=cat, question_start=1, question_end=2)
         resp = client.get('/compare/')
         assert resp.status_code == 200
-        assert len(resp.context['comparison_sets']) == 1  # seeded by migration
+        assert len(resp.context['comparison_sets']) == 1
 
-    def test_compare_set(self, client, db):
+    def test_compare_set(self, client, setup_catechism):
+        # Themes are only shown when they have entries in an active-tradition catechism.
+        cat, topic, q1, q2 = setup_catechism
         cs = ComparisonSet.objects.get(slug='westminster')
-        ComparisonThemeFactory(name='God', slug='god', comparison_set=cs)
+        theme = ComparisonThemeFactory(name='God', slug='god', comparison_set=cs)
+        ComparisonEntryFactory(theme=theme, catechism=cat, question_start=1, question_end=2)
         resp = client.get('/compare/westminster/')
         assert resp.status_code == 200
         assert len(resp.context['themes']) == 1

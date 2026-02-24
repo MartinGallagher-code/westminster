@@ -14,6 +14,7 @@ from .models import (
     BibleBook, ScriptureIndex, ComparisonSet, ComparisonTheme,
     ComparisonEntry,
 )
+from .utils import get_active_traditions
 
 
 class CatechismMixin:
@@ -42,8 +43,15 @@ class HomeView(TemplateView):
                 number=(day_of_year % cat.total_questions) + 1
             ).select_related('topic').first()
         ctx['catechisms'] = catechisms
-        hero_cat = catechisms[day_of_year % len(catechisms)]
-        ctx['featured'] = hero_cat.featured_question
+
+        # Featured "question of the day" drawn only from active-tradition documents
+        active_traditions = get_active_traditions(self.request)
+        active_catechisms = [c for c in catechisms if c.tradition in active_traditions]
+        if active_catechisms:
+            hero_cat = active_catechisms[day_of_year % len(active_catechisms)]
+            ctx['featured'] = hero_cat.featured_question
+        else:
+            ctx['featured'] = None
         return ctx
 
 
@@ -118,7 +126,9 @@ class QuestionDetailView(CatechismMixin, DetailView):
         else:
             ctx['scripture_map'] = {}
 
-        # Generic cross-references (any catechism to any catechism)
+        active_traditions = get_active_traditions(self.request)
+
+        # Generic cross-references (any catechism to any catechism), filtered to active traditions
         cross_ref_qs = StandardCrossReference.objects.filter(
             Q(source_question=q) | Q(target_question=q)
         ).select_related(
@@ -134,7 +144,9 @@ class QuestionDetailView(CatechismMixin, DetailView):
                 other = cr.target_question
             else:
                 other = cr.source_question
-            cross_ref_groups[other.catechism.abbreviation].append(other)
+            # Only show cross-refs to documents in active traditions
+            if other.catechism.tradition in active_traditions:
+                cross_ref_groups[other.catechism.abbreviation].append(other)
 
         # Sort each group by question number and cap display size
         MAX_CROSSREFS_PER_GROUP = 8
@@ -145,12 +157,14 @@ class QuestionDetailView(CatechismMixin, DetailView):
 
         ctx['cross_ref_groups'] = dict(cross_ref_groups)
 
-        # Comparison themes that include this question
+        # Comparison themes that include this question, with at least one active-tradition entry
         ctx['comparison_themes'] = ComparisonTheme.objects.filter(
             entries__catechism=q.catechism,
             entries__question_start__lte=q.number,
             entries__question_end__gte=q.number,
-        )
+        ).filter(
+            entries__catechism__tradition__in=active_traditions
+        ).distinct()
 
         if self.request.user.is_authenticated:
             from accounts.models import UserNote
@@ -197,9 +211,12 @@ class SearchView(ListView):
         if not query:
             return Question.objects.none()
 
+        active_traditions = get_active_traditions(self.request)
         qs = Question.objects.filter(
             Q(question_text__icontains=query) |
             Q(answer_text__icontains=query)
+        ).filter(
+            catechism__tradition__in=active_traditions
         ).distinct().select_related('topic', 'catechism')
 
         catechism_slug = self.request.GET.get('catechism', '')
@@ -220,8 +237,12 @@ class ScriptureIndexView(TemplateView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
+        active_traditions = get_active_traditions(self.request)
         books = BibleBook.objects.annotate(
-            citation_count=Count('index_entries')
+            citation_count=Count(
+                'index_entries',
+                filter=Q(index_entries__question__catechism__tradition__in=active_traditions),
+            )
         ).order_by('book_number')
         ctx['ot_books'] = [b for b in books if b.testament == 'OT']
         ctx['nt_books'] = [b for b in books if b.testament == 'NT']
@@ -236,8 +257,10 @@ class ScriptureBookView(DetailView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
+        active_traditions = get_active_traditions(self.request)
         entries = ScriptureIndex.objects.filter(
-            book=self.object
+            book=self.object,
+            question__catechism__tradition__in=active_traditions,
         ).select_related('question__catechism', 'question__topic')
 
         grouped = defaultdict(list)
@@ -257,15 +280,25 @@ class CompareIndexView(ListView):
     model = ComparisonSet
     context_object_name = 'comparison_sets'
 
+    def get_queryset(self):
+        # Only show sets that have at least one entry in an active-tradition document
+        active_traditions = get_active_traditions(self.request)
+        return ComparisonSet.objects.filter(
+            themes__entries__catechism__tradition__in=active_traditions
+        ).distinct()
+
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['all_catechisms'] = Catechism.objects.all()
-        # Build preset map: set slug → list of catechism slugs (for JS)
+        active_traditions = get_active_traditions(self.request)
+        ctx['all_catechisms'] = Catechism.objects.filter(tradition__in=active_traditions)
+        ctx['active_traditions'] = active_traditions
+        # Build preset map: set slug → list of catechism slugs in active traditions (for JS)
         preset_map = {}
         for cs in ctx['comparison_sets']:
             cat_slugs = list(
                 ComparisonEntry.objects.filter(
-                    theme__comparison_set=cs
+                    theme__comparison_set=cs,
+                    catechism__tradition__in=active_traditions,
                 ).values_list(
                     'catechism__slug', flat=True
                 ).distinct()
@@ -302,12 +335,14 @@ class CustomCompareView(TemplateView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
 
+        active_traditions = get_active_traditions(self.request)
+
         # Parse document slugs from query parameter
         docs_param = self.request.GET.get('docs', '')
         selected_slugs = [s.strip() for s in docs_param.split(',') if s.strip()]
 
-        # Validate against existing catechisms
-        all_catechisms = Catechism.objects.all()
+        # Validate against active-tradition catechisms only
+        all_catechisms = Catechism.objects.filter(tradition__in=active_traditions)
         valid_slugs = set(all_catechisms.values_list('slug', flat=True))
         selected_slugs = [s for s in selected_slugs if s in valid_slugs]
 
@@ -364,6 +399,7 @@ class CustomCompareThemeView(TemplateView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
 
+        active_traditions = get_active_traditions(self.request)
         docs_param = self.request.GET.get('docs', '')
         selected_slugs = [s.strip() for s in docs_param.split(',') if s.strip()]
         theme_slug = self.kwargs['theme_slug']
@@ -376,10 +412,11 @@ class CustomCompareThemeView(TemplateView):
         primary_theme = themes.first()
         ctx['theme'] = primary_theme
 
-        # Collect entries from all themes with this slug, filtered to selected docs
+        # Collect entries filtered to selected docs AND active traditions
         all_entries = ComparisonEntry.objects.filter(
             theme__slug=theme_slug,
             catechism__slug__in=selected_slugs,
+            catechism__tradition__in=active_traditions,
         ).select_related('catechism')
 
         # Deduplicate by catechism (prefer first occurrence)
@@ -402,7 +439,7 @@ class CustomCompareThemeView(TemplateView):
         ctx['docs_param'] = ','.join(selected_slugs)
 
         # Build prev/next navigation from the same custom theme set
-        all_matching_themes = self._get_all_custom_themes(selected_slugs)
+        all_matching_themes = self._get_all_custom_themes(selected_slugs, active_traditions)
         current_idx = None
         for i, t in enumerate(all_matching_themes):
             if t['theme'].slug == theme_slug:
@@ -414,15 +451,19 @@ class CustomCompareThemeView(TemplateView):
 
         return ctx
 
-    def _get_all_custom_themes(self, selected_slugs):
+    def _get_all_custom_themes(self, selected_slugs, active_traditions=None):
         """Get the full ordered list of themes for these selected documents."""
+        if active_traditions is None:
+            active_traditions = get_active_traditions(self.request)
         themes_with_matches = ComparisonTheme.objects.filter(
-            entries__catechism__slug__in=selected_slugs
+            entries__catechism__slug__in=selected_slugs,
+            entries__catechism__tradition__in=active_traditions,
         ).distinct().prefetch_related(
             Prefetch(
                 'entries',
                 queryset=ComparisonEntry.objects.filter(
-                    catechism__slug__in=selected_slugs
+                    catechism__slug__in=selected_slugs,
+                    catechism__tradition__in=active_traditions,
                 ),
                 to_attr='matching_entries'
             )
@@ -466,7 +507,10 @@ class CompareSetView(ListView):
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
-        return self.comparison_set.themes.all()
+        active_traditions = get_active_traditions(self.request)
+        return self.comparison_set.themes.filter(
+            entries__catechism__tradition__in=active_traditions
+        ).distinct()
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -487,12 +531,19 @@ class CompareSetThemeView(DetailView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        entries = self.object.entries.select_related('catechism').all()
+        active_traditions = get_active_traditions(self.request)
+        entries = self.object.entries.filter(
+            catechism__tradition__in=active_traditions
+        ).select_related('catechism')
         ctx['columns'] = _build_columns(entries)
         ctx['comparison_set'] = self.object.comparison_set
 
-        # Prev/next theme navigation within the same set
-        all_themes = list(self.object.comparison_set.themes.all())
+        # Prev/next theme navigation within the same set (filtered to active traditions)
+        all_themes = list(
+            self.object.comparison_set.themes.filter(
+                entries__catechism__tradition__in=active_traditions
+            ).distinct()
+        )
         current_idx = None
         for i, t in enumerate(all_themes):
             if t.pk == self.object.pk:
@@ -511,6 +562,10 @@ def question_preview_json(request, pk):
         Question.objects.select_related('catechism'),
         pk=pk,
     )
+    # Only serve previews for questions in the user's active traditions
+    active_traditions = get_active_traditions(request)
+    if q.catechism.tradition not in active_traditions:
+        raise Http404
     return JsonResponse({
         'catechism_name': q.catechism.name,
         'abbreviation': q.catechism.abbreviation,

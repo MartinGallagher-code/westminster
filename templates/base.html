@@ -64,7 +64,7 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     {% block extra_head %}{% endblock %}
 </head>
-<body>
+<body {% block body_attrs %}{% endblock %}>
     <a href="#main-content" class="visually-hidden-focusable">Skip to main content</a>
     {% include "includes/navbar.html" %}
 
