@@ -993,3 +993,19 @@ mark.user-annotation::after {
 .tradition-check {
     visibility: hidden;
 }
+
+/* Sidebar tradition toggles on home page */
+.list-group-item.tradition-toggle.active {
+    color: var(--wm-primary);
+    background-color: color-mix(in srgb, var(--wm-primary) 6%, var(--bs-body-bg));
+    border-color: var(--wm-card-border);
+    font-weight: 500;
+}
+
+.list-group-item.tradition-toggle.active .tradition-check {
+    visibility: visible;
+}
+
+.list-group-item.tradition-toggle:not(.active) .tradition-check {
+    visibility: hidden;
+}
