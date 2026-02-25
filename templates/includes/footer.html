@@ -13,7 +13,7 @@
 
     <div class="container">
         <div class="row g-4">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <h6 class="footer-heading text-uppercase fw-semibold mb-3">About</h6>
                 <p class="small mb-2">
                     A study tool for the great Reformed confessional standards &mdash; with
@@ -21,27 +21,7 @@
                     Reformed theologians.
                 </p>
             </div>
-            <div class="col-md-4">
-                <h6 class="footer-heading text-uppercase fw-semibold mb-3">Documents</h6>
-                <ul class="list-unstyled small">
-                    {% for cat in catechisms %}
-                    <li class="mb-1">
-                        <a href="{{ cat.get_item_list_url }}" class="footer-link">{{ cat.name }}</a>
-                    </li>
-                    {% endfor %}
-                    <li class="mb-1">
-                        <a href="{% url 'catechism:scripture_index' %}" class="footer-link">
-                            <i class="bi bi-book-half me-1"></i>Scripture Index
-                        </a>
-                    </li>
-                    <li class="mb-1">
-                        <a href="{% url 'catechism:compare_index' %}" class="footer-link">
-                            <i class="bi bi-layout-split me-1"></i>Compare Standards
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <h6 class="footer-heading text-uppercase fw-semibold mb-3">Resources</h6>
                 <ul class="list-unstyled small">
                     <li class="mb-1">
