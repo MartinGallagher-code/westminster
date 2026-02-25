@@ -678,13 +678,6 @@ a {
     border-top: 1px solid var(--wm-border);
 }
 
-.footer-heading {
-    font-family: 'Cormorant Garamond', Georgia, serif;
-    font-size: 0.85rem;
-    letter-spacing: 0.08em;
-    color: var(--wm-primary);
-}
-
 .footer-link {
     color: var(--wm-text-muted);
     text-decoration: none;

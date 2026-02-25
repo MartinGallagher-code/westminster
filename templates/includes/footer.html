@@ -1,47 +1,22 @@
-<footer class="site-footer mt-5 pt-5 pb-4">
-    <div class="text-center mb-4" aria-hidden="true">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 20" width="200" height="20" class="ornamental-divider" style="color: var(--wm-accent);">
-            <polygon points="100,2 106,10 100,18 94,10" fill="currentColor"/>
-            <path d="M90,10 Q80,4 60,10 Q50,14 30,10" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-            <path d="M30,10 Q20,6 10,10" stroke="currentColor" stroke-width="1" fill="none" stroke-linecap="round"/>
-            <path d="M110,10 Q120,4 140,10 Q150,14 170,10" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-            <path d="M170,10 Q180,6 190,10" stroke="currentColor" stroke-width="1" fill="none" stroke-linecap="round"/>
-            <circle cx="8" cy="10" r="2" fill="currentColor"/>
-            <circle cx="192" cy="10" r="2" fill="currentColor"/>
-        </svg>
-    </div>
-
+<footer class="site-footer mt-5 py-3">
     <div class="container">
-        <div class="row g-4">
-            <div class="col-md-6">
-                <h6 class="footer-heading text-uppercase fw-semibold mb-3">About</h6>
-                <p class="small mb-2">
-                    A study tool for the great Reformed confessional standards &mdash; with
-                    Scripture proofs, cross-references, and commentary from classic
-                    Reformed theologians.
-                </p>
-            </div>
-            <div class="col-md-6">
-                <h6 class="footer-heading text-uppercase fw-semibold mb-3">Resources</h6>
-                <ul class="list-unstyled small">
-                    <li class="mb-1">
-                        <a href="{% url 'accounts:support' %}" class="footer-link">
-                            <i class="bi bi-heart me-1"></i>Support This Project
-                        </a>
-                    </li>
-                    <li class="mb-1">
-                        <a href="https://github.com/NonlinearFruit/Creeds.json"
-                           target="_blank" rel="noopener noreferrer" class="footer-link">
-                            Creeds.json <i class="bi bi-box-arrow-up-right ms-1"></i>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-        <hr class="mt-4 mb-3" style="border-color: var(--wm-border);">
-        <div class="text-center small text-body-secondary">
-            <p class="mb-0">Study Reformed &middot; <em>Soli Deo Gloria</em></p>
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+            <p class="mb-0 small text-body-secondary">
+                Study Reformed &middot; <em>Soli Deo Gloria</em>
+            </p>
+            <ul class="list-inline mb-0 small">
+                <li class="list-inline-item">
+                    <a href="{% url 'accounts:support' %}" class="footer-link">
+                        <i class="bi bi-heart me-1"></i>Support
+                    </a>
+                </li>
+                <li class="list-inline-item ms-3">
+                    <a href="https://github.com/NonlinearFruit/Creeds.json"
+                       target="_blank" rel="noopener noreferrer" class="footer-link">
+                        Creeds.json <i class="bi bi-box-arrow-up-right ms-1"></i>
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
 </footer>
