@@ -978,6 +978,7 @@ mark.user-annotation::after {
    in the main column (which sits below the prev/next button row).     */
 #nav-col > .card {
     margin-top: 2.9rem;
+    z-index: 990;
 }
 
 /* ================================================================
