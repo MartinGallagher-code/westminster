@@ -15,6 +15,7 @@
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 {% endif %}
+
 <!-- Breadcrumbs -->
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -29,8 +30,59 @@
     </ol>
 </nav>
 
-<div class="row">
-<div id="main-col" class="col-12">
+<div class="row g-3">
+
+{# ── Left sidebar: document navigation ── #}
+<div id="nav-col" class="col-lg-3 d-none d-lg-block">
+    <div class="card sticky-top" style="top: 70px; max-height: calc(100vh - 80px); overflow-y: auto;">
+        <div class="card-header py-2">
+            <a href="{{ catechism.get_absolute_url }}" class="text-decoration-none d-flex align-items-baseline gap-2">
+                <strong class="small">{{ catechism.abbreviation }}</strong>
+                <small class="text-muted text-truncate">{{ catechism.name }}</small>
+            </a>
+        </div>
+        <div class="accordion accordion-flush" id="nav-accordion">
+            {% for group in nav_grouped %}
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button{% if group.topic.id != question.topic.id %} collapsed{% endif %} py-2"
+                            style="font-size: 0.8rem;"
+                            type="button" data-bs-toggle="collapse"
+                            data-bs-target="#nav-topic-{{ group.topic.slug }}"
+                            aria-expanded="{% if group.topic.id == question.topic.id %}true{% else %}false{% endif %}">
+                        {% if catechism.is_prose_document %}
+                        {{ catechism.topic_name }} {{ group.topic.order }}: {{ group.topic.name }}
+                        {% else %}
+                        {{ group.topic.name }}
+                        {% endif %}
+                    </button>
+                </h2>
+                <div id="nav-topic-{{ group.topic.slug }}"
+                     class="accordion-collapse collapse{% if group.topic.id == question.topic.id %} show{% endif %}">
+                    <div class="accordion-body p-0">
+                        <div class="list-group list-group-flush">
+                            {% for q in group.questions %}
+                            <a href="{{ q.get_absolute_url }}"
+                               class="list-group-item list-group-item-action border-0 py-1 px-3{% if q.id == question.id %} active{% endif %}"
+                               style="font-size: 0.78rem;"
+                               {% if q.id == question.id %}id="nav-active-item"{% endif %}>
+                                <span class="fw-semibold me-1">{{ catechism.item_prefix }}{{ q.display_number }}{% if not catechism.is_prose_document %}.{% endif %}</span>
+                                <span class="text-truncate d-inline-block" style="max-width: 75%; vertical-align: middle;">
+                                    {% if catechism.is_systematic_theology %}{{ q.question_text }}{% else %}{{ q.question_text|truncatewords:7 }}{% endif %}
+                                </span>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{# ── Main content column ── #}
+<div id="main-col" class="col-lg-9">
 
 <!-- Prev/Next navigation (top) -->
 <div class="d-flex justify-content-between mb-3">
@@ -226,9 +278,9 @@
     {% else %}<span></span>{% endif %}
 </div>
 
-</div><!-- /main-col -->
+</div>{# /main-col #}
 
-<!-- See-also preview panel (right column, hidden by default) -->
+{# ── See-also preview panel (right column, hidden by default) ── #}
 <div id="preview-col" class="col-lg-4 d-none">
     <div class="see-also-preview-panel">
         <div class="card">
@@ -249,7 +301,17 @@
     </div>
 </div>
 
-</div><!-- /row -->
+</div>{# /row #}
+
+<script>
+// Scroll the active nav item into view within the sticky sidebar
+(function () {
+    var active = document.getElementById('nav-active-item');
+    if (active) {
+        active.scrollIntoView({ block: 'nearest' });
+    }
+})();
+</script>
 {% endblock %}
 
 {% block extra_js %}

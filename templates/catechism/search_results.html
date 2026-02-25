@@ -4,34 +4,52 @@
 {% block title %}Search{% if query %}: {{ query }}{% endif %} - Study Reformed{% endblock %}
 
 {% block content %}
-<h1 class="mb-3">Search</h1>
+<div class="mb-4 pb-3 border-bottom">
+    <h1 class="h3 mb-1">Search</h1>
+</div>
 
 <form action="{% url 'catechism:search' %}" method="get" class="mb-4">
     <div class="input-group">
-        <input type="search" name="q" class="form-control" placeholder="Search..."
-               value="{{ query }}">
+        <input type="search" name="q" class="form-control" placeholder="Search questions and answers..."
+               value="{{ query }}" autofocus>
         <button class="btn btn-primary" type="submit">Search</button>
     </div>
 </form>
 
 {% if query %}
-<p class="text-muted">
-    {% if results %}
-        Found {{ results|length }} result{{ results|length|pluralize }} for &ldquo;{{ query }}&rdquo;
+<p class="text-muted mb-4">
+    {% if grouped_results %}
+        {{ total_results }} result{{ total_results|pluralize }} for &ldquo;{{ query }}&rdquo;
     {% else %}
         No results found for &ldquo;{{ query }}&rdquo;
     {% endif %}
 </p>
 
-<div class="list-group">
-    {% for q in results %}
-    <a href="{{ q.get_absolute_url }}" class="list-group-item list-group-item-action">
-        <div class="d-flex w-100 justify-content-between">
-            <h6 class="mb-1">{{ q.catechism.name }} {{ q.catechism.item_prefix }}{{ q.display_number }}{% if not q.catechism.is_prose_document %}.{% endif %} {{ q.question_text }}</h6>
-            <small class="text-muted text-nowrap ms-2">{{ q.topic.name }}</small>
+<div class="row">
+    {% for group in grouped_results %}
+    <div class="col-md-6 col-xl-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>{{ group.catechism.abbreviation }}</strong>
+                    <small class="text-muted ms-2">{{ group.catechism.name }}</small>
+                </div>
+                <span class="badge bg-secondary">{{ group.questions|length }}</span>
+            </div>
+            <div class="list-group list-group-flush">
+                {% for q in group.questions %}
+                <a href="{{ q.get_absolute_url }}"
+                   class="list-group-item list-group-item-action py-2">
+                    <div class="d-flex align-items-baseline gap-1 mb-1">
+                        <strong class="small text-nowrap">{{ group.catechism.item_prefix }}{{ q.display_number }}{% if not group.catechism.is_prose_document %}.{% endif %}</strong>
+                        <span class="small text-truncate">{{ q.question_text|truncatewords:12 }}</span>
+                    </div>
+                    <div class="text-muted small text-truncate">{{ q.answer_text|truncatewords:18 }}</div>
+                </a>
+                {% endfor %}
+            </div>
         </div>
-        <p class="mb-0 text-muted small">{{ q.answer_text|truncatewords:25 }}</p>
-    </a>
+    </div>
     {% endfor %}
 </div>
 {% endif %}

@@ -35,8 +35,8 @@
         linkEl.href = data.url;
 
         // Show the panel and shrink the main column
-        mainCol.classList.remove('col-12');
-        mainCol.classList.add('col-lg-8');
+        mainCol.classList.remove('col-lg-9');
+        mainCol.classList.add('col-lg-5');
         previewCol.classList.remove('d-none');
 
         // On small screens, scroll to the preview panel
@@ -47,8 +47,8 @@
 
     function closePanel() {
         previewCol.classList.add('d-none');
-        mainCol.classList.remove('col-lg-8');
-        mainCol.classList.add('col-12');
+        mainCol.classList.remove('col-lg-5');
+        mainCol.classList.add('col-lg-9');
 
         // Clear active link highlight
         var prev = document.querySelector('.see-also-link.active');
@@ -87,8 +87,8 @@
         linkEl.href = link.href;
 
         // Show panel immediately so the user sees something
-        mainCol.classList.remove('col-12');
-        mainCol.classList.add('col-lg-8');
+        mainCol.classList.remove('col-lg-9');
+        mainCol.classList.add('col-lg-5');
         previewCol.classList.remove('d-none');
 
         fetch('/api/question/' + pk + '/preview/')

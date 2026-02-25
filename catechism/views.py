@@ -109,6 +109,19 @@ class QuestionDetailView(CatechismMixin, DetailView):
         ctx['previous_question'] = q.get_previous()
         ctx['next_question'] = q.get_next()
 
+        # Build sidebar document navigation grouped by topic
+        topics = Topic.objects.filter(catechism=self.catechism)
+        nav_questions = Question.objects.filter(
+            catechism=self.catechism
+        ).select_related('topic').order_by('number')
+        nav_by_topic = defaultdict(list)
+        for nav_q in nav_questions:
+            nav_by_topic[nav_q.topic_id].append(nav_q)
+        ctx['nav_grouped'] = [
+            {'topic': topic, 'questions': nav_by_topic.get(topic.id, [])}
+            for topic in topics
+        ]
+
         # Build scripture text lookup for proof texts
         refs = q.get_proof_text_list()
         if refs:
@@ -201,7 +214,6 @@ class TopicDetailView(CatechismMixin, DetailView):
 class SearchView(ListView):
     template_name = 'catechism/search_results.html'
     context_object_name = 'results'
-    paginate_by = 20
 
     def get_queryset(self):
         query = self.request.GET.get('q', '').strip()
@@ -214,7 +226,9 @@ class SearchView(ListView):
             Q(answer_text__icontains=query)
         ).filter(
             catechism__tradition__in=active_traditions
-        ).distinct().select_related('topic', 'catechism')
+        ).distinct().select_related('topic', 'catechism').order_by(
+            'catechism__abbreviation', 'number'
+        )
 
         catechism_slug = self.request.GET.get('catechism', '')
         if catechism_slug:
@@ -225,7 +239,24 @@ class SearchView(ListView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['query'] = self.request.GET.get('q', '')
-        ctx['catechisms'] = Catechism.objects.all()
+
+        tradition_order = {'westminster': 0, 'three_forms_of_unity': 1, 'other': 2}
+        grouped = defaultdict(list)
+        catechism_map = {}
+        for q in ctx['results']:
+            cat = q.catechism
+            grouped[cat.pk].append(q)
+            catechism_map[cat.pk] = cat
+
+        ordered_cats = sorted(
+            catechism_map.values(),
+            key=lambda c: (tradition_order.get(c.tradition, 99), c.abbreviation),
+        )
+        ctx['grouped_results'] = [
+            {'catechism': cat, 'questions': grouped[cat.pk]}
+            for cat in ordered_cats
+        ]
+        ctx['total_results'] = sum(len(g['questions']) for g in ctx['grouped_results'])
         return ctx
 
 
