@@ -163,6 +163,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var filterReloadTimer = null;
 
+    // Sync cookie with localStorage on every page load.
+    // If the cookie was missing or stale the server may have rendered the wrong content,
+    // so reload filter-sensitive pages once to get the correct server-rendered output.
+    (function syncCookieOnLoad() {
+        var cookieMatch = document.cookie.match(/(?:^|;\s*)docFilters=([^;]*)/);
+        var cookieCurrent = cookieMatch ? decodeURIComponent(cookieMatch[1]) : null;
+        var expected = JSON.stringify(docFilters);
+        if (cookieCurrent !== expected) {
+            saveDocFilters(docFilters);
+            if (document.body.getAttribute('data-filter-sensitive') === 'true') {
+                location.reload();
+            }
+        }
+    })();
+
     document.querySelectorAll('.tradition-toggle').forEach(function(btn) {
         btn.addEventListener('click', function() {
             var tradition = this.getAttribute('data-tradition');
