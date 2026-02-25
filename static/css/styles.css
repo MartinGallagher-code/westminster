@@ -977,7 +977,12 @@ mark.user-annotation::after {
 }
 
 #preview-answer {
-    line-height: 1.6;
+    font-size: 0.95rem;
+    line-height: 1.7;
+}
+
+#preview-title {
+    font-size: 0.95rem;
 }
 
 /* ── Tradition filter ── */
