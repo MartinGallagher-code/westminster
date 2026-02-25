@@ -35,7 +35,8 @@ class HomeView(TemplateView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        catechisms = list(Catechism.objects.all())
+        active_traditions = get_active_traditions(self.request)
+        catechisms = list(Catechism.objects.filter(tradition__in=active_traditions))
         day_of_year = date.today().timetuple().tm_yday
         for cat in catechisms:
             cat.featured_question = Question.objects.filter(
@@ -43,12 +44,8 @@ class HomeView(TemplateView):
                 number=(day_of_year % cat.total_questions) + 1
             ).select_related('topic').first()
         ctx['catechisms'] = catechisms
-
-        # Featured "question of the day" drawn only from active-tradition documents
-        active_traditions = get_active_traditions(self.request)
-        active_catechisms = [c for c in catechisms if c.tradition in active_traditions]
-        if active_catechisms:
-            hero_cat = active_catechisms[day_of_year % len(active_catechisms)]
+        if catechisms:
+            hero_cat = catechisms[day_of_year % len(catechisms)]
             ctx['featured'] = hero_cat.featured_question
         else:
             ctx['featured'] = None
@@ -281,11 +278,20 @@ class CompareIndexView(ListView):
     context_object_name = 'comparison_sets'
 
     def get_queryset(self):
-        # Only show sets that have at least one entry in an active-tradition document
-        active_traditions = get_active_traditions(self.request)
-        return ComparisonSet.objects.filter(
+        # Only show sets where ALL catechisms in the set belong to active traditions.
+        # First include sets that have at least one active-tradition entry,
+        # then exclude any that also have inactive-tradition entries.
+        from .utils import VALID_TRADITIONS
+        active_traditions = set(get_active_traditions(self.request))
+        inactive_traditions = VALID_TRADITIONS - active_traditions
+        qs = ComparisonSet.objects.filter(
             themes__entries__catechism__tradition__in=active_traditions
         ).distinct()
+        if inactive_traditions:
+            qs = qs.exclude(
+                themes__entries__catechism__tradition__in=inactive_traditions
+            )
+        return qs
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
