@@ -42,6 +42,10 @@ python manage.py load_heidelberg
 python manage.py load_prooftexts --catechism heidelberg
 python manage.py load_ursinus
 python manage.py load_thelemann
+python manage.py load_vanderkemp
+python manage.py load_bethune
+python manage.py load_fisher_hc
+python manage.py load_whitmer
 python manage.py load_belgic
 python manage.py load_prooftexts --catechism belgic
 python manage.py load_dort
