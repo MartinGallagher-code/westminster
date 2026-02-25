@@ -258,17 +258,27 @@ class ScriptureBookView(DetailView):
         entries = ScriptureIndex.objects.filter(
             book=self.object,
             question__catechism__tradition__in=active_traditions,
-        ).select_related('question__catechism', 'question__topic')
+        ).select_related('question__catechism', 'question__topic').order_by(
+            'question__catechism__abbreviation', 'question__number', 'reference',
+        )
 
         grouped = defaultdict(list)
+        catechism_map = {}
         for entry in entries:
-            grouped[entry.question.catechism.abbreviation].append({
-                'question': entry.question,
-                'reference': entry.reference,
-            })
+            cat = entry.question.catechism
+            grouped[cat.pk].append({'question': entry.question, 'reference': entry.reference})
+            catechism_map[cat.pk] = cat
 
-        ctx['grouped_entries'] = dict(grouped)
-        ctx['total_citations'] = entries.count()
+        tradition_order = {'westminster': 0, 'three_forms_of_unity': 1, 'other': 2}
+        ordered_cats = sorted(
+            catechism_map.values(),
+            key=lambda c: (tradition_order.get(c.tradition, 99), c.abbreviation),
+        )
+        ctx['grouped_entries'] = [
+            {'catechism': cat, 'entries': grouped[cat.pk]}
+            for cat in ordered_cats
+        ]
+        ctx['total_citations'] = len(entries)
         return ctx
 
 

@@ -12,27 +12,46 @@
     </ol>
 </nav>
 
-<h1 class="mb-2">{{ book.name }}</h1>
-<p class="text-muted mb-4">{{ total_citations }} citation{{ total_citations|pluralize }} across the Reformed standards</p>
+<h1 class="mb-1">{{ book.name }}</h1>
+<p class="text-muted mb-4">{{ total_citations }} citation{{ total_citations|pluralize }} across the active documents</p>
 
-{% for abbr, entries in grouped_entries.items %}
-<div class="card mb-4">
-    <div class="card-header"><strong>{{ abbr }}</strong></div>
-    <div class="list-group list-group-flush">
-        {% for entry in entries %}
-        <a href="{{ entry.question.get_absolute_url }}" class="list-group-item list-group-item-action">
-            <div class="d-flex justify-content-between">
-                <span>
-                    <strong>{{ entry.question.catechism.item_prefix }}{{ entry.question.display_number }}</strong>
-                    {% if not entry.question.catechism.is_prose_document %}&mdash; {{ entry.question.question_text|truncatewords:12 }}{% endif %}
-                </span>
-                <small class="text-muted">{{ entry.reference }}</small>
+<div class="row">
+    {% for group in grouped_entries %}
+    <div class="col-md-6 col-xl-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>{{ group.catechism.abbreviation }}</strong>
+                    <small class="text-muted ms-2">{{ group.catechism.name }}</small>
+                </div>
+                <span class="badge bg-secondary">{{ group.entries|length }}</span>
             </div>
-        </a>
-        {% endfor %}
+            <div class="list-group list-group-flush">
+                {% for entry in group.entries %}
+                <a href="{{ entry.question.get_absolute_url }}"
+                   class="list-group-item list-group-item-action py-2">
+                    <div class="d-flex justify-content-between align-items-baseline gap-2">
+                        <div class="text-truncate">
+                            <strong class="small">{{ group.catechism.item_prefix }}{{ entry.question.display_number }}</strong>
+                            <span class="text-muted small ms-1">
+                                {% if group.catechism.is_prose_document %}
+                                {{ entry.question.question_text|truncatewords:8 }}
+                                {% else %}
+                                {{ entry.question.question_text|truncatewords:10 }}
+                                {% endif %}
+                            </span>
+                        </div>
+                        <small class="text-primary text-nowrap">{{ entry.reference }}</small>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
     </div>
+    {% empty %}
+    <div class="col">
+        <p class="text-muted">No citations found for this book.</p>
+    </div>
+    {% endfor %}
 </div>
-{% empty %}
-<p class="text-muted">No citations found for this book.</p>
-{% endfor %}
 {% endblock %}
