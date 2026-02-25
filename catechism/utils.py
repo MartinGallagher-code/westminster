@@ -1,7 +1,7 @@
 import json
 import urllib.parse
 
-VALID_TRADITIONS = {'westminster', 'three_forms_of_unity', 'other'}
+VALID_TRADITIONS = {'westminster', 'three_forms_of_unity'}
 
 
 def get_active_traditions(request):

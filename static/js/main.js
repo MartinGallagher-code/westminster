@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     // ── Document tradition filter ──
-    var DEFAULT_FILTERS = {westminster: true, three_forms_of_unity: false, other: false};
+    var DEFAULT_FILTERS = {westminster: true, three_forms_of_unity: false};
 
     function loadDocFilters() {
         try {
@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             if (raw) {
                 var f = JSON.parse(raw);
-                if (f.westminster || f.three_forms_of_unity || f.other) {
+                if (f.westminster || f.three_forms_of_unity) {
                     return f;
                 }
             }
@@ -184,7 +184,7 @@ document.addEventListener('DOMContentLoaded', function() {
             var next = Object.assign({}, docFilters);
             next[tradition] = !next[tradition];
             // Enforce: at least one must remain active; default to westminster
-            if (!next.westminster && !next.three_forms_of_unity && !next.other) {
+            if (!next.westminster && !next.three_forms_of_unity) {
                 next.westminster = true;
             }
             docFilters = next;

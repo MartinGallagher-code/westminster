@@ -59,10 +59,10 @@ class TestGetActiveTraditions:
         result = get_active_traditions(self._req(raw))
         assert set(result) == {'westminster', 'three_forms_of_unity'}
 
-    def test_all_traditions(self):
-        raw = json.dumps({'westminster': True, 'three_forms_of_unity': True, 'other': True})
+    def test_both_traditions(self):
+        raw = json.dumps({'westminster': True, 'three_forms_of_unity': True})
         result = get_active_traditions(self._req(raw))
-        assert set(result) == {'westminster', 'three_forms_of_unity', 'other'}
+        assert set(result) == {'westminster', 'three_forms_of_unity'}
 
     def test_invalid_json_falls_back(self):
         result = get_active_traditions(self._req('not-valid-json'))

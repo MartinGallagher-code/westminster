@@ -7,21 +7,11 @@
 {% block content %}
 
 {# ── Compact header ── #}
-<div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4 pb-3 border-bottom">
-    <div>
-        <h1 class="h3 mb-1">Study Reformed</h1>
-        <p class="text-body-secondary mb-0 small">
-            Explore the Reformed confessional standards with Scripture proof texts, cross-references, and classic commentary.
-        </p>
-    </div>
-    <div class="d-flex gap-2 flex-shrink-0">
-        <a href="{% url 'catechism:scripture_index' %}" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-book me-1"></i>Scripture
-        </a>
-        <a href="{% url 'catechism:compare_index' %}" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-layout-split me-1"></i>Compare
-        </a>
-    </div>
+<div class="mb-4 pb-3 border-bottom">
+    <h1 class="h3 mb-1">Study Reformed</h1>
+    <p class="text-body-secondary mb-0 small">
+        Explore the Reformed confessional standards with Scripture proof texts, cross-references, and classic commentary.
+    </p>
 </div>
 
 {# ── Main layout ── #}
@@ -44,11 +34,6 @@
                         data-tradition="three_forms_of_unity" type="button">
                     <i class="bi bi-check-circle-fill tradition-check flex-shrink-0" style="color: var(--wm-primary);"></i>
                     Three Forms of Unity
-                </button>
-                <button class="list-group-item list-group-item-action tradition-toggle d-flex align-items-center gap-2 py-2 small"
-                        data-tradition="other" type="button">
-                    <i class="bi bi-check-circle-fill tradition-check flex-shrink-0" style="color: var(--wm-primary);"></i>
-                    Other Documents
                 </button>
             </div>
         </div>
