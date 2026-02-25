@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 
+{% block body_attrs %}data-filter-sensitive="true"{% endblock %}
 {% block title %}Search{% if query %}: {{ query }}{% endif %} - Study Reformed{% endblock %}
 
 {% block content %}

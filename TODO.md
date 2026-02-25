@@ -36,18 +36,18 @@ Replace `localStorage`-only storage with a **dual cookie + localStorage** approa
 
 #### Phase 1 — Infrastructure
 
-- [ ] **1.1 Write filter to cookie on every change** (`static/js/main.js`)
+- [x] **1.1 Write filter to cookie on every change** (`static/js/main.js`)
   - In `saveDocFilters()`, also set `document.cookie = 'docFilters=<json>; path=/'`.
   - On page load, sync `localStorage` from the cookie so state is consistent.
 
-- [ ] **1.2 Add `get_active_traditions(request)` utility** (`catechism/views.py` or
+- [x] **1.2 Add `get_active_traditions(request)` utility** (`catechism/views.py` or
   `catechism/utils.py`)
   - Reads the `docFilters` cookie; falls back to `['westminster']` if absent/invalid.
 
-- [ ] **1.3 Expose `active_traditions` in global template context**
+- [x] **1.3 Expose `active_traditions` in global template context**
   (`catechism/context_processors.py`)
 
-- [ ] **1.4 Reload `data-filter-sensitive` pages when filter changes**
+- [x] **1.4 Reload `data-filter-sensitive` pages when filter changes**
   (`static/js/main.js`)
   - After saving the cookie, check for `data-filter-sensitive` on the page and call
     `location.reload()` (with a short debounce).
@@ -56,11 +56,11 @@ Replace `localStorage`-only storage with a **dual cookie + localStorage** approa
 
 #### Phase 2 — Home Page (`/`)
 
-- [ ] **2.1 Filter "Question of the Day" server-side** (`HomeView`)
+- [x] **2.1 Filter "Question of the Day" server-side** (`HomeView`)
   - Random questions should only be drawn from documents in the active traditions:
     `Catechism.objects.filter(tradition__in=active_traditions)`.
 
-- [ ] **2.2 Filter document count/headings**
+- [x] **2.2 Filter document count/headings**
   - Pass the filtered queryset to the template instead of relying on CSS hiding for
     any summary counts.
 
@@ -68,21 +68,21 @@ Replace `localStorage`-only storage with a **dual cookie + localStorage** approa
 
 #### Phase 3 — Search (`/search/`)
 
-- [ ] **3.1 Filter search queryset by active traditions** (`SearchView`)
+- [x] **3.1 Filter search queryset by active traditions** (`SearchView`)
   - Add `.filter(catechism__tradition__in=active_traditions)` to the `Question`
     queryset. Mark page `data-filter-sensitive`.
 
-- [ ] **3.2 Update "X results across Y documents" summary** (`search_results.html`)
+- [x] **3.2 Update "X results across Y documents" summary** (`search_results.html`)
 
 ---
 
 #### Phase 4 — Scripture Index & Book Pages
 
-- [ ] **4.1 Filter citation counts in Scripture Index** (`ScriptureIndexView`)
+- [x] **4.1 Filter citation counts in Scripture Index** (`ScriptureIndexView`)
   - Filter `ScriptureIndex` annotations by `question__catechism__tradition__in=...`.
   - Mark page `data-filter-sensitive`.
 
-- [ ] **4.2 Filter citation list in Scripture Book view** (`ScriptureBookView`)
+- [x] **4.2 Filter citation list in Scripture Book view** (`ScriptureBookView`)
   - Filter entries shown to questions from active traditions.
   - Hide empty document groups in `scripture_book.html`.
 
@@ -90,26 +90,26 @@ Replace `localStorage`-only storage with a **dual cookie + localStorage** approa
 
 #### Phase 5 — Compare Feature
 
-- [ ] **5.1 Compare Index — hide sets with no active-tradition entries**
+- [x] **5.1 Compare Index — hide sets with no active-tradition entries**
   (`CompareIndexView` + `compare_index.html`)
   - A set is relevant if at least one `ComparisonEntry` catechism is in active
     traditions.
 
-- [ ] **5.2 Compare List — hide themes with no active-tradition entries**
+- [x] **5.2 Compare List — hide themes with no active-tradition entries**
   (`CompareSetView` + `compare_list.html`)
 
-- [ ] **5.3 Compare Theme — filter columns to active traditions**
+- [x] **5.3 Compare Theme — filter columns to active traditions**
   (`CompareSetThemeView` + `compare_theme.html` + `compare.js`)
   - Only render columns for catechisms whose tradition is active. Update column
     headings/counts. Hide show/hide toggles for filtered-out columns. Mark
     `data-filter-sensitive`.
 
-- [ ] **5.4 Custom Compare — only offer active-tradition documents**
+- [x] **5.4 Custom Compare — only offer active-tradition documents**
   (`CustomCompareView` + `compare_custom.html`)
   - Restrict the selectable document list to active traditions. Hide presets that
     reference unavailable documents. Mark `data-filter-sensitive`.
 
-- [ ] **5.5 Custom Compare Theme — intersect selection with active traditions**
+- [x] **5.5 Custom Compare Theme — intersect selection with active traditions**
   (`CustomCompareThemeView` + `compare_custom_theme.html`)
   - Only show columns for documents that are both user-selected AND in an active
     tradition.
@@ -118,17 +118,17 @@ Replace `localStorage`-only storage with a **dual cookie + localStorage** approa
 
 #### Phase 6 — See Also / Cross-References (Question Detail)
 
-- [ ] **6.1 Filter `StandardCrossReference` groups** (`QuestionDetailView`)
+- [x] **6.1 Filter `StandardCrossReference` groups** (`QuestionDetailView`)
   - Only include target catechisms whose tradition is in `active_traditions`.
   - Remove empty group headers in `question_detail.html`.
 
-- [ ] **6.2 Filter WSC ↔ WLC cross-reference link**
+- [x] **6.2 Filter WSC ↔ WLC cross-reference link**
   - Only show the WLC cross-reference link if `westminster` is active.
 
-- [ ] **6.3 Filter comparison-theme backlinks**
+- [x] **6.3 Filter comparison-theme backlinks**
   - Only show themes that have at least one column from an active tradition.
 
-- [ ] **6.4 Filter cross-reference hover preview API**
+- [x] **6.4 Filter cross-reference hover preview API**
   (`/api/question/<pk>/preview/` + `see-also-preview.js`)
   - Read the `docFilters` cookie in the view (or accept `traditions` as a query
     param). Return 404 / empty if the target question's tradition is not active.
@@ -138,11 +138,11 @@ Replace `localStorage`-only storage with a **dual cookie + localStorage** approa
 
 #### Phase 7 — Navbar & Global UI
 
-- [ ] **7.1 Navbar document count badge** (`navbar.html`)
+- [x] **7.1 Navbar document count badge** (`navbar.html`)
   - If a "Documents (N)" badge exists, update its count via JS after
     `applyDocFilters()` to reflect only visible documents.
 
-- [ ] **7.2 Out-of-filter document banner** (`question_detail.html`)
+- [x] **7.2 Out-of-filter document banner** (`question_detail.html`)
   - If a user navigates directly to a document outside their active filter, show a
     banner with an option to add that tradition to their filter.
 
@@ -150,13 +150,13 @@ Replace `localStorage`-only storage with a **dual cookie + localStorage** approa
 
 #### Phase 8 — Testing
 
-- [ ] **8.1 Unit tests for `get_active_traditions()`**
+- [x] **8.1 Unit tests for `get_active_traditions()`**
   - Cookie parsing, fallback to Westminster, multiple-tradition combinations.
 
-- [ ] **8.2 View tests for filtered querysets**
+- [x] **8.2 View tests for filtered querysets**
   - Search, scripture, compare, cross-reference views return only filtered results.
 
-- [ ] **8.3 Manual smoke test checklist**
+- [x] **8.3 Manual smoke test checklist**
   - Westminster only: home, search, scripture counts, compare columns, See Also
   - TFU only: same
   - Other only: only Inst/HOT visible everywhere

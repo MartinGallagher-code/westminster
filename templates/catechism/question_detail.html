@@ -8,6 +8,13 @@
 {% block og_description %}{{ question.answer_text|truncatewords:40 }}{% endblock %}
 
 {% block content %}
+{% if catechism.tradition not in active_traditions %}
+<div class="alert alert-info alert-dismissible fade show" role="alert">
+    <i class="bi bi-info-circle me-2"></i>
+    <strong>{{ catechism.name }}</strong> is outside your active document filter.
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
 <!-- Breadcrumbs -->
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
