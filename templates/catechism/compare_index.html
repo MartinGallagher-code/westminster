@@ -23,17 +23,9 @@
     <div class="card-body">
         <p class="text-muted small mb-3">Select two or more documents to find shared doctrinal themes.</p>
 
-        {# Preset quick-select buttons #}
-        <div class="mb-3">
-            <span class="text-muted small me-2">Quick select:</span>
-            {% for cs in comparison_sets %}
-            <button type="button" class="btn btn-outline-secondary btn-sm me-1 mb-1 preset-btn"
-                    data-preset="{{ cs.slug }}">
-                {{ cs.name }}
-            </button>
-            {% endfor %}
-            <button type="button" class="btn btn-outline-secondary btn-sm me-1 mb-1" id="select-all-btn">All</button>
-            <button type="button" class="btn btn-outline-secondary btn-sm mb-1" id="clear-all-btn">Clear</button>
+        <div class="mb-2">
+            <button type="button" class="btn btn-outline-secondary btn-sm me-1" id="select-all-btn">Select All</button>
+            <button type="button" class="btn btn-outline-secondary btn-sm" id="clear-all-btn">Clear</button>
         </div>
 
         {# Document checkboxes #}
@@ -83,8 +75,5 @@
 {% endblock %}
 
 {% block extra_js %}
-<script>
-window.PRESET_MAP = {{ preset_map_json|safe }};
-</script>
 <script src="{% static 'js/compare.js' %}"></script>
 {% endblock %}

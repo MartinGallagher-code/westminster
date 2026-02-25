@@ -5,11 +5,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var docCheckboxes = document.querySelectorAll('.doc-checkbox');
     var compareBtn = document.getElementById('compare-btn');
     var selectionCount = document.getElementById('selection-count');
-    var presetBtns = document.querySelectorAll('.preset-btn');
     var selectAllBtn = document.getElementById('select-all-btn');
     var clearAllBtn = document.getElementById('clear-all-btn');
-
-    var presetMap = window.PRESET_MAP || {};
 
     function updateCompareButton() {
         var selected = [];
@@ -28,43 +25,11 @@ document.addEventListener('DOMContentLoaded', function() {
             compareBtn.classList.add('disabled');
             selectionCount.textContent = 'Select at least 2 documents';
         }
-
-        // Update preset button active states
-        presetBtns.forEach(function(btn) {
-            var preset = presetMap[btn.getAttribute('data-preset')];
-            if (!preset) return;
-            var allChecked = preset.catechisms.every(function(slug) {
-                var cb = document.getElementById('doc-' + slug);
-                return cb && cb.checked;
-            });
-            // Only mark active if exactly these are checked (no extras)
-            var checkedCount = 0;
-            docCheckboxes.forEach(function(cb) { if (cb.checked) checkedCount++; });
-            btn.classList.toggle('active', allChecked && checkedCount === preset.catechisms.length);
-        });
     }
 
     if (docCheckboxes.length) {
         docCheckboxes.forEach(function(cb) {
             cb.addEventListener('change', updateCompareButton);
-        });
-
-        presetBtns.forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                var preset = presetMap[this.getAttribute('data-preset')];
-                if (!preset) return;
-
-                // Clear all first
-                docCheckboxes.forEach(function(cb) { cb.checked = false; });
-
-                // Check the preset's catechisms
-                preset.catechisms.forEach(function(slug) {
-                    var cb = document.getElementById('doc-' + slug);
-                    if (cb) cb.checked = true;
-                });
-
-                updateCompareButton();
-            });
         });
 
         if (selectAllBtn) {

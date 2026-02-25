@@ -308,22 +308,6 @@ class CompareIndexView(ListView):
         active_traditions = get_active_traditions(self.request)
         ctx['all_catechisms'] = Catechism.objects.filter(tradition__in=active_traditions)
         ctx['active_traditions'] = active_traditions
-        # Build preset map: set slug → list of catechism slugs in active traditions (for JS)
-        preset_map = {}
-        for cs in ctx['comparison_sets']:
-            cat_slugs = list(
-                ComparisonEntry.objects.filter(
-                    theme__comparison_set=cs,
-                    catechism__tradition__in=active_traditions,
-                ).values_list(
-                    'catechism__slug', flat=True
-                ).distinct()
-            )
-            preset_map[cs.slug] = {
-                'name': cs.name,
-                'catechisms': cat_slugs,
-            }
-        ctx['preset_map_json'] = json.dumps(preset_map)
         return ctx
 
 
