@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block title %}Admin - {{ target_user.username }} - Study Reformed{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'accounts:admin_user_list' %}">User Management</a></li>
+        <li class="breadcrumb-item active">{{ target_user.username }}</li>
+    </ol>
+</nav>
+
+<div class="row">
+    {# User info card #}
+    <div class="col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-person-circle me-2"></i>{{ target_user.username }}</h5>
+                {% if target_user.profile.is_blocked %}
+                <span class="badge bg-danger">Blocked</span>
+                {% elif target_user.is_active %}
+                <span class="badge bg-success">Active</span>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <table class="table table-sm table-borderless mb-0">
+                    <tr>
+                        <td class="text-muted">Email</td>
+                        <td>{{ target_user.email|default:"-" }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Joined</td>
+                        <td>{{ target_user.date_joined|date:"M j, Y g:i A" }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Last Login</td>
+                        <td>{{ target_user.last_login|date:"M j, Y g:i A"|default:"Never" }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Staff</td>
+                        <td>{% if target_user.is_staff %}Yes{% else %}No{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Superuser</td>
+                        <td>{% if target_user.is_superuser %}Yes{% else %}No{% endif %}</td>
+                    </tr>
+                    {% if subscription %}
+                    <tr>
+                        <td class="text-muted">Supporter</td>
+                        <td>
+                            {% if subscription.is_active %}
+                            <span class="badge bg-success">{{ subscription.status }}</span>
+                            {% else %}
+                            <span class="badge bg-secondary">{{ subscription.status }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endif %}
+                </table>
+            </div>
+            <div class="card-footer">
+                <div class="d-flex gap-2">
+                    {% if not target_user.is_superuser or not target_user == request.user %}
+                    <form method="post" action="{% url 'accounts:admin_user_block' user_id=target_user.pk %}">
+                        {% csrf_token %}
+                        {% if target_user.profile.is_blocked %}
+                        <button type="submit" class="btn btn-sm btn-outline-success">
+                            <i class="bi bi-unlock me-1"></i>Unblock
+                        </button>
+                        {% else %}
+                        <button type="submit" class="btn btn-sm btn-outline-warning">
+                            <i class="bi bi-lock me-1"></i>Block
+                        </button>
+                        {% endif %}
+                    </form>
+                    <a href="{% url 'accounts:admin_user_delete' user_id=target_user.pk %}"
+                       class="btn btn-sm btn-outline-danger">
+                        <i class="bi bi-trash me-1"></i>Delete
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {# Usage stats card #}
+        <div class="card mt-3">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="bi bi-bar-chart me-2"></i>Usage Statistics</h6>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm table-borderless mb-0">
+                    <tr>
+                        <td class="text-muted">Notes</td>
+                        <td><span class="badge bg-primary">{{ note_count }}</span></td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Highlights</td>
+                        <td><span class="badge bg-primary">{{ highlight_count }}</span></td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">Annotations</td>
+                        <td><span class="badge bg-primary">{{ comment_count }}</span></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    {# Activity column #}
+    <div class="col-lg-8">
+        {# Recent notes #}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="bi bi-journal-text me-2"></i>Recent Notes ({{ note_count }})</h6>
+            </div>
+            {% if notes %}
+            <div class="list-group list-group-flush">
+                {% for note in notes %}
+                <div class="list-group-item">
+                    <div class="d-flex justify-content-between">
+                        <strong>{{ note.question.catechism.abbreviation }} {{ note.question.catechism.item_prefix }}{{ note.question.display_number }}</strong>
+                        <small class="text-muted">{{ note.updated_at|date:"M j, Y" }}</small>
+                    </div>
+                    <p class="mb-0 small">{{ note.text|truncatewords:40 }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="card-body text-muted">No notes.</div>
+            {% endif %}
+        </div>
+
+        {# Recent highlights #}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="bi bi-highlighter me-2"></i>Recent Highlights ({{ highlight_count }})</h6>
+            </div>
+            {% if highlights %}
+            <div class="list-group list-group-flush">
+                {% for hl in highlights %}
+                <div class="list-group-item">
+                    <div class="d-flex justify-content-between">
+                        <span class="fst-italic">"{{ hl.selected_text|truncatewords:20 }}"</span>
+                        <small class="text-muted">{{ hl.created_at|date:"M j, Y" }}</small>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="card-body text-muted">No highlights.</div>
+            {% endif %}
+        </div>
+
+        {# Recent annotations #}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="bi bi-chat-left-text me-2"></i>Recent Annotations ({{ comment_count }})</h6>
+            </div>
+            {% if comments %}
+            <div class="list-group list-group-flush">
+                {% for comment in comments %}
+                <div class="list-group-item">
+                    <div class="d-flex justify-content-between">
+                        <strong>{{ comment.question.catechism.abbreviation }} {{ comment.question.catechism.item_prefix }}{{ comment.question.display_number }}</strong>
+                        <small class="text-muted">{{ comment.updated_at|date:"M j, Y" }}</small>
+                    </div>
+                    <p class="mb-1 small fst-italic text-muted">"{{ comment.selected_text|truncatewords:15 }}"</p>
+                    <p class="mb-0 small">{{ comment.comment_text|truncatewords:40 }}</p>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="card-body text-muted">No annotations.</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -6,9 +6,13 @@ import bleach
 import stripe
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import get_object_or_404, render
-from django.urls import reverse_lazy
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.models import User
+from django.db.models import Count
+from django.shortcuts import get_object_or_404, render, redirect
+from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
@@ -16,7 +20,7 @@ from django.views.generic import CreateView, ListView, DeleteView, View
 from django.http import HttpResponseRedirect, JsonResponse
 from django_ratelimit.decorators import ratelimit
 
-from .models import UserNote, Highlight, InlineComment, SupporterSubscription
+from .models import UserNote, Highlight, InlineComment, SupporterSubscription, UserProfile
 from .forms import SignupForm
 from catechism.models import Question, Commentary
 
@@ -429,3 +433,120 @@ def _handle_payment_failed(invoice):
             'Stripe webhook: no SupporterSubscription for subscription %s',
             subscription_id
         )
+
+
+# --- Admin panel views ---
+
+
+class AdminRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
+    """Only allow staff/superusers access."""
+
+    def test_func(self):
+        return self.request.user.is_staff or self.request.user.is_superuser
+
+
+class AdminUserListView(AdminRequiredMixin, View):
+    """List all users with usage stats."""
+
+    def get(self, request):
+        users = User.objects.annotate(
+            note_count=Count('notes', distinct=True),
+            highlight_count=Count('highlights', distinct=True),
+            comment_count=Count('inline_comments', distinct=True),
+        ).select_related('profile').order_by('-date_joined')
+
+        return render(request, 'accounts/admin_user_list.html', {
+            'users': users,
+        })
+
+
+class AdminUserDetailView(AdminRequiredMixin, View):
+    """Show detailed info for a single user."""
+
+    def get(self, request, user_id):
+        target_user = get_object_or_404(
+            User.objects.select_related('profile'),
+            pk=user_id,
+        )
+        notes = UserNote.objects.filter(user=target_user).select_related(
+            'question', 'question__catechism'
+        ).order_by('-updated_at')[:20]
+        highlights = Highlight.objects.filter(user=target_user).order_by('-created_at')[:20]
+        comments = InlineComment.objects.filter(user=target_user).select_related(
+            'question', 'question__catechism'
+        ).order_by('-updated_at')[:20]
+
+        subscription = SupporterSubscription.objects.filter(user=target_user).first()
+
+        return render(request, 'accounts/admin_user_detail.html', {
+            'target_user': target_user,
+            'notes': notes,
+            'highlights': highlights,
+            'comments': comments,
+            'subscription': subscription,
+            'note_count': UserNote.objects.filter(user=target_user).count(),
+            'highlight_count': Highlight.objects.filter(user=target_user).count(),
+            'comment_count': InlineComment.objects.filter(user=target_user).count(),
+        })
+
+
+class AdminUserBlockView(AdminRequiredMixin, View):
+    """Toggle block/unblock for a user."""
+
+    def post(self, request, user_id):
+        target_user = get_object_or_404(User, pk=user_id)
+        if target_user == request.user:
+            messages.error(request, 'You cannot block yourself.')
+            return redirect('accounts:admin_user_list')
+
+        profile, _ = UserProfile.objects.get_or_create(user=target_user)
+        profile.is_blocked = not profile.is_blocked
+        profile.save()
+
+        action = 'blocked' if profile.is_blocked else 'unblocked'
+        messages.success(request, f'User "{target_user.username}" has been {action}.')
+        return redirect('accounts:admin_user_detail', user_id=user_id)
+
+
+class AdminUserDeleteView(AdminRequiredMixin, View):
+    """Delete a user account."""
+
+    def get(self, request, user_id):
+        target_user = get_object_or_404(User, pk=user_id)
+        if target_user == request.user:
+            messages.error(request, 'You cannot delete yourself.')
+            return redirect('accounts:admin_user_list')
+        return render(request, 'accounts/admin_user_delete.html', {
+            'target_user': target_user,
+        })
+
+    def post(self, request, user_id):
+        target_user = get_object_or_404(User, pk=user_id)
+        if target_user == request.user:
+            messages.error(request, 'You cannot delete yourself.')
+            return redirect('accounts:admin_user_list')
+
+        username = target_user.username
+        target_user.delete()
+        messages.success(request, f'User "{username}" has been deleted.')
+        return redirect('accounts:admin_user_list')
+
+
+# --- Password change view ---
+
+
+class PasswordChangeView(LoginRequiredMixin, View):
+    """Allow users to change their own password."""
+
+    def get(self, request):
+        form = PasswordChangeForm(request.user)
+        return render(request, 'accounts/password_change.html', {'form': form})
+
+    def post(self, request):
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Your password has been changed.')
+            return redirect('accounts:dashboard')
+        return render(request, 'accounts/password_change.html', {'form': form})

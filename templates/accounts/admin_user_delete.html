@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Delete User - {{ target_user.username }} - Study Reformed{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'accounts:admin_user_list' %}">User Management</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'accounts:admin_user_detail' user_id=target_user.pk %}">{{ target_user.username }}</a></li>
+        <li class="breadcrumb-item active">Delete</li>
+    </ol>
+</nav>
+
+<div class="card border-danger" style="max-width: 600px;">
+    <div class="card-header bg-danger text-white">
+        <h5 class="mb-0"><i class="bi bi-exclamation-triangle me-2"></i>Confirm User Deletion</h5>
+    </div>
+    <div class="card-body">
+        <p>Are you sure you want to permanently delete the user <strong>{{ target_user.username }}</strong>?</p>
+        <p class="text-muted">This will delete all of their data including notes, highlights, and annotations. This action cannot be undone.</p>
+    </div>
+    <div class="card-footer d-flex gap-2">
+        <form method="post" action="{% url 'accounts:admin_user_delete' user_id=target_user.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">
+                <i class="bi bi-trash me-1"></i>Delete User
+            </button>
+        </form>
+        <a href="{% url 'accounts:admin_user_detail' user_id=target_user.pk %}" class="btn btn-secondary">Cancel</a>
+    </div>
+</div>
+{% endblock %}

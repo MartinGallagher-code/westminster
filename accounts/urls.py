@@ -32,6 +32,9 @@ urlpatterns = [
     path('comments/<int:pk>/update/', views.InlineCommentUpdateView.as_view(), name='comment_update'),
     path('comments/<int:pk>/delete/', views.InlineCommentDeleteView.as_view(), name='comment_delete'),
 
+    # Password change
+    path('password/change/', views.PasswordChangeView.as_view(), name='password_change'),
+
     # Supporter subscription
     path('support/', views.SupportPageView.as_view(), name='support'),
     path('support/checkout/', views.CreateCheckoutSessionView.as_view(), name='support_checkout'),
@@ -39,4 +42,10 @@ urlpatterns = [
     path('support/cancel/', views.CheckoutCancelView.as_view(), name='support_cancel'),
     path('support/portal/', views.CustomerPortalView.as_view(), name='support_portal'),
     path('support/webhook/', views.stripe_webhook, name='stripe_webhook'),
+
+    # Admin panel
+    path('manage/users/', views.AdminUserListView.as_view(), name='admin_user_list'),
+    path('manage/users/<int:user_id>/', views.AdminUserDetailView.as_view(), name='admin_user_detail'),
+    path('manage/users/<int:user_id>/block/', views.AdminUserBlockView.as_view(), name='admin_user_block'),
+    path('manage/users/<int:user_id>/delete/', views.AdminUserDeleteView.as_view(), name='admin_user_delete'),
 ]
