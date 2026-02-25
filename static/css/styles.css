@@ -340,7 +340,7 @@ body {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Cathedral arch tiled background — repeating pointed arches like a nave */
+/* Heraldic fleur-de-lis tiled background — two per tile in brick offset */
 body::before {
     content: '';
     position: fixed;
@@ -348,13 +348,13 @@ body::before {
     z-index: -1;
     pointer-events: none;
     opacity: 0.10;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 110' width='80' height='110'%3E%3Cpath d='M 0,110 L 0,95 Q 0,25 40,10 Q 80,25 80,95 L 80,110' fill='none' stroke='%236B2737' stroke-width='1.5'/%3E%3C%2Fsvg%3E");
-    background-size: 80px 110px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 70 90' width='70' height='90'%3E%3Cg fill='%236B2737'%3E%3Cpath d='M18 8c-3 0-5 6-5 13s2 10 5 12c3-2 5-6 5-12s-2-13-5-13z'/%3E%3Cpath d='M13 18C11 16 5 15 2 17c1 5 6 6 10 4z'/%3E%3Cpath d='M23 18c2-2 8-3 11-1-1 5-6 6-10 4z'/%3E%3Cpath d='M10 33h16v3l-2-1.5H12l-2 1.5z'/%3E%3Cpath d='M13 36l5 8 5-8z'/%3E%3Cpath d='M52 53c-3 0-5 6-5 13s2 10 5 12c3-2 5-6 5-12s-2-13-5-13z'/%3E%3Cpath d='M47 63C45 61 39 60 36 62c1 5 6 6 10 4z'/%3E%3Cpath d='M57 63c2-2 8-3 11-1-1 5-6 6-10 4z'/%3E%3Cpath d='M44 78h16v3l-2-1.5H46l-2 1.5z'/%3E%3Cpath d='M47 81l5 8 5-8z'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 70px 90px;
 }
 
 [data-bs-theme="dark"] body::before {
-    opacity: 0.14;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 110' width='80' height='110'%3E%3Cpath d='M 0,110 L 0,95 Q 0,25 40,10 Q 80,25 80,95 L 80,110' fill='none' stroke='%23D4899A' stroke-width='1.5'/%3E%3C%2Fsvg%3E");
+    opacity: 0.13;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 70 90' width='70' height='90'%3E%3Cg fill='%23D4899A'%3E%3Cpath d='M18 8c-3 0-5 6-5 13s2 10 5 12c3-2 5-6 5-12s-2-13-5-13z'/%3E%3Cpath d='M13 18C11 16 5 15 2 17c1 5 6 6 10 4z'/%3E%3Cpath d='M23 18c2-2 8-3 11-1-1 5-6 6-10 4z'/%3E%3Cpath d='M10 33h16v3l-2-1.5H12l-2 1.5z'/%3E%3Cpath d='M13 36l5 8 5-8z'/%3E%3Cpath d='M52 53c-3 0-5 6-5 13s2 10 5 12c3-2 5-6 5-12s-2-13-5-13z'/%3E%3Cpath d='M47 63C45 61 39 60 36 62c1 5 6 6 10 4z'/%3E%3Cpath d='M57 63c2-2 8-3 11-1-1 5-6 6-10 4z'/%3E%3Cpath d='M44 78h16v3l-2-1.5H46l-2 1.5z'/%3E%3Cpath d='M47 81l5 8 5-8z'/%3E%3C/g%3E%3C/svg%3E");
 }
 
 h1, h2, h3, h4, h5, h6,
