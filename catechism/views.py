@@ -286,7 +286,7 @@ class CompareIndexView(ListView):
         inactive_traditions = VALID_TRADITIONS - active_traditions
         qs = ComparisonSet.objects.filter(
             themes__entries__catechism__tradition__in=active_traditions
-        ).distinct()
+        ).distinct().order_by('order')
         if inactive_traditions:
             qs = qs.exclude(
                 themes__entries__catechism__tradition__in=inactive_traditions
@@ -516,7 +516,7 @@ class CompareSetView(ListView):
         active_traditions = get_active_traditions(self.request)
         return self.comparison_set.themes.filter(
             entries__catechism__tradition__in=active_traditions
-        ).distinct()
+        ).distinct().order_by('order')
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -548,7 +548,7 @@ class CompareSetThemeView(DetailView):
         all_themes = list(
             self.object.comparison_set.themes.filter(
                 entries__catechism__tradition__in=active_traditions
-            ).distinct()
+            ).distinct().order_by('order')
         )
         current_idx = None
         for i, t in enumerate(all_themes):
