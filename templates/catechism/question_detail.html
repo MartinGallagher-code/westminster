@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load catechism_tags static %}
 
+{% block body_attrs %}data-filter-sensitive="true"{% endblock %}
+
 {% block title %}{% if catechism.is_prose_document %}{{ question.question_text }} {{ question.display_number }}{% else %}Q{{ question.number }}{% endif %} - {{ catechism.name }}{% endblock %}
 
 {% block meta_description %}{{ catechism.abbreviation }} {% if catechism.is_prose_document %}{{ question.display_number }}: {{ question.question_text }}{% else %}Q{{ question.number }}: {{ question.question_text }}{% endif %} — {{ question.answer_text|truncatewords:25 }}{% endblock %}

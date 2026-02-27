@@ -593,10 +593,6 @@ def question_preview_json(request, pk):
         Question.objects.select_related('catechism'),
         pk=pk,
     )
-    # Only serve previews for questions in the user's active traditions
-    active_traditions = get_active_traditions(request)
-    if q.catechism.tradition not in active_traditions:
-        raise Http404
     return JsonResponse({
         'catechism_name': q.catechism.name,
         'abbreviation': q.catechism.abbreviation,

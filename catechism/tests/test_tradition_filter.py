@@ -269,10 +269,11 @@ class TestCompareSetThemeViewFilter:
 @pytest.mark.django_db
 class TestQuestionPreviewFilter:
 
-    def test_inactive_tradition_returns_404(self, tfu_question):
+    def test_preview_ignores_tradition_filter(self, tfu_question):
+        """Preview serves any valid question regardless of tradition cookie."""
         wsc_client = client_with_cookie({'westminster': True, 'three_forms_of_unity': False, 'other': False})
         resp = wsc_client.get(f'/api/question/{tfu_question.pk}/preview/')
-        assert resp.status_code == 404
+        assert resp.status_code == 200
 
     def test_active_tradition_returns_200(self, tfu_question):
         c = client_with_cookie({'westminster': False, 'three_forms_of_unity': True, 'other': False})
