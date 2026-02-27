@@ -235,6 +235,16 @@ class CreateCheckoutSessionView(LoginRequiredMixin, View):
     def post(self, request):
         stripe.api_key = settings.STRIPE_SECRET_KEY
 
+        # Validate the chosen amount (in dollars)
+        try:
+            amount = int(request.POST.get('amount', 0))
+        except (TypeError, ValueError):
+            amount = 0
+
+        if amount < 1 or amount > 999:
+            messages.error(request, 'Please choose an amount between $1 and $999.')
+            return HttpResponseRedirect(reverse_lazy('accounts:support'))
+
         subscription = SupporterSubscription.objects.filter(
             user=request.user
         ).first()
@@ -265,7 +275,12 @@ class CreateCheckoutSessionView(LoginRequiredMixin, View):
             customer=customer_id,
             payment_method_types=['card'],
             line_items=[{
-                'price': settings.STRIPE_PRICE_ID,
+                'price_data': {
+                    'currency': 'usd',
+                    'product': settings.STRIPE_PRODUCT_ID,
+                    'unit_amount': amount * 100,
+                    'recurring': {'interval': 'month'},
+                },
                 'quantity': 1,
             }],
             mode='subscription',

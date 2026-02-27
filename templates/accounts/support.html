@@ -52,8 +52,26 @@
             </p>
         </div>
 
-        <form method="post" action="{% url 'accounts:support_checkout' %}">
+        <form method="post" action="{% url 'accounts:support_checkout' %}" class="text-center">
             {% csrf_token %}
+            <div class="btn-group mb-3" role="group" aria-label="Monthly amount">
+                <input type="radio" class="btn-check" name="amount" id="amt3" value="3" autocomplete="off">
+                <label class="btn btn-outline-primary" for="amt3">$3</label>
+                <input type="radio" class="btn-check" name="amount" id="amt5" value="5" autocomplete="off" checked>
+                <label class="btn btn-outline-primary" for="amt5">$5</label>
+                <input type="radio" class="btn-check" name="amount" id="amt10" value="10" autocomplete="off">
+                <label class="btn btn-outline-primary" for="amt10">$10</label>
+                <input type="radio" class="btn-check" name="amount" id="amt25" value="25" autocomplete="off">
+                <label class="btn btn-outline-primary" for="amt25">$25</label>
+            </div>
+            <div class="mb-3">
+                <label class="form-label text-muted small">Or enter a custom amount</label>
+                <div class="input-group mx-auto" style="max-width: 160px;">
+                    <span class="input-group-text">$</span>
+                    <input type="number" class="form-control" id="customAmount" min="1" max="999" placeholder="&mdash;">
+                    <span class="input-group-text">/mo</span>
+                </div>
+            </div>
             <button type="submit" class="btn btn-primary btn-lg">
                 <i class="bi bi-heart-fill me-2"></i>Subscribe Again
             </button>
@@ -71,6 +89,24 @@
                 </ul>
                 <form method="post" action="{% url 'accounts:support_checkout' %}">
                     {% csrf_token %}
+                    <div class="btn-group mb-3" role="group" aria-label="Monthly amount">
+                        <input type="radio" class="btn-check" name="amount" id="newAmt3" value="3" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="newAmt3">$3</label>
+                        <input type="radio" class="btn-check" name="amount" id="newAmt5" value="5" autocomplete="off" checked>
+                        <label class="btn btn-outline-primary" for="newAmt5">$5</label>
+                        <input type="radio" class="btn-check" name="amount" id="newAmt10" value="10" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="newAmt10">$10</label>
+                        <input type="radio" class="btn-check" name="amount" id="newAmt25" value="25" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="newAmt25">$25</label>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small">Or enter a custom amount</label>
+                        <div class="input-group mx-auto" style="max-width: 160px;">
+                            <span class="input-group-text">$</span>
+                            <input type="number" class="form-control" id="newCustomAmount" min="1" max="999" placeholder="&mdash;">
+                            <span class="input-group-text">/mo</span>
+                        </div>
+                    </div>
                     <button type="submit" class="btn btn-primary btn-lg mt-3">
                         <i class="bi bi-heart-fill me-2"></i>Become a Supporter
                     </button>
@@ -80,4 +116,39 @@
         {% endif %}
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.querySelectorAll('form[action*="support/checkout"]').forEach(function(form) {
+    var radios = form.querySelectorAll('input[name="amount"]');
+    var customInput = form.querySelector('input[type="number"]');
+
+    customInput.addEventListener('input', function() {
+        if (this.value) {
+            radios.forEach(function(r) { r.checked = false; });
+        }
+    });
+
+    radios.forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            customInput.value = '';
+        });
+    });
+
+    form.addEventListener('submit', function() {
+        if (customInput.value) {
+            radios.forEach(function(r) { r.checked = false; });
+            var hidden = form.querySelector('input[name="amount"][type="hidden"]');
+            if (!hidden) {
+                hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = 'amount';
+                form.appendChild(hidden);
+            }
+            hidden.value = customInput.value;
+        }
+    });
+});
+</script>
 {% endblock %}

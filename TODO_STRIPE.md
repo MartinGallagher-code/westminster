@@ -4,10 +4,7 @@
 
 - [ ] Create a Stripe account at https://stripe.com (if not already done)
 - [ ] Create a "Supporter" product in the Stripe Dashboard
-- [ ] Create a recurring monthly price on that product with "Customer chooses what to pay" enabled
-  - Set a minimum (e.g., $1/month)
-  - Set a suggested preset (e.g., $5/month)
-- [ ] Note the Price ID (e.g., `price_1Abc...`)
+- [ ] Note the Product ID (e.g., `prod_1Abc...`) — no price needed; the amount is set dynamically at checkout
 - [ ] Enable the Customer Portal in Settings > Billing > Customer Portal
   - Enable "Cancel subscription"
   - Enable "Update payment method"
@@ -23,7 +20,7 @@ Set these in the Render dashboard (not in code):
 - [ ] `STRIPE_PUBLISHABLE_KEY` — your live publishable key (`pk_live_...`)
 - [ ] `STRIPE_SECRET_KEY` — your live secret key (`sk_live_...`)
 - [ ] `STRIPE_WEBHOOK_SECRET` — the webhook signing secret (`whsec_...`)
-- [ ] `STRIPE_PRICE_ID` — the Price ID from the product you created (`price_...`)
+- [ ] `STRIPE_PRODUCT_ID` — the Product ID from the product you created (`prod_...`)
 
 ## Local Testing (Optional)
 

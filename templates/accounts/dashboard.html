@@ -5,6 +5,7 @@
 {% block content %}
 <h1 class="mb-3">My Notes & Annotations</h1>
 
+{# temporarily hidden: donate links
 {% if is_supporter %}
 <div class="alert alert-success d-flex align-items-center mb-4" role="alert">
     <i class="bi bi-bookmark-star-fill me-2 fs-4" style="color: var(--wm-accent);"></i>
@@ -19,6 +20,7 @@
     Enjoying the site? <a href="{% url 'accounts:support' %}" class="alert-link">Become a supporter</a> to help keep it running.
 </div>
 {% endif %}
+#}
 
 {% if notes or inline_comments %}
 <p class="text-muted">
