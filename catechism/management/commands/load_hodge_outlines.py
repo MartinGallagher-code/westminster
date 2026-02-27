@@ -71,7 +71,10 @@ OUTLINES_PARTS = [
         "order": 7,
         "start": 37,
         "end": 40,
-        "description": "Death and the state of the soul, the resurrection, the second advent and judgment, and heaven and hell.",
+        "description": (
+            "Death and the state of the soul, the resurrection,"
+            " the second advent and judgment, and heaven and hell."
+        ),
     },
     {
         "name": "Part VIII: Ecclesiology and the Sacraments",
