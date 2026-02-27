@@ -478,7 +478,10 @@ class CustomCompareThemeView(TemplateView):
                 break
         if current_idx is not None:
             ctx['previous_theme'] = all_matching_themes[current_idx - 1]['theme'] if current_idx > 0 else None
-            ctx['next_theme'] = all_matching_themes[current_idx + 1]['theme'] if current_idx < len(all_matching_themes) - 1 else None
+            if current_idx < len(all_matching_themes) - 1:
+                ctx['next_theme'] = all_matching_themes[current_idx + 1]['theme']
+            else:
+                ctx['next_theme'] = None
 
         return ctx
 
