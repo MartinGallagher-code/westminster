@@ -446,7 +446,7 @@ class Command(BaseCommand):
         grand_missing = sum(len(e['missing']) for e in by_cat.values())
         grand_unparse = sum(len(e['unparseable']) for e in by_cat.values())
 
-        self.stdout.write(f"\nScripture Proof Text Audit")
+        self.stdout.write("\nScripture Proof Text Audit")
         self.stdout.write(f"{'=' * 50}")
 
         for abbr in sorted(by_cat):
