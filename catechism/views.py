@@ -593,7 +593,7 @@ def question_preview_json(request, pk):
         Question.objects.select_related('catechism'),
         pk=pk,
     )
-    return JsonResponse({
+    response = JsonResponse({
         'catechism_name': q.catechism.name,
         'abbreviation': q.catechism.abbreviation,
         'item_prefix': q.catechism.item_prefix,
@@ -603,6 +603,8 @@ def question_preview_json(request, pk):
         'answer_text': q.answer_text,
         'url': q.get_absolute_url(),
     })
+    response['Cache-Control'] = 'no-store'
+    return response
 
 
 # Legacy redirects

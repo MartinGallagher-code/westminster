@@ -91,7 +91,10 @@
         mainCol.classList.add('col-lg-5');
         previewCol.classList.remove('d-none');
 
-        fetch('/api/question/' + pk + '/preview/')
+        fetch('/api/question/' + pk + '/preview/', {
+                credentials: 'same-origin',
+                cache: 'no-store',
+            })
             .then(function (res) {
                 if (!res.ok) throw new Error(res.status);
                 return res.json();
@@ -102,7 +105,8 @@
                     openPanel(data);
                 }
             })
-            .catch(function () {
+            .catch(function (err) {
+                console.error('See-also preview failed for pk=' + pk, err);
                 if (activePk === pk) {
                     titleEl.textContent = 'Error';
                     questionEl.textContent = 'Could not load preview.';
