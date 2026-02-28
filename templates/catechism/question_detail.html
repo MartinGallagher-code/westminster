@@ -177,12 +177,6 @@
                 <div class="tab-content">
                     {% if proof_texts %}
                     <div class="tab-pane fade show active" id="tab-scripture" role="tabpanel">
-                        <div class="d-flex justify-content-end mb-2">
-                            <button class="btn btn-sm btn-outline-secondary" type="button"
-                                    data-bs-toggle="collapse" data-bs-target="#scripture-texts">
-                                Show/Hide All
-                            </button>
-                        </div>
                         <div id="scripture-texts">
                             {% for ref in proof_texts %}
                             {% with verse_text=scripture_map|get_item:ref %}
