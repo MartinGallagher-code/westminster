@@ -13,7 +13,7 @@ from .models import (
     BibleBook, ScriptureIndex, ComparisonSet, ComparisonTheme,
     ComparisonEntry,
 )
-from .utils import get_active_traditions
+from .utils import VALID_TRADITIONS, get_active_traditions
 
 
 class CatechismMixin:
@@ -319,13 +319,17 @@ class CompareIndexView(ListView):
     def get_queryset(self):
         # Only show sets where ALL catechisms in the set belong to active traditions.
         # First include sets that have at least one active-tradition entry,
-        # then exclude any that also have inactive-tradition entries.
-        from .utils import VALID_TRADITIONS
+        # then exclude any that also have entries from non-active traditions
+        # (including tradition='other').
         active_traditions = set(get_active_traditions(self.request))
-        inactive_traditions = VALID_TRADITIONS - active_traditions
         qs = ComparisonSet.objects.filter(
             themes__entries__catechism__tradition__in=active_traditions
         ).distinct().order_by('order')
+        inactive_traditions = set(
+            Catechism.objects.exclude(
+                tradition__in=active_traditions
+            ).values_list('tradition', flat=True).distinct()
+        )
         if inactive_traditions:
             qs = qs.exclude(
                 themes__entries__catechism__tradition__in=inactive_traditions
@@ -536,6 +540,18 @@ class CompareSetView(ListView):
                 comparison_set__slug='westminster',
             )
             return redirect(theme.get_absolute_url(), permanent=True)
+
+        # Block access to sets that reference catechisms outside supported
+        # traditions (e.g. tradition='other')
+
+        has_unsupported = ComparisonEntry.objects.filter(
+            theme__comparison_set=self.comparison_set
+        ).exclude(
+            catechism__tradition__in=VALID_TRADITIONS
+        ).exists()
+        if has_unsupported:
+            raise Http404
+
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
@@ -555,11 +571,22 @@ class CompareSetThemeView(DetailView):
     context_object_name = 'theme'
 
     def get_object(self):
-        return get_object_or_404(
+        theme = get_object_or_404(
             ComparisonTheme,
             slug=self.kwargs['theme_slug'],
             comparison_set__slug=self.kwargs['set_slug'],
         )
+        # Block access to themes in sets that reference catechisms
+        # outside supported traditions (e.g. tradition='other')
+
+        has_unsupported = ComparisonEntry.objects.filter(
+            theme__comparison_set=theme.comparison_set
+        ).exclude(
+            catechism__tradition__in=VALID_TRADITIONS
+        ).exists()
+        if has_unsupported:
+            raise Http404
+        return theme
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)

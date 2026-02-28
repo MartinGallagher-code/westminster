@@ -11,7 +11,7 @@ from django.test import Client, RequestFactory
 from catechism.models import Catechism, ComparisonSet
 from catechism.utils import get_active_traditions
 from .conftest import (
-    CatechismFactory, TopicFactory, QuestionFactory,
+    CatechismFactory, ComparisonSetFactory, TopicFactory, QuestionFactory,
     BibleBookFactory, ScriptureIndexFactory,
     ComparisonThemeFactory, ComparisonEntryFactory,
 )
@@ -194,6 +194,65 @@ class TestScriptureBookViewFilter:
         c = client_with_cookie({'westminster': True, 'three_forms_of_unity': True, 'other': False})
         resp = c.get('/scripture/luke-filter/')
         assert resp.context['total_citations'] == 2
+
+
+@pytest.fixture
+def other_cat(db):
+    return CatechismFactory(
+        name='1689 Baptist Confession',
+        abbreviation='1689',
+        slug='1689',
+        total_questions=5,
+        tradition=Catechism.OTHER,
+    )
+
+
+@pytest.mark.django_db
+class TestCompareIndexExcludesOtherTradition:
+    """Sets containing catechisms with tradition='other' must never appear."""
+
+    def test_set_with_other_tradition_hidden_from_index(self, wsc_cat, other_cat):
+        cs = ComparisonSetFactory(name='Baptist Lineage', slug='1689-baptist', order=10)
+        theme = ComparisonThemeFactory(name='Scripture', slug='scripture', comparison_set=cs)
+        ComparisonEntryFactory(theme=theme, catechism=wsc_cat, question_start=1, question_end=1)
+        ComparisonEntryFactory(theme=theme, catechism=other_cat, question_start=1, question_end=1)
+
+        c = client_with_cookie({'westminster': True, 'three_forms_of_unity': True, 'other': False})
+        resp = c.get('/compare/')
+        assert resp.status_code == 200
+        set_slugs = [s.slug for s in resp.context['comparison_sets']]
+        assert '1689-baptist' not in set_slugs
+
+    def test_set_with_only_active_traditions_shown(self, wsc_cat, tfu_cat):
+        cs = ComparisonSetFactory(name='W+TFU Set', slug='w-tfu', order=11)
+        theme = ComparisonThemeFactory(name='Both', slug='both', comparison_set=cs)
+        ComparisonEntryFactory(theme=theme, catechism=wsc_cat, question_start=1, question_end=1)
+        ComparisonEntryFactory(theme=theme, catechism=tfu_cat, question_start=1, question_end=1)
+
+        c = client_with_cookie({'westminster': True, 'three_forms_of_unity': True, 'other': False})
+        resp = c.get('/compare/')
+        set_slugs = [s.slug for s in resp.context['comparison_sets']]
+        assert 'w-tfu' in set_slugs
+
+    def test_direct_url_to_other_set_returns_404(self, wsc_cat, other_cat):
+        cs = ComparisonSetFactory(name='Baptist Lineage', slug='1689-baptist', order=10)
+        theme = ComparisonThemeFactory(name='Scripture', slug='scripture', comparison_set=cs)
+        ComparisonEntryFactory(theme=theme, catechism=wsc_cat, question_start=1, question_end=1)
+        ComparisonEntryFactory(theme=theme, catechism=other_cat, question_start=1, question_end=1)
+
+        c = client_with_cookie({'westminster': True, 'three_forms_of_unity': True, 'other': False})
+        resp = c.get('/compare/1689-baptist/')
+        assert resp.status_code == 404
+
+    def test_direct_url_to_other_theme_returns_404(self, wsc_cat, other_cat):
+        cs = ComparisonSetFactory(name='Baptist Lineage', slug='1689-baptist', order=10)
+        theme = ComparisonThemeFactory(name='Scripture', slug='scripture', comparison_set=cs)
+        ComparisonEntryFactory(theme=theme, catechism=wsc_cat, question_start=1, question_end=1)
+        ComparisonEntryFactory(theme=theme, catechism=other_cat, question_start=1, question_end=1)
+
+        c = client_with_cookie({'westminster': True, 'three_forms_of_unity': True, 'other': False})
+        resp = c.get('/compare/1689-baptist/scripture/')
+        assert resp.status_code == 404
 
 
 @pytest.mark.django_db
