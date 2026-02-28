@@ -12,7 +12,7 @@
 
 <div class="row g-5">
     {# Topic accordion — takes most of the width #}
-    <div class="{% if featured_question %}col-lg-8{% else %}col-12{% endif %}">
+    <div class="{% if featured_question %}col-lg-8{% else %}col-12{% endif %} col-separator">
         <div class="flat-section-heading mb-3">All {{ catechism.item_name_plural }}</div>
         <div class="accordion" id="topic-accordion">
         {% for group in grouped %}
@@ -67,7 +67,7 @@
 
     {# Featured item sidebar #}
     {% if featured_question %}
-    <div class="col-lg-4">
+    <div class="col-lg-4 col-separator">
         <div class="flat-section-heading mb-3">{{ catechism.item_name }} of the Day</div>
         <div class="page-band-featured rounded-2 p-4">
             {% if catechism.is_prose_document %}

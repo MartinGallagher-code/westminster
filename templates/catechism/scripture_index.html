@@ -15,7 +15,7 @@
 <p class="text-muted mb-4">Browse all Scripture references cited across the Reformed standards.</p>
 
 <div class="row g-5">
-    <div class="col-md-6">
+    <div class="col-md-6 col-separator">
         <div class="flat-section-heading mb-3">Old Testament</div>
         {% for book in ot_books %}
         <a href="{% url 'catechism:scripture_book' book_slug=book.slug %}"
@@ -28,7 +28,7 @@
         <p class="text-muted">No Old Testament citations indexed yet.</p>
         {% endfor %}
     </div>
-    <div class="col-md-6">
+    <div class="col-md-6 col-separator">
         <div class="flat-section-heading mb-3">New Testament</div>
         {% for book in nt_books %}
         <a href="{% url 'catechism:scripture_book' book_slug=book.slug %}"

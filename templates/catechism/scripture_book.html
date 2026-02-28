@@ -17,7 +17,7 @@
 
 <div class="row g-5">
     {% for group in grouped_entries %}
-    <div class="col-md-6 col-xl-4">
+    <div class="col-md-6 col-xl-4 col-separator">
         <div class="flat-section-heading d-flex justify-content-between align-items-baseline mb-3">
             <span>{{ group.catechism.abbreviation }} <small class="text-muted fw-normal" style="text-transform: none; letter-spacing: 0;">{{ group.catechism.name }}</small></span>
             <span class="badge bg-secondary fw-normal">{{ group.entries|length }}</span>
