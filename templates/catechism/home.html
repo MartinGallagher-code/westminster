@@ -4,146 +4,132 @@
 {% block body_attrs %}data-filter-sensitive="true"{% endblock %}
 {% block title %}Study Reformed{% endblock %}
 
+{% block main_wrapper_class %}{% endblock %}
+
 {% block content %}
 
-{# ── Compact header ── #}
-<div class="mb-4 pb-3 border-bottom">
-    <h1 class="h3 mb-1">Study Reformed</h1>
-    <p class="text-body-secondary mb-0 small">
-        Explore the Reformed confessional standards with Scripture proof texts, cross-references, and classic commentary.
-    </p>
+{# ── Page header band ── #}
+<div class="page-band page-band-header">
+    <div class="page-band-content">
+        <h1 class="h3 mb-1">Study Reformed</h1>
+        <p class="text-body-secondary mb-0 small">
+            Explore the Reformed confessional standards with Scripture proof texts, cross-references, and classic commentary.
+        </p>
+    </div>
 </div>
 
-{# ── Main layout ── #}
-<div class="row g-4">
-
-    {# ── Left panel: filter toggles + document list ── #}
-    <div class="col-md-3">
-
-        <div class="card mb-3">
-            <div class="card-header py-2">
-                <strong class="small">Document Collections</strong>
-            </div>
-            <div class="list-group list-group-flush">
-                <button class="list-group-item list-group-item-action tradition-toggle d-flex align-items-center gap-2 py-2 small"
-                        data-tradition="westminster" type="button">
-                    <i class="bi bi-check-circle-fill tradition-check flex-shrink-0" style="color: var(--wm-primary);"></i>
-                    Westminster Standards
-                </button>
-                <button class="list-group-item list-group-item-action tradition-toggle d-flex align-items-center gap-2 py-2 small"
-                        data-tradition="three_forms_of_unity" type="button">
-                    <i class="bi bi-check-circle-fill tradition-check flex-shrink-0" style="color: var(--wm-primary);"></i>
-                    Three Forms of Unity
-                </button>
-            </div>
+{# ── Item of the Day band ── #}
+{% if featured %}
+<div class="page-band page-band-featured">
+    <div class="page-band-content">
+        <div class="d-flex align-items-center gap-2 mb-3">
+            <i class="bi bi-star-fill" style="color: var(--wm-accent);"></i>
+            <h6 class="mb-0 text-primary">{{ featured.catechism.item_name }} of the Day</h6>
+            <span class="badge text-bg-primary">{{ featured.catechism.abbreviation }}</span>
         </div>
-
-        <div class="card">
-            <div class="card-header py-2">
-                <strong class="small">Documents</strong>
-            </div>
-            <div class="list-group list-group-flush">
-                {% for cat in catechisms %}
-                <a href="{{ cat.get_item_list_url }}"
-                   class="list-group-item list-group-item-action py-2">
-                    <div class="d-flex justify-content-between align-items-baseline">
-                        <strong class="small">{{ cat.abbreviation }}</strong>
-                        <small class="text-muted">{{ cat.total_questions }}</small>
-                    </div>
-                    <div class="text-muted" style="font-size: 0.8rem;">{{ cat.name }}</div>
-                </a>
-                {% empty %}
-                <div class="list-group-item py-2 text-muted small">
-                    No documents selected — choose a collection above.
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-
-    </div>
-
-    {# ── Right column: Q of the Day + Explore ── #}
-    <div class="col-md-9">
-
-        {# Question / Item of the Day #}
-        {% if featured %}
-        <div class="card card-featured border-primary-subtle mb-4">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h6 class="mb-0">
-                        <i class="bi bi-star-fill me-1" style="color: var(--wm-accent);"></i>
-                        <span class="text-primary">{{ featured.catechism.item_name }} of the Day</span>
-                    </h6>
-                    <span class="badge text-bg-primary">{{ featured.catechism.abbreviation }}</span>
-                </div>
+        <div class="row">
+            <div class="col-lg-8">
                 {% if featured.catechism.is_prose_document %}
-                <p class="fw-semibold mb-1">{{ featured.question_text }}</p>
-                <p class="text-body-secondary small mb-3">{{ featured.answer_text|truncatewords:40 }}</p>
+                <h2 class="h4 fw-semibold mb-2">{{ featured.question_text }}</h2>
+                <p class="text-body-secondary mb-4">{{ featured.answer_text|truncatewords:50 }}</p>
                 {% else %}
-                <p class="fw-semibold mb-1">Q{{ featured.number }}. {{ featured.question_text }}</p>
-                <p class="text-body-secondary small mb-3"><strong>A.</strong> {{ featured.answer_text|truncatewords:40 }}</p>
+                <h2 class="h4 fw-semibold mb-2">Q{{ featured.number }}. {{ featured.question_text }}</h2>
+                <p class="text-body-secondary mb-4"><strong>A.</strong> {{ featured.answer_text|truncatewords:50 }}</p>
                 {% endif %}
                 <a href="{{ featured.get_absolute_url }}" class="btn btn-primary btn-sm">
                     Read full {{ featured.catechism.item_name }} <i class="bi bi-chevron-right ms-1"></i>
                 </a>
             </div>
         </div>
-        {% endif %}
+    </div>
+</div>
+{% endif %}
 
-        {# Explore features #}
-        <h2 class="h6 text-body-secondary mb-3 section-heading">Explore</h2>
-        <div class="row g-3">
-            <div class="col-sm-4">
-                <div class="card h-100">
-                    <div class="card-body d-flex align-items-center gap-3 py-3">
-                        <i class="bi bi-search fs-3 text-primary flex-shrink-0"></i>
+{# ── Browse & Explore band ── #}
+<div class="page-band">
+    <div class="page-band-content">
+        <div class="row g-5">
+
+            {# Left: document filter panel #}
+            <div class="col-md-3">
+                <div class="mb-4">
+                    <div class="flat-section-heading">Collections</div>
+                    <button class="d-flex align-items-center gap-2 py-2 w-100 text-start small tradition-toggle border-0 bg-transparent"
+                            style="color: var(--bs-body-color); cursor: pointer;"
+                            data-tradition="westminster" type="button">
+                        <i class="bi bi-check-circle-fill tradition-check flex-shrink-0" style="color: var(--wm-primary);"></i>
+                        Westminster Standards
+                    </button>
+                    <button class="d-flex align-items-center gap-2 py-2 w-100 text-start small tradition-toggle border-0 bg-transparent"
+                            style="color: var(--bs-body-color); cursor: pointer;"
+                            data-tradition="three_forms_of_unity" type="button">
+                        <i class="bi bi-check-circle-fill tradition-check flex-shrink-0" style="color: var(--wm-primary);"></i>
+                        Three Forms of Unity
+                    </button>
+                </div>
+                <div>
+                    <div class="flat-section-heading">Documents</div>
+                    {% for cat in catechisms %}
+                    <a href="{{ cat.get_item_list_url }}"
+                       class="d-flex justify-content-between align-items-baseline py-2 text-decoration-none border-bottom"
+                       style="border-color: var(--wm-border) !important; color: var(--bs-body-color);">
                         <div>
-                            <div class="fw-semibold small">Search</div>
-                            <div class="text-muted" style="font-size: 0.8rem;">Search all documents by keyword</div>
+                            <strong class="small">{{ cat.abbreviation }}</strong>
+                            <div class="text-muted" style="font-size: 0.8rem;">{{ cat.name }}</div>
+                        </div>
+                        <small class="text-muted ms-2 flex-shrink-0">{{ cat.total_questions }}</small>
+                    </a>
+                    {% empty %}
+                    <p class="small text-muted mt-2">No documents selected — choose a collection above.</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            {# Right: Explore features #}
+            <div class="col-md-9">
+                <div class="flat-section-heading mb-4">Explore</div>
+                <div class="row g-4">
+                    <div class="col-sm-4">
+                        <div class="d-flex align-items-start gap-3">
+                            <i class="bi bi-search fs-3 text-primary flex-shrink-0 mt-1"></i>
+                            <div>
+                                <div class="fw-semibold mb-1">Search</div>
+                                <div class="text-muted small mb-2">Search all documents by keyword</div>
+                                <a href="{% url 'catechism:search' %}" class="btn btn-outline-primary btn-sm">
+                                    Search <i class="bi bi-chevron-right ms-1"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
-                    <div class="card-footer py-2">
-                        <a href="{% url 'catechism:search' %}" class="btn btn-outline-primary btn-sm">
-                            Search <i class="bi bi-chevron-right ms-1"></i>
-                        </a>
+                    <div class="col-sm-4">
+                        <div class="d-flex align-items-start gap-3">
+                            <i class="bi bi-book fs-3 text-primary flex-shrink-0 mt-1"></i>
+                            <div>
+                                <div class="fw-semibold mb-1">Scripture Index</div>
+                                <div class="text-muted small mb-2">Find passages by Bible reference</div>
+                                <a href="{% url 'catechism:scripture_index' %}" class="btn btn-outline-primary btn-sm">
+                                    Browse <i class="bi bi-chevron-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="d-flex align-items-start gap-3">
+                            <i class="bi bi-layout-split fs-3 text-primary flex-shrink-0 mt-1"></i>
+                            <div>
+                                <div class="fw-semibold mb-1">Compare Standards</div>
+                                <div class="text-muted small mb-2">View topics side by side</div>
+                                <a href="{% url 'catechism:compare_index' %}" class="btn btn-outline-primary btn-sm">
+                                    Compare <i class="bi bi-chevron-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-sm-4">
-                <div class="card h-100">
-                    <div class="card-body d-flex align-items-center gap-3 py-3">
-                        <i class="bi bi-book fs-3 text-primary flex-shrink-0"></i>
-                        <div>
-                            <div class="fw-semibold small">Scripture Index</div>
-                            <div class="text-muted" style="font-size: 0.8rem;">Find passages by Bible reference</div>
-                        </div>
-                    </div>
-                    <div class="card-footer py-2">
-                        <a href="{% url 'catechism:scripture_index' %}" class="btn btn-outline-primary btn-sm">
-                            Browse <i class="bi bi-chevron-right ms-1"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="card h-100">
-                    <div class="card-body d-flex align-items-center gap-3 py-3">
-                        <i class="bi bi-layout-split fs-3 text-primary flex-shrink-0"></i>
-                        <div>
-                            <div class="fw-semibold small">Compare Standards</div>
-                            <div class="text-muted" style="font-size: 0.8rem;">View topics side by side</div>
-                        </div>
-                    </div>
-                    <div class="card-footer py-2">
-                        <a href="{% url 'catechism:compare_index' %}" class="btn btn-outline-primary btn-sm">
-                            Compare <i class="bi bi-chevron-right ms-1"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
+
         </div>
+    </div>
+</div>
 
-    </div>{# /col-md-9 #}
-
-</div>{# /row #}
 {% endblock %}

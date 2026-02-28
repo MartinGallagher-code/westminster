@@ -971,15 +971,79 @@ mark.user-annotation::after {
 }
 
 /* ================================================================
-   Question-detail sidebar alignment
+   Full-width page bands
    ================================================================ */
 
-/* Push the nav sidebar card down so its top aligns with the Q&A card
-   in the main column (which sits below the prev/next button row).     */
-#nav-col > .card {
-    margin-top: 2.9rem;
-    z-index: 990;
+.page-band {
+    padding-top: 1.75rem;
+    padding-bottom: 1.75rem;
 }
+
+.page-band-content {
+    max-width: 1320px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+@media (max-width: 575.98px) {
+    .page-band-content {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+
+.page-band-header {
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--wm-border);
+}
+
+.page-band-featured {
+    background-color: color-mix(in srgb, var(--wm-accent) 7%, var(--bs-body-bg));
+    border-top: 2px solid color-mix(in srgb, var(--wm-accent) 30%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--wm-accent) 15%, transparent);
+}
+
+.page-band-muted {
+    background-color: color-mix(in srgb, var(--wm-primary) 4%, var(--bs-body-bg));
+    border-top: 1px solid var(--wm-border);
+    border-bottom: 1px solid var(--wm-border);
+}
+
+/* ================================================================
+   Flat sidebar (replaces card-based sidebar)
+   ================================================================ */
+
+.flat-sidebar {
+    position: sticky;
+    top: 70px;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+}
+
+.flat-section-heading {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--wm-text-muted);
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--wm-border);
+    margin-bottom: 0.5rem;
+}
+
+/* Flat tradition toggles on home page */
+.tradition-toggle.active {
+    color: var(--wm-primary);
+    font-weight: 500;
+}
+
+/* ================================================================
+   Question-detail sidebar alignment
+   ================================================================ */
 
 /* ================================================================
    See-also preview panel
@@ -1016,18 +1080,3 @@ mark.user-annotation::after {
     visibility: hidden;
 }
 
-/* Sidebar tradition toggles on home page */
-.list-group-item.tradition-toggle.active {
-    color: var(--wm-primary);
-    background-color: color-mix(in srgb, var(--wm-primary) 6%, var(--bs-body-bg));
-    border-color: var(--wm-card-border);
-    font-weight: 500;
-}
-
-.list-group-item.tradition-toggle.active .tradition-check {
-    visibility: visible;
-}
-
-.list-group-item.tradition-toggle:not(.active) .tradition-check {
-    visibility: hidden;
-}
