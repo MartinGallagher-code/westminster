@@ -58,27 +58,27 @@
     {% for col in columns %}
     <div class="{% if col_count == 1 %}col-lg-12{% elif col_count == 2 %}col-lg-6{% elif col_count == 3 %}col-lg-4{% else %}col-lg-3{% endif %} mb-4 comparison-col"
          data-doc="{{ col.catechism.slug }}">
-        <div class="card h-100">
-            <div class="card-header">
-                <strong>{{ col.catechism.abbreviation }}</strong>
-                <small class="text-muted ms-1">
-                    {{ col.catechism.item_prefix }}{{ col.display_start }}{% if col.question_start != col.question_end %}&ndash;{{ col.display_end }}{% endif %}
-                </small>
-            </div>
-            <div class="list-group list-group-flush">
-                {% for q in col.questions %}
-                <a href="{{ q.get_absolute_url }}" class="list-group-item list-group-item-action">
-                    {% if col.catechism.is_prose_document %}
-                    <p class="mb-1 small"><strong>{{ q.question_text }}</strong></p>
-                    <p class="mb-0 text-muted small">{{ q.answer_text }}</p>
-                    {% else %}
-                    <p class="mb-1 small"><strong>Q{{ q.number }}.</strong> {{ q.question_text }}</p>
-                    <p class="mb-0 text-muted small"><strong>A.</strong> {{ q.answer_text }}</p>
-                    {% endif %}
-                </a>
-                {% endfor %}
-            </div>
+        <div class="flat-section-heading mb-3">
+            {{ col.catechism.abbreviation }}
+            <span class="text-muted fw-normal ms-1" style="font-size: 0.75rem; text-transform: none; letter-spacing: 0;">
+                {{ col.catechism.item_prefix }}{{ col.display_start }}{% if col.question_start != col.question_end %}&ndash;{{ col.display_end }}{% endif %}
+            </span>
         </div>
+        {% for q in col.questions %}
+        <a href="{{ q.get_absolute_url }}"
+           class="d-block py-3 text-decoration-none border-bottom"
+           style="border-color: var(--wm-border) !important; color: var(--bs-body-color);">
+            {% if col.catechism.is_prose_document %}
+            <p class="mb-1 small fw-semibold">{{ q.question_text }}</p>
+            <p class="mb-0 text-muted small">{{ q.answer_text }}</p>
+            {% else %}
+            <p class="mb-1 small fw-semibold"><strong>Q{{ q.number }}.</strong> {{ q.question_text }}</p>
+            <p class="mb-0 text-muted small"><strong>A.</strong> {{ q.answer_text }}</p>
+            {% endif %}
+        </a>
+        {% empty %}
+        <p class="text-muted small">No entries.</p>
+        {% endfor %}
     </div>
     {% empty %}
     <p class="text-muted">No entries for this theme.</p>

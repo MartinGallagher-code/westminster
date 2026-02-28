@@ -3,32 +3,17 @@
 {% block title %}{{ catechism.name }}{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-lg-8 mx-auto">
-        <h1 class="mb-3">{{ catechism.name }}</h1>
-        <p class="lead">{{ catechism.description }}</p>
+<div class="mb-4 pb-3 border-bottom">
+    <h1 class="mb-1">{{ catechism.name }}</h1>
+    {% if catechism.description %}
+    <p class="text-muted mb-0">{{ catechism.description }}</p>
+    {% endif %}
+</div>
 
-        {% if featured_question %}
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="mb-0">{{ catechism.item_name }} of the Day</h5>
-            </div>
-            <div class="card-body">
-                {% if catechism.is_prose_document %}
-                <h5 class="card-title">{{ featured_question.question_text }}</h5>
-                <p class="card-text answer-text">{{ featured_question.answer_text|truncatewords:50 }}</p>
-                {% else %}
-                <h5 class="card-title">Q{{ featured_question.number }}. {{ featured_question.question_text }}</h5>
-                <p class="card-text answer-text"><strong>A.</strong> {{ featured_question.answer_text }}</p>
-                {% endif %}
-                <a href="{{ featured_question.get_absolute_url }}" class="btn btn-outline-primary btn-sm">
-                    Read More &rarr;
-                </a>
-            </div>
-        </div>
-        {% endif %}
-
-        <h2 class="h5 mb-3">All {{ catechism.item_name_plural }}</h2>
+<div class="row g-5">
+    {# Topic accordion — takes most of the width #}
+    <div class="{% if featured_question %}col-lg-8{% else %}col-12{% endif %}">
+        <div class="flat-section-heading mb-3">All {{ catechism.item_name_plural }}</div>
         <div class="accordion" id="topic-accordion">
         {% for group in grouped %}
         <div class="accordion-item" id="{{ group.topic.slug }}">
@@ -75,9 +60,28 @@
         {% endfor %}
         </div>
 
-        <div class="text-center mt-3 mb-4">
+        <div class="mt-3 mb-4">
             <a href="#" class="text-body-secondary small">&uarr; Back to top</a>
         </div>
     </div>
+
+    {# Featured item sidebar #}
+    {% if featured_question %}
+    <div class="col-lg-4">
+        <div class="flat-section-heading mb-3">{{ catechism.item_name }} of the Day</div>
+        <div class="page-band-featured rounded-2 p-4">
+            {% if catechism.is_prose_document %}
+            <h5 class="fw-semibold mb-2">{{ featured_question.question_text }}</h5>
+            <p class="text-body-secondary mb-3">{{ featured_question.answer_text|truncatewords:50 }}</p>
+            {% else %}
+            <h5 class="fw-semibold mb-2">Q{{ featured_question.number }}. {{ featured_question.question_text }}</h5>
+            <p class="text-body-secondary mb-3"><strong>A.</strong> {{ featured_question.answer_text }}</p>
+            {% endif %}
+            <a href="{{ featured_question.get_absolute_url }}" class="btn btn-outline-primary btn-sm">
+                Read More &rarr;
+            </a>
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

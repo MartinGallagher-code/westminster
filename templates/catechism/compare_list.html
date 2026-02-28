@@ -18,17 +18,20 @@
 {% regroup themes by locus as locus_groups %}
 {% for group in locus_groups %}
 {% if group.grouper %}
-<h4 class="mt-4 mb-3">{{ group.grouper }}</h4>
+<div class="flat-section-heading mt-4 mb-3">{{ group.grouper }}</div>
 {% endif %}
-<div class="list-group mb-3">
+<div class="row g-3 mb-3">
     {% for theme in group.list %}
-    <a href="{{ theme.get_absolute_url }}"
-       class="list-group-item list-group-item-action">
-        <h5 class="mb-1">{{ theme.name }}</h5>
-        {% if theme.description %}
-        <p class="mb-0 text-muted small">{{ theme.description }}</p>
-        {% endif %}
-    </a>
+    <div class="col-md-6 col-xl-4">
+        <a href="{{ theme.get_absolute_url }}"
+           class="d-block py-2 text-decoration-none border-bottom"
+           style="border-color: var(--wm-border) !important; color: var(--bs-body-color);">
+            <div class="fw-semibold small">{{ theme.name }}</div>
+            {% if theme.description %}
+            <div class="text-muted small">{{ theme.description }}</div>
+            {% endif %}
+        </a>
+    </div>
     {% endfor %}
 </div>
 {% empty %}
