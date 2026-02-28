@@ -56,7 +56,8 @@
 {% with col_count=columns|length %}
 <div class="row" id="comparison-columns">
     {% for col in columns %}
-    <div class="{% if col_count == 1 %}col-lg-12{% elif col_count == 2 %}col-lg-6{% elif col_count == 3 %}col-lg-4{% else %}col-lg-3{% endif %} mb-4 comparison-col"
+    <div class="{% if col_count == 1 %}col-lg-12{% elif col_count == 2 %}col-lg-6{% elif col_count == 3 %}col-lg-4{% else %}col-lg-3{% endif %} mb-4 comparison-col ps-4"
+         style="border-left: 2px solid color-mix(in srgb, var(--wm-primary) 25%, transparent);"
          data-doc="{{ col.catechism.slug }}">
         <div class="flat-section-heading mb-3">
             {{ col.catechism.abbreviation }}
