@@ -174,6 +174,25 @@ class QuestionDetailView(CatechismMixin, DetailView):
             entries__catechism__tradition__in=active_traditions
         ).distinct()
 
+        # Chapter mode: all questions in the same topic, with their scripture maps
+        chapter_questions = list(
+            Question.objects.filter(
+                catechism=self.catechism, topic=q.topic
+            ).select_related('topic').order_by('number')
+        )
+        ctx['chapter_questions'] = chapter_questions
+
+        # Build scripture maps for all chapter questions (for chapter mode)
+        chapter_scripture_map = {}
+        for cq in chapter_questions:
+            if cq.id == q.id:
+                continue  # Already built above
+            cq_refs = cq.get_proof_text_list()
+            if cq_refs:
+                for p in ScripturePassage.objects.filter(reference__in=cq_refs):
+                    chapter_scripture_map[p.reference] = p.text
+        ctx['chapter_scripture_map'] = {**chapter_scripture_map, **ctx['scripture_map']}
+
         if self.request.user.is_authenticated:
             from accounts.models import UserNote
             from accounts.forms import NoteForm

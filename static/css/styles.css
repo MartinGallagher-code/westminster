@@ -1067,3 +1067,46 @@ mark.user-annotation::after {
     visibility: hidden;
 }
 
+/* ── Chapter / Section view mode ── */
+.chapter-mode-item {
+    cursor: pointer;
+    border-color: var(--wm-border) !important;
+    transition: border-color 0.15s, box-shadow 0.15s, background-color 0.15s;
+}
+
+.chapter-mode-item:hover {
+    border-color: var(--wm-primary) !important;
+    box-shadow: 0 0 0 1px var(--wm-primary);
+}
+
+.chapter-mode-item.chapter-mode-active {
+    border-color: var(--wm-primary) !important;
+    box-shadow: 0 0 0 2px rgba(var(--wm-primary-rgb), 0.25);
+    background-color: rgba(var(--wm-primary-rgb), 0.03);
+}
+
+.chapter-mode-item.chapter-mode-active .chapter-item-title {
+    color: var(--wm-primary);
+}
+
+.chapter-mode-item:not(.chapter-mode-active) .answer-text {
+    max-height: 6em;
+    overflow: hidden;
+    position: relative;
+}
+
+.chapter-mode-item:not(.chapter-mode-active) .answer-text::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3em;
+    background: linear-gradient(transparent, var(--wm-body-bg));
+    pointer-events: none;
+}
+
+[data-bs-theme="dark"] .chapter-mode-item:not(.chapter-mode-active) .answer-text::after {
+    background: linear-gradient(transparent, var(--bs-body-bg));
+}
+
