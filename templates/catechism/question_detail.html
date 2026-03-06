@@ -22,18 +22,33 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         {% endif %}
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a href="{% url 'catechism:home' %}">Home</a></li>
-                <li class="breadcrumb-item">
-                    <a href="{% url 'catechism:catechism_home' catechism_slug=catechism.slug %}">{{ catechism.name }}</a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a href="{{ question.topic.get_absolute_url }}">{{ question.topic.name }}</a>
-                </li>
-                <li class="breadcrumb-item active">{% if catechism.is_prose_document %}{{ question.display_number }}{% else %}Q{{ question.number }}{% endif %}</li>
-            </ol>
-        </nav>
+        <div class="d-flex justify-content-between align-items-center">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="{% url 'catechism:home' %}">Home</a></li>
+                    <li class="breadcrumb-item">
+                        <a href="{% url 'catechism:catechism_home' catechism_slug=catechism.slug %}">{{ catechism.name }}</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="{{ question.topic.get_absolute_url }}">{{ question.topic.name }}</a>
+                    </li>
+                    <li class="breadcrumb-item active">{% if catechism.is_prose_document %}{{ question.display_number }}{% else %}Q{{ question.number }}{% endif %}</li>
+                </ol>
+            </nav>
+            <div class="d-flex align-items-center gap-2">
+                <span class="text-muted small d-none" id="chapter-mode-hint">Click any {{ catechism.item_name|lower }} to select it</span>
+                <div class="btn-group btn-group-sm" role="group" aria-label="View mode">
+                    <button type="button" class="btn btn-outline-secondary active" id="btn-section-mode"
+                            title="Show one {{ catechism.item_name|lower }} at a time">
+                        <i class="bi bi-card-text me-1"></i>{{ catechism.item_name }}
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" id="btn-chapter-mode"
+                            title="Show entire {{ catechism.topic_name|lower }} at once">
+                        <i class="bi bi-journal-text me-1"></i>{{ catechism.topic_name }}
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -94,21 +109,6 @@
 
         {# ── Main content column ── #}
         <div id="main-col" class="col-lg-9 col-separator">
-
-            <!-- View mode toggle -->
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <div class="btn-group btn-group-sm" role="group" aria-label="View mode">
-                    <button type="button" class="btn btn-outline-secondary active" id="btn-section-mode"
-                            title="Show one {{ catechism.item_name|lower }} at a time">
-                        <i class="bi bi-card-text me-1"></i>{{ catechism.item_name }}
-                    </button>
-                    <button type="button" class="btn btn-outline-secondary" id="btn-chapter-mode"
-                            title="Show entire {{ catechism.topic_name|lower }} at once">
-                        <i class="bi bi-journal-text me-1"></i>{{ catechism.topic_name }}
-                    </button>
-                </div>
-                <span class="text-muted small d-none" id="chapter-mode-hint">Click any {{ catechism.item_name|lower }} to select it</span>
-            </div>
 
             {# ── Section mode content (default, current behavior) ── #}
             <div id="section-mode-content">
@@ -299,75 +299,75 @@
 
             </div>{# /section-mode-content #}
 
-            {# ── Chapter mode content (shows all questions in this topic) ── #}
-            <div id="chapter-mode-content" class="d-none">
-                <h4 class="mb-3">
-                    {% if catechism.is_prose_document %}
-                    {{ catechism.topic_name }} {{ question.topic.order }}: {{ question.topic.name }}
-                    {% else %}
-                    {{ question.topic.name }}
-                    {% endif %}
-                </h4>
-                {% if question.topic.description %}
-                <p class="text-muted small mb-3">{{ question.topic.description }}</p>
+        </div>{# /main-col #}
+
+        {# ── Chapter mode content (right of nav sidebar, hidden by default) ── #}
+        <div id="chapter-mode-content" class="col-lg-9 col-separator d-none">
+            <h4 class="mb-3">
+                {% if catechism.is_prose_document %}
+                {{ catechism.topic_name }} {{ question.topic.order }}: {{ question.topic.name }}
+                {% else %}
+                {{ question.topic.name }}
+                {% endif %}
+            </h4>
+            {% if question.topic.description %}
+            <p class="text-muted small mb-3">{{ question.topic.description }}</p>
+            {% endif %}
+
+            {% for cq in chapter_questions %}
+            <div class="chapter-mode-item {% if cq.id == question.id %}chapter-mode-active{% endif %} mb-4 p-3 rounded-2 border"
+                 data-question-url="{{ cq.get_absolute_url }}"
+                 data-question-id="{{ cq.id }}"
+                 id="chapter-q-{{ cq.id }}">
+                {% if catechism.is_prose_document %}
+                <h5 class="mb-1 chapter-item-title">{{ cq.question_text }}</h5>
+                <p class="text-muted small mb-2">{{ catechism.item_name }} {{ cq.display_number }}</p>
+                <div class="answer-text">{{ cq.answer_text|format_confession_sections }}</div>
+                {% else %}
+                <h5 class="mb-1 chapter-item-title">
+                    <span class="fw-semibold">Q{{ cq.number }}.</span> {{ cq.question_text }}
+                </h5>
+                <p class="mt-2 answer-text"><strong>A.</strong> {{ cq.answer_text }}</p>
                 {% endif %}
 
-                {% for cq in chapter_questions %}
-                <div class="chapter-mode-item {% if cq.id == question.id %}chapter-mode-active{% endif %} mb-4 p-3 rounded-2 border"
-                     data-question-url="{{ cq.get_absolute_url }}"
-                     data-question-id="{{ cq.id }}"
-                     id="chapter-q-{{ cq.id }}">
-                    {% if catechism.is_prose_document %}
-                    <h5 class="mb-1 chapter-item-title">{{ cq.question_text }}</h5>
-                    <p class="text-muted small mb-2">{{ catechism.item_name }} {{ cq.display_number }}</p>
-                    <div class="answer-text">{{ cq.answer_text|format_confession_sections }}</div>
-                    {% else %}
-                    <h5 class="mb-1 chapter-item-title">
-                        <span class="fw-semibold">Q{{ cq.number }}.</span> {{ cq.question_text }}
-                    </h5>
-                    <p class="mt-2 answer-text"><strong>A.</strong> {{ cq.answer_text }}</p>
-                    {% endif %}
-
-                    {# Show scripture proofs inline for the active question #}
-                    {% if cq.id == question.id %}
-                    <div class="chapter-mode-details mt-3 pt-3 border-top">
-                        {% with proof_texts=cq.get_proof_text_list %}
-                        {% if proof_texts %}
-                        <div class="small">
-                            <strong class="text-primary"><i class="bi bi-book me-1"></i>Scripture Proofs</strong>
-                            {% for ref in proof_texts %}
-                            {% with verse_text=chapter_scripture_map|get_item:ref %}
-                            <div class="scripture-passage mt-2">
-                                <div class="scripture-ref fw-bold text-primary" style="cursor:pointer"
-                                     data-bs-toggle="collapse" data-bs-target="#ch-verse-{{ forloop.counter }}">
-                                    {{ ref }}
-                                </div>
-                                {% if verse_text %}
-                                <div class="collapse show" id="ch-verse-{{ forloop.counter }}">
-                                    <div class="esv-text ps-3 border-start border-primary mt-1">
-                                        {{ verse_text }}
-                                    </div>
-                                </div>
-                                {% endif %}
+                {# Show scripture proofs inline for the active question #}
+                {% if cq.id == question.id %}
+                <div class="chapter-mode-details mt-3 pt-3 border-top">
+                    {% with proof_texts=cq.get_proof_text_list %}
+                    {% if proof_texts %}
+                    <div class="small">
+                        <strong class="text-primary"><i class="bi bi-book me-1"></i>Scripture Proofs</strong>
+                        {% for ref in proof_texts %}
+                        {% with verse_text=chapter_scripture_map|get_item:ref %}
+                        <div class="scripture-passage mt-2">
+                            <div class="scripture-ref fw-bold text-primary" style="cursor:pointer"
+                                 data-bs-toggle="collapse" data-bs-target="#ch-verse-{{ forloop.counter }}">
+                                {{ ref }}
                             </div>
-                            {% endwith %}
-                            {% endfor %}
+                            {% if verse_text %}
+                            <div class="collapse show" id="ch-verse-{{ forloop.counter }}">
+                                <div class="esv-text ps-3 border-start border-primary mt-1">
+                                    {{ verse_text }}
+                                </div>
+                            </div>
+                            {% endif %}
                         </div>
-                        {% endif %}
                         {% endwith %}
-
-                        <div class="mt-2">
-                            <a href="{{ cq.get_absolute_url }}" class="btn btn-outline-primary btn-sm">
-                                View full details <i class="bi bi-arrow-right ms-1"></i>
-                            </a>
-                        </div>
+                        {% endfor %}
                     </div>
                     {% endif %}
-                </div>
-                {% endfor %}
-            </div>
+                    {% endwith %}
 
-        </div>{# /main-col #}
+                    <div class="mt-2">
+                        <a href="{{ cq.get_absolute_url }}" class="btn btn-outline-primary btn-sm">
+                            View full details <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
 
         {# ── See-also preview panel (right column, hidden by default) ── #}
         <div id="preview-col" class="col-lg-4 d-none">

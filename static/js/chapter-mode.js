@@ -8,23 +8,22 @@
     var chapterContent = document.getElementById('chapter-mode-content');
     var hint = document.getElementById('chapter-mode-hint');
     var navCol = document.getElementById('nav-col');
+    var mainCol = document.getElementById('main-col');
 
-    if (!btnSection || !btnChapter || !sectionContent || !chapterContent) return;
+    if (!btnSection || !btnChapter || !mainCol || !chapterContent) return;
 
     function setMode(mode, skipScroll) {
         if (mode === 'chapter') {
-            sectionContent.classList.add('d-none');
+            // Hide section-mode main column, show chapter-mode column
+            mainCol.classList.add('d-none');
             chapterContent.classList.remove('d-none');
             btnChapter.classList.add('active');
             btnSection.classList.remove('active');
             if (hint) hint.classList.remove('d-none');
-            // Hide the left sidebar in chapter mode since all content is visible
-            if (navCol) navCol.classList.add('d-none');
-            // Expand main col to full width
-            var mainCol = document.getElementById('main-col');
-            if (mainCol) {
-                mainCol.classList.remove('col-lg-9');
-                mainCol.classList.add('col-lg-12');
+            // Keep nav sidebar visible (it's the page tree)
+            if (navCol) {
+                navCol.classList.remove('d-none');
+                navCol.classList.add('d-lg-block');
             }
             // Scroll active item into view
             if (!skipScroll) {
@@ -34,16 +33,15 @@
                 }
             }
         } else {
-            sectionContent.classList.remove('d-none');
+            // Show section-mode main column, hide chapter-mode column
+            mainCol.classList.remove('d-none');
             chapterContent.classList.add('d-none');
             btnSection.classList.add('active');
             btnChapter.classList.remove('active');
             if (hint) hint.classList.add('d-none');
-            if (navCol) navCol.classList.remove('d-none');
-            var mainCol = document.getElementById('main-col');
-            if (mainCol) {
-                mainCol.classList.remove('col-lg-12');
-                mainCol.classList.add('col-lg-9');
+            if (navCol) {
+                navCol.classList.remove('d-none');
+                navCol.classList.add('d-lg-block');
             }
         }
         localStorage.setItem(STORAGE_KEY, mode);
@@ -65,7 +63,6 @@
             if (e.target.closest('a, button')) return;
             var url = item.getAttribute('data-question-url');
             if (url) {
-                // Preserve chapter mode across navigation
                 window.location.href = url;
             }
         });
