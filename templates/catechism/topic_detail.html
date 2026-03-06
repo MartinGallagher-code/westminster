@@ -20,15 +20,29 @@
 <p class="text-muted mb-3">{{ topic.description }}</p>
 <p class="text-muted small">{{ catechism.item_name_plural }} {{ topic.display_start }}&ndash;{{ topic.display_end }}</p>
 
+{% if catechism.is_confession %}
+<div class="chapter-full-text">
+    {% for q in questions %}
+    <div class="mb-4 pb-3 {% if not forloop.last %}border-bottom{% endif %}" id="section-{{ q.display_number }}">
+        <div class="d-flex align-items-baseline justify-content-between">
+            <h5 class="mb-2">{{ q.question_text }}</h5>
+            <a href="{{ q.get_absolute_url }}" class="btn btn-outline-secondary btn-sm ms-2 text-nowrap"
+               title="View section details">
+                <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+        <p class="text-muted small mb-2">{{ catechism.item_name }} {{ q.display_number }}</p>
+        <div class="answer-text">{{ q.answer_text|linebreaks }}</div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
 <div class="list-group">
     {% for q in questions %}
     <a href="{{ q.get_absolute_url }}" class="list-group-item list-group-item-action">
         {% if catechism.is_systematic_theology %}
         <h6 class="mb-1">{{ catechism.item_name }} {{ q.display_number }}: {{ q.question_text }}</h6>
         <p class="mb-0 text-muted small">{{ q.answer_text|truncatewords:20 }}</p>
-        {% elif catechism.is_confession %}
-        <h6 class="mb-1">{{ catechism.item_name }} {{ q.display_number }}</h6>
-        <p class="mb-0 text-muted small">{{ q.answer_text|truncatewords:25 }}</p>
         {% else %}
         <h6 class="mb-1">Q{{ q.number }}. {{ q.question_text }}</h6>
         <p class="mb-0 text-muted small">{{ q.answer_text|truncatewords:20 }}</p>
@@ -36,4 +50,5 @@
     </a>
     {% endfor %}
 </div>
+{% endif %}
 {% endblock %}
