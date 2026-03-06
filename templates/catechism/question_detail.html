@@ -36,7 +36,7 @@
                 </ol>
             </nav>
             <div class="d-flex align-items-center gap-2">
-                <span class="text-muted small d-none" id="chapter-mode-hint">Click any {{ catechism.item_name|lower }} to select it</span>
+                <span class="text-muted small d-none" id="chapter-mode-hint">Click any {{ catechism.item_name|lower }} to view details</span>
                 <div class="btn-group btn-group-sm" role="group" aria-label="View mode">
                     <button type="button" class="btn btn-outline-secondary active" id="btn-section-mode"
                             title="Show one {{ catechism.item_name|lower }} at a time">
@@ -330,41 +330,6 @@
                 <p class="mt-2 answer-text"><strong>A.</strong> {{ cq.answer_text }}</p>
                 {% endif %}
 
-                {# Show scripture proofs inline for the active question #}
-                {% if cq.id == question.id %}
-                <div class="chapter-mode-details mt-3 pt-3 border-top">
-                    {% with proof_texts=cq.get_proof_text_list %}
-                    {% if proof_texts %}
-                    <div class="small">
-                        <strong class="text-primary"><i class="bi bi-book me-1"></i>Scripture Proofs</strong>
-                        {% for ref in proof_texts %}
-                        {% with verse_text=chapter_scripture_map|get_item:ref %}
-                        <div class="scripture-passage mt-2">
-                            <div class="scripture-ref fw-bold text-primary" style="cursor:pointer"
-                                 data-bs-toggle="collapse" data-bs-target="#ch-verse-{{ forloop.counter }}">
-                                {{ ref }}
-                            </div>
-                            {% if verse_text %}
-                            <div class="collapse show" id="ch-verse-{{ forloop.counter }}">
-                                <div class="esv-text ps-3 border-start border-primary mt-1">
-                                    {{ verse_text }}
-                                </div>
-                            </div>
-                            {% endif %}
-                        </div>
-                        {% endwith %}
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-                    {% endwith %}
-
-                    <div class="mt-2">
-                        <a href="{{ cq.get_absolute_url }}" class="btn btn-outline-primary btn-sm">
-                            View full details <i class="bi bi-arrow-right ms-1"></i>
-                        </a>
-                    </div>
-                </div>
-                {% endif %}
             </div>
             {% endfor %}
         </div>

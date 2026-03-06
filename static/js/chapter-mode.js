@@ -55,12 +55,10 @@
         setMode('chapter');
     });
 
-    // Clicking a non-active chapter item navigates to that question (in chapter mode)
+    // Clicking any chapter item navigates to that question's detail page
     var items = chapterContent.querySelectorAll('.chapter-mode-item');
     items.forEach(function (item) {
-        item.addEventListener('click', function (e) {
-            // Don't intercept clicks on links/buttons inside the item
-            if (e.target.closest('a, button')) return;
+        item.addEventListener('click', function () {
             var url = item.getAttribute('data-question-url');
             if (url) {
                 window.location.href = url;
