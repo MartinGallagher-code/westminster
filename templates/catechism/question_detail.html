@@ -315,7 +315,7 @@
             {% endif %}
 
             {% for cq in chapter_questions %}
-            <div class="chapter-mode-item {% if cq.id == question.id %}chapter-mode-active{% endif %} mb-4 p-3 rounded-2 border"
+            <div class="chapter-mode-item {% if cq.id == question.id %}chapter-mode-active{% endif %} rounded-2 border"
                  data-question-url="{{ cq.get_absolute_url }}"
                  data-question-id="{{ cq.id }}"
                  id="chapter-q-{{ cq.id }}">

@@ -55,12 +55,14 @@
         setMode('chapter');
     });
 
-    // Clicking any chapter item navigates to that question's detail page
+    // Clicking a chapter item switches to section mode on that question's page
     var items = chapterContent.querySelectorAll('.chapter-mode-item');
     items.forEach(function (item) {
         item.addEventListener('click', function () {
             var url = item.getAttribute('data-question-url');
             if (url) {
+                // Force section mode for the destination page
+                localStorage.setItem(STORAGE_KEY, 'section');
                 window.location.href = url;
             }
         });

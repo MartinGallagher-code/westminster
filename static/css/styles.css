@@ -1072,17 +1072,29 @@ mark.user-annotation::after {
     cursor: pointer;
     border-color: var(--wm-border) !important;
     transition: border-color 0.15s, box-shadow 0.15s, background-color 0.15s;
+    padding: 0.5rem 0.75rem !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.chapter-mode-item .chapter-item-title {
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem !important;
+}
+
+.chapter-mode-item .answer-text {
+    font-size: 0.88rem;
+    margin-top: 0.25rem !important;
 }
 
 .chapter-mode-item:hover {
     border-color: var(--wm-primary) !important;
-    box-shadow: 0 0 0 1px var(--wm-primary);
+    background-color: rgba(var(--wm-primary-rgb), 0.03);
 }
 
 .chapter-mode-item.chapter-mode-active {
     border-color: var(--wm-primary) !important;
-    box-shadow: 0 0 0 2px rgba(var(--wm-primary-rgb), 0.25);
-    background-color: rgba(var(--wm-primary-rgb), 0.03);
+    border-left: 3px solid var(--wm-primary) !important;
+    background-color: rgba(var(--wm-primary-rgb), 0.05);
 }
 
 .chapter-mode-item.chapter-mode-active .chapter-item-title {
@@ -1090,7 +1102,7 @@ mark.user-annotation::after {
 }
 
 .chapter-mode-item:not(.chapter-mode-active) .answer-text {
-    max-height: 6em;
+    max-height: 4em;
     overflow: hidden;
     position: relative;
 }
@@ -1101,12 +1113,16 @@ mark.user-annotation::after {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 3em;
+    height: 2.5em;
     background: linear-gradient(transparent, var(--wm-body-bg));
     pointer-events: none;
 }
 
 [data-bs-theme="dark"] .chapter-mode-item:not(.chapter-mode-active) .answer-text::after {
     background: linear-gradient(transparent, var(--bs-body-bg));
+}
+
+#chapter-mode-content > h4 {
+    margin-bottom: 0.75rem !important;
 }
 
