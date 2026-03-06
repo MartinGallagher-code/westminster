@@ -315,13 +315,13 @@
             {% endif %}
 
             {% for cq in chapter_questions %}
-            <div class="chapter-mode-item {% if cq.id == question.id %}chapter-mode-active{% endif %} rounded-2 border"
+            <div class="chapter-mode-item"
                  data-question-url="{{ cq.get_absolute_url }}"
                  data-question-id="{{ cq.id }}"
                  id="chapter-q-{{ cq.id }}">
                 {% if catechism.is_prose_document %}
-                <h5 class="mb-1 chapter-item-title">{{ cq.question_text }}</h5>
-                <p class="text-muted small mb-2">{{ catechism.item_name }} {{ cq.display_number }}</p>
+                <h5 class="mb-0 chapter-item-title">{{ cq.question_text }}</h5>
+                <p class="text-muted small mb-1">{{ catechism.item_name }} {{ cq.display_number }}</p>
                 <div class="answer-text">{{ cq.answer_text|format_confession_sections }}</div>
                 {% else %}
                 <h5 class="mb-1 chapter-item-title">
