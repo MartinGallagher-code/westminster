@@ -90,7 +90,7 @@ class Command(BaseCommand):
 
                 topic, created = Topic.objects.update_or_create(
                     catechism=catechism,
-                    slug=slugify(f"ch-{ch['chapter']}-{ch['title'][:50]}"),
+                    slug=slugify(f"ch-{ch['chapter']}-{ch['title']}")[:50].rstrip('-'),
                     defaults={
                         'name': f"Chapter {ch['chapter']}: {ch['title']}",
                         'order': topic_order,
