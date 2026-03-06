@@ -65,6 +65,9 @@ python manage.py load_prooftexts --catechism second-helvetic
 python manage.py load_savoy
 python manage.py load_prooftexts --catechism savoy
 
+# PCA Book of Church Order
+python manage.py load_pca_bco
+
 # Systematic Theologies
 python manage.py load_calvins_institutes
 python manage.py load_hodge_outlines
