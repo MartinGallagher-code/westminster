@@ -339,7 +339,10 @@ class CompareIndexView(ListView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         active_traditions = get_active_traditions(self.request)
-        ctx['all_catechisms'] = Catechism.objects.filter(tradition__in=active_traditions)
+        ctx['all_catechisms'] = Catechism.objects.filter(
+            tradition__in=active_traditions,
+            comparison_entries__isnull=False,
+        ).distinct()
         ctx['active_traditions'] = active_traditions
         return ctx
 
@@ -375,7 +378,10 @@ class CustomCompareView(TemplateView):
         selected_slugs = [s.strip() for s in docs_param.split(',') if s.strip()]
 
         # Validate against active-tradition catechisms only
-        all_catechisms = Catechism.objects.filter(tradition__in=active_traditions)
+        all_catechisms = Catechism.objects.filter(
+            tradition__in=active_traditions,
+            comparison_entries__isnull=False,
+        ).distinct()
         valid_slugs = set(all_catechisms.values_list('slug', flat=True))
         selected_slugs = [s for s in selected_slugs if s in valid_slugs]
 

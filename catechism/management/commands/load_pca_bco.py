@@ -42,8 +42,10 @@ class Command(BaseCommand):
             }
         )
 
-        # Build topics: Preface + each BCO chapter = one Topic
-        topic_map = {}
+        # Clear existing data for a clean reload
+        Question.objects.filter(catechism=catechism).delete()
+        Topic.objects.filter(catechism=catechism).delete()
+
         seq = 1  # sequential question number
         topic_order = 0
 
