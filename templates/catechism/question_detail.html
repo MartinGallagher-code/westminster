@@ -57,21 +57,25 @@
     <div class="page-band-content">
         <div class="row g-3">
 
-        {# ── Sidebar toggle ── #}
-        <button id="sidebar-toggle" class="btn btn-sm sidebar-toggle-btn d-none d-lg-flex"
-                type="button" title="Toggle sidebar" aria-label="Toggle sidebar">
-            <i class="bi bi-layout-sidebar"></i>
+        {# ── Sidebar re-open tab (visible only when sidebar is hidden) ── #}
+        <button id="sidebar-show" class="sidebar-show-tab d-none"
+                type="button" title="Show sidebar" aria-label="Show sidebar">
+            <i class="bi bi-chevron-right"></i>
         </button>
 
         {# ── Left sidebar: flat document navigation ── #}
         <div id="nav-col" class="col-lg-3 d-none d-lg-block col-separator">
             <div class="flat-sidebar">
-                <div class="flat-section-heading mb-2">
-                    <a href="{{ catechism.get_absolute_url }}" class="text-decoration-none d-flex align-items-baseline gap-2"
+                <div class="flat-section-heading mb-2 d-flex align-items-baseline">
+                    <a href="{{ catechism.get_absolute_url }}" class="text-decoration-none d-flex align-items-baseline gap-2 flex-grow-1"
                        style="color: inherit;">
                         <span>{{ catechism.abbreviation }}</span>
                         <small class="text-muted text-truncate fw-normal">{{ catechism.name }}</small>
                     </a>
+                    <button id="sidebar-hide" class="sidebar-hide-btn"
+                            type="button" title="Hide sidebar" aria-label="Hide sidebar">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
                 </div>
                 <div class="accordion accordion-flush" id="nav-accordion">
                     {% for group in nav_grouped %}
@@ -376,32 +380,34 @@
 
 // Sidebar toggle
 (function () {
-    var btn = document.getElementById('sidebar-toggle');
+    var hideBtn = document.getElementById('sidebar-hide');
+    var showBtn = document.getElementById('sidebar-show');
     var nav = document.getElementById('nav-col');
     var main = document.getElementById('main-col');
-    if (!btn || !nav || !main) return;
+    if (!nav || !main) return;
 
     var KEY = 'sidebarHidden';
 
     function apply(hidden) {
         nav.classList.toggle('sidebar-hidden', hidden);
         main.classList.toggle('sidebar-expanded', hidden);
-        // When sidebar is hidden, remove col-separator left border from main
         if (hidden) {
             main.classList.remove('col-separator');
         } else {
             main.classList.add('col-separator');
         }
-        btn.title = hidden ? 'Show sidebar' : 'Hide sidebar';
+        if (showBtn) showBtn.classList.toggle('d-none', !hidden);
     }
 
-    // Restore saved preference
     apply(localStorage.getItem(KEY) === '1');
 
-    btn.addEventListener('click', function () {
-        var nowHidden = !nav.classList.contains('sidebar-hidden');
-        localStorage.setItem(KEY, nowHidden ? '1' : '0');
-        apply(nowHidden);
+    if (hideBtn) hideBtn.addEventListener('click', function () {
+        localStorage.setItem(KEY, '1');
+        apply(true);
+    });
+    if (showBtn) showBtn.addEventListener('click', function () {
+        localStorage.setItem(KEY, '0');
+        apply(false);
     });
 })();
 </script>
