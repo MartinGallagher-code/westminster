@@ -219,8 +219,8 @@ document.addEventListener('DOMContentLoaded', function() {
         var rect = sel.getRangeAt(0).getBoundingClientRect();
         var isCommentary = anchorContainer.getAttribute('data-content-type') === 'commentary';
 
-        // Position next to the highlight button (if in commentary) or centered (if in Q/A)
-        var leftOffset = isCommentary ? 45 : 0;
+        // Position to the right of the highlight button (if in commentary) or centered (if in Q/A)
+        var leftOffset = isCommentary ? 85 : 0;
         annotateBtn.style.left = (rect.left + window.scrollX + rect.width / 2 - 35 + leftOffset) + 'px';
         annotateBtn.style.top = (rect.top + window.scrollY - 36) + 'px';
         annotateBtn.style.display = 'block';
