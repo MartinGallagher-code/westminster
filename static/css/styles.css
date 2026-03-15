@@ -776,6 +776,48 @@ mark.user-highlight:hover {
 }
 
 /* User annotations (inline comments) */
+
+/* Wrapper that holds annotatable content + right-side margin notes */
+.annotation-wrapper {
+    position: relative;
+}
+
+.annotation-margin {
+    position: absolute;
+    top: 0;
+    right: -220px;
+    width: 200px;
+}
+
+.annotation-note {
+    position: absolute;
+    font-size: 0.78rem;
+    line-height: 1.35;
+    padding: 6px 8px;
+    border-left: 2px solid var(--wm-accent);
+    background: color-mix(in srgb, var(--wm-accent) 6%, var(--bs-body-bg));
+    border-radius: 0 4px 4px 0;
+    color: var(--bs-body-color);
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+    word-wrap: break-word;
+    max-height: 4.5em;
+    overflow: hidden;
+}
+
+.annotation-note:hover,
+.annotation-note.active {
+    background: color-mix(in srgb, var(--wm-accent) 15%, var(--bs-body-bg));
+    border-left-color: var(--wm-primary);
+}
+
+.annotation-note .annotation-note-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
 mark.user-annotation {
     background-color: color-mix(in srgb, var(--wm-accent) 20%, transparent);
     border-bottom: 2px solid var(--wm-accent);
@@ -785,26 +827,43 @@ mark.user-annotation {
     position: relative;
 }
 
-mark.user-annotation:hover {
+mark.user-annotation:hover,
+mark.user-annotation.active {
     background-color: color-mix(in srgb, var(--wm-accent) 35%, transparent);
-}
-
-mark.user-annotation::after {
-    content: '\F249';
-    font-family: 'bootstrap-icons';
-    font-size: 0.6em;
-    vertical-align: super;
-    margin-left: 2px;
-    color: var(--wm-accent);
-    opacity: 0.7;
 }
 
 [data-bs-theme="dark"] mark.user-annotation {
     background-color: color-mix(in srgb, var(--wm-accent) 25%, transparent);
 }
 
-[data-bs-theme="dark"] mark.user-annotation::after {
-    opacity: 0.9;
+[data-bs-theme="dark"] .annotation-note {
+    background: color-mix(in srgb, var(--wm-accent) 10%, var(--bs-body-bg));
+}
+
+[data-bs-theme="dark"] .annotation-note:hover,
+[data-bs-theme="dark"] .annotation-note.active {
+    background: color-mix(in srgb, var(--wm-accent) 20%, var(--bs-body-bg));
+}
+
+/* On screens too narrow for the margin, stack notes below */
+@media (max-width: 1399.98px) {
+    .annotation-margin {
+        position: static;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-top: 0.75rem;
+        padding-top: 0.75rem;
+        border-top: 1px solid var(--wm-border, #dee2e6);
+    }
+    .annotation-note {
+        position: static;
+        max-height: none;
+    }
+    .annotation-note .annotation-note-text {
+        -webkit-line-clamp: unset;
+    }
 }
 
 .annotation-popover {
@@ -899,6 +958,13 @@ mark.user-annotation::after {
     border-radius: 0.375rem;
 }
 
+/* Allow annotation margin to overflow into padding on wide screens */
+@media (min-width: 1400px) {
+    #section-mode-content {
+        padding-right: 220px;
+    }
+}
+
 /* ================================================================
    Focus Styles
    ================================================================ */
@@ -925,7 +991,7 @@ mark.user-annotation::after {
     .ornamental-divider, .heading-flourish,
     .hero-bg-pattern { display: none !important; }
     mark.user-annotation { background: none !important; border: none !important; }
-    mark.user-annotation::after { display: none !important; }
+    .annotation-margin { display: none !important; }
     .tab-content > .tab-pane { display: block !important; opacity: 1 !important; }
     .accordion-collapse { display: block !important; height: auto !important; }
     .nav-tabs { display: none !important; }

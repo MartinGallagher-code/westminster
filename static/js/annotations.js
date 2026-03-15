@@ -4,6 +4,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var annotationData = []; // all annotations for this question
 
+    // ── 0. Set up annotation wrappers & margin columns ──
+    function ensureMargin(container) {
+        var wrapper = container.closest('.annotation-wrapper');
+        if (!wrapper) {
+            wrapper = document.createElement('div');
+            wrapper.className = 'annotation-wrapper';
+            container.parentNode.insertBefore(wrapper, container);
+            wrapper.appendChild(container);
+
+            var margin = document.createElement('div');
+            margin.className = 'annotation-margin';
+            wrapper.appendChild(margin);
+        }
+        return wrapper.querySelector('.annotation-margin');
+    }
+
     // ── 1. Load existing annotations ──
     function loadAnnotations() {
         fetch(config.listCreateUrl + '?question_id=' + config.questionId, {
@@ -61,6 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         wrapRange(container, pos, pos + text.length, commentObj.id);
+        createMarginNote(container, commentObj);
     }
 
     function wrapRange(container, start, end, commentId) {
@@ -102,6 +119,71 @@ document.addEventListener('DOMContentLoaded', function() {
             textNode.parentNode.replaceChild(mark, textNode);
             mark.appendChild(textNode);
         }
+    }
+
+    // ── 2b. Create a margin note on the right side ──
+    function createMarginNote(container, commentObj) {
+        var margin = ensureMargin(container);
+
+        var note = document.createElement('div');
+        note.className = 'annotation-note';
+        note.setAttribute('data-comment-id', commentObj.id);
+        note.innerHTML =
+            '<div class="annotation-note-text">' + escapeHtml(commentObj.comment_text) + '</div>';
+        margin.appendChild(note);
+
+        // Position the note vertically to align with its mark (for wide screens)
+        positionNote(note, commentObj.id, container);
+
+        // Clicking the margin note highlights the mark and shows detail
+        note.addEventListener('click', function() {
+            var mark = document.querySelector('mark.user-annotation[data-comment-id="' + commentObj.id + '"]');
+            if (mark) {
+                showDetailPopover(mark);
+                highlightPair(commentObj.id);
+            }
+        });
+    }
+
+    function positionNote(note, commentId, container) {
+        // Only do absolute positioning on wide screens
+        if (window.innerWidth < 1400) return;
+
+        var mark = document.querySelector('mark.user-annotation[data-comment-id="' + commentId + '"]');
+        if (!mark) return;
+
+        var wrapper = container.closest('.annotation-wrapper');
+        if (!wrapper) return;
+
+        var wrapperRect = wrapper.getBoundingClientRect();
+        var markRect = mark.getBoundingClientRect();
+        var topOffset = markRect.top - wrapperRect.top;
+
+        // Check for overlap with existing notes and push down if needed
+        var existingNotes = wrapper.querySelectorAll('.annotation-note');
+        for (var i = 0; i < existingNotes.length; i++) {
+            var existing = existingNotes[i];
+            if (existing === note) continue;
+            var existingTop = parseFloat(existing.style.top) || 0;
+            var existingHeight = existing.offsetHeight || 40;
+            if (topOffset >= existingTop && topOffset < existingTop + existingHeight + 4) {
+                topOffset = existingTop + existingHeight + 4;
+            }
+        }
+
+        note.style.top = topOffset + 'px';
+    }
+
+    // Highlight a mark+note pair briefly
+    function highlightPair(commentId) {
+        // Clear previous highlights
+        document.querySelectorAll('mark.user-annotation.active, .annotation-note.active').forEach(function(el) {
+            el.classList.remove('active');
+        });
+        var mark = document.querySelector('mark.user-annotation[data-comment-id="' + commentId + '"]');
+        var note = document.querySelector('.annotation-note[data-comment-id="' + commentId + '"]');
+        if (mark) mark.classList.add('active');
+        if (note) note.classList.add('active');
     }
 
     // ── 3. Selection UI ──
@@ -168,6 +250,10 @@ document.addEventListener('DOMContentLoaded', function() {
             activePopover.remove();
             activePopover = null;
         }
+        // Clear active highlights
+        document.querySelectorAll('mark.user-annotation.active, .annotation-note.active').forEach(function(el) {
+            el.classList.remove('active');
+        });
     }
 
     function showCreateForm(container, selectedText, range) {
@@ -225,7 +311,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function closePopoverOnOutsideClick(e) {
-        if (activePopover && !activePopover.contains(e.target) && !e.target.closest('mark.user-annotation')) {
+        if (activePopover && !activePopover.contains(e.target) && !e.target.closest('mark.user-annotation') && !e.target.closest('.annotation-note')) {
             removeActivePopover();
             document.removeEventListener('mousedown', closePopoverOnOutsideClick);
         }
@@ -297,6 +383,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!mark) return;
         e.preventDefault();
         e.stopPropagation();
+        var commentId = mark.getAttribute('data-comment-id');
+        highlightPair(commentId);
         showDetailPopover(mark);
     });
 
@@ -312,6 +400,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         if (!commentObj) return;
+
+        highlightPair(commentId);
 
         var popover = document.createElement('div');
         popover.className = 'annotation-popover shadow';
@@ -387,6 +477,11 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!newText) return;
             updateAnnotation(commentObj.id, newText, function() {
                 commentObj.comment_text = newText;
+                // Update the margin note text too
+                var note = document.querySelector('.annotation-note[data-comment-id="' + commentObj.id + '"]');
+                if (note) {
+                    note.querySelector('.annotation-note-text').textContent = newText;
+                }
                 renderDetailView(popover, commentObj);
             });
         };
@@ -421,6 +516,10 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(function(r) { return r.json(); })
         .then(function(data) {
             if (data.deleted) {
+                // Remove the margin note
+                var note = document.querySelector('.annotation-note[data-comment-id="' + commentId + '"]');
+                if (note) note.remove();
+
                 // Unwrap all marks with this comment ID
                 var marks = document.querySelectorAll('mark[data-comment-id="' + commentId + '"]');
                 marks.forEach(function(m) {
@@ -435,6 +534,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Remove from local data
                 annotationData = annotationData.filter(function(c) {
                     return String(c.id) !== String(commentId);
+                });
+
+                // Clean up empty annotation wrappers/margins
+                document.querySelectorAll('.annotation-margin').forEach(function(margin) {
+                    if (!margin.children.length) {
+                        var wrapper = margin.closest('.annotation-wrapper');
+                        if (wrapper) {
+                            var content = wrapper.querySelector('[data-annotatable]');
+                            if (content) {
+                                wrapper.parentNode.insertBefore(content, wrapper);
+                                wrapper.remove();
+                            }
+                        }
+                    }
                 });
             }
         });
