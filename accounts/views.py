@@ -10,7 +10,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -138,15 +138,48 @@ class InlineCommentListCreateView(LoginRequiredMixin, View):
         if not question_id:
             return JsonResponse({'error': 'question_id required'}, status=400)
 
-        comments = InlineComment.objects.filter(
-            user=request.user,
-            question_id=question_id
-        ).values(
-            'id', 'content_type_tag', 'commentary_id',
-            'selected_text', 'occurrence_index',
-            'comment_text', 'created_at', 'updated_at'
+        question = get_object_or_404(Question, pk=question_id)
+
+        # Direct annotations for this question
+        own_filter = Q(user=request.user, question_id=question_id)
+
+        # Also include commentary annotations from sibling commentaries
+        # that share identical body text (e.g. WLC fifth-commandment questions).
+        local_commentaries = {c.source_id: c for c in question.commentaries.all()}
+        sibling_map = {}  # sibling_commentary_id -> local_commentary_id
+        for c in local_commentaries.values():
+            if c.body:
+                sibling_ids = Commentary.objects.filter(
+                    source=c.source, body=c.body
+                ).exclude(pk=c.pk).values_list('id', flat=True)
+                for sid in sibling_ids:
+                    sibling_map[sid] = c.id
+
+        sibling_filter = Q()
+        if sibling_map:
+            sibling_filter = Q(
+                user=request.user,
+                content_type_tag='commentary',
+                commentary_id__in=list(sibling_map.keys()),
+            )
+
+        comments = list(
+            InlineComment.objects.filter(own_filter | sibling_filter)
+            .values(
+                'id', 'content_type_tag', 'commentary_id',
+                'selected_text', 'occurrence_index',
+                'comment_text', 'created_at', 'updated_at'
+            )
+            .distinct()
         )
-        return JsonResponse({'comments': list(comments)})
+
+        # Remap sibling commentary_ids to the local commentary for this question
+        for comment in comments:
+            cid = comment.get('commentary_id')
+            if cid and cid in sibling_map:
+                comment['commentary_id'] = sibling_map[cid]
+
+        return JsonResponse({'comments': comments})
 
     def post(self, request):
         try:
@@ -164,7 +197,8 @@ class InlineCommentListCreateView(LoginRequiredMixin, View):
         if not question_id or not selected_text or not comment_text or not content_type_tag:
             return JsonResponse({'error': 'Missing required fields'}, status=400)
 
-        if content_type_tag not in ('question', 'answer', 'commentary'):
+        valid_tags = [t[0] for t in InlineComment.CONTENT_TYPE_CHOICES]
+        if content_type_tag not in valid_tags:
             return JsonResponse({'error': 'Invalid content_type_tag'}, status=400)
 
         question = get_object_or_404(Question, pk=question_id)
