@@ -195,7 +195,7 @@
                 <div class="tab-content">
                     {% if proof_texts %}
                     <div class="tab-pane fade show active" id="tab-scripture" role="tabpanel">
-                        <div id="scripture-texts">
+                        <div id="scripture-texts" data-annotatable data-content-type="scripture" data-question-id="{{ question.pk }}">
                             {% for ref in proof_texts %}
                             {% with verse_text=scripture_map|get_item:ref %}
                             <div class="scripture-passage mb-3">

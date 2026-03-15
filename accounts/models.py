@@ -75,6 +75,7 @@ class InlineComment(models.Model):
         ('question', 'Question Text'),
         ('answer', 'Answer Text'),
         ('commentary', 'Commentary'),
+        ('scripture', 'Scripture Proofs'),
     ]
 
     user = models.ForeignKey(
