@@ -57,6 +57,12 @@
     <div class="page-band-content">
         <div class="row g-3">
 
+        {# ── Sidebar toggle ── #}
+        <button id="sidebar-toggle" class="btn btn-sm sidebar-toggle-btn d-none d-lg-flex"
+                type="button" title="Toggle sidebar" aria-label="Toggle sidebar">
+            <i class="bi bi-layout-sidebar"></i>
+        </button>
+
         {# ── Left sidebar: flat document navigation ── #}
         <div id="nav-col" class="col-lg-3 d-none d-lg-block col-separator">
             <div class="flat-sidebar">
@@ -366,6 +372,37 @@
     if (active) {
         active.scrollIntoView({ block: 'nearest' });
     }
+})();
+
+// Sidebar toggle
+(function () {
+    var btn = document.getElementById('sidebar-toggle');
+    var nav = document.getElementById('nav-col');
+    var main = document.getElementById('main-col');
+    if (!btn || !nav || !main) return;
+
+    var KEY = 'sidebarHidden';
+
+    function apply(hidden) {
+        nav.classList.toggle('sidebar-hidden', hidden);
+        main.classList.toggle('sidebar-expanded', hidden);
+        // When sidebar is hidden, remove col-separator left border from main
+        if (hidden) {
+            main.classList.remove('col-separator');
+        } else {
+            main.classList.add('col-separator');
+        }
+        btn.title = hidden ? 'Show sidebar' : 'Hide sidebar';
+    }
+
+    // Restore saved preference
+    apply(localStorage.getItem(KEY) === '1');
+
+    btn.addEventListener('click', function () {
+        var nowHidden = !nav.classList.contains('sidebar-hidden');
+        localStorage.setItem(KEY, nowHidden ? '1' : '0');
+        apply(nowHidden);
+    });
 })();
 </script>
 {% endblock %}

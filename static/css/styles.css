@@ -1030,6 +1030,7 @@ mark.user-annotation.active {
 }
 
 .page-band-content {
+    position: relative;
     padding-left: 1.5rem;
     padding-right: 1.5rem;
 }
@@ -1045,6 +1046,39 @@ mark.user-annotation.active {
 .col-separator {
     border-left: 2px solid color-mix(in srgb, var(--wm-primary) 25%, transparent);
     padding-left: 1.5rem !important;
+}
+
+/* ── Sidebar toggle ── */
+.sidebar-toggle-btn {
+    position: absolute;
+    left: 0.5rem;
+    top: 0.5rem;
+    z-index: 10;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border-radius: 0.375rem;
+    color: var(--wm-text-muted);
+    border-color: var(--wm-border);
+    background: var(--wm-bg);
+    opacity: 0.6;
+    transition: opacity 0.15s;
+}
+.sidebar-toggle-btn:hover {
+    opacity: 1;
+    color: var(--wm-primary);
+    border-color: var(--wm-primary);
+}
+
+/* When sidebar is hidden */
+#nav-col.sidebar-hidden {
+    display: none !important;
+}
+#main-col.sidebar-expanded {
+    flex: 0 0 100%;
+    max-width: 100%;
 }
 
 .page-band-header {
