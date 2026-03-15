@@ -85,11 +85,11 @@ document.addEventListener('DOMContentLoaded', function() {
         var nodes = [];
         var node;
         while (node = walker.nextNode()) {
-            // Skip text inside existing marks
-            if (node.parentElement.closest('mark.user-annotation')) continue;
-            nodes.push({ node: node, length: node.textContent.length });
+            var inMark = !!node.parentElement.closest('mark.user-annotation');
+            nodes.push({ node: node, length: node.textContent.length, inMark: inMark });
         }
 
+        // Build offset map over ALL text nodes so positions match container.textContent
         var offset = 0;
         for (var i = 0; i < nodes.length; i++) {
             nodes[i].start = offset;
@@ -98,6 +98,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         for (var i = nodes.length - 1; i >= 0; i--) {
             var n = nodes[i];
+            // Skip text already inside another annotation mark
+            if (n.inMark) continue;
+
             var nStart = n.start;
             var nEnd = nStart + n.length;
             if (nEnd <= start || nStart >= end) continue;
