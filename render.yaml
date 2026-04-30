@@ -32,3 +32,5 @@ services:
         sync: false
       - key: STRIPE_PRICE_ID
         sync: false
+      - key: GOOGLE_ANALYTICS_ID
+        sync: false

@@ -42,6 +42,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'catechism.context_processors.sidebar_topics',
                 'accounts.context_processors.supporter_status',
+                'config.context_processors.google_analytics',
             ],
         },
     },
@@ -83,3 +84,5 @@ STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', '')
 STRIPE_WEBHOOK_SECRET = os.environ.get('STRIPE_WEBHOOK_SECRET', '')
 STRIPE_PRICE_ID = os.environ.get('STRIPE_PRICE_ID', '')
 STRIPE_PRODUCT_ID = os.environ.get('STRIPE_PRODUCT_ID', '')
+
+GOOGLE_ANALYTICS_ID = os.environ.get('GOOGLE_ANALYTICS_ID', '')
