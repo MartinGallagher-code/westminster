@@ -137,6 +137,31 @@
                 {% else %}<span></span>{% endif %}
             </div>
 
+            <div class="study-action-bar mb-4">
+                <div>
+                    <div class="small text-muted">Study tools</div>
+                    <div class="fw-semibold">
+                        {{ catechism.abbreviation }} {{ catechism.item_prefix }}{{ question.display_number }}{% if not catechism.is_prose_document %}.{% endif %}
+                        <span class="text-muted fw-normal">{{ question.topic.name }}</span>
+                    </div>
+                </div>
+                <div class="d-flex gap-2 flex-wrap">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" id="copy-citation-btn"
+                            data-citation="{{ catechism.abbreviation }} {{ catechism.item_prefix }}{{ question.display_number }}{% if not catechism.is_prose_document %}.{% endif %} {{ question.question_text }}">
+                        <i class="bi bi-link-45deg me-1"></i>Copy Citation
+                    </button>
+                    <a href="{% url 'catechism:search' %}?q={{ question.topic.name|urlencode }}" class="btn btn-outline-primary btn-sm">
+                        Search Topic
+                    </a>
+                    {% if catechism.slug == 'wcf' or catechism.slug == 'wlc' or catechism.slug == 'wsc' %}
+                    <a href="https://ontologicalatlas.com/westminster_standards/search/?q={{ question.topic.name|urlencode }}"
+                       class="btn btn-outline-secondary btn-sm">
+                        Doctrine Map <i class="bi bi-box-arrow-up-right ms-1"></i>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+
             <!-- Question and Answer -->
             <div class="mb-5 pb-4 border-bottom">
                 {% if catechism.is_prose_document %}
@@ -193,6 +218,16 @@
                         </button>
                     </li>
                     {% endfor %}
+                    {% if cross_ref_groups or comparison_themes %}
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link"
+                                data-bs-toggle="tab"
+                                data-bs-target="#tab-crossrefs"
+                                type="button" role="tab">
+                            <i class="bi bi-diagram-3 me-1"></i>Cross References
+                        </button>
+                    </li>
+                    {% endif %}
                     <li class="nav-item" role="presentation">
                         <button class="nav-link"
                                 data-bs-toggle="tab"
@@ -251,6 +286,41 @@
                         {% endif %}
                     </div>
                     {% endfor %}
+
+                    {% if cross_ref_groups or comparison_themes %}
+                    <div class="tab-pane fade" id="tab-crossrefs" role="tabpanel">
+                        <div class="row g-3">
+                            {% for abbr, refs in cross_ref_groups.items %}
+                            <div class="col-md-6">
+                                <div class="study-card h-100">
+                                    <i class="bi bi-arrow-left-right"></i>
+                                    <div class="study-card-title">See also in {{ abbr }}</div>
+                                    <div class="study-card-text">
+                                        {% for ref in refs %}
+                                        <a href="{{ ref.get_absolute_url }}" class="see-also-link d-inline-block me-2 mb-1"
+                                           data-preview-pk="{{ ref.pk }}">{{ ref.catechism.item_prefix }}{{ ref.display_number }}</a>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            {% if comparison_themes %}
+                            <div class="col-md-6">
+                                <div class="study-card h-100">
+                                    <i class="bi bi-layout-split"></i>
+                                    <div class="study-card-title">Compare by doctrine</div>
+                                    <div class="study-card-text">
+                                        {% for theme in comparison_themes %}
+                                        <a href="{% url 'catechism:compare_set_theme' set_slug=theme.comparison_set.slug theme_slug=theme.slug %}"
+                                           class="d-inline-block me-2 mb-1">{{ theme.name }}</a>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
 
                     <div class="tab-pane fade" id="tab-notes" role="tabpanel">
                         {% if user.is_authenticated %}
@@ -373,9 +443,23 @@
 // Scroll the active nav item into view within the sticky sidebar
 (function () {
     var active = document.getElementById('nav-active-item');
-    if (active) {
+if (active) {
         active.scrollIntoView({ block: 'nearest' });
     }
+})();
+
+// Copy a stable citation and URL for the current study page.
+(function () {
+    var btn = document.getElementById('copy-citation-btn');
+    if (!btn || !navigator.clipboard) return;
+    btn.addEventListener('click', function () {
+        var original = btn.innerHTML;
+        var text = btn.getAttribute('data-citation') + ' — ' + window.location.href;
+        navigator.clipboard.writeText(text).then(function () {
+            btn.innerHTML = '<i class="bi bi-check2 me-1"></i>Copied';
+            setTimeout(function () { btn.innerHTML = original; }, 1400);
+        });
+    });
 })();
 
 // Sidebar toggle

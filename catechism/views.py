@@ -48,6 +48,27 @@ class HomeView(TemplateView):
             ctx['featured'] = hero_cat.featured_question
         else:
             ctx['featured'] = None
+        ctx['primary_docs'] = [
+            cat for slug in ['wsc', 'wcf', 'wlc']
+            for cat in catechisms
+            if cat.slug == slug
+        ]
+        ctx['comparison_sets'] = ComparisonSet.objects.filter(
+            themes__entries__catechism__tradition__in=active_traditions
+        ).distinct().order_by('order')[:3]
+        ctx['suggested_searches'] = [
+            'justification',
+            'baptism',
+            'Sabbath',
+            'covenant of grace',
+        ]
+        if self.request.user.is_authenticated:
+            from accounts.models import UserNote
+            ctx['recent_note'] = UserNote.objects.filter(
+                user=self.request.user
+            ).select_related(
+                'question', 'question__catechism', 'question__topic'
+            ).order_by('-updated_at').first()
         return ctx
 
 
@@ -256,8 +277,29 @@ class SearchView(ListView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['query'] = self.request.GET.get('q', '')
+        active_traditions = get_active_traditions(self.request)
+        ctx['selected_catechism_slug'] = self.request.GET.get('catechism', '')
+        ctx['all_catechisms'] = Catechism.objects.filter(
+            tradition__in=active_traditions
+        ).order_by('abbreviation')
+        ctx['suggested_searches'] = [
+            'faith',
+            'justification',
+            'Scripture',
+            'Lord\'s Supper',
+            'church discipline',
+        ]
 
         tradition_order = {'westminster': 0, 'three_forms_of_unity': 1, 'other': 2}
+        document_order = {
+            'wcf': 0,
+            'wlc': 1,
+            'wsc': 2,
+            'heidelberg': 3,
+            'belgic': 4,
+            'dort': 5,
+            'pca-bco': 8,
+        }
         grouped = defaultdict(list)
         catechism_map = {}
         for q in ctx['results']:
@@ -267,7 +309,11 @@ class SearchView(ListView):
 
         ordered_cats = sorted(
             catechism_map.values(),
-            key=lambda c: (tradition_order.get(c.tradition, 99), c.abbreviation),
+            key=lambda c: (
+                tradition_order.get(c.tradition, 99),
+                document_order.get(c.slug, 50),
+                c.abbreviation,
+            ),
         )
         ctx['grouped_results'] = [
             {'catechism': cat, 'questions': grouped[cat.pk]}
@@ -583,6 +629,8 @@ class CompareSetView(ListView):
         active_traditions = get_active_traditions(self.request)
         return self.comparison_set.themes.filter(
             entries__catechism__tradition__in=active_traditions
+        ).annotate(
+            entry_count=Count('entries', distinct=True)
         ).distinct().order_by('order')
 
     def get_context_data(self, **kwargs):

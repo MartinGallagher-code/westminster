@@ -35,6 +35,19 @@
 <p class="text-muted mb-3">{{ theme.description }}</p>
 {% endif %}
 
+<div class="study-callout mb-4">
+    <div>
+        <div class="fw-semibold">At a glance</div>
+        <div class="text-muted small">
+            This custom view aligns {{ columns|length }} selected document{{ columns|length|pluralize }} around one doctrinal theme.
+            Open any entry to continue into its full reading page.
+        </div>
+    </div>
+    <a href="{% url 'catechism:search' %}?q={{ theme.name|urlencode }}" class="btn btn-outline-primary btn-sm">
+        Search Topic
+    </a>
+</div>
+
 {# Column visibility toggles #}
 {% if columns|length > 2 %}
 <div class="mb-3">

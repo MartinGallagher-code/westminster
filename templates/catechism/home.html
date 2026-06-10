@@ -11,10 +11,76 @@
 {# ── Page header band ── #}
 <div class="page-band page-band-header">
     <div class="page-band-content">
-        <h1 class="h3 mb-1">Study Reformed</h1>
-        <p class="text-body-secondary mb-0 small">
-            Explore the Reformed confessional standards with Scripture proof texts, cross-references, and classic commentary.
-        </p>
+        <div class="row g-4 align-items-end">
+            <div class="col-lg-7">
+                <h1 class="h2 mb-2">Study Reformed</h1>
+                <p class="text-body-secondary mb-0">
+                    Read the Reformed standards with Scripture proofs, cross-references, classic commentary, and personal study notes.
+                </p>
+            </div>
+            <div class="col-lg-5">
+                <form action="{% url 'catechism:search' %}" method="get" class="study-search-panel">
+                    <label for="home-search" class="form-label small text-muted mb-1">Search the standards</label>
+                    <div class="input-group">
+                        <input id="home-search" type="search" name="q" class="form-control"
+                               placeholder="Try justification, baptism, Romans 8...">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="bi bi-search me-1"></i>Search
+                        </button>
+                    </div>
+                    <div class="study-suggestions mt-2">
+                        {% for term in suggested_searches %}
+                        <a href="{% url 'catechism:search' %}?q={{ term|urlencode }}">{{ term }}</a>
+                        {% endfor %}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# ── Start paths band ── #}
+<div class="page-band">
+    <div class="page-band-content">
+        <div class="flat-section-heading mb-4">Start Here</div>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <a class="study-card study-card-link h-100" href="{% url 'catechism:catechism_home' catechism_slug='wsc' %}">
+                    <i class="bi bi-compass"></i>
+                    <span class="study-card-title">Learn the basics</span>
+                    <span class="study-card-text">Begin with the Shorter Catechism and its compact summaries of Christian doctrine.</span>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a class="study-card study-card-link h-100" href="{% url 'catechism:catechism_home' catechism_slug='wcf' %}">
+                    <i class="bi bi-journal-richtext"></i>
+                    <span class="study-card-title">Read the Confession</span>
+                    <span class="study-card-text">Move through Westminster chapter by chapter with Scripture proofs and commentary.</span>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a class="study-card study-card-link h-100" href="{% url 'catechism:compare_index' %}">
+                    <i class="bi bi-layout-split"></i>
+                    <span class="study-card-title">Study by doctrine</span>
+                    <span class="study-card-text">Compare how the standards teach each doctrine across WCF, WLC, and WSC.</span>
+                </a>
+            </div>
+        </div>
+        {% if recent_note %}
+        <div class="study-continue mt-4">
+            <div>
+                <div class="flat-section-heading mb-2">Continue Studying</div>
+                <div class="fw-semibold">
+                    {{ recent_note.question.catechism.abbreviation }} {{ recent_note.question.catechism.item_prefix }}{{ recent_note.question.display_number }}
+                    <span class="text-muted fw-normal">{{ recent_note.question.question_text|truncatewords:12 }}</span>
+                </div>
+                <div class="text-muted small">{{ recent_note.text|truncatewords:20 }}</div>
+            </div>
+            <a href="{{ recent_note.question.get_absolute_url }}" class="btn btn-outline-primary btn-sm">
+                Open Note <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+        {% endif %}
     </div>
 </div>
 
@@ -69,6 +135,19 @@
                 </div>
                 <div>
                     <div class="flat-section-heading">Documents</div>
+                    {% if primary_docs %}
+                    {% for cat in primary_docs %}
+                    <a href="{{ cat.get_item_list_url }}"
+                       class="d-flex justify-content-between align-items-baseline py-2 text-decoration-none border-bottom"
+                       style="border-color: var(--wm-border) !important; color: var(--bs-body-color);">
+                        <div>
+                            <strong class="small">{{ cat.abbreviation }}</strong>
+                            <div class="text-muted" style="font-size: 0.8rem;">{{ cat.name }}</div>
+                        </div>
+                        <small class="text-muted ms-2 flex-shrink-0">{{ cat.total_questions }}</small>
+                    </a>
+                    {% endfor %}
+                    {% else %}
                     {% for cat in catechisms %}
                     <a href="{{ cat.get_item_list_url }}"
                        class="d-flex justify-content-between align-items-baseline py-2 text-decoration-none border-bottom"
@@ -82,6 +161,10 @@
                     {% empty %}
                     <p class="small text-muted mt-2">No documents selected — choose a collection above.</p>
                     {% endfor %}
+                    {% endif %}
+                    <a href="{% url 'catechism:compare_index' %}" class="btn btn-outline-primary btn-sm mt-3 w-100">
+                        Compare active documents
+                    </a>
                 </div>
             </div>
 
@@ -89,43 +172,52 @@
             <div class="col-md-9 col-separator">
                 <div class="flat-section-heading mb-4">Explore</div>
                 <div class="row g-4">
-                    <div class="col-sm-4">
-                        <div class="d-flex align-items-start gap-3">
-                            <i class="bi bi-search fs-3 text-primary flex-shrink-0 mt-1"></i>
-                            <div>
-                                <div class="fw-semibold mb-1">Search</div>
-                                <div class="text-muted small mb-2">Search all documents by keyword</div>
-                                <a href="{% url 'catechism:search' %}" class="btn btn-outline-primary btn-sm">
-                                    Search <i class="bi bi-chevron-right ms-1"></i>
-                                </a>
-                            </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="study-card h-100">
+                            <i class="bi bi-search"></i>
+                            <div class="study-card-title">Search</div>
+                            <div class="study-card-text">Find doctrine, phrases, and proof-linked sections.</div>
+                            <a href="{% url 'catechism:search' %}" class="stretched-link">Search</a>
                         </div>
                     </div>
-                    <div class="col-sm-4">
-                        <div class="d-flex align-items-start gap-3">
-                            <i class="bi bi-book fs-3 text-primary flex-shrink-0 mt-1"></i>
-                            <div>
-                                <div class="fw-semibold mb-1">Scripture Index</div>
-                                <div class="text-muted small mb-2">Find passages by Bible reference</div>
-                                <a href="{% url 'catechism:scripture_index' %}" class="btn btn-outline-primary btn-sm">
-                                    Browse <i class="bi bi-chevron-right ms-1"></i>
-                                </a>
-                            </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="study-card h-100">
+                            <i class="bi bi-book"></i>
+                            <div class="study-card-title">Scripture Index</div>
+                            <div class="study-card-text">Trace every Bible passage used in the standards.</div>
+                            <a href="{% url 'catechism:scripture_index' %}" class="stretched-link">Browse</a>
                         </div>
                     </div>
-                    <div class="col-sm-4">
-                        <div class="d-flex align-items-start gap-3">
-                            <i class="bi bi-layout-split fs-3 text-primary flex-shrink-0 mt-1"></i>
-                            <div>
-                                <div class="fw-semibold mb-1">Compare Standards</div>
-                                <div class="text-muted small mb-2">View topics side by side</div>
-                                <a href="{% url 'catechism:compare_index' %}" class="btn btn-outline-primary btn-sm">
-                                    Compare <i class="bi bi-chevron-right ms-1"></i>
-                                </a>
-                            </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="study-card h-100">
+                            <i class="bi bi-layout-split"></i>
+                            <div class="study-card-title">Compare</div>
+                            <div class="study-card-text">Read related passages from multiple standards together.</div>
+                            <a href="{% url 'catechism:compare_index' %}" class="stretched-link">Compare</a>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="study-card h-100">
+                            <i class="bi bi-diagram-3"></i>
+                            <div class="study-card-title">Doctrine Map</div>
+                            <div class="study-card-text">Go deeper in the Westminster Standards Atlas.</div>
+                            <a href="https://ontologicalatlas.com/westminster_standards/" class="stretched-link">Open Atlas</a>
                         </div>
                     </div>
                 </div>
+                {% if comparison_sets %}
+                <div class="flat-section-heading mt-5 mb-3">Featured Comparisons</div>
+                <div class="row g-3">
+                    {% for set in comparison_sets %}
+                    <div class="col-md-4">
+                        <a href="{{ set.get_absolute_url }}" class="study-inline-link">
+                            <strong>{{ set.name }}</strong>
+                            <span>{{ set.description|truncatewords:18 }}</span>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
             </div>
 
         </div>
