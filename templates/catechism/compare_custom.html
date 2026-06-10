@@ -2,6 +2,11 @@
 
 {% block body_attrs %}data-filter-sensitive="true"{% endblock %}
 {% block title %}Custom Comparison - Study Reformed{% endblock %}
+{% block meta_description %}Select two or more active Reformed documents and discover shared doctrinal themes for side-by-side comparison.{% endblock %}
+{% block og_title %}Custom Comparison - Study Reformed{% endblock %}
+{% block og_description %}Build a custom side-by-side comparison across active Reformed standards.{% endblock %}
+{% block twitter_title %}Custom Comparison - Study Reformed{% endblock %}
+{% block twitter_description %}Build a custom side-by-side comparison across active Reformed standards.{% endblock %}
 
 {% block content %}
 <nav aria-label="breadcrumb">
@@ -36,17 +41,4 @@
 {% endif %}
 <div class="list-group mb-3">
     {% for item in group.list %}
-    <a href="{% url 'catechism:compare_custom_theme' theme_slug=item.theme.slug %}?docs={{ docs_param }}"
-       class="list-group-item list-group-item-action">
-        <h5 class="mb-1">{{ item.theme.name }}</h5>
-        {% if item.theme.description %}
-        <p class="mb-0 text-muted small">{{ item.theme.description }}</p>
-        {% endif %}
-    </a>
-    {% endfor %}
-</div>
-{% endfor %}
-{% elif not error %}
-<p class="text-muted">No themes found that cover at least two of your selected documents.</p>
-{% endif %}
-{% endblock %}
+    <a h

@@ -7,6 +7,8 @@
 {% block meta_description %}{{ catechism.abbreviation }} {% if catechism.is_prose_document %}{{ question.display_number }}: {{ question.question_text }}{% else %}Q{{ question.number }}: {{ question.question_text }}{% endif %} — {{ question.answer_text|truncatewords:25 }}{% endblock %}
 {% block og_title %}{% if catechism.is_prose_document %}{{ question.question_text }} {{ question.display_number }}{% else %}Q{{ question.number }}. {{ question.question_text }}{% endif %} - {{ catechism.name }}{% endblock %}
 {% block og_description %}{{ question.answer_text|truncatewords:40 }}{% endblock %}
+{% block twitter_title %}{% if catechism.is_prose_document %}{{ question.question_text }} {{ question.display_number }}{% else %}Q{{ question.number }}. {{ question.question_text }}{% endif %} - {{ catechism.name }}{% endblock %}
+{% block twitter_description %}{{ question.answer_text|truncatewords:30 }}{% endblock %}
 
 {% block main_wrapper_class %}{% endblock %}
 

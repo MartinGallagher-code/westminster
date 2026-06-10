@@ -1,7 +1,12 @@
 {% extends "base.html" %}
 
 {% block body_attrs %}data-filter-sensitive="true"{% endblock %}
-{% block title %}{{ comparison_set.name }} - Compare{% endblock %}
+{% block title %}{{ comparison_set.name }} - Compare - Study Reformed{% endblock %}
+{% block meta_description %}{{ comparison_set.description|default:"Browse curated doctrinal themes and compare related passages across active Reformed standards." }}{% endblock %}
+{% block og_title %}{{ comparison_set.name }} - Compare the Standards{% endblock %}
+{% block og_description %}{{ comparison_set.description|default:"Browse curated doctrinal themes across active Reformed standards." }}{% endblock %}
+{% block twitter_title %}{{ comparison_set.name }} - Compare{% endblock %}
+{% block twitter_description %}Browse curated doctrinal themes across active Reformed standards.{% endblock %}
 
 {% block content %}
 <nav aria-label="breadcrumb">

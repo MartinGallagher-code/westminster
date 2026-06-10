@@ -1,7 +1,12 @@
 {% extends "base.html" %}
 
 {% block body_attrs %}data-filter-sensitive="true"{% endblock %}
-{% block title %}{{ book.name }} - Scripture Index{% endblock %}
+{% block title %}{{ book.name }} - Scripture Index - Study Reformed{% endblock %}
+{% block meta_description %}Browse {{ total_citations }} citation{{ total_citations|pluralize }} from {{ book.name }} across the active Reformed standards.{% endblock %}
+{% block og_title %}{{ book.name }} - Scripture Index{% endblock %}
+{% block og_description %}See where {{ book.name }} is cited across the active Reformed standards.{% endblock %}
+{% block twitter_title %}{{ book.name }} - Scripture Index{% endblock %}
+{% block twitter_description %}See where {{ book.name }} is cited across the active Reformed standards.{% endblock %}
 
 {% block content %}
 <nav aria-label="breadcrumb">
