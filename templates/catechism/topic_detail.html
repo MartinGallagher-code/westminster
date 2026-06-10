@@ -37,4 +37,23 @@
             </a>
         </div>
         <p class="text-muted small mb-2">{{ catechism.item_name }} {{ q.display_number }}</p>
-        <div class="answer-text">{{ q.answer_text|lin
+        <div class="answer-text">{{ q.answer_text|linebreaks }}</div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="list-group">
+    {% for q in questions %}
+    <a href="{{ q.get_absolute_url }}" class="list-group-item list-group-item-action">
+        {% if catechism.is_systematic_theology %}
+        <h6 class="mb-1">{{ catechism.item_name }} {{ q.display_number }}: {{ q.question_text }}</h6>
+        <p class="mb-0 text-muted small">{{ q.answer_text|truncatewords:20 }}</p>
+        {% else %}
+        <h6 class="mb-1">Q{{ q.number }}. {{ q.question_text }}</h6>
+        <p class="mb-0 text-muted small">{{ q.answer_text|truncatewords:20 }}</p>
+        {% endif %}
+    </a>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}
