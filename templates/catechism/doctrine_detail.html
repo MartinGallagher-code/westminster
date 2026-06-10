@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block body_attrs %}data-filter-sensitive="true"{% endblock %}
+{% block title %}{{ theme_name }} - Browse Doctrine{% endblock %}
+{% block meta_description %}Study {{ theme_name }} across the active Reformed standards with curated comparison links and source-text pathways.{% endblock %}
+{% block og_title %}{{ theme_name }} - Study Reformed Doctrine{% endblock %}
+{% block og_description %}Study {{ theme_name }} across related Reformed confessions and catechisms.{% endblock %}
+{% block twitter_title %}{{ theme_name }} - Study Reformed Doctrine{% endblock %}
+{% block twitter_description %}Study {{ theme_name }} across related Reformed confessions and catechisms.{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'catechism:home' %}">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'catechism:doctrine_index' %}">Doctrine</a></li>
+        <li class="breadcrumb-item active">{{ theme_name }}</li>
+    </ol>
+</nav>
+
+<div class="mb-4 pb-3 border-bottom">
+    <h1 class="mb-2">{{ theme_name }}</h1>
+    {% if theme_description %}
+    <p class="text-muted mb-0">{{ theme_description }}</p>
+    {% else %}
+    <p class="text-muted mb-0">Open one of the comparison paths below to study this doctrine in context.</p>
+    {% endif %}
+</div>
+
+<div class="row g-4">
+    {% for theme in themes %}
+    <div class="col-md-6 col-xl-4">
+        <div class="study-card h-100">
+            <i class="bi bi-layout-split"></i>
+            <div class="study-card-title">{{ theme.comparison_set.name }}</div>
+            <div class="study-card-text">
+                {% if theme.description %}
+                {{ theme.description|truncatewords:22 }}
+                {% else %}
+                Compare the source documents for this doctrine.
+                {% endif %}
+            </div>
+            <a href="{{ theme.get_absolute_url }}" class="stretched-link">Open comparison</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="study-callout mt-5">
+    <div>
+        <div class="fw-semibold">Want a broader search?</div>
+        <div class="text-muted small">Search finds direct occurrences of this topic in questions, answers, and sections.</div>
+    </div>
+    <a href="{% url 'catechism:search' %}?q={{ theme_name|urlencode }}" class="btn btn-outline-primary btn-sm">
+        Search {{ theme_name|truncatewords:3 }}
+    </a>
+</div>
+{% endblock %}

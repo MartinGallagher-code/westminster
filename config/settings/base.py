@@ -43,6 +43,7 @@ TEMPLATES = [
                 'catechism.context_processors.sidebar_topics',
                 'accounts.context_processors.supporter_status',
                 'config.context_processors.google_analytics',
+                'config.context_processors.site_metadata',
             ],
         },
     },

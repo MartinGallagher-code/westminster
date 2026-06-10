@@ -1,11 +1,36 @@
 {% extends "base.html" %}
 
-{% block title %}Sign Up - Westminster Shorter Catechism{% endblock %}
+{% block title %}Sign Up - Study Reformed{% endblock %}
+{% block meta_description %}Create a free Study Reformed account to save notes, highlights, annotations, and continue studying across the Reformed standards.{% endblock %}
+{% block og_title %}Sign Up - Study Reformed{% endblock %}
+{% block og_description %}Create a free account for notes, highlights, annotations, and personal study tools.{% endblock %}
+{% block twitter_title %}Sign Up - Study Reformed{% endblock %}
+{% block twitter_description %}Create a free account for notes, highlights, annotations, and personal study tools.{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6 col-lg-4">
-        <h1 class="mb-3">Sign Up</h1>
+<div class="row justify-content-center g-5 align-items-start">
+    <div class="col-lg-5">
+        <h1 class="mb-3">Create a Study Account</h1>
+        <p class="text-muted">
+            Your account keeps the reading tools personal: notes, highlights, inline annotations,
+            and a study desk you can return to later.
+        </p>
+        <div class="study-callout mb-4">
+            <div>
+                <div class="fw-semibold">Free study tools</div>
+                <div class="text-muted small">Accounts are for saving your work. The standards, proof texts, commentary, search, and comparisons remain free to browse.</div>
+            </div>
+        </div>
+        <ul class="list-unstyled small text-muted">
+            <li class="mb-2"><i class="bi bi-journal-text text-primary me-2"></i>Save private notes on questions and sections.</li>
+            <li class="mb-2"><i class="bi bi-highlighter text-primary me-2"></i>Highlight and annotate commentary as you read.</li>
+            <li class="mb-2"><i class="bi bi-arrow-return-right text-primary me-2"></i>Resume recent study from your dashboard.</li>
+        </ul>
+    </div>
+
+    <div class="col-md-7 col-lg-5">
+        <div class="study-card">
+        <h2 class="h4 mb-3">Sign Up</h2>
 
         <form method="post">
             {% csrf_token %}
@@ -27,6 +52,7 @@
         <p class="mt-3 text-center text-muted">
             Already have an account? <a href="{% url 'accounts:login' %}">Login</a>
         </p>
+        </div>
     </div>
 </div>
 {% endblock %}

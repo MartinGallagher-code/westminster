@@ -18,6 +18,8 @@ class TestSignupView:
     def test_get(self, client):
         resp = client.get('/accounts/signup/')
         assert resp.status_code == 200
+        assert b'Sign Up - Study Reformed' in resp.content
+        assert b'notes, highlights, inline annotations' in resp.content
 
     def test_post_valid(self, client):
         resp = client.post('/accounts/signup/', {

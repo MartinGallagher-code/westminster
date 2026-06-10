@@ -1,12 +1,15 @@
 from collections import defaultdict
 from datetime import date
+from xml.sax.saxutils import escape
 
 from django.db.models import Q, Count, Prefetch
-from django.http import Http404, JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
 from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView
 
+from .document_guides import get_document_guide
 from .models import (
     Catechism, Topic, Question, Commentary, FisherSubQuestion,
     ScripturePassage, StandardCrossReference,
@@ -14,6 +17,81 @@ from .models import (
     ComparisonEntry,
 )
 from .utils import VALID_TRADITIONS, get_active_traditions
+
+
+def _comparison_sets_for_traditions(active_traditions):
+    qs = ComparisonSet.objects.filter(
+        themes__entries__catechism__tradition__in=active_traditions
+    ).distinct().order_by('order')
+    return qs.exclude(themes__entries__catechism__tradition=Catechism.OTHER)
+
+
+def _comparison_themes_for_traditions(active_traditions):
+    return ComparisonTheme.objects.filter(
+        entries__catechism__tradition__in=active_traditions
+    ).exclude(
+        entries__catechism__tradition=Catechism.OTHER
+    ).annotate(
+        active_entry_count=Count(
+            'entries',
+            filter=Q(entries__catechism__tradition__in=active_traditions),
+            distinct=True,
+        )
+    ).select_related('comparison_set').distinct()
+
+
+def robots_txt(request):
+    sitemap_url = request.build_absolute_uri(reverse('catechism:sitemap_xml'))
+    body = f"User-agent: *\nAllow: /\n\nSitemap: {sitemap_url}\n"
+    return HttpResponse(body, content_type='text/plain')
+
+
+def sitemap_xml(request):
+    urls = [
+        reverse('catechism:home'),
+        reverse('catechism:search'),
+        reverse('catechism:scripture_index'),
+        reverse('catechism:compare_index'),
+        reverse('catechism:doctrine_index'),
+        reverse('accounts:signup'),
+        reverse('accounts:login'),
+    ]
+
+    supported_catechisms = Catechism.objects.filter(
+        tradition__in=VALID_TRADITIONS
+    ).prefetch_related('topics', 'questions').order_by('tradition', 'abbreviation')
+    for catechism in supported_catechisms:
+        urls.append(catechism.get_absolute_url())
+        urls.extend(topic.get_absolute_url() for topic in catechism.topics.all())
+        urls.extend(question.get_absolute_url() for question in catechism.questions.all())
+
+    urls.extend(book.get_absolute_url() for book in BibleBook.objects.all())
+    urls.extend(
+        comparison_set.get_absolute_url()
+        for comparison_set in _comparison_sets_for_traditions(VALID_TRADITIONS)
+    )
+
+    comparison_themes = _comparison_themes_for_traditions(VALID_TRADITIONS)
+    urls.extend(theme.get_absolute_url() for theme in comparison_themes)
+    urls.extend(
+        reverse('catechism:doctrine_detail', kwargs={'theme_slug': slug})
+        for slug in comparison_themes.values_list('slug', flat=True).distinct()
+    )
+
+    seen = set()
+    locs = []
+    for url in urls:
+        if url in seen:
+            continue
+        seen.add(url)
+        locs.append(request.build_absolute_uri(url))
+
+    body = ['<?xml version="1.0" encoding="UTF-8"?>']
+    body.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+    for loc in locs:
+        body.append(f'  <url><loc>{escape(loc)}</loc></url>')
+    body.append('</urlset>')
+    return HttpResponse('\n'.join(body), content_type='application/xml')
 
 
 class CatechismMixin:
@@ -77,6 +155,7 @@ class CatechismHomeView(CatechismMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
+        ctx['document_guide'] = get_document_guide(self.catechism.slug)
         topics = Topic.objects.filter(catechism=self.catechism)
         ctx['topics'] = topics
 
@@ -98,6 +177,44 @@ class CatechismHomeView(CatechismMixin, TemplateView):
             catechism=self.catechism,
             number=(day_of_year % self.catechism.total_questions) + 1
         ).select_related('topic').first()
+        return ctx
+
+
+class DoctrineIndexView(TemplateView):
+    template_name = 'catechism/doctrine_index.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        active_traditions = get_active_traditions(self.request)
+        themes = _comparison_themes_for_traditions(active_traditions).order_by(
+            'locus', 'order', 'name'
+        )
+        grouped = defaultdict(list)
+        for theme in themes:
+            grouped[theme.locus or 'General Doctrine'].append(theme)
+        ctx['locus_groups'] = [
+            {'locus': locus, 'themes': items}
+            for locus, items in grouped.items()
+        ]
+        ctx['theme_count'] = themes.count()
+        return ctx
+
+
+class DoctrineDetailView(TemplateView):
+    template_name = 'catechism/doctrine_detail.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        active_traditions = get_active_traditions(self.request)
+        themes = _comparison_themes_for_traditions(active_traditions).filter(
+            slug=self.kwargs['theme_slug']
+        ).order_by('comparison_set__order', 'order')
+        if not themes.exists():
+            raise Http404
+        ctx['themes'] = themes
+        ctx['primary_theme'] = themes.first()
+        ctx['theme_name'] = ctx['primary_theme'].name
+        ctx['theme_description'] = ctx['primary_theme'].description
         return ctx
 
 

@@ -55,6 +55,13 @@ class TestHomeView:
         assert 'catechisms' in resp.context
         assert 'featured' in resp.context
 
+    def test_home_has_social_metadata(self, client, setup_catechism):
+        resp = client.get('/')
+        content = resp.content.decode()
+        assert '<link rel="canonical" href="http://testserver/">' in content
+        assert 'property="og:image"' in content
+        assert 'name="twitter:card" content="summary_large_image"' in content
+
 
 @pytest.mark.django_db
 class TestCatechismHomeView:
@@ -72,6 +79,11 @@ class TestCatechismHomeView:
         assert 'grouped' in resp.context
         assert len(resp.context['grouped']) == 1
         assert len(resp.context['grouped'][0]['questions']) == 2
+
+    def test_document_guide_context(self, client, setup_catechism):
+        resp = client.get('/wsc/')
+        assert resp.context['document_guide']['date'] == '1647'
+        assert b'Historical Context' in resp.content
 
     def test_404_invalid_slug(self, client, setup_catechism):
         resp = client.get('/nonexistent/')
@@ -137,6 +149,11 @@ class TestSearchView:
         for r in results:
             assert r.catechism.slug == 'wsc'
 
+    def test_search_has_query_metadata(self, client, setup_catechism):
+        resp = client.get('/search/?q=chief+end')
+        content = resp.content.decode()
+        assert 'Search results for chief end' in content
+
 
 @pytest.mark.django_db
 class TestScriptureIndexView:
@@ -200,6 +217,66 @@ class TestCompareViews:
         resp = client.get('/compare/god/')
         assert resp.status_code == 301
         assert '/compare/westminster/god/' in resp.url
+
+
+@pytest.mark.django_db
+class TestDoctrineViews:
+    def test_doctrine_index_lists_active_themes(self, client, setup_catechism):
+        cat, topic, q1, q2 = setup_catechism
+        cs = ComparisonSet.objects.get(slug='westminster')
+        theme = ComparisonThemeFactory(
+            name='The Being of God',
+            slug='being-of-god',
+            locus='Theology Proper',
+            comparison_set=cs,
+        )
+        ComparisonEntryFactory(theme=theme, catechism=cat, question_start=1, question_end=2)
+
+        resp = client.get('/doctrine/')
+
+        assert resp.status_code == 200
+        assert resp.context['theme_count'] == 1
+        assert b'The Being of God' in resp.content
+
+    def test_doctrine_detail_links_comparison_theme(self, client, setup_catechism):
+        cat, topic, q1, q2 = setup_catechism
+        cs = ComparisonSet.objects.get(slug='westminster')
+        theme = ComparisonThemeFactory(
+            name='Creation',
+            slug='creation',
+            locus='Creation',
+            comparison_set=cs,
+        )
+        ComparisonEntryFactory(theme=theme, catechism=cat, question_start=1, question_end=2)
+
+        resp = client.get('/doctrine/creation/')
+
+        assert resp.status_code == 200
+        assert resp.context['theme_name'] == 'Creation'
+        assert b'/compare/westminster/creation/' in resp.content
+
+    def test_doctrine_detail_404_for_missing_theme(self, client, setup_catechism):
+        resp = client.get('/doctrine/not-a-theme/')
+        assert resp.status_code == 404
+
+
+@pytest.mark.django_db
+class TestSeoRoutes:
+    def test_robots_references_sitemap(self, client):
+        resp = client.get('/robots.txt')
+        assert resp.status_code == 200
+        assert resp['Content-Type'].startswith('text/plain')
+        assert b'Allow: /' in resp.content
+        assert b'Sitemap: http://testserver/sitemap.xml' in resp.content
+
+    def test_sitemap_includes_core_routes(self, client, setup_catechism):
+        resp = client.get('/sitemap.xml')
+        content = resp.content.decode()
+        assert resp.status_code == 200
+        assert resp['Content-Type'].startswith('application/xml')
+        assert '<loc>http://testserver/</loc>' in content
+        assert '<loc>http://testserver/doctrine/</loc>' in content
+        assert '<loc>http://testserver/wsc/</loc>' in content
 
 
 @pytest.mark.django_db

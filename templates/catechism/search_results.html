@@ -2,6 +2,11 @@
 
 {% block body_attrs %}data-filter-sensitive="true"{% endblock %}
 {% block title %}Search{% if query %}: {{ query }}{% endif %} - Study Reformed{% endblock %}
+{% block meta_description %}{% if query %}Search results for {{ query }} across active Reformed standards, catechisms, and proof-linked sections.{% else %}Search the Reformed standards by doctrine, phrase, Scripture reference, confession, or catechism question.{% endif %}{% endblock %}
+{% block og_title %}Search{% if query %}: {{ query }}{% endif %} - Study Reformed{% endblock %}
+{% block og_description %}Find doctrine, phrases, and references across active Reformed confessions and catechisms.{% endblock %}
+{% block twitter_title %}Search{% if query %}: {{ query }}{% endif %} - Study Reformed{% endblock %}
+{% block twitter_description %}Find doctrine, phrases, and references across active Reformed standards.{% endblock %}
 
 {% block content %}
 <div class="mb-4 pb-3 border-bottom">

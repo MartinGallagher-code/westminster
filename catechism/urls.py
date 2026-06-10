@@ -5,12 +5,17 @@ from . import views
 app_name = 'catechism'
 
 urlpatterns = [
+    path('robots.txt', views.robots_txt, name='robots_txt'),
+    path('sitemap.xml', views.sitemap_xml, name='sitemap_xml'),
+
     # API
     path('api/question/<int:pk>/preview/', views.question_preview_json, name='question_preview'),
 
     # Site-wide
     path('', views.HomeView.as_view(), name='home'),
     path('search/', views.SearchView.as_view(), name='search'),
+    path('doctrine/', views.DoctrineIndexView.as_view(), name='doctrine_index'),
+    path('doctrine/<slug:theme_slug>/', views.DoctrineDetailView.as_view(), name='doctrine_detail'),
 
     # Scripture index
     path('scripture/', views.ScriptureIndexView.as_view(), name='scripture_index'),
