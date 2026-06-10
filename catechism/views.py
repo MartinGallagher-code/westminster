@@ -214,6 +214,14 @@ class QuestionDetailView(CatechismMixin, DetailView):
                     chapter_scripture_map[p.reference] = p.text
         ctx['chapter_scripture_map'] = {**chapter_scripture_map, **ctx['scripture_map']}
 
+        atlas_base = 'https://ontologicalatlas.com/westminster_standards'
+        if self.catechism.slug in ('wsc', 'wlc'):
+            ctx['atlas_url'] = f'{atlas_base}/works/{self.catechism.slug}/q/{q.number}/'
+            ctx['atlas_label'] = 'Open Atlas Question'
+        elif self.catechism.slug == 'wcf':
+            ctx['atlas_url'] = f'{atlas_base}/works/wcf/chapter/{q.topic.order}/'
+            ctx['atlas_label'] = 'Open Atlas Chapter'
+
         if self.request.user.is_authenticated:
             from accounts.models import UserNote
             from accounts.forms import NoteForm

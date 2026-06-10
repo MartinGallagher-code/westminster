@@ -153,10 +153,9 @@
                     <a href="{% url 'catechism:search' %}?q={{ question.topic.name|urlencode }}" class="btn btn-outline-primary btn-sm">
                         Search Topic
                     </a>
-                    {% if catechism.slug == 'wcf' or catechism.slug == 'wlc' or catechism.slug == 'wsc' %}
-                    <a href="https://ontologicalatlas.com/westminster_standards/search/?q={{ question.topic.name|urlencode }}"
-                       class="btn btn-outline-secondary btn-sm">
-                        Doctrine Map <i class="bi bi-box-arrow-up-right ms-1"></i>
+                    {% if atlas_url %}
+                    <a href="{{ atlas_url }}" class="btn btn-outline-secondary btn-sm">
+                        {{ atlas_label }} <i class="bi bi-box-arrow-up-right ms-1"></i>
                     </a>
                     {% endif %}
                 </div>
