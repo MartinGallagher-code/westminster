@@ -37,6 +37,26 @@
 <p class="text-muted mb-4">{{ theme.description }}</p>
 {% endif %}
 
+<div class="study-callout mb-4">
+    <div>
+        <div class="fw-semibold">At a glance</div>
+        <div class="text-muted small">
+            This page aligns {{ columns|length }} document{{ columns|length|pluralize }} around one doctrinal theme.
+            Open any entry to read its full context, Scripture proofs, commentary, notes, and cross-references.
+        </div>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="{% url 'catechism:search' %}?q={{ theme.name|urlencode }}" class="btn btn-outline-primary btn-sm">
+            Search Topic
+        </a>
+        {% if comparison_set.slug == 'westminster' %}
+        <a href="https://ontologicalatlas.com/westminster_standards/search/?q={{ theme.name|urlencode }}" class="btn btn-outline-secondary btn-sm">
+            Doctrine Map <i class="bi bi-box-arrow-up-right ms-1"></i>
+        </a>
+        {% endif %}
+    </div>
+</div>
+
 {# Column visibility toggles #}
 {% if columns|length > 2 %}
 <div class="mb-3">

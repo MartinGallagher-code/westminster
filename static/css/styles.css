@@ -1224,3 +1224,139 @@ mark.user-annotation.active {
     border-bottom: 2px solid var(--wm-primary);
 }
 
+/* ================================================================
+   Study workflow surfaces
+   ================================================================ */
+
+.study-search-panel {
+    background: color-mix(in srgb, var(--wm-primary) 4%, var(--bs-body-bg));
+    border: 1px solid var(--wm-border);
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+
+.study-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.study-suggestions a {
+    border: 1px solid var(--wm-border);
+    border-radius: 999px;
+    color: var(--wm-text-muted);
+    font-size: 0.78rem;
+    padding: 0.15rem 0.55rem;
+    text-decoration: none;
+}
+
+.study-suggestions a:hover {
+    border-color: var(--wm-primary);
+    color: var(--wm-primary);
+}
+
+.study-card {
+    position: relative;
+    border: 1px solid var(--wm-border);
+    border-left: 3px solid var(--wm-primary);
+    border-radius: 0.4rem;
+    background: color-mix(in srgb, var(--wm-card-bg) 94%, var(--bs-body-bg));
+    color: var(--bs-body-color);
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-height: 8rem;
+    padding: 1rem;
+    text-decoration: none;
+}
+
+.study-card > i {
+    color: var(--wm-primary);
+    font-size: 1.35rem;
+}
+
+.study-card-title {
+    color: var(--bs-body-color);
+    font-weight: 700;
+}
+
+.study-card-text {
+    color: var(--wm-text-muted);
+    font-size: 0.9rem;
+    line-height: 1.55;
+}
+
+.study-card-link:hover,
+.study-card:has(.stretched-link:hover) {
+    border-color: var(--wm-primary);
+    background: color-mix(in srgb, var(--wm-primary) 4%, var(--bs-body-bg));
+}
+
+.study-inline-link {
+    border-bottom: 1px solid var(--wm-border);
+    color: var(--bs-body-color);
+    display: block;
+    min-height: 4.5rem;
+    padding: 0.7rem 0;
+    text-decoration: none;
+}
+
+.study-inline-link span {
+    color: var(--wm-text-muted);
+    display: block;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin-top: 0.2rem;
+}
+
+.study-inline-link:hover strong {
+    color: var(--wm-primary);
+}
+
+.study-callout,
+.study-action-bar,
+.study-continue {
+    align-items: center;
+    background: color-mix(in srgb, var(--wm-accent) 6%, var(--bs-body-bg));
+    border: 1px solid color-mix(in srgb, var(--wm-accent) 22%, var(--wm-border));
+    border-radius: 0.45rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    padding: 1rem;
+}
+
+.study-action-bar {
+    background: color-mix(in srgb, var(--wm-primary) 4%, var(--bs-body-bg));
+    border-color: color-mix(in srgb, var(--wm-primary) 18%, var(--wm-border));
+}
+
+.study-stat {
+    border: 1px solid var(--wm-border);
+    border-radius: 0.45rem;
+    padding: 1rem;
+    text-align: center;
+}
+
+.study-stat span {
+    color: var(--wm-primary);
+    display: block;
+    font-size: 1.7rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.study-stat small {
+    color: var(--wm-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+@media (max-width: 767.98px) {
+    .study-callout,
+    .study-action-bar,
+    .study-continue {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}

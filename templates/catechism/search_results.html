@@ -6,24 +6,54 @@
 {% block content %}
 <div class="mb-4 pb-3 border-bottom">
     <h1 class="h3 mb-1">Search</h1>
+    <p class="text-muted mb-0 small">Find text across standards, catechisms, the BCO, proof-linked material, and comparison-ready topics.</p>
 </div>
 
 <form action="{% url 'catechism:search' %}" method="get" class="mb-4">
-    <div class="input-group">
-        <input type="search" name="q" class="form-control" placeholder="Search questions and answers..."
-               value="{{ query }}" autofocus>
-        <button class="btn btn-primary" type="submit">Search</button>
+    <div class="row g-2 align-items-end">
+        <div class="col-lg-7">
+            <label for="search-query" class="form-label small text-muted">Keyword or reference</label>
+            <input id="search-query" type="search" name="q" class="form-control"
+                   placeholder="Search justification, WCF 1.6, baptism, Romans 8..."
+                   value="{{ query }}" autofocus>
+        </div>
+        <div class="col-lg-3">
+            <label for="search-document" class="form-label small text-muted">Document</label>
+            <select id="search-document" name="catechism" class="form-select">
+                <option value="">All active documents</option>
+                {% for cat in all_catechisms %}
+                <option value="{{ cat.slug }}"{% if selected_catechism_slug == cat.slug %} selected{% endif %}>
+                    {{ cat.abbreviation }} · {{ cat.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-lg-2">
+            <button class="btn btn-primary w-100" type="submit">
+                <i class="bi bi-search me-1"></i>Search
+            </button>
+        </div>
+    </div>
+    <div class="study-suggestions mt-2">
+        {% for term in suggested_searches %}
+        <a href="{% url 'catechism:search' %}?q={{ term|urlencode }}{% if selected_catechism_slug %}&catechism={{ selected_catechism_slug }}{% endif %}">{{ term }}</a>
+        {% endfor %}
     </div>
 </form>
 
 {% if query %}
-<p class="text-muted mb-5">
+<div class="d-flex justify-content-between align-items-center mb-4">
+<p class="text-muted mb-0">
     {% if grouped_results %}
         {{ total_results }} result{{ total_results|pluralize }} for &ldquo;{{ query }}&rdquo;
     {% else %}
         No results found for &ldquo;{{ query }}&rdquo;
     {% endif %}
 </p>
+{% if selected_catechism_slug %}
+<a href="{% url 'catechism:search' %}?q={{ query|urlencode }}" class="btn btn-outline-secondary btn-sm">Clear document filter</a>
+{% endif %}
+</div>
 
 {% for group in grouped_results %}
 <div class="mb-5">
@@ -46,6 +76,23 @@
     </a>
     {% endfor %}
 </div>
+{% empty %}
+<div class="study-card">
+    <i class="bi bi-search"></i>
+    <div class="study-card-title">Try a broader search</div>
+    <div class="study-card-text">Use a shorter doctrine word, remove document filters, or search by a chapter topic like Scripture, justification, or prayer.</div>
+</div>
 {% endfor %}
+{% else %}
+<div class="row g-3">
+    {% for term in suggested_searches %}
+    <div class="col-sm-6 col-lg-4">
+        <a class="study-inline-link" href="{% url 'catechism:search' %}?q={{ term|urlencode }}">
+            <strong>{{ term }}</strong>
+            <span>Search this topic across your active documents.</span>
+        </a>
+    </div>
+    {% endfor %}
+</div>
 {% endif %}
 {% endblock %}

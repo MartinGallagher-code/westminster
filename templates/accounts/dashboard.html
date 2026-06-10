@@ -3,15 +3,55 @@
 {% block title %}My Notes & Annotations - Study Reformed{% endblock %}
 
 {% block content %}
-<h1 class="mb-3">My Notes & Annotations</h1>
+<div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+    <div>
+        <h1 class="mb-1">My Study Desk</h1>
+        <p class="text-muted mb-0">Continue your notes, annotations, and highlighted commentary across the standards.</p>
+    </div>
+    <a href="{% url 'catechism:home' %}" class="btn btn-outline-primary btn-sm">
+        Browse Standards
+    </a>
+</div>
 
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="study-stat">
+            <span>{{ note_count }}</span>
+            <small>Notes</small>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="study-stat">
+            <span>{{ annotation_count }}</span>
+            <small>Annotations</small>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="study-stat">
+            <span>{{ highlight_count }}</span>
+            <small>Highlights</small>
+        </div>
+    </div>
+</div>
 
-{% if notes or inline_comments %}
+{% if notes or inline_comments or highlight_count %}
 <p class="text-muted">
     You have {{ notes|length }} note{{ notes|length|pluralize }}
     {% if inline_comments %}and {{ inline_comments|length }} annotation{{ inline_comments|length|pluralize }}{% endif %}
     across the Reformed standards.
 </p>
+
+{% if recent_notes %}
+<div class="study-callout mb-4">
+    <div>
+        <div class="fw-semibold">Continue where you were</div>
+        <div class="text-muted small">Your most recently edited note is ready to reopen.</div>
+    </div>
+    <a href="{{ recent_notes.0.question.get_absolute_url }}" class="btn btn-primary btn-sm">
+        Open Latest Note <i class="bi bi-arrow-right ms-1"></i>
+    </a>
+</div>
+{% endif %}
 
 {% if notes %}
 <h4 class="mt-4 mb-3"><i class="bi bi-journal-text me-2"></i>Notes</h4>
@@ -56,6 +96,16 @@
         <small class="text-muted">{{ comment.question.topic.name }}</small>
     </div>
     {% endfor %}
+</div>
+{% endif %}
+
+{% if highlight_count and not notes and not inline_comments %}
+<div class="study-callout mb-4">
+    <div>
+        <div class="fw-semibold">Your highlights are saved</div>
+        <div class="text-muted small">Open a commentary page to see and manage highlighted passages in context.</div>
+    </div>
+    <a href="{% url 'catechism:home' %}" class="btn btn-outline-primary btn-sm">Browse Standards</a>
 </div>
 {% endif %}
 

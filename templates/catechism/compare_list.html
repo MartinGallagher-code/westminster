@@ -15,6 +15,18 @@
 <h1 class="mb-3">{{ comparison_set.name }}</h1>
 <p class="text-muted mb-4">{{ comparison_set.description }}</p>
 
+<div class="study-callout mb-4">
+    <div>
+        <div class="fw-semibold">Read doctrinally, then drill into the text.</div>
+        <div class="text-muted small">Each theme gathers the relevant standards side by side. Use the linked entries to move from summary comparison back into full section context.</div>
+    </div>
+    {% if comparison_set.slug == 'westminster' %}
+    <a href="https://ontologicalatlas.com/westminster_standards/" class="btn btn-outline-primary btn-sm">
+        Open Doctrine Map <i class="bi bi-box-arrow-up-right ms-1"></i>
+    </a>
+    {% endif %}
+</div>
+
 {% regroup themes by locus as locus_groups %}
 {% for group in locus_groups %}
 {% if group.grouper %}
@@ -26,7 +38,12 @@
         <a href="{{ theme.get_absolute_url }}"
            class="d-block py-2 text-decoration-none border-bottom"
            style="border-color: var(--wm-border) !important; color: var(--bs-body-color);">
-            <div class="fw-semibold small">{{ theme.name }}</div>
+            <div class="d-flex justify-content-between gap-2">
+                <div class="fw-semibold small">{{ theme.name }}</div>
+                {% if theme.entry_count %}
+                <span class="badge text-bg-secondary align-self-start">{{ theme.entry_count }}</span>
+                {% endif %}
+            </div>
             {% if theme.description %}
             <div class="text-muted small">{{ theme.description }}</div>
             {% endif %}

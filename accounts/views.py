@@ -53,6 +53,14 @@ class DashboardView(LoginRequiredMixin, ListView):
             'question', 'question__topic', 'question__catechism',
             'commentary__source'
         ).order_by('-updated_at')[:50]
+        ctx['recent_notes'] = UserNote.objects.filter(
+            user=self.request.user
+        ).select_related(
+            'question', 'question__topic', 'question__catechism'
+        ).order_by('-updated_at')[:5]
+        ctx['note_count'] = UserNote.objects.filter(user=self.request.user).count()
+        ctx['annotation_count'] = InlineComment.objects.filter(user=self.request.user).count()
+        ctx['highlight_count'] = Highlight.objects.filter(user=self.request.user).count()
         return ctx
 
 
