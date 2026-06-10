@@ -141,4 +141,18 @@ document.querySelectorAll('form[action*="support/checkout"]').forEach(function(f
     });
 
     form.addEventListener('submit', function() {
-        if (customInput.value
+        if (customInput.value) {
+            radios.forEach(function(r) { r.checked = false; });
+            var hidden = form.querySelector('input[name="amount"][type="hidden"]');
+            if (!hidden) {
+                hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = 'amount';
+                form.appendChild(hidden);
+            }
+            hidden.value = customInput.value;
+        }
+    });
+});
+</script>
+{% endblock %}
