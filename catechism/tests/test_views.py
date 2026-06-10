@@ -154,6 +154,15 @@ class TestSearchView:
         content = resp.content.decode()
         assert 'Search results for chief end' in content
 
+    def test_search_matches_topic_name_from_generated_links(self, client, setup_catechism):
+        cat, topic, q1, q2 = setup_catechism
+        topic.name = 'Covenant Theology'
+        topic.save()
+        resp = client.get('/search/?q=Covenant+Theology')
+        assert resp.status_code == 200
+        assert q1 in resp.context['results']
+        assert q2 in resp.context['results']
+
 
 @pytest.mark.django_db
 class TestScriptureIndexView:

@@ -1,7 +1,9 @@
 from collections import defaultdict
 from datetime import date
+import re
 from xml.sax.saxutils import escape
 
+from django.db import connection
 from django.db.models import Q, Count, Prefetch
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
@@ -17,6 +19,12 @@ from .models import (
     ComparisonEntry,
 )
 from .utils import VALID_TRADITIONS, get_active_traditions
+
+
+SEARCH_STOP_WORDS = {
+    'a', 'an', 'and', 'by', 'for', 'from', 'in', 'into', 'is', 'of', 'on',
+    'or', 'the', 'to', 'with',
+}
 
 
 def _comparison_sets_for_traditions(active_traditions):
@@ -38,6 +46,54 @@ def _comparison_themes_for_traditions(active_traditions):
             distinct=True,
         )
     ).select_related('comparison_set').distinct()
+
+
+def _search_terms(query):
+    return [
+        term for term in re.findall(r"[A-Za-z0-9']+", query.lower())
+        if len(term) > 2 and term not in SEARCH_STOP_WORDS
+    ]
+
+
+def _search_questions(query, active_traditions):
+    base_qs = Question.objects.filter(
+        catechism__tradition__in=active_traditions
+    ).select_related('topic', 'catechism')
+    terms = _search_terms(query)
+
+    if connection.vendor == 'postgresql':
+        from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
+
+        vector = (
+            SearchVector('question_text', weight='A') +
+            SearchVector('answer_text', weight='B') +
+            SearchVector('topic__name', weight='B') +
+            SearchVector('proof_texts', weight='C')
+        )
+        search_query = SearchQuery(query, search_type='websearch')
+        for term in terms:
+            search_query |= SearchQuery(term, search_type='plain')
+        return base_qs.annotate(
+            search=vector,
+            rank=SearchRank(vector, search_query),
+        ).filter(search=search_query).order_by(
+            '-rank', 'catechism__abbreviation', 'number'
+        )
+
+    search_filter = (
+        Q(question_text__icontains=query) |
+        Q(answer_text__icontains=query) |
+        Q(topic__name__icontains=query) |
+        Q(proof_texts__icontains=query)
+    )
+    for term in terms:
+        search_filter |= (
+            Q(question_text__icontains=term) |
+            Q(answer_text__icontains=term) |
+            Q(topic__name__icontains=term) |
+            Q(proof_texts__icontains=term)
+        )
+    return base_qs.filter(search_filter).distinct().order_by('catechism__abbreviation', 'number')
 
 
 def robots_txt(request):
@@ -384,14 +440,7 @@ class SearchView(ListView):
             return Question.objects.none()
 
         active_traditions = get_active_traditions(self.request)
-        qs = Question.objects.filter(
-            Q(question_text__icontains=query) |
-            Q(answer_text__icontains=query)
-        ).filter(
-            catechism__tradition__in=active_traditions
-        ).distinct().select_related('topic', 'catechism').order_by(
-            'catechism__abbreviation', 'number'
-        )
+        qs = _search_questions(query, active_traditions)
 
         catechism_slug = self.request.GET.get('catechism', '')
         if catechism_slug:
@@ -815,9 +864,11 @@ class CompareSetThemeView(DetailView):
 
 def question_preview_json(request, pk):
     """Return lightweight JSON for the see-also preview panel."""
+    active_traditions = get_active_traditions(request)
     q = get_object_or_404(
         Question.objects.select_related('catechism'),
         pk=pk,
+        catechism__tradition__in=active_traditions,
     )
     response = JsonResponse({
         'catechism_name': q.catechism.name,

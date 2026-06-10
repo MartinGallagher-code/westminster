@@ -1,60 +1,63 @@
 # Study Reformed
 
-A Django web application for studying the great Reformed confessional standards — including the Westminster Standards, Three Forms of Unity, and more — with historical commentaries, scripture proofs, cross-references, and personal study tools.
+A Django web application for studying the great Reformed confessional standards — including the Westminster Standards, Three Forms of Unity, and related documents — with historical commentaries, scripture proofs, cross-references, and personal study tools.
 
 ## Features
 
-- Browse all three Westminster Standards with topic/chapter navigation
-- Historical commentaries from Fisher, Flavel, Henry, Watson, Vincent, Ridgley, Shaw, and Hodge
-- ESV scripture proof texts inline with each question/section
-- Cross-references between standards and thematic comparisons
-- Full-text search across all standards
-- Scripture index (every Bible book referenced)
-- Personal notes and text highlighting (authenticated users)
-- Dark mode with system preference detection
-- Print-friendly styles
+- Browse Westminster, Three Forms of Unity, and related Reformed documents with topic/chapter navigation
+- Read historical commentaries from Fisher, Flavel, Henry, Watson, Vincent, Ridgley, Shaw, Hodge, Ursinus, and others
+- View scripture proof texts inline with each question, section, or chapter
+- Compare doctrines across standards and thematic comparison sets
+- Search question text, answer text, and proof-text references
+- Browse a scripture index across loaded documents
+- Save personal notes and text highlights as an authenticated user
+- Use dark mode and print-friendly styles
+- Support the site through Stripe-powered supporter memberships
 
 ## Tech Stack
 
 - **Backend:** Django 4.2, Python 3.12
-- **Database:** PostgreSQL (production), SQLite (development)
+- **Database:** PostgreSQL in production, SQLite in local development
 - **Frontend:** Bootstrap 5.3, vanilla JavaScript
-- **Hosting:** Render (free tier) via `render.yaml`
+- **Hosting:** Render via `render.yaml`
 - **Static files:** WhiteNoise
+- **Payments:** Stripe Checkout and webhooks
 
 ## Local Setup
 
 ```bash
-# Clone and create virtual environment
-git clone https://github.com/your-username/westminster.git
+git clone https://github.com/MartinGallagher-code/westminster.git
 cd westminster
 python -m venv venv
 source venv/bin/activate
-
-# Install dependencies
 pip install -r requirements.txt
-
-# Run migrations and load data
+cp .env.example .env
 python manage.py migrate
 python manage.py createcachetable
-python manage.py load_catechism
-python manage.py load_fisher
-python manage.py load_flavel
-python manage.py load_henry
-python manage.py load_vincent
-python manage.py load_prooftexts
-python manage.py load_wlc
-python manage.py load_ridgley
-python manage.py load_prooftexts --catechism wlc
-python manage.py load_wcf
-python manage.py load_shaw
-python manage.py load_hodge
-python manage.py load_crossrefs
-python manage.py load_standard_crossrefs
-python manage.py build_scripture_index
-python manage.py load_comparison_themes
+```
 
-# Start development server
+`manage.py` defaults to `config.settings.development`, which uses SQLite and a development-only secret key fallback.
+
+## Loading Data
+
+For a full local dataset, run the same idempotent load sequence used by Render:
+
+```bash
+./build.sh
+```
+
+If you only need a smaller development dataset, run the relevant management commands manually. Most load commands skip automatically when their source data has not changed.
+
+External fetch commands are intentionally manual because they call upstream services:
+
+```bash
+python manage.py fetch_watson --delay=0.3
+python manage.py fetch_scripture --delay=0.3
+```
+
+## Running the App
+
+```bash
 python manage.py runserver
 ```
 
@@ -70,22 +73,37 @@ With coverage:
 pytest --cov
 ```
 
-## Manual Data Commands
-
-These fetch from external APIs and should be run manually:
+Lint and migration checks:
 
 ```bash
-# Fetch Watson commentary from CCEL
-python manage.py fetch_watson --delay=0.3
-
-# Fetch ESV scripture texts
-python manage.py fetch_scripture --delay=0.3
+flake8 catechism/ accounts/ config/ --max-line-length=120 --exclude=migrations
+python manage.py makemigrations --check --dry-run
 ```
 
 ## Deployment
 
-The project deploys to Render via `render.yaml`. The `build.sh` script handles migrations, data loading, and cache setup automatically.
+The project deploys to Render via `render.yaml`.
+
+Required production environment variables:
+
+- `DJANGO_SETTINGS_MODULE=config.settings.production`
+- `SECRET_KEY`
+- `DATABASE_URL`
+- `ALLOWED_HOSTS`
+- `STRIPE_PUBLISHABLE_KEY`
+- `STRIPE_SECRET_KEY`
+- `STRIPE_WEBHOOK_SECRET`
+- `STRIPE_PRODUCT_ID`
+- `GOOGLE_ANALYTICS_ID` optional
+
+`build.sh` installs dependencies, collects static assets, migrates the database, loads source data, rebuilds indexes/cross-references, and clears the cache.
+
+## Project Workflow
+
+- Record user-visible changes in `CHANGELOG.md`.
+- Update `HANDOFF.md` before ending substantial work sessions.
+- Keep future work in `TODO.md`; keep Stripe setup in `TODO_STRIPE.md`; keep BCO-specific notes in `TODO_PCA_BCO.md`.
 
 ## License
 
-Public domain catechism data sourced from [Creeds.json](https://github.com/NonlinearFruit/Creeds.json).
+Public domain catechism data sourced from [Creeds.json](https://github.com/NonlinearFruit/Creeds.json). Additional source data is tracked in `data/` with project-specific loaders.

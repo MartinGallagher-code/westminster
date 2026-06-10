@@ -3,7 +3,7 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-SECRET_KEY = 'django-insecure-fet7cfj4q1+0mx*ke*6sg(&wab=qz1se13!=xr=(2s!=%)wonx'
+SECRET_KEY = os.environ.get('SECRET_KEY', '')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -83,7 +83,6 @@ LOGOUT_REDIRECT_URL = '/'
 STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY', '')
 STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', '')
 STRIPE_WEBHOOK_SECRET = os.environ.get('STRIPE_WEBHOOK_SECRET', '')
-STRIPE_PRICE_ID = os.environ.get('STRIPE_PRICE_ID', '')
 STRIPE_PRODUCT_ID = os.environ.get('STRIPE_PRODUCT_ID', '')
 
 GOOGLE_ANALYTICS_ID = os.environ.get('GOOGLE_ANALYTICS_ID', '')
