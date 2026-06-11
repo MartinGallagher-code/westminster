@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 
 {% block title %}Support - Study Reformed{% endblock %}
+{% block meta_description %}Support Study Reformed and help keep Scripture proofs, commentary, comparisons, notes, and study tools freely available.{% endblock %}
+{% block og_title %}Support Study Reformed{% endblock %}
+{% block og_description %}Help keep Study Reformed free for readers, churches, students, and families.{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -85,6 +88,7 @@
                 <ul class="list-unstyled text-start mx-auto" style="max-width: 300px;">
                     <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Supporter badge on your profile</li>
                     <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Help keep the site running</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Keep the library free for everyone</li>
                     <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Cancel anytime</li>
                 </ul>
                 <form method="post" action="{% url 'accounts:support_checkout' %}">

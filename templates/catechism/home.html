@@ -3,6 +3,11 @@
 
 {% block body_attrs %}data-filter-sensitive="true"{% endblock %}
 {% block title %}Study Reformed{% endblock %}
+{% block meta_description %}Study the Reformed confessions and catechisms with Scripture proofs, classic commentary, cross-references, doctrine comparisons, and personal notes.{% endblock %}
+{% block og_title %}Study Reformed{% endblock %}
+{% block og_description %}Read the Reformed standards with Scripture proofs, cross-references, classic commentary, doctrine browsing, and personal study tools.{% endblock %}
+{% block twitter_title %}Study Reformed{% endblock %}
+{% block twitter_description %}Read the Reformed standards with Scripture proofs, commentary, doctrine browsing, and study notes.{% endblock %}
 
 {% block main_wrapper_class %}{% endblock %}
 
@@ -62,7 +67,7 @@
                 <a class="study-card study-card-link h-100" href="{% url 'catechism:compare_index' %}">
                     <i class="bi bi-layout-split"></i>
                     <span class="study-card-title">Study by doctrine</span>
-                    <span class="study-card-text">Compare how the standards teach each doctrine across WCF, WLC, and WSC.</span>
+                    <span class="study-card-text">Compare how the standards teach each doctrine side by side.</span>
                 </a>
             </div>
         </div>
@@ -172,7 +177,7 @@
             <div class="col-md-9 col-separator">
                 <div class="flat-section-heading mb-4">Explore</div>
                 <div class="row g-4">
-                    <div class="col-sm-6 col-lg-3">
+                    <div class="col-sm-6 col-lg">
                         <div class="study-card h-100">
                             <i class="bi bi-search"></i>
                             <div class="study-card-title">Search</div>
@@ -180,7 +185,7 @@
                             <a href="{% url 'catechism:search' %}" class="stretched-link">Search</a>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-lg-3">
+                    <div class="col-sm-6 col-lg">
                         <div class="study-card h-100">
                             <i class="bi bi-book"></i>
                             <div class="study-card-title">Scripture Index</div>
@@ -188,7 +193,15 @@
                             <a href="{% url 'catechism:scripture_index' %}" class="stretched-link">Browse</a>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-lg-3">
+                    <div class="col-sm-6 col-lg">
+                        <div class="study-card h-100">
+                            <i class="bi bi-diagram-3"></i>
+                            <div class="study-card-title">Doctrine Browse</div>
+                            <div class="study-card-text">Move by locus and topic through curated comparison themes.</div>
+                            <a href="{% url 'catechism:doctrine_index' %}" class="stretched-link">Browse</a>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg">
                         <div class="study-card h-100">
                             <i class="bi bi-layout-split"></i>
                             <div class="study-card-title">Compare</div>
@@ -196,12 +209,12 @@
                             <a href="{% url 'catechism:compare_index' %}" class="stretched-link">Compare</a>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-lg-3">
+                    <div class="col-sm-6 col-lg">
                         <div class="study-card h-100">
                             <i class="bi bi-diagram-3"></i>
                             <div class="study-card-title">Doctrine Map</div>
                             <div class="study-card-text">Go deeper in the Westminster Standards Atlas.</div>
-                            <a href="https://ontologicalatlas.com/westminster_standards/" class="stretched-link">Open Atlas</a>
+                            <a href="https://ontologicalatlas.com/westminster_standards/" class="stretched-link" target="_blank" rel="noopener noreferrer">Open Atlas</a>
                         </div>
                     </div>
                 </div>

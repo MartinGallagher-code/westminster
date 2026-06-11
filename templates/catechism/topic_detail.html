@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 
 {% block title %}{{ topic.name }} - {{ catechism.name }}{% endblock %}
+{% block meta_description %}Read {{ topic.name }} in {{ catechism.name }}, covering {{ catechism.item_name_plural|lower }} {{ topic.display_start }} through {{ topic.display_end }}.{% endblock %}
+{% block og_title %}{{ topic.name }} - {{ catechism.name }}{% endblock %}
+{% block og_description %}Read {{ catechism.item_name_plural|lower }} {{ topic.display_start }} through {{ topic.display_end }} in {{ catechism.name }}.{% endblock %}
+{% block twitter_title %}{{ topic.name }} - {{ catechism.name }}{% endblock %}
+{% block twitter_description %}Read {{ catechism.item_name_plural|lower }} {{ topic.display_start }} through {{ topic.display_end }} in {{ catechism.name }}.{% endblock %}
 
 {% block content %}
 <nav aria-label="breadcrumb">

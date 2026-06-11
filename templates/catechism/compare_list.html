@@ -1,7 +1,12 @@
 {% extends "base.html" %}
 
 {% block body_attrs %}data-filter-sensitive="true"{% endblock %}
-{% block title %}{{ comparison_set.name }} - Compare{% endblock %}
+{% block title %}{{ comparison_set.name }} - Compare - Study Reformed{% endblock %}
+{% block meta_description %}{{ comparison_set.description|default:"Browse curated doctrinal themes and compare related passages across active Reformed standards." }}{% endblock %}
+{% block og_title %}{{ comparison_set.name }} - Compare the Standards{% endblock %}
+{% block og_description %}{{ comparison_set.description|default:"Browse curated doctrinal themes across active Reformed standards." }}{% endblock %}
+{% block twitter_title %}{{ comparison_set.name }} - Compare{% endblock %}
+{% block twitter_description %}Browse curated doctrinal themes across active Reformed standards.{% endblock %}
 
 {% block content %}
 <nav aria-label="breadcrumb">
@@ -21,7 +26,7 @@
         <div class="text-muted small">Each theme gathers the relevant standards side by side. Use the linked entries to move from summary comparison back into full section context.</div>
     </div>
     {% if comparison_set.slug == 'westminster' %}
-    <a href="https://ontologicalatlas.com/westminster_standards/" class="btn btn-outline-primary btn-sm">
+    <a href="https://ontologicalatlas.com/westminster_standards/" class="btn btn-outline-primary btn-sm" target="_blank" rel="noopener noreferrer">
         Open Doctrine Map <i class="bi bi-box-arrow-up-right ms-1"></i>
     </a>
     {% endif %}

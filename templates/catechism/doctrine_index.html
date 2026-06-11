@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block body_attrs %}data-filter-sensitive="true"{% endblock %}
+{% block title %}Browse Doctrine - Study Reformed{% endblock %}
+{% block meta_description %}Browse Reformed doctrines by topic and compare related passages across the active confessions and catechisms.{% endblock %}
+{% block og_title %}Browse Doctrine - Study Reformed{% endblock %}
+{% block og_description %}Explore doctrine by locus and theme across the Reformed standards with direct links into comparison views and source texts.{% endblock %}
+{% block twitter_title %}Browse Doctrine - Study Reformed{% endblock %}
+{% block twitter_description %}Explore doctrine by locus and theme across the Reformed standards.{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'catechism:home' %}">Home</a></li>
+        <li class="breadcrumb-item active">Doctrine</li>
+    </ol>
+</nav>
+
+<div class="mb-4 pb-3 border-bottom">
+    <h1 class="mb-2">Browse Doctrine</h1>
+    <p class="text-muted mb-0">
+        Explore themes by theological locus, then open comparison pages that gather the relevant standards side by side.
+    </p>
+</div>
+
+<div class="study-callout mb-4">
+    <div>
+        <div class="fw-semibold">{{ theme_count }} doctrine theme{{ theme_count|pluralize }}</div>
+        <div class="text-muted small">The list follows your active document collection filter and uses the site&rsquo;s curated comparison themes.</div>
+    </div>
+    <a href="{% url 'catechism:compare_index' %}" class="btn btn-outline-primary btn-sm">
+        Build a Comparison <i class="bi bi-layout-split ms-1"></i>
+    </a>
+</div>
+
+{% for group in locus_groups %}
+<section class="mb-5">
+    <div class="flat-section-heading mb-3">{{ group.locus }}</div>
+    <div class="row g-3">
+        {% for theme in group.themes %}
+        <div class="col-md-6 col-xl-4">
+            <a href="{% url 'catechism:doctrine_detail' theme_slug=theme.slug %}" class="study-inline-link h-100">
+                <strong>{{ theme.name }}</strong>
+                <span>
+                    {% if theme.description %}
+                    {{ theme.description|truncatewords:18 }}
+                    {% else %}
+                    Compare related passages in {{ theme.comparison_set.name }}.
+                    {% endif %}
+                </span>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% empty %}
+<div class="study-card">
+    <i class="bi bi-diagram-3"></i>
+    <div class="study-card-title">No doctrine themes available</div>
+    <div class="study-card-text">Try enabling another document collection or visit comparison pages directly.</div>
+</div>
+{% endfor %}
+{% endblock %}

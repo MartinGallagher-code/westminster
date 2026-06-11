@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}{{ catechism.name }}{% endblock %}
+{% block title %}{{ catechism.name }} - Study Reformed{% endblock %}
+{% block meta_description %}{% if document_guide %}{{ document_guide.summary }}{% elif catechism.description %}{{ catechism.description }}{% else %}Read {{ catechism.name }} with Scripture proofs, commentary, cross-references, and study tools.{% endif %}{% endblock %}
+{% block og_title %}{{ catechism.name }} - Study Reformed{% endblock %}
+{% block og_description %}{% if document_guide %}{{ document_guide.summary }}{% elif catechism.description %}{{ catechism.description }}{% else %}Read {{ catechism.name }} with Scripture proofs, commentary, cross-references, and study tools.{% endif %}{% endblock %}
+{% block twitter_title %}{{ catechism.name }} - Study Reformed{% endblock %}
+{% block twitter_description %}{% if document_guide %}{{ document_guide.summary }}{% elif catechism.description %}{{ catechism.description }}{% else %}Read {{ catechism.name }} with Scripture proofs and study tools.{% endif %}{% endblock %}
 
 {% block content %}
 <div class="mb-4 pb-3 border-bottom">
@@ -9,6 +14,51 @@
     <p class="text-muted mb-0">{{ catechism.description }}</p>
     {% endif %}
 </div>
+
+{% if document_guide %}
+<div class="study-callout mb-4">
+    <div>
+        <div class="fw-semibold">About this document</div>
+        <div class="text-muted small">{{ document_guide.summary }}</div>
+    </div>
+    <a href="{% url 'catechism:search' %}?catechism={{ catechism.slug }}" class="btn btn-outline-primary btn-sm">
+        Search {{ catechism.abbreviation }}
+    </a>
+</div>
+
+<div class="row g-4 mb-5">
+    <div class="col-lg-7">
+        <div class="study-card h-100">
+            <i class="bi bi-clock-history"></i>
+            <div class="study-card-title">Historical Context</div>
+            <div class="study-card-text">
+                <p class="mb-2"><strong>Date:</strong> {{ document_guide.date }}</p>
+                <p class="mb-2"><strong>Authorship:</strong> {{ document_guide.authorship }}</p>
+                <p class="mb-2">{{ document_guide.history }}</p>
+                <p class="mb-0">{{ document_guide.context }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="study-card h-100">
+            <i class="bi bi-compass"></i>
+            <div class="study-card-title">How to Study</div>
+            <div class="study-card-text">
+                <ul class="mb-3 ps-3">
+                    {% for tip in document_guide.how_to_study %}
+                    <li class="mb-1">{{ tip }}</li>
+                    {% endfor %}
+                </ul>
+                <div class="d-flex flex-wrap gap-2">
+                    {% for feature in document_guide.key_features %}
+                    <span class="badge text-bg-secondary">{{ feature }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
 
 <div class="row g-5">
     {# Topic accordion — takes most of the width #}

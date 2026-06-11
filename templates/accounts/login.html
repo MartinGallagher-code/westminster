@@ -1,11 +1,31 @@
 {% extends "base.html" %}
 
-{% block title %}Login - Westminster Shorter Catechism{% endblock %}
+{% block title %}Login - Study Reformed{% endblock %}
+{% block meta_description %}Log in to Study Reformed to continue your saved notes, highlights, annotations, and personal study desk.{% endblock %}
+{% block og_title %}Login - Study Reformed{% endblock %}
+{% block og_description %}Continue your saved notes, highlights, annotations, and study dashboard.{% endblock %}
+{% block twitter_title %}Login - Study Reformed{% endblock %}
+{% block twitter_description %}Continue your saved notes, highlights, annotations, and study dashboard.{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6 col-lg-4">
-        <h1 class="mb-3">Login</h1>
+<div class="row justify-content-center g-5 align-items-start">
+    <div class="col-lg-5">
+        <h1 class="mb-3">Welcome Back</h1>
+        <p class="text-muted">
+            Pick up your reading where you left it: notes, annotations, highlights, and recent study are waiting at your desk.
+        </p>
+        <div class="study-callout mb-4">
+            <div>
+                <div class="fw-semibold">Not required for browsing</div>
+                <div class="text-muted small">You only need an account for personal study tools. The public library remains open.</div>
+            </div>
+            <a href="{% url 'catechism:home' %}" class="btn btn-outline-primary btn-sm">Browse First</a>
+        </div>
+    </div>
+
+    <div class="col-md-7 col-lg-5">
+        <div class="study-card">
+        <h2 class="h4 mb-3">Login</h2>
 
         {% if form.errors %}
         <div class="alert alert-danger" role="alert">
@@ -33,6 +53,7 @@
         <p class="text-center text-muted">
             <a href="{% url 'accounts:password_reset' %}">Forgot your password?</a>
         </p>
+        </div>
     </div>
 </div>
 {% endblock %}
