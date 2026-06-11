@@ -1,0 +1,153 @@
+{
+  "loci": [
+    {
+      "slug": "scripture",
+      "name": "Scripture",
+      "icon": "✦",
+      "tagline": "Sola scriptura — the rule of faith and life",
+      "overview": "The Westminster Standards begin not with God but with Scripture (WCF I), and the order is deliberate.",
+      "color": "#fcd34d",
+      "order": 1,
+      "atlas_path": "/westminster_standards/dimension/scripture/",
+      "attributes": [
+        {"slug": "sufficiency", "name": "Sufficiency", "baseline_label": "Express And Good Consequence", "baseline_slug": "express_and_consequence", "baseline_description": "Whatever is necessary for God's glory and human salvation is either expressly stated in Scripture, or may be deduced from it by good and necessary consequence (WCF I.6).", "atlas_path": "/westminster_standards/dimension/scripture/sufficiency/express_and_consequence/", "order": 1},
+        {"slug": "canon", "name": "Canon", "baseline_label": "66 Book Protestant Canon", "baseline_slug": "sixty_six", "baseline_description": "The 39 books of the Old Testament and 27 of the New, enumerated in WCF I.2; the Apocrypha is explicitly excluded (I.3).", "atlas_path": "/westminster_standards/dimension/scripture/canon/sixty_six/", "order": 2},
+        {"slug": "authority", "name": "Authority", "baseline_label": "Self Authenticating With Internal Witness", "baseline_slug": "self_authenticating_with_spirit", "baseline_description": "Scripture's authority is grounded in God its author and is sealed to the believer's heart by the inward work of the Holy Spirit bearing witness with and by the Word (WCF I.4-5).", "atlas_path": "/westminster_standards/dimension/scripture/authority/self_authenticating_with_spirit/", "order": 3},
+        {"slug": "interpretation", "name": "Interpretation", "baseline_label": "Scripture Interprets Scripture", "baseline_slug": "analogia_scripturae", "baseline_description": "The infallible rule of interpretation is Scripture itself: when there is a question about the true sense of any passage, it must be searched and known by other places that speak more clearly (WCF I.9).", "atlas_path": "/westminster_standards/dimension/scripture/interpretation/analogia_scripturae/", "order": 4},
+        {"slug": "necessity", "name": "Necessity", "baseline_label": "Necessary After The Fall", "baseline_slug": "necessary_post_fall", "baseline_description": "Although the light of nature and the works of creation manifest God's goodness, wisdom, and power, they are not sufficient to give the knowledge of God and his will necessary for salvation; therefore the Lord committed his revelation wholly unto writing (WCF I.1).", "atlas_path": "/westminster_standards/dimension/scripture/necessity/necessary_post_fall/", "order": 5}
+      ]
+    },
+    {
+      "slug": "god_decree",
+      "name": "God & Decree",
+      "icon": "✠",
+      "tagline": "The triune God and his eternal counsel",
+      "overview": "WCF II-V is the Standards' theology proper: God's being and attributes, the Trinity, the eternal decree, creation, and providence.",
+      "color": "#c084fc",
+      "order": 2,
+      "atlas_path": "/westminster_standards/dimension/god_decree/",
+      "attributes": [
+        {"slug": "trinity_processions", "name": "Trinity", "baseline_label": "Nicene With Filioque", "baseline_slug": "nicene_with_filioque", "baseline_description": "One God in three persons; the Son eternally begotten of the Father, the Spirit eternally proceeding from the Father and the Son (WCF II.3).", "atlas_path": "/westminster_standards/dimension/god_decree/trinity_processions/nicene_with_filioque/", "order": 1},
+        {"slug": "order_of_decrees", "name": "Order of Decrees", "baseline_label": "Deliberately Permits Both", "baseline_slug": "permitted_both", "baseline_description": "WCF III's language is deliberately drafted to permit both supra- and infralapsarianism without imposing either.", "atlas_path": "/westminster_standards/dimension/god_decree/order_of_decrees/permitted_both/", "order": 2},
+        {"slug": "extent_of_atonement", "name": "Extent of Atonement", "baseline_label": "Particular", "baseline_slug": "particular", "baseline_description": "Christ purchased redemption only for the elect; the atonement is intended, designed, and applied for the elect alone (WCF III.6, VIII.5, VIII.8).", "atlas_path": "/westminster_standards/dimension/god_decree/extent_of_atonement/particular/", "order": 3},
+        {"slug": "reprobation", "name": "Reprobation", "baseline_label": "Preterition And Just Condemnation", "baseline_slug": "preterition_and_just_condemnation", "baseline_description": "God passes by the non-elect and ordains them to dishonour and wrath for their sin (WCF III.7).", "atlas_path": "/westminster_standards/dimension/god_decree/reprobation/preterition_and_just_condemnation/", "order": 4},
+        {"slug": "covenant_of_redemption", "name": "Covenant of Redemption", "baseline_label": "Implicit Affirmed", "baseline_slug": "implicit_affirmed", "baseline_description": "The Standards affirm the substance of the pactum salutis without the developed apparatus of later federal theologians.", "atlas_path": "/westminster_standards/dimension/god_decree/covenant_of_redemption/implicit_affirmed/", "order": 5}
+      ]
+    },
+    {
+      "slug": "covenant",
+      "name": "Covenant",
+      "icon": "⊕",
+      "tagline": "Federal theology — works, grace, and the unity of redemption",
+      "overview": "WCF VII is the Standards' structural hinge between theology proper and Christology.",
+      "color": "#60a5fa",
+      "order": 3,
+      "atlas_path": "/westminster_standards/dimension/covenant/",
+      "attributes": [
+        {"slug": "number_of_covenants", "name": "Number of Covenants", "baseline_label": "Bi Covenantal", "baseline_slug": "bi", "baseline_description": "Two covenants: works with Adam, and grace with Christ and his elect (WCF VII.2-3).", "atlas_path": "/westminster_standards/dimension/covenant/number_of_covenants/bi/", "order": 1},
+        {"slug": "mosaic_covenant", "name": "Mosaic Covenant", "baseline_label": "Administration Of Grace", "baseline_slug": "administration_of_grace", "baseline_description": "The Mosaic dispensation is one administration of the one covenant of grace under the law (WCF VII.5-6).", "atlas_path": "/westminster_standards/dimension/covenant/mosaic_covenant/administration_of_grace/", "order": 2},
+        {"slug": "children_of_believers", "name": "Children of Believers", "baseline_label": "Federal Inclusion Paedobaptist", "baseline_slug": "paedo_federal", "baseline_description": "Children of one or both believing parents are in the visible church and receive its sign (WCF XXV.2, XXVIII.4).", "atlas_path": "/westminster_standards/dimension/covenant/children_of_believers/paedo_federal/", "order": 3},
+        {"slug": "testamental_continuity", "name": "Testamental Continuity", "baseline_label": "One Substance Different Administrations", "baseline_slug": "one_substance_different_administrations", "baseline_description": "The covenant of grace is one and the same in substance through both testaments, differently administered (WCF VII.6).", "atlas_path": "/westminster_standards/dimension/covenant/testamental_continuity/one_substance_different_administrations/", "order": 4}
+      ]
+    },
+    {
+      "slug": "christology",
+      "name": "Christology",
+      "icon": "☧",
+      "tagline": "Christ the Mediator — natures, offices, states",
+      "overview": "WCF VIII integrates the conciliar inheritance with the Reformed doctrine of Christ's offices.",
+      "color": "#f87171",
+      "order": 4,
+      "atlas_path": "/westminster_standards/dimension/christology/",
+      "attributes": [
+        {"slug": "natures", "name": "Natures", "baseline_label": "Chalcedonian Two Natures", "baseline_slug": "chalcedonian_two", "baseline_description": "Two whole, perfect, and distinct natures inseparably joined in one person, without conversion, composition, or confusion (WCF VIII.2).", "atlas_path": "/westminster_standards/dimension/christology/natures/chalcedonian_two/", "order": 1},
+        {"slug": "offices", "name": "Offices", "baseline_label": "Prophet Priest King", "baseline_slug": "prophet_priest_king", "baseline_description": "Three offices answering to the three deficiencies of fallen humanity (WCF VIII.1; LC Q. 42-45; SC Q. 23-26).", "atlas_path": "/westminster_standards/dimension/christology/offices/prophet_priest_king/", "order": 2},
+        {"slug": "states_and_descent", "name": "States & Descent", "baseline_label": "Humiliation And Exaltation; No Local Descent", "baseline_slug": "two_states_no_local_descent", "baseline_description": "Two states, humiliation and exaltation; the descendit is interpreted as the continued state of death between cross and resurrection.", "atlas_path": "/westminster_standards/dimension/christology/states_and_descent/two_states_no_local_descent/", "order": 3},
+        {"slug": "active_obedience_imputation", "name": "Active-Obedience Imputation", "baseline_label": "Active And Passive Obedience Imputed", "baseline_slug": "both_imputed", "baseline_description": "Both Christ's obedience and his sacrifice are imputed to the justified believer (WCF VIII.5; XI.1, 3).", "atlas_path": "/westminster_standards/dimension/christology/active_obedience_imputation/both_imputed/", "order": 4}
+      ]
+    },
+    {
+      "slug": "soteriology",
+      "name": "Soteriology",
+      "icon": "✚",
+      "tagline": "The application of redemption — calling, justifying, sanctifying",
+      "overview": "WCF X-XVIII traces the ordo salutis from effectual calling through assurance.",
+      "color": "#34d399",
+      "order": 5,
+      "atlas_path": "/westminster_standards/dimension/soteriology/",
+      "attributes": [
+        {"slug": "effectual_calling", "name": "Effectual Calling", "baseline_label": "Effectual And Renewing", "baseline_slug": "irresistible_renewing", "baseline_description": "The Spirit effectually calls the elect by enlightening their minds, renewing their wills, and drawing them to Christ (WCF X.1-2).", "atlas_path": "/westminster_standards/dimension/soteriology/effectual_calling/irresistible_renewing/", "order": 1},
+        {"slug": "justification_ground", "name": "Justification Ground", "baseline_label": "Imputed Righteousness Of Christ", "baseline_slug": "imputed_righteousness", "baseline_description": "Justification is a forensic act grounded in the imputation of Christ's whole obedience and satisfaction, received by faith alone (WCF XI.1-4).", "atlas_path": "/westminster_standards/dimension/soteriology/justification_ground/imputed_righteousness/", "order": 2},
+        {"slug": "saving_faith", "name": "Saving Faith", "baseline_label": "Receptive Resting On Christ Alone", "baseline_slug": "receptive_resting", "baseline_description": "Saving faith receives and rests upon Christ alone for salvation, as he is offered in the gospel (WCF XIV.2; SC Q. 86).", "atlas_path": "/westminster_standards/dimension/soteriology/saving_faith/receptive_resting/", "order": 3},
+        {"slug": "perseverance", "name": "Perseverance", "baseline_label": "Certain For The Elect", "baseline_slug": "certain_for_elect", "baseline_description": "Those accepted in Christ, effectually called, and sanctified by his Spirit can neither totally nor finally fall away from grace (WCF XVII.1).", "atlas_path": "/westminster_standards/dimension/soteriology/perseverance/certain_for_elect/", "order": 4},
+        {"slug": "assurance", "name": "Assurance", "baseline_label": "Attainable But Not Essence Of Faith", "baseline_slug": "attainable_not_essence", "baseline_description": "Infallible assurance is attainable in this life but does not belong to the essence of faith (WCF XVIII.3).", "atlas_path": "/westminster_standards/dimension/soteriology/assurance/attainable_not_essence/", "order": 5}
+      ]
+    },
+    {
+      "slug": "law_sanctification",
+      "name": "Law & Sanctification",
+      "icon": "⚖",
+      "tagline": "The moral law, the Sabbath, the Christian life",
+      "overview": "WCF XIX-XXII handles the law, Christian liberty, worship and Sabbath, and lawful oaths and vows.",
+      "color": "#fb923c",
+      "order": 6,
+      "atlas_path": "/westminster_standards/dimension/law_sanctification/",
+      "attributes": [
+        {"slug": "uses_of_the_law", "name": "Uses of the Law", "baseline_label": "Three Uses Affirmed", "baseline_slug": "three_uses", "baseline_description": "Civil, pedagogical, and normative uses of the law are affirmed (WCF XIX.5-6).", "atlas_path": "/westminster_standards/dimension/law_sanctification/uses_of_the_law/three_uses/", "order": 1},
+        {"slug": "tripartite_division", "name": "Tripartite Division", "baseline_label": "Moral Judicial Ceremonial", "baseline_slug": "moral_judicial_ceremonial", "baseline_description": "Moral law remains perpetually binding; judicial law expired with the Jewish polity except for general equity; ceremonial law is abrogated in Christ (WCF XIX.3-5).", "atlas_path": "/westminster_standards/dimension/law_sanctification/tripartite_division/moral_judicial_ceremonial/", "order": 2},
+        {"slug": "sabbath", "name": "Sabbath", "baseline_label": "Lords Day Fourth Commandment Perpetual", "baseline_slug": "lords_day_perpetual", "baseline_description": "One day in seven is to be kept holy; changed to the first day of the week from the resurrection of Christ (WCF XXI.7-8).", "atlas_path": "/westminster_standards/dimension/law_sanctification/sabbath/lords_day_perpetual/", "order": 3},
+        {"slug": "good_works", "name": "Good Works", "baseline_label": "Necessary Fruit Not Meritorious", "baseline_slug": "necessary_fruit_not_meritorious", "baseline_description": "Good works are the fruits and evidences of a true and lively faith; they cannot merit pardon or eternal life (WCF XVI.2, 5).", "atlas_path": "/westminster_standards/dimension/law_sanctification/good_works/necessary_fruit_not_meritorious/", "order": 4}
+      ]
+    },
+    {
+      "slug": "ecclesiology_worship",
+      "name": "Ecclesiology & Worship",
+      "icon": "☩",
+      "tagline": "Church, sacraments, worship, discipline",
+      "overview": "WCF XXV-XXXI plus XXI handle the church, communion of saints, sacraments, worship, discipline, and synods.",
+      "color": "#f472b6",
+      "order": 7,
+      "atlas_path": "/westminster_standards/dimension/ecclesiology_worship/",
+      "attributes": [
+        {"slug": "polity", "name": "Polity", "baseline_label": "Presbyterian Jure Divino", "baseline_slug": "presbyterian_jure_divino", "baseline_description": "Christ has instituted a graded series of presbyterial assemblies by divine right.", "atlas_path": "/westminster_standards/dimension/ecclesiology_worship/polity/presbyterian_jure_divino/", "order": 1},
+        {"slug": "sacraments_efficacy", "name": "Sacramental Efficacy", "baseline_label": "Signs And Seals Conferring Grace By Spirit", "baseline_slug": "signs_and_seals", "baseline_description": "Sacraments are signs and seals of the covenant of grace, conferring the grace signified by the Spirit and the word of institution upon worthy receivers.", "atlas_path": "/westminster_standards/dimension/ecclesiology_worship/sacraments_efficacy/signs_and_seals/", "order": 2},
+        {"slug": "regulative_principle", "name": "Regulative Principle", "baseline_label": "Strict Only What Commanded", "baseline_slug": "strict", "baseline_description": "Only what is instituted by God in Scripture may be done in worship (WCF XXI.1).", "atlas_path": "/westminster_standards/dimension/ecclesiology_worship/regulative_principle/strict/", "order": 3},
+        {"slug": "censures_and_synods", "name": "Censures & Synods", "baseline_label": "Three Degrees With Graded Synods", "baseline_slug": "three_degrees_with_synods", "baseline_description": "Admonition, suspension from the sacrament, excommunication, and graded synods are affirmed in the Standards.", "atlas_path": "/westminster_standards/dimension/ecclesiology_worship/censures_and_synods/three_degrees_with_synods/", "order": 4}
+      ]
+    },
+    {
+      "slug": "civil_last_things",
+      "name": "Civil & Last Things",
+      "icon": "⌛",
+      "tagline": "Magistrate, oaths, marriage; death, resurrection, judgment",
+      "overview": "WCF XXIII-XXIV and XXXII-XXXIII frame the Standards' civil and eschatological commitments.",
+      "color": "#38bdf8",
+      "order": 8,
+      "atlas_path": "/westminster_standards/dimension/civil_last_things/",
+      "attributes": [
+        {"slug": "magistrate_role", "name": "Magistrate's Role", "baseline_label": "Custos Utriusque Tabulae (1646)", "baseline_slug": "custos_utriusque_tabulae", "baseline_description": "The 1646 text gives the magistrate duties toward both tables of the Decalogue.", "atlas_path": "/westminster_standards/dimension/civil_last_things/magistrate_role/custos_utriusque_tabulae/", "order": 1},
+        {"slug": "lawful_oaths_and_marriage", "name": "Oaths & Marriage", "baseline_label": "Oaths Lawful Serious; Divorce Adultery Or Desertion", "baseline_slug": "oaths_serious_marriage_two_grounds", "baseline_description": "Lawful oaths are a serious part of religious worship; divorce is limited to adultery or willful desertion.", "atlas_path": "/westminster_standards/dimension/civil_last_things/lawful_oaths_and_marriage/oaths_serious_marriage_two_grounds/", "order": 2},
+        {"slug": "intermediate_state", "name": "Intermediate State", "baseline_label": "Immediate Conscious With God Or Judgment", "baseline_slug": "immediate_conscious", "baseline_description": "Souls of the righteous are immediately received into heaven; souls of the wicked are cast into hell, reserved to judgment (WCF XXXII.1).", "atlas_path": "/westminster_standards/dimension/civil_last_things/intermediate_state/immediate_conscious/", "order": 3},
+        {"slug": "final_judgment", "name": "Final Judgment", "baseline_label": "Single Universal Judgment By Christ", "baseline_slug": "single_universal_judgment", "baseline_description": "God has appointed a day wherein he will judge the world in righteousness by Jesus Christ (WCF XXXIII.1-2; SC Q. 38).", "atlas_path": "/westminster_standards/dimension/civil_last_things/final_judgment/single_universal_judgment/", "order": 4}
+      ]
+    }
+  ],
+  "doctrine_heads": [
+    {
+      "slug": "prolegomena",
+      "name": "Prolegomena / The Nature of Theology",
+      "description": "The grounds and method of theological knowledge: why theology is necessary, how it differs from philosophy, and what role Scripture plays as the principium cognoscendi of all doctrinal inquiry.",
+      "locus": "scripture",
+      "order": 1,
+      "atlas_path": "/westminster_standards/heads/prolegomena/"
+    }
+  ],
+  "question_tags": [
+    {"catechism": "wsc", "number": 1, "attributes": ["scripture:necessity", "scripture:authority"], "heads": ["prolegomena"]},
+    {"catechism": "wlc", "number": 1, "attributes": ["scripture:necessity", "scripture:authority"], "heads": ["prolegomena"]},
+    {"catechism": "wlc", "number": 2, "attributes": ["scripture:necessity", "scripture:authority"], "heads": ["prolegomena"]},
+    {"catechism": "wlc", "number": 3, "attributes": ["scripture:authority", "scripture:sufficiency"], "heads": ["prolegomena"]},
+    {"catechism": "wlc", "number": 4, "attributes": ["scripture:authority"], "heads": ["prolegomena"]},
+    {"catechism": "wlc", "number": 5, "attributes": ["scripture:sufficiency"], "heads": ["prolegomena"]}
+  ]
+}

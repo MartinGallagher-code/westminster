@@ -3,10 +3,25 @@
 All notable project changes should be recorded here. This project uses a simple
 reverse-chronological changelog rather than formal release tags.
 
+## 2026-06-11
+
+### Added
+
+- Added a configurable Westminster Standards Atlas bridge via `WESTMINSTER_ATLAS_BASE_URL`.
+- Added local ontology models for Atlas loci, attributes, doctrine heads, and question mappings.
+- Added `load_westminster_ontology` plus `data/westminster_ontology.json` to seed the eight Atlas loci, 35 attributes, and initial prolegomena question tags.
+- Added an Atlas placement panel to Westminster detail pages so local ontology tags and doctrine heads appear inside Study Reformed.
+
+### Changed
+
+- Centralized public Atlas links through the shared Atlas helper and context processor.
+- Included the ontology loader in `build.sh` after the Westminster source texts load.
+
 ## 2026-06-10
 
 ### Changed
 
+- Restored a code-level development `SECRET_KEY` fallback in shared settings while keeping production tied to the real environment secret.
 - Added a project handoff file so future work has a clear status, next-step, and validation trail.
 - Refreshed README setup instructions to match the current Django settings layout and deployment data-loading pipeline.
 - Reworked the project TODO file into a forward-looking backlog instead of mixing completed implementation notes with active work.
@@ -17,9 +32,4 @@ reverse-chronological changelog rather than formal release tags.
 
 ### Fixed
 
-- Added a build-only `SECRET_KEY` fallback in `build.sh` so Render deploy builds can run Django management commands even when generated secrets are unavailable during build.
-- Added a repo-level `.python-version` pin so Render uses Python 3.12 instead of its current Python 3.14 default when service environment settings are not applied.
-- Enforced the active document-tradition filter in the see-also preview API so filtered-out documents no longer preview via direct API calls.
-- Aligned the preview-filter test expectations with the intended site-wide filtering behavior.
-- Fixed generated topic-name searches returning empty results when the topic label did not appear verbatim in question or answer text.
-- Moved real-looking secret-key configuration out of shared base settings and into environment/development-specific settings.
+- Added a build-only `SECRET_KEY` fallback in `build.sh` so Render deploy builds can run Django management commands even when generated secre
