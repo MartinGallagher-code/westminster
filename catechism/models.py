@@ -405,4 +405,104 @@ class OntologyLocus(models.Model):
     tagline = models.CharField(max_length=255, blank=True)
     overview = models.TextField(blank=True)
     color = models.CharField(max_length=20, blank=True)
-    order = models.
+    order = models.PositiveIntegerField(default=0)
+    atlas_path = models.CharField(max_length=255, blank=True)
+
+    class Meta:
+        ordering = ['order', 'name']
+
+    def __str__(self):
+        return self.name
+
+    def get_atlas_url(self):
+        from .atlas import atlas_url
+        return atlas_url(self.atlas_path)
+
+
+class OntologyAttribute(models.Model):
+    locus = models.ForeignKey(
+        OntologyLocus, on_delete=models.CASCADE, related_name='attributes'
+    )
+    slug = models.SlugField()
+    name = models.CharField(max_length=150)
+    baseline_label = models.CharField(max_length=200, blank=True)
+    baseline_slug = models.SlugField(blank=True)
+    baseline_description = models.TextField(blank=True)
+    order = models.PositiveIntegerField(default=0)
+    atlas_path = models.CharField(max_length=255, blank=True)
+
+    class Meta:
+        ordering = ['locus__order', 'order', 'name']
+        unique_together = ('locus', 'slug')
+
+    def __str__(self):
+        return f"{self.locus.name}: {self.name}"
+
+    def get_atlas_url(self):
+        from .atlas import atlas_url
+        return atlas_url(self.atlas_path)
+
+
+class DoctrineHead(models.Model):
+    locus = models.ForeignKey(
+        OntologyLocus, on_delete=models.SET_NULL, null=True, blank=True, related_name='doctrine_heads'
+    )
+    slug = models.SlugField(unique=True)
+    name = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    order = models.PositiveIntegerField(default=0)
+    atlas_path = models.CharField(max_length=255, blank=True)
+
+    class Meta:
+        ordering = ['locus__order', 'order', 'name']
+
+    def __str__(self):
+        return self.name
+
+    def get_atlas_url(self):
+        from .atlas import atlas_url
+        return atlas_url(self.atlas_path)
+
+
+class QuestionOntologyTag(models.Model):
+    question = models.ForeignKey(
+        Question, on_delete=models.CASCADE, related_name='ontology_tags'
+    )
+    attribute = models.ForeignKey(
+        OntologyAttribute, on_delete=models.CASCADE, related_name='question_tags'
+    )
+    is_representative = models.BooleanField(default=False)
+    note = models.CharField(max_length=255, blank=True)
+
+    class Meta:
+        ordering = ['attribute__locus__order', 'attribute__order']
+        unique_together = ('question', 'attribute')
+
+    def __str__(self):
+        return f"{self.question} -> {self.attribute}"
+
+
+class QuestionDoctrineHead(models.Model):
+    question = models.ForeignKey(
+        Question, on_delete=models.CASCADE, related_name='doctrine_head_links'
+    )
+    doctrine_head = models.ForeignKey(
+        DoctrineHead, on_delete=models.CASCADE, related_name='question_links'
+    )
+
+    class Meta:
+        ordering = ['doctrine_head__locus__order', 'doctrine_head__order']
+        unique_together = ('question', 'doctrine_head')
+
+    def __str__(self):
+        return f"{self.question} -> {self.doctrine_head}"
+
+
+class DataVersion(models.Model):
+    """Tracks the hash of source data files to skip unchanged loads on deploy."""
+    name = models.CharField(max_length=100, unique=True)
+    data_hash = models.CharField(max_length=64)
+    loaded_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.name} ({self.data_hash[:8]}…)"
