@@ -16,6 +16,8 @@
 - Added PostgreSQL full-text search for production while preserving SQLite fallback behavior.
 - Expanded search matching to include topic names and tokenized terms, which fixes generated topic/theme search links that previously returned empty results for long labels.
 - Updated Atlas anchors to open as external links with `target="_blank"` and `rel="noopener noreferrer"`.
+- Added a build-only `SECRET_KEY` placeholder in `build.sh` to fix Render builds where generated service secrets are not exposed during build.
+- Added `.python-version` to pin Render/native Python selection to Python 3.12 when dashboard/blueprint environment variables are not applied.
 - Removed duplicate Finder/iCloud-style `* 2.*` files from the working tree.
 - Replaced the shared hardcoded Django secret with environment-based production settings and an explicit development-only fallback.
 
@@ -38,3 +40,4 @@
 - The preview API should return `404` for a question whose `catechism.tradition` is outside the active `docFilters` cookie.
 - SQLite tests should continue using the fallback `icontains` search path.
 - Direct Atlas probes returned `200` for the Westminster Standards home, WSC Q1, WLC Q1, and WCF chapter 1 routes.
+- `env -u SECRET_KEY DJANGO_SETTINGS_MODULE=config.settings.production bash -c 'export SECRET_KEY="${SECRET_KEY:-django-insecure-build-only-placeholder}"; python3 manage.py check'` passes, matching the Render build fallback path.
