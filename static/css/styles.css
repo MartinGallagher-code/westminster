@@ -1331,32 +1331,23 @@ mark.user-annotation.active {
     border-color: color-mix(in srgb, var(--wm-primary) 18%, var(--wm-border));
 }
 
-.study-stat {
+.study-atlas-panel {
+    background: color-mix(in srgb, var(--wm-card-bg) 88%, var(--bs-body-bg));
     border: 1px solid var(--wm-border);
+    border-left: 3px solid var(--wm-accent);
     border-radius: 0.45rem;
     padding: 1rem;
-    text-align: center;
 }
 
-.study-stat span {
-    color: var(--wm-primary);
-    display: block;
-    font-size: 1.7rem;
-    font-weight: 700;
-    line-height: 1;
+.study-atlas-chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
 }
 
-.study-stat small {
-    color: var(--wm-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-}
-
-@media (max-width: 767.98px) {
-    .study-callout,
-    .study-action-bar,
-    .study-continue {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-}
+.study-atlas-chip {
+    align-items: center;
+    background: color-mix(in srgb, var(--wm-card-bg) 82%, var(--bs-body-bg));
+    border: 1px solid var(--wm-border);
+    border-left: 4px solid var(--wm-accent);
+    border-radius: 0.

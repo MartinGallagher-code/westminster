@@ -5,7 +5,7 @@ from catechism.management.commands.fetch_scripture import (
     expand_references,
     parse_reference,
 )
-from catechism.models import Catechism, Question
+from catechism.models import Catechism, OntologyAttribute, OntologyLocus, Question
 
 
 @pytest.mark.django_db
@@ -19,6 +19,19 @@ def test_load_catechism_smoke():
 def test_cleanup_stale_sources_no_error():
     """cleanup_stale_sources runs without error even with no data."""
     call_command('cleanup_stale_sources')
+
+
+@pytest.mark.django_db
+def test_load_westminster_ontology_smoke():
+    """Smoke test: load ontology loci, attributes, and WSC Q1 tags."""
+    call_command('load_catechism')
+    call_command('load_westminster_ontology')
+
+    assert OntologyLocus.objects.count() == 8
+    assert OntologyAttribute.objects.count() == 35
+    q1 = Question.objects.get(catechism__slug='wsc', number=1)
+    tag_names = {tag.attribute.name for tag in q1.ontology_tags.all()}
+    assert {'Necessity', 'Authority'} <= tag_names
 
 
 # --- Tier 1 confessions ---

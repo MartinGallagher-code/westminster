@@ -3,6 +3,8 @@ from .models import (
     Catechism, Topic, Question, CommentarySource, Commentary, FisherSubQuestion,
     ScripturePassage, CrossReference, StandardCrossReference,
     BibleBook, ScriptureIndex, ComparisonSet, ComparisonTheme, ComparisonEntry,
+    OntologyLocus, OntologyAttribute, DoctrineHead,
+    QuestionOntologyTag, QuestionDoctrineHead,
 )
 
 
@@ -92,3 +94,36 @@ class ComparisonThemeAdmin(admin.ModelAdmin):
     list_filter = ('comparison_set', 'locus')
     prepopulated_fields = {'slug': ('name',)}
     inlines = [ComparisonEntryInline]
+
+
+class OntologyAttributeInline(admin.TabularInline):
+    model = OntologyAttribute
+    extra = 0
+
+
+@admin.register(OntologyLocus)
+class OntologyLocusAdmin(admin.ModelAdmin):
+    list_display = ('name', 'slug', 'order')
+    prepopulated_fields = {'slug': ('name',)}
+    inlines = [OntologyAttributeInline]
+
+
+@admin.register(DoctrineHead)
+class DoctrineHeadAdmin(admin.ModelAdmin):
+    list_display = ('name', 'locus', 'order')
+    list_filter = ('locus',)
+    prepopulated_fields = {'slug': ('name',)}
+
+
+@admin.register(QuestionOntologyTag)
+class QuestionOntologyTagAdmin(admin.ModelAdmin):
+    list_display = ('question', 'attribute', 'is_representative')
+    list_filter = ('attribute__locus', 'is_representative')
+    raw_id_fields = ('question',)
+
+
+@admin.register(QuestionDoctrineHead)
+class QuestionDoctrineHeadAdmin(admin.ModelAdmin):
+    list_display = ('question', 'doctrine_head')
+    list_filter = ('doctrine_head__locus',)
+    raw_id_fields = ('question',)

@@ -1,9 +1,17 @@
 import pytest
+from django.test import override_settings
 
+from catechism.atlas import atlas_url
 from .conftest import (
     TopicFactory, QuestionFactory,
     FisherSubQuestionFactory,
 )
+
+
+def test_atlas_url_normalizes_public_subproject_paths():
+    with override_settings(WESTMINSTER_ATLAS_BASE_URL='https://study.example/atlas/'):
+        url = atlas_url('/westminster_standards/dimension/scripture/')
+    assert url == 'https://study.example/atlas/dimension/scripture/'
 
 
 @pytest.mark.django_db

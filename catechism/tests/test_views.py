@@ -7,7 +7,7 @@ from .conftest import (
     TopicFactory, QuestionFactory,
     BibleBookFactory, ScriptureIndexFactory,
     ComparisonThemeFactory, ComparisonEntryFactory,
-    ScripturePassageFactory,
+    ScripturePassageFactory, OntologyAttributeFactory, QuestionOntologyTagFactory,
 )
 
 
@@ -128,6 +128,17 @@ class TestQuestionDetailView:
     def test_404_invalid_number(self, client, setup_catechism):
         resp = client.get('/wsc/questions/999/')
         assert resp.status_code == 404
+
+    def test_renders_ontology_tags(self, client, setup_catechism):
+        cat, topic, q1, q2 = setup_catechism
+        attr = OntologyAttributeFactory(name='Necessity')
+        QuestionOntologyTagFactory(question=q1, attribute=attr)
+
+        resp = client.get('/wsc/questions/1/')
+
+        assert resp.status_code == 200
+        assert b'Ontology placement' in resp.content
+        assert b'Necessity' in resp.content
 
 
 @pytest.mark.django_db

@@ -155,13 +155,53 @@
                     <a href="{% url 'catechism:search' %}?q={{ question.topic.name|urlencode }}" class="btn btn-outline-primary btn-sm">
                         Search Topic
                     </a>
+                </div>
+            </div>
+
+            {% if ontology_tags or doctrine_heads or atlas_url %}
+            <div class="study-atlas-panel mb-4">
+                <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-3">
+                    <div>
+                        <div class="small text-muted">Westminster Standards Atlas</div>
+                        <div class="fw-semibold">Ontology placement</div>
+                    </div>
                     {% if atlas_url %}
                     <a href="{{ atlas_url }}" class="btn btn-outline-secondary btn-sm" target="_blank" rel="noopener noreferrer">
-                        {{ atlas_label }} <i class="bi bi-box-arrow-up-right ms-1"></i>
+                        Open in Atlas <i class="bi bi-box-arrow-up-right ms-1"></i>
                     </a>
                     {% endif %}
                 </div>
+                {% if ontology_tags %}
+                <div class="study-atlas-chip-group mb-3">
+                    {% for tag in ontology_tags %}
+                    <a href="{{ tag.attribute.get_atlas_url }}"
+                       class="study-atlas-chip"
+                       style="border-left-color: {{ tag.attribute.locus.color }};"
+                       target="_blank" rel="noopener noreferrer"
+                       title="{{ tag.attribute.baseline_description }}">
+                        <span>{{ tag.attribute.locus.icon }}</span>
+                        <span>{{ tag.attribute.name }}</span>
+                        {% if tag.is_representative %}<small>approx.</small>{% endif %}
+                    </a>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% if doctrine_heads %}
+                <div class="small text-muted mb-2">Heads of doctrine</div>
+                <div class="study-atlas-chip-group">
+                    {% for head in doctrine_heads %}
+                    <a href="{{ head.get_atlas_url }}"
+                       class="study-atlas-chip"
+                       {% if head.locus %}style="border-left-color: {{ head.locus.color }};"{% endif %}
+                       target="_blank" rel="noopener noreferrer">
+                        {% if head.locus %}<span>{{ head.locus.icon }}</span>{% endif %}
+                        <span>{{ head.name }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% endif %}
             </div>
+            {% endif %}
 
             <!-- Question and Answer -->
             <div class="mb-5 pb-4 border-bottom">
@@ -457,66 +497,4 @@ if (active) {
         var original = btn.innerHTML;
         var text = btn.getAttribute('data-citation') + ' — ' + window.location.href;
         navigator.clipboard.writeText(text).then(function () {
-            btn.innerHTML = '<i class="bi bi-check2 me-1"></i>Copied';
-            setTimeout(function () { btn.innerHTML = original; }, 1400);
-        });
-    });
-})();
-
-// Sidebar toggle
-(function () {
-    var hideBtn = document.getElementById('sidebar-hide');
-    var showBtn = document.getElementById('sidebar-show');
-    var nav = document.getElementById('nav-col');
-    var main = document.getElementById('main-col');
-    if (!nav || !main) return;
-
-    var KEY = 'sidebarHidden';
-
-    function apply(hidden) {
-        nav.classList.toggle('sidebar-hidden', hidden);
-        main.classList.toggle('sidebar-expanded', hidden);
-        if (hidden) {
-            main.classList.remove('col-separator');
-        } else {
-            main.classList.add('col-separator');
-        }
-        if (showBtn) showBtn.classList.toggle('d-none', !hidden);
-    }
-
-    apply(localStorage.getItem(KEY) === '1');
-
-    if (hideBtn) hideBtn.addEventListener('click', function () {
-        localStorage.setItem(KEY, '1');
-        apply(true);
-    });
-    if (showBtn) showBtn.addEventListener('click', function () {
-        localStorage.setItem(KEY, '0');
-        apply(false);
-    });
-})();
-</script>
-{% endblock %}
-
-{% block extra_js %}
-<script src="{% static 'js/see-also-preview.js' %}"></script>
-<script src="{% static 'js/chapter-mode.js' %}"></script>
-{% if user.is_authenticated %}
-<script>
-    window.HIGHLIGHT_CONFIG = {
-        listCreateUrl: '{% url "accounts:highlight_list_create" %}',
-        deleteUrlTemplate: '/accounts/highlights/{id}/delete/',
-        csrfToken: '{{ csrf_token }}'
-    };
-    window.COMMENT_CONFIG = {
-        listCreateUrl: '{% url "accounts:comment_list_create" %}',
-        updateUrlTemplate: '/accounts/comments/{id}/update/',
-        deleteUrlTemplate: '/accounts/comments/{id}/delete/',
-        questionId: {{ question.pk }},
-        csrfToken: '{{ csrf_token }}'
-    };
-</script>
-<script src="{% static 'js/highlights.js' %}"></script>
-<script src="{% static 'js/annotations.js' %}"></script>
-{% endif %}
-{% endblock %}
+   

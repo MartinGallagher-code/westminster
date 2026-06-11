@@ -31,6 +31,9 @@ python manage.py load_wcf
 python manage.py load_shaw
 python manage.py load_hodge
 
+# Westminster Standards Atlas ontology metadata
+python manage.py load_westminster_ontology
+
 # Remove stale commentary sources not loaded by any command above
 python manage.py cleanup_stale_sources
 

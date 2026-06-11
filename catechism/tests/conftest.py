@@ -6,6 +6,7 @@ from catechism.models import (
     Catechism, Topic, Question, CommentarySource, Commentary,
     FisherSubQuestion, ScripturePassage, BibleBook, ScriptureIndex,
     ComparisonSet, ComparisonTheme, ComparisonEntry,
+    OntologyLocus, OntologyAttribute, QuestionOntologyTag,
 )
 
 
@@ -129,6 +130,42 @@ class ComparisonEntryFactory(factory.django.DjangoModelFactory):
     catechism = factory.SubFactory(CatechismFactory)
     question_start = 1
     question_end = 3
+
+
+class OntologyLocusFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = OntologyLocus
+
+    name = factory.Sequence(lambda n: f'Locus {n}')
+    slug = factory.Sequence(lambda n: f'locus-{n}')
+    icon = '*'
+    color = '#6B2737'
+    order = factory.Sequence(lambda n: n)
+    atlas_path = factory.Sequence(lambda n: f'/westminster_standards/dimension/locus-{n}/')
+
+
+class OntologyAttributeFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = OntologyAttribute
+
+    locus = factory.SubFactory(OntologyLocusFactory)
+    name = factory.Sequence(lambda n: f'Attribute {n}')
+    slug = factory.Sequence(lambda n: f'attribute-{n}')
+    baseline_label = 'Baseline'
+    baseline_slug = 'baseline'
+    baseline_description = 'Baseline description.'
+    order = factory.Sequence(lambda n: n)
+    atlas_path = factory.Sequence(
+        lambda n: f'/westminster_standards/dimension/locus/attribute-{n}/baseline/'
+    )
+
+
+class QuestionOntologyTagFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = QuestionOntologyTag
+
+    question = factory.SubFactory(QuestionFactory)
+    attribute = factory.SubFactory(OntologyAttributeFactory)
 
 
 @pytest.fixture

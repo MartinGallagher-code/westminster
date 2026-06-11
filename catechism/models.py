@@ -398,11 +398,11 @@ class ComparisonEntry(models.Model):
         ).select_related('topic')
 
 
-class DataVersion(models.Model):
-    """Tracks the hash of source data files to skip unchanged loads on deploy."""
-    name = models.CharField(max_length=100, unique=True)
-    data_hash = models.CharField(max_length=64)
-    loaded_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f"{self.name} ({self.data_hash[:8]}…)"
+class OntologyLocus(models.Model):
+    slug = models.SlugField(unique=True)
+    name = models.CharField(max_length=100)
+    icon = models.CharField(max_length=8, blank=True)
+    tagline = models.CharField(max_length=255, blank=True)
+    overview = models.TextField(blank=True)
+    color = models.CharField(max_length=20, blank=True)
+    order = models.

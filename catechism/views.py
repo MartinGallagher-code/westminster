@@ -11,12 +11,13 @@ from django.urls import reverse
 from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView
 
+from .atlas import atlas_url, atlas_work_url
 from .document_guides import get_document_guide
 from .models import (
     Catechism, Topic, Question, Commentary, FisherSubQuestion,
     ScripturePassage, StandardCrossReference,
     BibleBook, ScriptureIndex, ComparisonSet, ComparisonTheme,
-    ComparisonEntry,
+    ComparisonEntry, QuestionDoctrineHead, QuestionOntologyTag,
 )
 from .utils import VALID_TRADITIONS, get_active_traditions
 
@@ -196,6 +197,7 @@ class HomeView(TemplateView):
             'Sabbath',
             'covenant of grace',
         ]
+        ctx['atlas_home_url'] = atlas_url()
         if self.request.user.is_authenticated:
             from accounts.models import UserNote
             ctx['recent_note'] = UserNote.objects.filter(
@@ -289,7 +291,19 @@ class QuestionDetailView(CatechismMixin, DetailView):
                             queryset=FisherSubQuestion.objects.order_by('number')
                         )
                     )
-                )
+                ),
+                Prefetch(
+                    'ontology_tags',
+                    queryset=QuestionOntologyTag.objects.select_related(
+                        'attribute', 'attribute__locus'
+                    ),
+                ),
+                Prefetch(
+                    'doctrine_head_links',
+                    queryset=QuestionDoctrineHead.objects.select_related(
+                        'doctrine_head', 'doctrine_head__locus'
+                    ),
+                ),
             ),
             catechism=self.catechism,
             number=self.kwargs['number']
@@ -300,6 +314,10 @@ class QuestionDetailView(CatechismMixin, DetailView):
         q = self.object
         ctx['previous_question'] = q.get_previous()
         ctx['next_question'] = q.get_next()
+        ctx['ontology_tags'] = list(q.ontology_tags.all())
+        ctx['doctrine_heads'] = [
+            link.doctrine_head for link in q.doctrine_head_links.all()
+        ]
 
         # Build sidebar document navigation grouped by topic
         topics = Topic.objects.filter(catechism=self.catechism)
@@ -387,13 +405,7 @@ class QuestionDetailView(CatechismMixin, DetailView):
                     chapter_scripture_map[p.reference] = p.text
         ctx['chapter_scripture_map'] = {**chapter_scripture_map, **ctx['scripture_map']}
 
-        atlas_base = 'https://ontologicalatlas.com/westminster_standards'
-        if self.catechism.slug in ('wsc', 'wlc'):
-            ctx['atlas_url'] = f'{atlas_base}/works/{self.catechism.slug}/q/{q.number}/'
-            ctx['atlas_label'] = 'Open Atlas Question'
-        elif self.catechism.slug == 'wcf':
-            ctx['atlas_url'] = f'{atlas_base}/works/wcf/chapter/{q.topic.order}/'
-            ctx['atlas_label'] = 'Open Atlas Chapter'
+        ctx['atlas_url'] = atlas_work_url(self.catechism.slug, q)
 
         if self.request.user.is_authenticated:
             from accounts.models import UserNote
@@ -884,14 +896,4 @@ def question_preview_json(request, pk):
     return response
 
 
-# Legacy redirects
-class LegacyQuestionRedirect(View):
-    def get(self, request, number):
-        return redirect('catechism:question_detail',
-                        catechism_slug='wsc', number=number, permanent=True)
-
-
-class LegacyTopicRedirect(View):
-    def get(self, request, slug):
-        return redirect('catechism:topic_detail',
-                        catechism_slug='wsc', slug=slug, permanent=True)
+# Le
