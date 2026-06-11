@@ -896,4 +896,14 @@ def question_preview_json(request, pk):
     return response
 
 
-# Le
+# Legacy redirects
+class LegacyQuestionRedirect(View):
+    def get(self, request, number):
+        return redirect('catechism:question_detail',
+                        catechism_slug='wsc', number=number, permanent=True)
+
+
+class LegacyTopicRedirect(View):
+    def get(self, request, slug):
+        return redirect('catechism:topic_detail',
+                        catechism_slug='wsc', slug=slug, permanent=True)
