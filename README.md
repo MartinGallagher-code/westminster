@@ -84,6 +84,8 @@ python manage.py makemigrations --check --dry-run
 
 The project deploys to Render via `render.yaml`.
 
+Python is pinned with `.python-version` so Render uses Python 3.12 even if the service falls back to Render's platform default.
+
 Required production environment variables:
 
 - `DJANGO_SETTINGS_MODULE=config.settings.production`
