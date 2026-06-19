@@ -118,9 +118,6 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-person-circle me-1"></i>{{ user.username }}
-                        {% if is_supporter %}
-                        <span class="badge supporter-badge ms-1" title="Supporter"><i class="bi bi-bookmark-star-fill"></i></span>
-                        {% endif %}
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li><a class="dropdown-item" href="{% url 'accounts:password_change' %}"><i class="bi bi-key me-2"></i>Change Password</a></li>

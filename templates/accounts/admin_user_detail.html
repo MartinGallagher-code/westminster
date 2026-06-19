@@ -44,18 +44,6 @@
                         <td class="text-muted">Superuser</td>
                         <td>{% if target_user.is_superuser %}Yes{% else %}No{% endif %}</td>
                     </tr>
-                    {% if subscription %}
-                    <tr>
-                        <td class="text-muted">Supporter</td>
-                        <td>
-                            {% if subscription.is_active %}
-                            <span class="badge bg-success">{{ subscription.status }}</span>
-                            {% else %}
-                            <span class="badge bg-secondary">{{ subscription.status }}</span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% endif %}
                 </table>
             </div>
             <div class="card-footer">

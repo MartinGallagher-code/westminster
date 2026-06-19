@@ -5,6 +5,10 @@ reverse-chronological changelog rather than formal release tags.
 
 ## 2026-06-19
 
+### Changed
+
+- Replaced the Stripe-powered supporter membership with a Buy Me a Coffee link (`buymeacoffee.com/martingallagher`). Removed the Stripe checkout, customer portal, and webhook handling along with the `SupporterSubscription` model, the supporter badge, and all Stripe configuration (settings, environment variables, `render.yaml`, and the `stripe` dependency).
+
 ### Added
 
 - Added editorial cross-references from the PCA Book of Church Order to the Westminster Standards, seeded from `data/pca_bco/bco_cross_references.json` via the new `load_bco_crossrefs` command (wired into `build.sh` after the BCO load). BCO chapters now link to the relevant WCF chapters and WLC/WSC questions, and those standards show the reverse "See also in BCO" references.

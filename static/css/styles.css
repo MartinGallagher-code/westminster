@@ -1005,22 +1005,6 @@ mark.user-annotation.active {
 }
 
 /* ================================================================
-   Supporter Badge
-   ================================================================ */
-.supporter-badge {
-    background: linear-gradient(135deg, var(--wm-accent), var(--wm-accent-light));
-    color: #fff;
-    font-size: 0.7rem;
-    padding: 0.15em 0.35em;
-    border-radius: 0.25rem;
-    vertical-align: middle;
-}
-
-.supporter-badge i {
-    font-size: 0.65rem;
-}
-
-/* ================================================================
    Full-width page bands
    ================================================================ */
 

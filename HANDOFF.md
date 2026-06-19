@@ -27,9 +27,8 @@
 - Expand `data/westminster_ontology.json` with fuller question/chapter-to-ontology mappings as the Atlas exports become available.
 - Consider adding a Study Reformed doctrine-map/index page over `OntologyLocus` and `OntologyAttribute`.
 - Consider adding a generated PostgreSQL search vector column or indexes if search volume grows.
-- Verify Render has `SECRET_KEY`, `DATABASE_URL`, `ALLOWED_HOSTS`, `STRIPE_PRODUCT_ID`, and Stripe webhook variables set.
+- Verify Render has `SECRET_KEY`, `DATABASE_URL`, and `ALLOWED_HOSTS` set.
 - Set `WESTMINSTER_ATLAS_BASE_URL` if the Atlas later moves under `study.site`.
-- Complete the external Stripe dashboard checklist in `TODO_STRIPE.md`.
 - Add BCO cross-references and comparison-theme coverage when ready.
 
 ## Validation Notes
