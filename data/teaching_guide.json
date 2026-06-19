@@ -1,0 +1,1967 @@
+{
+  "intro": {
+    "title": "A Teaching Guide to the Westminster Standards",
+    "tagline": "Read the doctrine in plain teaching, then study the texts for yourself.",
+    "paragraphs": [
+      "The Westminster Standards — the Confession of Faith, the Larger Catechism, and the Shorter Catechism — set out one system of Reformed doctrine at three levels of depth. Read on their own, the questions and sections can feel like a list of answers to memorize without a thread running through them.",
+      "This guide supplies the thread. Each lesson is a short piece of teaching that explains a doctrine, shows where it sits in the wider corpus, and then points you to the exact questions and sections — with their Scripture proofs and historical commentary — so you can dig as deep as you like."
+    ]
+  },
+  "lessons": [
+    {
+      "slug": "chief-end-of-man",
+      "order": 1,
+      "unit": "Foundations",
+      "title": "The Chief End of Man",
+      "aim": "Understand why the Standards begin with the purpose of human life, and how that one answer frames everything they go on to teach.",
+      "lead": "Both Catechisms open with the same question — not about God, Scripture, or sin, but about us: what are human beings for? The answer they give is the hinge on which the rest of the system turns.",
+      "sections": [
+        {
+          "heading": "A question before all other questions",
+          "body": [
+            "The Shorter and Larger Catechisms both begin by asking after the chief, or highest, end of man — and answer that it is \"to glorify God, and to enjoy him forever.\" The placement is deliberate. Before the Standards say a word about what we are to believe or how we are to live, they fix the goal toward which all believing and living are aimed.",
+            "This means the first answer is not really about us at all; it is about the God for whom we exist. Everything that follows in the Catechisms — the knowledge of God, his decrees, creation and providence, the work of Christ, salvation, the law, the sacraments, and prayer — is an unfolding of how this single end is first secured by God and then pursued by his people."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                1
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Glorifying and enjoying: one end, not two",
+          "body": [
+            "The answer names two things — glorifying God and enjoying him — but the divines intend one end, not two competing aims. To glorify God is to acknowledge and display his worth; to enjoy him is to find one's deepest satisfaction in him. These are held together: the creature honours God precisely by delighting in him, and finds its joy precisely in honouring him.",
+            "The word \"forever\" carries weight too. The chief end is not only a present vocation but an everlasting one, reaching its fullness in the life to come, when the enjoyment of God is no longer mixed with sin or sorrow. The Catechism thus opens with both a duty and a comfort in the same breath."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                1
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Why it stands at the head of the system",
+          "body": [
+            "Because the chief end is stated first, it governs how everything else is read. The doctrine of God becomes the knowledge of the One we are made to glorify and enjoy, not abstract speculation. The doctrine of sin becomes the account of how that end was forfeited. Redemption in Christ is the recovery of the end, and the means of grace — word, sacrament, and prayer — are the appointed ways the redeemed pursue it.",
+            "This is a characteristic Reformed instinct: that the chief end of man and the chief end of God coincide. God acts for the sake of his own glory, and the creature's highest good is found in that same glory. Keeping the first question in view stops the Standards from reading like a catalogue of doctrines and holds them together as a single purpose."
+          ],
+          "texts": [
+            {
+              "catechism": "wlc",
+              "numbers": [
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "study_prompts": [
+        "Read WSC Q1 and WLC Q1 together and ask what, if anything, the Larger Catechism adds.",
+        "On the question pages, trace each Scripture proof and ask how it supports both glorifying and enjoying God.",
+        "Read Watson on the Shorter Catechism's first question and note how he treats enjoying God as the believer's comfort, not only a duty."
+      ],
+      "comparison_theme": "mans-chief-end-and-holy-scripture"
+    },
+    {
+      "slug": "god-and-the-holy-trinity",
+      "order": 2,
+      "unit": "Theology Proper",
+      "title": "God and the Holy Trinity",
+      "aim": "Understand how the Standards describe who and what God is — one simple, infinite Being subsisting in three coequal persons — and why this knowledge stands at the head of all Christian doctrine.",
+      "lead": "Having fixed our chief end on glorifying and enjoying God, the Standards turn at once to the God himself. Before sin, salvation, or the Christian life can be rightly grasped, we must know who this God is — and the answer the Catechisms give is at once the simplest and the most inexhaustible in all of theology.",
+      "sections": [
+        {
+          "heading": "What God is",
+          "body": [
+            "The Catechisms answer the question \"What is God?\" not with a definition that contains him, but with a confession that confesses him beyond containing. He is a Spirit, and so without body, parts, or passions; and every perfection ascribed to him — wisdom, power, holiness, justice, goodness, truth — belongs to him infinitely, eternally, and unchangeably. These are not parts assembled into a divine whole but the one undivided being of God considered from different angles.",
+            "The Larger Catechism expands the same confession, piling up terms such as all-sufficient, incomprehensible, everywhere present, and most holy, until the very abundance of the language teaches its own lesson: God is known truly but never exhaustively. To say he is infinite in his being is to say that the creature's knowledge of him, however real and saving, always rests upon a mystery it cannot survey."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                4
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                7
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                11,
+                12
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "One only living and true God",
+          "body": [
+            "Against every form of polytheism, the Standards insist that there is but one only, the living and true God. This is no bare numerical claim but the foundation of worship: because God alone is God, he alone is to be feared, trusted, and adored. The unity of God guards the whole system that follows, for the decree, creation, providence, and redemption are all the works of this one undivided will, never the bargaining of rival powers."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                5
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                8
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Three persons, one God",
+          "body": [
+            "Within the unity of the Godhead there are three persons — Father, Son, and Holy Spirit — one in substance, equal in power and glory. They are distinguished not by any difference of being, for the divine essence is one and undivided, but by their personal properties: the Father begets, the Son is eternally begotten, and the Spirit eternally proceeds from the Father and the Son. These relations are eternal and unchangeable, belonging to who God is and not merely to what God does.",
+            "The Larger Catechism is careful to show that the deity of the Son and the Spirit is no later addition but the plain testimony of Scripture, which ascribes to them the names, attributes, works, and worship proper to God alone. So the doctrine of the Trinity is not a riddle laid upon the simpler truth of God's oneness; it is that very oneness confessed in its fullness, the living God as he has made himself known."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                6
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                9,
+                10,
+                11
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                13
+              ]
+            }
+          ]
+        }
+      ],
+      "study_prompts": [
+        "Read WSC Q4 alongside WLC Q7 and list what the Larger Catechism adds; ask why a fuller description might be fitting in a catechism meant for teachers.",
+        "On the question pages for WLC Q11, trace the Scripture proofs and notice how they argue for the deity of the Son and the Spirit from names, attributes, works, and worship.",
+        "Compare WSC Q6 with WCF chapter 2, section 3, and consider how the language of personal properties guards both the unity and the distinction within the Godhead."
+      ],
+      "comparison_theme": "god-and-the-holy-trinity"
+    },
+    {
+      "slug": "gods-eternal-decree",
+      "order": 3,
+      "unit": "Theology Proper",
+      "title": "God's Eternal Decree",
+      "aim": "Understand the Standards' teaching that God has, from all eternity, freely and wisely ordained whatsoever comes to pass, and how this decree — including election — secures his glory without making him the author of sin.",
+      "lead": "If God is the one infinite, all-wise being the Standards have just confessed, then nothing in the universe can be an accident to him. The doctrine of the decree simply follows out what it means for such a God to be God: that the whole course of things rests upon his eternal and holy purpose.",
+      "sections": [
+        {
+          "heading": "The counsel of his will",
+          "body": [
+            "The decrees of God are his eternal purpose, formed according to the counsel of his own will, by which, for his own glory, he has foreordained whatsoever comes to pass. The Larger Catechism adds that these acts are wise, free, and holy — a reminder that the decree is not blind fate but the settled intention of a personal and righteous God. Because it is eternal and unchangeable, the decree is not God reacting to the world but the world unfolding from God.",
+            "The Confession is careful to fence this truth on every side. God ordains all things, yet in such a way that he is not the author of sin, no violence is offered to the will of the creature, and the liberty and contingency of second causes is established rather than destroyed. The decree stands behind the freedom of human action as its foundation, not as a rival to it."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                7
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                12
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                14,
+                15
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Predestination and election",
+          "body": [
+            "Within the broad sweep of the decree, the Standards single out what God has especially purposed concerning angels and men. Out of his mere love, and for the praise of his glorious grace, he has from all eternity elected some to everlasting life in Christ, while the rest he passes by, ordaining them to dishonor and wrath for their sin, to the praise of his justice. Election is thus unconditional, resting on God's free purpose and not on anything foreseen in the creature.",
+            "The Confession presses that those chosen unto glory are also, by the same decree, chosen unto all the means — redemption by Christ, effectual calling, justification, sanctification, and salvation. Election is never an isolated guarantee but the source of a whole golden chain, so that the certainty of the end carries the certainty of the way."
+          ],
+          "texts": [
+            {
+              "catechism": "wlc",
+              "numbers": [
+                13
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                16,
+                17,
+                18,
+                20
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "How the decree is handled",
+          "body": [
+            "The Confession closes its chapter on the decree with pastoral wisdom, urging that this high mystery be handled with special prudence and care. It is meant not for idle speculation about the secret will of God but for the assurance, humility, and praise of those who attend to God's revealed will and find in election the deepest ground of comfort. The decree, far from chilling devotion, is intended to warm it.",
+            "The Catechisms underline that this same God who decrees also executes, carrying out his eternal counsel in the works of creation and providence. The decree is not left hanging in eternity; it issues in time, and the chapters that follow trace how the purpose of God becomes the history of the world."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                8
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                14
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                21
+              ]
+            }
+          ]
+        }
+      ],
+      "study_prompts": [
+        "Read WCF chapter 3, sections 1 and 2, and note the carefully placed safeguards; ask how the Confession holds together God's sovereign decree and the real freedom of creatures.",
+        "Compare WSC Q7 with WLC Q12 and the Confession's fuller treatment, observing what each adds about the wisdom, freedom, and holiness of the decree.",
+        "On the question page for WLC Q13, follow the Scripture proofs for election and consider why the Standards root God's choice in his mere love and glorious grace rather than in foreseen merit."
+      ],
+      "comparison_theme": "gods-eternal-decree"
+    },
+    {
+      "slug": "creation",
+      "order": 4,
+      "unit": "Creation and Providence",
+      "title": "Creation",
+      "aim": "Understand the Standards' account of creation as God's free work of making all things of nothing for his own glory, and the special dignity given to man as the bearer of God's image.",
+      "lead": "The eternal decree does not stay in eternity. The first of God's works in time is creation, where the counsel of his will begins to take visible shape. Here the Standards turn from who God is and what he has purposed to what he has actually done in calling a world into being.",
+      "sections": [
+        {
+          "heading": "Making all things of nothing",
+          "body": [
+            "The work of creation is God's making all things of nothing, by the word of his power, in the space of six days, and all very good. Each phrase carries weight. To create from nothing is to deny that any matter stood alongside God to limit or assist him; the world owes its very existence to his free and sovereign will. By the word of his power he speaks, and what was not, is — creation is an act of effortless majesty, not of labor or struggle.",
+            "The Confession adds that this work belongs to Father, Son, and Holy Spirit together, undertaken for the manifestation of the glory of God's eternal power, wisdom, and goodness. That the whole was pronounced very good rules out any notion that the material order is evil or beneath God's care. Creation is the first theater of his glory and the gift in which his goodness is first displayed."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                9
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                15
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                22
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Man in the image of God",
+          "body": [
+            "Among all the creatures, man holds a unique place. God created man male and female, after his own image, endued with reasonable and immortal souls, in knowledge, righteousness, and holiness, and given dominion over the creatures. The image of God is not chiefly a matter of physical form but of moral and spiritual likeness: man was made to know God truly, to be righteous and holy before him, and to exercise a stewardship over the world that reflects God's own rule.",
+            "The Larger Catechism adds the detail that the body of the man was formed from the dust and the woman from his side, grounding the unity and the order of the sexes in the very act of creation. This original righteousness, freely given, sets the stage for everything that follows; it is the height from which the fall will be measured and the pattern to which redemption will restore."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                10
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                17
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                23
+              ]
+            }
+          ]
+        }
+      ],
+      "study_prompts": [
+        "Compare WSC Q9 with WLC Q15 and WCF chapter 4, section 1, and ask what each emphasizes about the manner and purpose of creation.",
+        "Read WSC Q10 alongside WLC Q17 and list the components of the image of God; consider how knowledge, righteousness, and holiness will reappear when the Standards treat the fall and salvation.",
+        "On the question pages, trace the Scripture proofs for creation in the space of six days and reflect on how the Standards read the Genesis account."
+      ],
+      "comparison_theme": "creation"
+    },
+    {
+      "slug": "providence",
+      "order": 5,
+      "unit": "Creation and Providence",
+      "title": "Providence",
+      "aim": "Understand how the Standards teach that God preserves and governs every creature and every action toward his own glory, ordering even sin without being its author, and caring in a special way for his church.",
+      "lead": "A God who made all things does not then leave them. Providence is the other half of God's work in time: having brought the world into being, he upholds and governs it continually, so that nothing slips outside his wise and holy care.",
+      "sections": [
+        {
+          "heading": "Preserving and governing all things",
+          "body": [
+            "God's works of providence are his most holy, wise, and powerful preserving and governing all his creatures and all their actions. Two acts are joined here. Preservation means that creatures do not sustain themselves for a moment but are continually upheld by God; government means that he directs them to the ends he has appointed. The Larger Catechism adds that he orders them, and all their actions, to his own glory — the same end that governed the decree and creation now governs the whole running of the world.",
+            "The Confession underlines the reach of this rule: it extends to the greatest and the least, down to the freest and most contingent of actions, all of which fall out according to the foreknowledge and decree of God, the first Cause. Yet God ordinarily works through means and the operation of second causes, so that natural agents and human choices remain truly themselves even as they serve his purpose."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                11
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                18
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                24,
+                25,
+                26
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Providence and sin",
+          "body": [
+            "The hardest case for any doctrine of providence is the existence of sin, and the Standards meet it directly. God permitted some of the angels to fall, and orders the sins of men and devils alike to his own glory, yet in such a way that the sinfulness proceeds only from the creature and not from God, who remains most holy and righteous and is in no sense the author or approver of sin. His government bounds, restrains, and overrules evil; it never produces it.",
+            "Within this rule, the Confession notes how God deals with his own children, sometimes leaving them for a season to the corruptions of their hearts and the temptations of the world, for their humbling and their growth. Even the chastening of believers and the hardening of the wicked are governed acts, never accidents — sobering and comforting at once."
+          ],
+          "texts": [
+            {
+              "catechism": "wlc",
+              "numbers": [
+                19
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                28,
+                29
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "A special care for the church",
+          "body": [
+            "Though providence reaches to all creatures, the Confession ends by noting that God in a most special manner takes care of his church, ordering all things to its good. The Catechisms confirm that providence is not bare control but covenant care, and that the same hand which governs the nations watches over his people. So the doctrine moves from the vastness of God's rule to a particular, fatherly tenderness toward those he has chosen, preparing the way for the covenant of life that follows."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                12
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                20
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                30
+              ]
+            }
+          ]
+        }
+      ],
+      "study_prompts": [
+        "Read WCF chapter 5, sections 1 through 3, and note how the Confession holds together God's universal rule, his use of means, and his freedom to work without them.",
+        "Compare WLC Q19 with WCF chapter 5, sections 4 and 6, asking how the Standards account for sin under providence without making God its author.",
+        "On the question page for WCF chapter 5, section 7, follow the proofs for God's special care of the church and consider how providence becomes a ground of comfort for believers."
+      ],
+      "comparison_theme": "providence"
+    },
+    {
+      "slug": "fall-sin-and-misery",
+      "order": 6,
+      "unit": "Hamartiology",
+      "title": "The Fall, Sin, and Misery",
+      "aim": "Trace how the Standards account for the entrance of sin: a covenant broken in Adam, a nature corrupted in his posterity, and an estate of guilt and misery from which we cannot deliver ourselves.",
+      "lead": "Having confessed God as Creator of an upright humanity, the Standards turn to the hardest fact about us. Created good, our first parents did not remain so; and what they lost they lost not for themselves alone but for all whom they represented. The doctrine of the fall is the dark backdrop against which the gospel will shine.",
+      "sections": [
+        {
+          "heading": "A covenant, and a fall",
+          "body": [
+            "The Standards frame Adam's first estate as a covenant. God set our first parents under a covenant of works, promising life upon perfect, personal obedience and threatening death for transgression, with one prohibition appointed as its test. Left to the freedom of their own will, they broke that covenant by eating the forbidden fruit, and so fell from the estate of righteousness in which they had been made.",
+            "This single act was no trivial slip. It was rebellion against the God whose word forbade it, and because it violated a covenant it carried covenantal consequences. The Standards are careful to locate the entrance of sin not in God, who cannot be the author of it, but in the free and culpable act of the creature."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                13,
+                15
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                31
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Sin imputed, nature corrupted",
+          "body": [
+            "Adam did not stand alone. The covenant was made with him not only for himself but for his posterity, so that all descending from him by ordinary generation sinned in him and fell with him in his first transgression. The guilt of that sin is therefore imputed to us; the original righteousness in which we were made is lost; and our whole nature is corrupted, leaving us indisposed and disabled toward good and bent toward evil. From this corrupt fountain flow all our actual transgressions.",
+            "Sin itself the Standards define with great economy: any want of conformity unto, or transgression of, the law of God. The definition is exact because it keeps the measure of sin where it belongs, not in our sense of guilt but in God's holy law."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                14,
+                16,
+                18
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                25
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "The estate of misery",
+          "body": [
+            "The fall brought mankind into an estate not only of sin but of misery. Having lost communion with God, we lie under his wrath and curse, made liable to all the miseries of this life, to death itself, and to the pains of hell forever. The Standards do not soften this. Every sin, original and actual, deserves God's wrath in both this world and the world to come.",
+            "Yet the very weight of this estate prepares the reader for what follows. To know oneself shut up under sin and misery, with no remedy in oneself, is to be made ready to hear that God did not leave all mankind to perish there."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                17,
+                19
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                27
+              ]
+            }
+          ]
+        }
+      ],
+      "study_prompts": [
+        "Read WSC 16 and WCF 33 (ch. 6.3) together and ask how each accounts for the imputation of Adam's sin to his posterity.",
+        "Compare the definition of sin in WSC 14 with WLC 24, then trace the Scripture proofs offered for it.",
+        "Work through WCF chapter 6 section by section and note the movement from one act, to imputed guilt, to corrupted nature, to deserved punishment."
+      ],
+      "comparison_theme": "fall-sin-and-misery"
+    },
+    {
+      "slug": "covenant-of-grace",
+      "order": 7,
+      "unit": "Christology and Covenant",
+      "title": "The Covenant of Grace",
+      "aim": "Understand how the Standards present salvation as God's free, covenantal initiative: a second covenant, made in eternity and administered through history, in which life is offered to sinners through Jesus Christ.",
+      "lead": "Left to ourselves, the estate of sin and misery would be the end of the story. But the Standards insist it is not. Out of his mere good pleasure God did not leave all mankind to perish, but entered into a covenant of grace, and it is this covenant that holds together everything the rest of the Standards will say about Christ and salvation.",
+      "sections": [
+        {
+          "heading": "Why a covenant, and why grace",
+          "body": [
+            "The distance between God and the creature is so great that man could never have enjoyed God as his blessedness except by God's voluntary condescension, which he has been pleased to express by way of covenant. The first such covenant was one of works; but man, by his fall, made himself incapable of life on those terms. So the Lord was pleased to make a second, the covenant of grace, freely offering to sinners life and salvation by Jesus Christ.",
+            "What makes this covenant gracious is its source and its terms. It springs from God's good pleasure alone, and it requires of us faith in Christ that we may be saved, promising to give his Holy Spirit to all his elect to make them willing and able to believe."
+          ],
+          "texts": [
+            {
+              "catechism": "wcf",
+              "numbers": [
+                37,
+                38,
+                39
+              ]
+            },
+            {
+              "catechism": "wsc",
+              "numbers": [
+                20
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "With whom, and through whom",
+          "body": [
+            "The Standards locate the covenant of grace in eternity and ground it in election. God, having out of his mere good pleasure from all eternity elected some to everlasting life, entered into this covenant to deliver them from the estate of sin and misery and to bring them into salvation by a Redeemer. The Larger Catechism makes the structure plain: the covenant of grace was made with Christ as the second Adam, and in him with all the elect as his seed.",
+            "This keeps the covenant from collapsing into a bargain struck with sinners. The terms are met in Christ on behalf of his people, so that grace remains grace from first to last."
+          ],
+          "texts": [
+            {
+              "catechism": "wlc",
+              "numbers": [
+                30,
+                31
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                40
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "One covenant, two administrations",
+          "body": [
+            "Though one in substance, this covenant was administered differently in the time of the law and in the time of the gospel. Under the law it was set forth by promises, prophecies, sacrifices, circumcision, the paschal lamb, and other types and ordinances, all signifying Christ to come and sufficient to build up the elect in faith. Under the gospel, when Christ the substance was exhibited, these gave way to plainer ordinances, fewer in number and greater in fullness.",
+            "There are not, then, two covenants of grace differing in substance, but one and the same under various dispensations. The believer under Moses and the believer under the apostles are saved by the same grace, the same Mediator, and the same faith."
+          ],
+          "texts": [
+            {
+              "catechism": "wcf",
+              "numbers": [
+                41,
+                42
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                32,
+                35
+              ]
+            }
+          ]
+        }
+      ],
+      "study_prompts": [
+        "Read WCF 7.3 (number 39) alongside WSC 20 and note how each describes the move from the covenant of works to the covenant of grace.",
+        "Trace the proofs behind WLC 31 and consider why the Standards say the covenant was made with Christ as the second Adam.",
+        "List the differences WCF 7.5 to 7.6 draws between the two administrations, and ask what they hold in common."
+      ],
+      "comparison_theme": "covenant-of-grace"
+    },
+    {
+      "slug": "christ-the-mediator",
+      "order": 8,
+      "unit": "Christology and Covenant",
+      "title": "Christ the Mediator",
+      "aim": "Set out who the one Mediator is, the two natures united in his one person, the three offices by which he saves, and the two states through which he passed in accomplishing redemption.",
+      "lead": "The covenant of grace promises life through a Redeemer; this lesson asks who he is and how he saves. The Standards answer with care, for everything depends on the Mediator being neither less than God nor other than truly man, and on his executing in our place the whole work of prophet, priest, and king.",
+      "sections": [
+        {
+          "heading": "One person, two natures",
+          "body": [
+            "The only Redeemer of God's elect is the Lord Jesus Christ, who, being the eternal Son of God, became man, and so was and continues to be God and man in two distinct natures and one person forever. He took to himself a true body and a reasonable soul, conceived by the power of the Holy Ghost in the womb of the virgin Mary, yet without sin. The natures are united, not confused; each retains its own properties, yet they belong to one undivided person.",
+            "The Standards insist on both natures because both are necessary. The Mediator must be God to sustain the infinite weight of divine wrath and give his sufferings worth, and must be man to obey, suffer, and die in the nature that had sinned."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                21,
+                22
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                38,
+                39
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                44
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Prophet, priest, and king",
+          "body": [
+            "As Redeemer, Christ executes the threefold office for which his name, the Anointed, fits him. As prophet he reveals to us, by his Word and Spirit, the whole will of God for our salvation. As priest he once offered up himself a sacrifice to satisfy divine justice and reconcile us to God, and continually makes intercession for us. As king he subdues us to himself, rules and defends us, and restrains and conquers all his and our enemies.",
+            "These offices answer exactly to our threefold need as sinners: we are ignorant and need a prophet, guilty and need a priest, and enslaved and need a king. Christ meets all three needs in his single person."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                23,
+                24,
+                25,
+                26
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                43,
+                44,
+                45
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Humiliation and exaltation",
+          "body": [
+            "Christ executes these offices in two successive states. His humiliation consisted in his being born, and that in a low condition, made under the law, undergoing the miseries of this life, the wrath of God, and the cursed death of the cross; in being buried, and continuing under the power of death for a time. His exaltation consists in his rising again on the third day, ascending into heaven, sitting at the right hand of the Father, and coming to judge the world at the last day.",
+            "The two states are not a defeat reversed by an afterthought but a single ordained path. The one who was humbled is the very one now exalted, so that the work of mediation reaches its appointed end in glory."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                27,
+                28
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                46,
+                51
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                47,
+                48
+              ]
+            }
+          ]
+        }
+      ],
+      "study_prompts": [
+        "Read WLC 38 to 39 and ask why the Standards argue the Mediator had to be both God and man.",
+        "Map the three offices in WSC 24 to 26 onto our threefold need as sinners, and follow the proofs for each.",
+        "Compare the account of humiliation and exaltation in WSC 27 to 28 with the fuller treatment in WLC 46 to 56."
+      ],
+      "comparison_theme": "christ-the-mediator"
+    },
+    {
+      "slug": "effectual-calling",
+      "order": 9,
+      "unit": "Soteriology",
+      "title": "Effectual Calling",
+      "aim": "Understand how the redemption purchased by Christ comes to be ours: by the Spirit's effectual calling, which frees the bound will, works faith, and unites us to Christ himself.",
+      "lead": "Christ has accomplished redemption; but how does what he purchased become ours? The Standards answer that it is applied to us by his Holy Spirit, and that the first link in that application is effectual calling. Here the work moves from Christ for us to the Spirit at work within us.",
+      "sections": [
+        {
+          "heading": "The Spirit applies what Christ purchased",
+          "body": [
+            "We are made partakers of the redemption purchased by Christ only by the effectual application of it to us by his Holy Spirit. The benefits of redemption do not float free to be seized at will; they are conveyed to particular people by the Spirit, who works faith in us and thereby unites us to Christ in our effectual calling. So the Spirit's work is not an addition to Christ's but the means by which Christ's finished work becomes a present possession.",
+            "This is why the Standards treat application before they treat justification or sanctification. Every saving benefit comes to us in Christ, and we come to be in Christ by the Spirit's call."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                29,
+                30
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                57,
+                58
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Calling that takes effect",
+          "body": [
+            "Effectual calling is the work of God's Spirit, whereby, convincing us of our sin and misery, enlightening our minds in the knowledge of Christ, and renewing our wills, he persuades and enables us to embrace Jesus Christ, freely offered to us in the gospel. The Standards call it effectual to distinguish it from the outward call of the Word, which many hear and resist. This call is of God's free and special grace alone, not from anything foreseen in us, and it never fails of its end.",
+            "Those not elected may be outwardly called and may have some common operations of the Spirit, yet they never truly come to Christ. The difference lies not in them but in the sovereign grace of the One who calls."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                31
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                56,
+                57,
+                59
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "The freed will and union with Christ",
+          "body": [
+            "The Standards are precise about the will. By the fall man wholly lost all ability of will to any spiritual good accompanying salvation, so that a natural man, being dead in sin, cannot by his own strength convert himself or prepare himself for it. When God converts a sinner he frees him from that bondage and enables him freely to will and to do what is spiritually good. Grace does not override the will but renews it.",
+            "The end of this calling is union with Christ. By it the elect are spiritually and mystically joined to him as their head and husband, and from that union flow all the benefits of his mediation, justification and adoption and sanctification among them."
+          ],
+          "texts": [
+            {
+              "catechism": "wcf",
+              "numbers": [
+                53,
+                54
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                66,
+                67
+              ]
+            }
+          ]
+        }
+      ],
+      "study_prompts": [
+        "Read WSC 31 and WLC 67 together and note what the Larger Catechism adds about the nature and means of effectual calling.",
+        "Work through WCF chapter 9 and trace how the will's freedom differs across the states of innocence, sin, grace, and glory.",
+        "Follow the proofs for WLC 66 on union with Christ and consider why the Standards place it at the root of every saving benefit."
+      ],
+      "comparison_theme": "effectual-calling"
+    },
+    {
+      "slug": "justification",
+      "order": 10,
+      "unit": "Soteriology",
+      "title": "Justification",
+      "aim": "Grasp justification as a judicial act in which God declares the believing sinner righteous on the ground of Christ's imputed righteousness, received by faith alone.",
+      "lead": "Having traced how Christ purchased redemption, the Standards turn to how that redemption is actually applied. They begin where the gospel's good news is sharpest: with God's free pardon of the guilty and his accepting of them as righteous in his sight.",
+      "sections": [
+        {
+          "heading": "An act, not a process",
+          "body": [
+            "The Standards call justification an act of God's free grace, and the word act is deliberate. Unlike sanctification, which is an ongoing work, justification happens at once and completely. In it God does two things together: he pardons all our sins, and he accepts and accounts our persons as righteous in his sight. This is courtroom language, a verdict pronounced over the sinner, not a quality slowly produced within him.",
+            "Because it is a declaration about our standing rather than a change in our nature, justification admits of no degrees. A believer is not partly justified and growing toward full acceptance; he is fully and finally accepted from the first moment of faith."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                33
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                70
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                60
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "The ground: the righteousness of Christ imputed",
+          "body": [
+            "The Standards are emphatic that we are accepted as righteous not for anything wrought in us or done by us, but only for the perfect obedience and full satisfaction of Christ. This righteousness is imputed, that is, reckoned to our account. Christ's active obedience to the law and his suffering of its penalty are credited to the believer, so that God can be both just and the justifier of the ungodly.",
+            "This is why the Standards insist that justification is an act of free grace even though Christ rendered a real and full satisfaction. God provided the surety himself and accepts his payment on our behalf; the gift is entirely free to us precisely because it was costly to him."
+          ],
+          "texts": [
+            {
+              "catechism": "wlc",
+              "numbers": [
+                71
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                61,
+                62
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Faith alone, and faith's place",
+          "body": [
+            "Justifying faith receives and rests upon Christ alone for salvation as he is offered in the gospel. The Standards are careful here: faith justifies not because it is itself a meritorious virtue, nor because of the graces and good works that accompany it, but only as it is the instrument by which we lay hold of Christ and his righteousness. Faith is the empty hand that receives, never the price that purchases.",
+            "It is vital to distinguish justification from sanctification, which the Standards treat next. In justification God imputes a righteousness outside us; in sanctification his Spirit infuses grace within us. The first deals with our guilt and is perfect at once; the second deals with our corruption and grows over a lifetime. Confusing the two is the surest way to lose the comfort of the gospel."
+          ],
+          "texts": [
+            {
+              "catechism": "wlc",
+              "numbers": [
+                72,
+                73
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                63,
+                64
+              ]
+            }
+          ]
+        }
+      ],
+      "study_prompts": [
+        "Read WSC 33 alongside WLC 70-73 and note what the Larger Catechism adds about how faith justifies.",
+        "Trace the Scripture proofs to WCF Ch. 11 and observe how imputation is grounded in passages on Christ's obedience.",
+        "Compare the language of justification with that of sanctification and list every contrast the Standards draw."
+      ],
+      "comparison_theme": "justification"
+    },
+    {
+      "slug": "adoption",
+      "order": 11,
+      "unit": "Soteriology",
+      "title": "Adoption",
+      "aim": "See adoption as the gracious act by which the justified are received into God's family and granted the standing, name, and privileges of his sons.",
+      "lead": "Justification answers the question of our legal standing; adoption answers the question of our relationship. The Standards turn from the courtroom to the household, where the pardoned sinner is not merely acquitted but welcomed home as a child.",
+      "sections": [
+        {
+          "heading": "Received into the family of God",
+          "body": [
+            "Adoption is an act of God's free grace, in and for his only Son Jesus Christ, whereby all who are justified are received into the number of his children. The Standards stress that this is bound up with our union with Christ: because we are joined to the natural Son, we are taken into the family of the Father. God puts his name upon us, gives the Spirit of his Son to dwell in us, and brings us under his fatherly care.",
+            "The brevity of the treatment in the Standards should not obscure its weight. Adoption gathers up the whole new relationship the gospel creates, turning servants into sons and strangers into heirs."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                34
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                74
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "The liberties and privileges of sons",
+          "body": [
+            "With the relationship come its privileges. The adopted are given access to God as a Father, the seal of the Spirit, protection and provision under his care, and finally an inheritance kept for them in glory. They are also subject to his fatherly chastisement, never as a wrath that condemns but as a discipline that proves their sonship.",
+            "Adoption thus crowns justification with tenderness. The same God who declares us righteous calls us his children, so that our obedience flows not from the fear of a slave but from the love and confidence of those who know themselves to be sons."
+          ],
+          "texts": [
+            {
+              "catechism": "wlc",
+              "numbers": [
+                74
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                66
+              ]
+            }
+          ]
+        }
+      ],
+      "study_prompts": [
+        "Read WCF Ch. 12 and WLC 74 together and list every privilege of adoption they name.",
+        "Trace the Scripture proofs on adoption and note how often they appear alongside texts on the Spirit's witness.",
+        "Consider how adoption depends upon union with Christ and what that implies for assurance."
+      ],
+      "comparison_theme": "adoption"
+    },
+    {
+      "slug": "sanctification",
+      "order": 12,
+      "unit": "Soteriology",
+      "title": "Sanctification",
+      "aim": "Understand sanctification as the ongoing work of God's grace renewing the whole person after his image, enabling believers to die more to sin and live more to righteousness.",
+      "lead": "Where justification settles our standing once for all, sanctification begins a lifelong renewal. The Standards turn from what God declares us to be to what God is making us become, and they are careful to keep the two distinct while holding them inseparable.",
+      "sections": [
+        {
+          "heading": "A work of grace renewing the whole man",
+          "body": [
+            "The Standards call sanctification a work, not an act, marking it as a continuing operation rather than a finished verdict. It is grounded in election and accomplished through the Spirit applying the death and resurrection of Christ to those who are his. Its scope is the whole man: understanding, will, affections, and conduct are all renewed after the image of God.",
+            "This renewal has two motions the Standards repeatedly join together. There is a dying to sin, as the dominion and corruption of the old nature is increasingly weakened, and a living to righteousness, as the graces of the new nature are quickened and strengthened. Sanctification is therefore both mortification and vivification, never one without the other."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                35
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                75
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                67
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Distinct from justification, yet inseparable",
+          "body": [
+            "The Standards draw the contrast carefully. In justification God imputes the righteousness of Christ; in sanctification his Spirit infuses grace and enables its exercise. In the one, sin is pardoned; in the other, sin is subdued. Justification is equal in all believers and perfect at once; sanctification is uneven and grows by degrees. Yet the two can never be separated, for the same Christ who justifies also sanctifies all whom he saves.",
+            "This distinction guards the gospel from two errors at once. It denies that our holiness contributes to our acceptance, and it denies that grace leaves us unchanged. The justified are always being sanctified, but they are never accepted on the ground of their sanctification."
+          ],
+          "texts": [
+            {
+              "catechism": "wlc",
+              "numbers": [
+                77
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                68
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Imperfect in this life",
+          "body": [
+            "The Standards are honest about the believer's experience. Sanctification in this life remains imperfect, because remnants of corruption abide in every part, and the flesh continually wars against the Spirit. Believers are therefore often foiled by temptation and fall into many sins, and even their best works are mingled with weakness.",
+            "Yet the imperfection is not the last word. The regenerate part finally overcomes, and the saints grow in grace, perfecting holiness in the fear of God. The struggle itself is evidence of life, for only those in whom the Spirit dwells feel the conflict between flesh and spirit."
+          ],
+          "texts": [
+            {
+              "catechism": "wlc",
+              "numbers": [
+                78
+              ]
+            },
+            {
+              "catechism": "wsc",
+              "numbers": [
+                36
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                69
+              ]
+            }
+          ]
+        }
+      ],
+      "study_prompts": [
+        "Read WLC 77 and list each point at which it distinguishes sanctification from justification.",
+        "Study WCF Ch. 13 and trace how it accounts for the continuing conflict between flesh and spirit.",
+        "Read WSC 36 and reflect on the benefits that flow from justification, adoption, and sanctification together."
+      ],
+      "comparison_theme": "sanctification"
+    },
+    {
+      "slug": "saving-faith-repentance-and-good-works",
+      "order": 13,
+      "unit": "Soteriology",
+      "title": "Saving Faith, Repentance, and Good Works",
+      "aim": "Understand the nature of saving faith as resting on Christ, of evangelical repentance as turning from sin to God, and of good works as the fruit and not the root of salvation.",
+      "lead": "The Standards now describe the graces by which redemption is received and shown. Faith and repentance are the means God requires of us, and good works are their proper fruit, so that the gospel of free grace issues in a transformed life.",
+      "sections": [
+        {
+          "heading": "Saving faith: receiving and resting on Christ",
+          "body": [
+            "Faith in Jesus Christ is a saving grace, and the Standards locate its heart in two words: we receive and rest upon him alone for salvation, as he is offered to us in the gospel. Faith is more than bare assent to the truth of Scripture; it includes that assent, but it goes further, actually laying hold of Christ for pardon, righteousness, and life. The act of faith is to look away from self to a Saviour outside us.",
+            "Because saving faith varies in strength, it may be weak or strong, often assaulted and weakened, yet getting the victory and growing to full assurance. Its smallest true exercise still unites the soul to Christ, for its value lies not in its degree but in its object."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                86
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                70,
+                72
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Repentance unto life",
+          "body": [
+            "Repentance unto life is likewise a saving grace, and the Standards describe it as an evangelical grace, not a mere remorse. It springs from a true sense of sin and an apprehension of God's mercy in Christ, so that the sinner, with grief and hatred of his sin, turns from it to God with full purpose of, and endeavour after, new obedience. Sorrow and hope are held together: the sinner mourns his sin precisely because he has seen the mercy that pardons it.",
+            "Faith and repentance are inseparable companions, both wrought by the Spirit and word of God. The Standards refuse to rest repentance on the ground of pardon, yet they insist no one should expect pardon without it, for grace that saves is grace that turns the heart."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                85,
+                87
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                73,
+                74
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Good works: the fruit of faith",
+          "body": [
+            "Good works are only those the Standards define as done in obedience to God's commandments, not those devised by human invention. They are the fruits and evidences of a true and lively faith, never its foundation. By them believers show their thankfulness, strengthen their assurance, and adorn the gospel before others.",
+            "The Standards are careful to give all the glory to grace. Our ability to do good works is wholly from the Spirit of Christ, and even our best works are defiled with imperfection and could never satisfy God or merit pardon. Yet, accepted in Christ, they are truly pleasing to God, who looks upon them with a Father's favour."
+          ],
+          "texts": [
+            {
+              "catechism": "wcf",
+              "numbers": [
+                79,
+                80,
+                84
+              ]
+            }
+          ]
+        }
+      ],
+      "study_prompts": [
+        "Read WSC 86 and 87 together and note how faith and repentance each look both to sin and to the mercy of God in Christ.",
+        "Study WCF Ch. 16 and observe carefully why good works can neither merit nor be dispensed with.",
+        "Trace the Scripture proofs on saving faith and consider what is meant by receiving and resting on Christ."
+      ],
+      "comparison_theme": "saving-faith-repentance-and-good-works"
+    },
+    {
+      "slug": "perseverance-and-assurance",
+      "order": 14,
+      "unit": "Soteriology",
+      "title": "Perseverance and Assurance",
+      "aim": "Understand why true believers cannot finally fall from grace, and on what grounds and by what means they may attain assurance of their salvation.",
+      "lead": "The Standards close their account of the application of redemption with two great comforts: that those whom God has saved he will keep to the end, and that they may come to know it. Perseverance secures the believer's salvation; assurance lets him rest in it.",
+      "sections": [
+        {
+          "heading": "The perseverance of the saints",
+          "body": [
+            "The Standards teach that true believers can neither totally nor finally fall away from the state of grace, but shall certainly persevere to the end. Crucially, they ground this not in the believer's own strength or steadfastness, but in God: in his unchangeable love, his decree and covenant to give perseverance, the believer's inseparable union with Christ, Christ's continual intercession, and the Spirit and seed of God abiding within.",
+            "This does not mean believers cannot fall into grievous sins, grieve the Spirit, and forfeit their comfort for a season. The Standards are realistic about such falls. But because their preservation rests on God's faithfulness and not their own, even their failures cannot finally undo what grace has begun."
+          ],
+          "texts": [
+            {
+              "catechism": "wlc",
+              "numbers": [
+                79
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                86,
+                87
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "The possibility and grounds of assurance",
+          "body": [
+            "Against the view that no one can know they are saved, the Standards affirm that such as truly believe and endeavour to walk in good conscience may, without extraordinary revelation, be infallibly assured that they are in the state of grace. This certainty is no presumption but is built on solid ground: the truth of God's promises, the inward evidence of the graces to which those promises are made, and the testimony of the Spirit witnessing with our spirit that we are children of God.",
+            "Assurance rests, then, on a threefold foundation. It begins with God's promise, looks for the marks of grace in the life, and is sealed by the Spirit. Each support holds up the others, so that assurance is neither mere feeling nor cold inference but a settled confidence grounded in God."
+          ],
+          "texts": [
+            {
+              "catechism": "wlc",
+              "numbers": [
+                80
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                89
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Assurance not of the essence of faith",
+          "body": [
+            "The Standards make a pastoral distinction: assurance does not belong to the essence of faith, so that a believer may truly possess Christ long before he is sure of it. Assurance may be obtained slowly, and once enjoyed may be weakened, intermitted, or for a time lost through sin, temptation, or the withdrawing of God's countenance.",
+            "Yet the believer is never left wholly without that seed of God and life of faith from which assurance may in due time be revived. The Standards thus comfort the doubting without flattering the careless, urging all to make their calling and election sure by diligence in the means of grace."
+          ],
+          "texts": [
+            {
+              "catechism": "wlc",
+              "numbers": [
+                81
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                90,
+                91,
+                92
+              ]
+            }
+          ]
+        }
+      ],
+      "study_prompts": [
+        "Read WLC 79 and list each ground on which the Standards rest the believer's perseverance.",
+        "Study WCF Ch. 18 and identify the three foundations of assurance it sets out.",
+        "Reflect on WLC 81: how do the Standards comfort believers who lack assurance without encouraging spiritual carelessness?"
+      ],
+      "comparison_theme": "perseverance-and-assurance"
+    },
+    {
+      "slug": "the-moral-law",
+      "order": 15,
+      "unit": "The Law of God",
+      "title": "The Moral Law",
+      "aim": "Grasp what the Standards mean by the moral law, how it remains the rule of life under grace, and how its summary in the Ten Commandments is to be rightly read.",
+      "lead": "Having traced redemption from the covenant of grace to the application of Christ's work, the Standards turn to the shape of the obedient life. The moral law is not the ground of salvation, but it remains God's abiding rule for all whom He has made.",
+      "sections": [
+        {
+          "heading": "The rule of obedience for all men",
+          "body": [
+            "The moral law is the declaration of God's will binding every person to perfect, personal, and perpetual obedience. The Standards root it in the very nature of God and in man as created in His image, so that it was written on Adam's heart before it was ever inscribed on stone. It is not a temporary arrangement for one nation but the unchanging standard of righteousness for all men in all ages.",
+            "First given as a covenant of works, the moral law still obliges, though no fallen sinner can keep it for life. Its demand of perfect obedience exposes our need of a Saviour and silences every claim of self-righteousness."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                39,
+                40
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                91,
+                93
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                93
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Its uses under the covenant of grace",
+          "body": [
+            "Believers are not under the law as a covenant of works, justified or condemned by it; Christ has borne its curse on their behalf. Yet the law is of great use to them as a rule of life. It informs them of God's will, directs their walk, restrains their corruptions, and drives them afresh to Christ when they see how far they fall short.",
+            "The Standards are careful to hold law and grace together rather than against each other. The same God who saves freely teaches His redeemed people to delight in obedience, so that the law becomes a friend to the justified rather than a tyrant."
+          ],
+          "texts": [
+            {
+              "catechism": "wcf",
+              "numbers": [
+                97,
+                98
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Summarised in the Ten Commandments, rightly read",
+          "body": [
+            "The moral law is summarily comprehended in the Ten Commandments, themselves summed up in love to God and love to neighbour. The Larger Catechism then supplies rules for reading them: each commandment reaches the heart as well as the hand, forbids the least degree of sin while requiring the contrary duty, and binds us to the like duties of others.",
+            "These rules guard against a shallow, external obedience. Where one sin is forbidden, every cause and occasion of it is forbidden too; where one duty is commanded, all that promotes it is commanded. So the brief commandments open out into the whole of a holy life."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                41,
+                42
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                98,
+                99
+              ]
+            }
+          ]
+        }
+      ],
+      "study_prompts": [
+        "Read WLC 99 slowly and list its rules for understanding the commandments; then test one commandment against them.",
+        "Compare WCF 19.6 (section 98) with WSC 40-42 on how the law functions for the believer versus its original giving.",
+        "Trace the proof texts behind WLC 93 to see how the Standards ground the law's perpetual obligation."
+      ],
+      "comparison_theme": "the-moral-law"
+    },
+    {
+      "slug": "the-ten-commandments-expounded",
+      "order": 16,
+      "unit": "The Law of God",
+      "title": "The Ten Commandments Expounded",
+      "aim": "See how the Catechisms unfold each commandment into duties required and sins forbidden, ordered under the two great tables of love to God and love to neighbour.",
+      "lead": "The Catechisms devote more space to the Ten Commandments than to any other theme, walking through them one by one. Their method is consistent: identify the commandment, then ask what it requires and what it forbids, so that the whole law touches the whole life.",
+      "sections": [
+        {
+          "heading": "The two tables and a method of reading",
+          "body": [
+            "The commandments fall into two tables. The first four set out our duty to God; the last six set out our duty to man. Jesus' own summary, love to God and love to neighbour, governs both, so that no duty toward others is acceptable apart from love to God, and no claim to love God is genuine while we wrong our neighbour.",
+            "For every commandment the Catechisms ask two questions: what is required, and what is forbidden. Positive and negative belong together, for each prohibition implies its contrary duty. This pattern teaches the reader to find in a single command a whole field of obedience reaching the heart, the words, and the deeds."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                45,
+                46
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                100,
+                102,
+                122
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "The first table: worship and reverence",
+          "body": [
+            "The first commandment fixes the object of worship, requiring us to know and own God as the only true God and to give Him all the honour due Him, while forbidding atheism, idolatry of the heart, and every rival affection. The second governs the manner of worship, requiring that we worship as God appoints and forbidding images and will-worship.",
+            "The third guards the holy use of God's names, titles, word, and works against all profaning and abuse. The fourth sanctifies time, setting apart one whole day in seven for holy rest and the public and private exercises of God's worship. Together the first table orders the heart Godward in truth and reverence."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                54,
+                57,
+                58
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                104,
+                108,
+                116
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "The second table: justice and love to neighbour",
+          "body": [
+            "The fifth commandment, honour to parents, the Catechisms read broadly as governing all relations of superiors, inferiors, and equals, with their mutual duties. From there the sixth preserves life, the seventh chastity, the eighth property and just dealing, and the ninth truth and the good name of our neighbour.",
+            "The tenth reaches furthest inward, forbidding all discontentment and every covetous motion of the heart against our neighbour's good. By ending with desire itself, the law shows that outward conformity is not enough; it convicts even the secret stirrings of sin and presses every reader to the grace of Christ."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                63,
+                67,
+                79
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                123,
+                135,
+                147
+              ]
+            }
+          ]
+        }
+      ],
+      "study_prompts": [
+        "Pick one commandment and read its WLC question on duties required alongside the question on sins forbidden; note how each implies the other.",
+        "Compare the WSC and WLC treatments of the fifth commandment and observe how widely the Catechisms apply 'honour thy father and mother.'",
+        "Read WLC 147 on the tenth commandment and ask why the Standards end the law with the heart's desires."
+      ],
+      "comparison_theme": "the-ten-commandments-expounded"
+    },
+    {
+      "slug": "christian-liberty",
+      "order": 17,
+      "unit": "Christian Life and Liberty",
+      "title": "Christian Liberty",
+      "aim": "Understand the freedom Christ purchases for believers and the liberty of conscience the Confession guards, without confusing either with license.",
+      "lead": "After the searching demands of the law, the Confession turns to the freedom of the gospel. Christian liberty is not freedom from obedience but freedom for it, and it stands among the most precious benefits Christ has bought for His people.",
+      "sections": [
+        {
+          "heading": "The freedom Christ purchases",
+          "body": [
+            "The Confession describes the liberty of believers as freedom from the guilt of sin, the condemning wrath of God, and the curse of the moral law. Christ delivers them from this present evil world, from bondage to Satan, and from the dominion of sin, so that they obey God not out of slavish fear but from a willing mind and childlike love.",
+            "Under the gospel this liberty is enlarged. Believers are no longer subject to the yoke of the ceremonial law that bound the Old Testament church, and they enjoy freer access to God and fuller communion with Him by the Spirit than the saints under the law ordinarily knew."
+          ],
+          "texts": [
+            {
+              "catechism": "wcf",
+              "numbers": [
+                100
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Liberty of conscience",
+          "body": [
+            "The Confession then guards the conscience itself. God alone is Lord of the conscience, which He has set free from the doctrines and commandments of men where these are contrary to His Word, or beside it in matters of faith and worship. To bind the conscience by human inventions is to betray true liberty and the rights of conscience.",
+            "Yet this liberty is not a cloak for sin or disorder. Those who use Christian liberty to practise sin, or to oppose the lawful exercise of any power God has ordained, overthrow the very end of liberty, which is that, redeemed from our enemies, we might serve God without fear in holiness and righteousness."
+          ],
+          "texts": [
+            {
+              "catechism": "wcf",
+              "numbers": [
+                101,
+                103
+              ]
+            }
+          ]
+        }
+      ],
+      "study_prompts": [
+        "Read WCF chapter 20 (sections 100-103) and distinguish the things believers are freed from in section 100.",
+        "Trace how the Confession holds liberty of conscience and lawful authority together in sections 102 and 103.",
+        "Examine the proof texts behind section 101 on God alone being Lord of the conscience."
+      ],
+      "comparison_theme": "christian-liberty"
+    },
+    {
+      "slug": "religious-worship-and-sabbath",
+      "order": 18,
+      "unit": "Christian Life and Liberty",
+      "title": "Religious Worship and the Sabbath",
+      "aim": "Learn the Confession's teaching that God appoints how He is to be worshipped, and how the Lord's Day is to be kept holy.",
+      "lead": "Liberty of conscience leads naturally to worship, for it is God Himself who has the right to determine how He will be approached. The Confession lays down the principle, the parts, and the appointed day of Christian worship.",
+      "sections": [
+        {
+          "heading": "The acceptable way of worship",
+          "body": [
+            "The Confession teaches that the acceptable way of worshipping the true God is instituted by Himself and limited by His own revealed will. He may not be worshipped according to human imaginations or devices, but only as He has commanded in Scripture. This is often called the regulative principle: what God has not appointed in worship, we have no warrant to offer.",
+            "The Confession then names the parts of religious worship, including prayer, the reading and preaching of the Word, the right administration of the sacraments, and the singing of psalms with grace in the heart. Worship is due to God alone, and to be offered through the one Mediator, Christ, and in no other name."
+          ],
+          "texts": [
+            {
+              "catechism": "wcf",
+              "numbers": [
+                104,
+                106
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "The sanctification of the Lord's Day",
+          "body": [
+            "A due proportion of time is to be set apart for the worship of God. As a moral and perpetual commandment, God has appointed one day in seven for a Sabbath, kept holy to Him. From the resurrection of Christ, this day is the first day of the week, the Christian Sabbath or Lord's Day, to continue to the end of the age.",
+            "The Sabbath is sanctified by a holy resting, all the day, from worldly employments and recreations, and by spending the whole time in the public and private exercises of God's worship, and in the duties of necessity and mercy. So the day is not mere idleness but a feast of communion with God and rest in His finished work."
+          ],
+          "texts": [
+            {
+              "catechism": "wcf",
+              "numbers": [
+                108,
+                109,
+                110
+              ]
+            }
+          ]
+        }
+      ],
+      "study_prompts": [
+        "Read WCF 21.1 (section 104) and state the regulative principle in your own words.",
+        "List the parts of worship named in sections 105-107 and find a proof text for each.",
+        "Compare sections 109 and 110 on the change of the day and how the Lord's Day is to be kept."
+      ],
+      "comparison_theme": "religious-worship-and-sabbath"
+    },
+    {
+      "slug": "oaths-magistrate-and-marriage",
+      "order": 19,
+      "unit": "Christian Life and Liberty",
+      "title": "Oaths, the Civil Magistrate, and Marriage",
+      "aim": "Survey the Confession's teaching on lawful oaths and vows, the office of the civil magistrate, and the ordinance of marriage as parts of an ordered Christian life in the world.",
+      "lead": "The Confession addresses how believers live truthfully, under authority, and in covenant with one another. Oaths, government, and marriage are God's ordinances for human society, each to be used as Scripture directs.",
+      "sections": [
+        {
+          "heading": "Lawful oaths and vows",
+          "body": [
+            "A lawful oath is part of religious worship in which a person, on just occasion, solemnly calls God to witness what he asserts or promises. It is to be taken only in truth, in righteousness, and in the name of God alone, never lightly or rashly, and it binds even when made to our own hurt. To swear vainly or falsely is to profane God's holy name.",
+            "A vow is of like nature, made to God alone and to be performed with care and faithfulness. The Confession warns against vows beyond our ability or contrary to God's Word, and rejects monastic vows of perpetual single life and the like as superstitious snares rather than acts of true devotion."
+          ],
+          "texts": [
+            {
+              "catechism": "wcf",
+              "numbers": [
+                112,
+                117,
+                118
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "The civil magistrate",
+          "body": [
+            "God, the supreme Lord and King of all the world, has ordained civil magistrates under Him for His own glory and the public good, arming them with the power of the sword for the defence and encouragement of the good and the punishment of evildoers. The office itself is good and lawful, and Christians may be called to serve in it.",
+            "Subjects owe the magistrate honour, prayer, obedience in lawful things, and submission to authority, which is not dissolved by the magistrate's unbelief or difference in religion. The Confession thus upholds ordered government while reserving final obedience for God, whose Word remains supreme over every earthly power."
+          ],
+          "texts": [
+            {
+              "catechism": "wcf",
+              "numbers": [
+                119,
+                120,
+                122
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "The ordinance of marriage",
+          "body": [
+            "Marriage is between one man and one woman, instituted by God for the mutual help of husband and wife, the increase of mankind by a lawful seed, and the prevention of uncleanness. It is to be entered in the Lord, within the bounds of nearness of kindred that the Word forbids, and ordinarily with those who hold the true religion.",
+            "By treating marriage as a divine ordinance rather than a mere private arrangement, the Confession dignifies the home and orders it under God's law. Its ends serve both the good of the partners and the building of families in which the faith may be nurtured from one generation to the next."
+          ],
+          "texts": [
+            {
+              "catechism": "wcf",
+              "numbers": [
+                123,
+                124,
+                125
+              ]
+            }
+          ]
+        }
+      ],
+      "study_prompts": [
+        "Read WCF chapter 22 (sections 112-118) and note when an oath is lawful and what makes it sinful.",
+        "Compare sections 119-122 on the magistrate's authority with the limits the Confession sets on obedience.",
+        "Examine the ends of marriage in section 123 and the cautions of sections 124-125 about whom one may marry."
+      ],
+      "comparison_theme": "oaths-magistrate-and-marriage"
+    },
+    {
+      "slug": "the-church",
+      "order": 20,
+      "unit": "Ecclesiology",
+      "title": "The Church and the Communion of Saints",
+      "aim": "Grasp how the Confession distinguishes the invisible and visible church, names Christ as its only Head, and describes the fellowship believers share with him and one another.",
+      "lead": "Having traced salvation as it comes to the individual, the Confession lifts its eyes to the company of the redeemed. The church is not an afterthought to the gospel but the very household into which grace gathers us, the body of which Christ is Head.",
+      "sections": [
+        {
+          "heading": "Invisible and visible",
+          "body": [
+            "The Confession speaks of the catholic or universal church under two aspects. As invisible, it is the whole number of the elect of every age, gathered into one under Christ their Head — a church known perfectly only to God. As visible, it consists of all who profess the true religion, together with their children, and is the kingdom of the Lord Jesus, the house and family of God outside which there is ordinarily no salvation.",
+            "This distinction guards two truths at once: that the church's true unity rests in God's election, and that the visible church, though mixed and sometimes corrupted, remains the appointed place of ministry, ordinances, and gathering."
+          ],
+          "texts": [
+            {
+              "catechism": "wcf",
+              "numbers": [
+                129,
+                130,
+                131
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Christ the only Head",
+          "body": [
+            "The Confession is emphatic that the Lord Jesus Christ is the sole Head of the church; there is no other, and no man can be such in his place. The visible church endures through every age, sometimes more and sometimes less visible, and particular churches are more or less pure as the gospel is taught, ordinances administered, and worship kept. Even the purest churches are subject to mixture and error, yet Christ always has, and ever shall have, a kingdom in this world."
+          ],
+          "texts": [
+            {
+              "catechism": "wcf",
+              "numbers": [
+                132,
+                133,
+                134
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "The communion of saints",
+          "body": [
+            "Those united to Christ by his Spirit share in his graces and are bound to one another in love. This communion calls believers to mutual duties, both spiritual and outward, as their gifts and needs require. The Confession carefully limits the claim: this fellowship does not make believers partakers of the substance of the Godhead, nor does it overthrow the rights of property and ownership. Communion of saints is union in grace, not a merging of persons or a community of goods."
+          ],
+          "texts": [
+            {
+              "catechism": "wcf",
+              "numbers": [
+                135,
+                136,
+                137
+              ]
+            }
+          ]
+        }
+      ],
+      "study_prompts": [
+        "Read WCF 25 and note how the invisible and visible church are each defined, with their proofs.",
+        "Trace in WCF 26 the duties the communion of saints lays on believers, and the limits the chapter sets.",
+        "Compare the Scripture proofs for Christ as the only Head of the church."
+      ],
+      "comparison_theme": "the-church"
+    },
+    {
+      "slug": "sacraments-and-means-of-grace",
+      "order": 21,
+      "unit": "Ecclesiology",
+      "title": "The Sacraments and Means of Grace",
+      "aim": "Understand the outward and ordinary means by which Christ communicates redemption — the Word, sacraments, and prayer — and the nature, subjects, and right use of Baptism and the Lord's Supper.",
+      "lead": "Salvation is freely given, yet not given in the air. Christ has appointed means through which his benefits reach his people. The Standards gather these under three heads — the Word, the sacraments, and prayer — and then dwell at length on the two sacraments he instituted.",
+      "sections": [
+        {
+          "heading": "The outward and ordinary means",
+          "body": [
+            "The Standards name the outward and ordinary means whereby Christ communicates the benefits of redemption: his ordinances, especially the Word, sacraments, and prayer, all made effectual to the elect for salvation. The Word read and preached is the chief of these, a means of convincing, converting, and building up believers in holiness through faith. The means are not bare ceremonies; they become effectual not by any power in themselves or in the one who administers them, but by the working of Christ's Spirit and the blessing of his ordinance."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                88,
+                89,
+                90
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                153,
+                154,
+                155
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "The nature of a sacrament",
+          "body": [
+            "A sacrament is a holy sign and seal of the covenant of grace, immediately instituted by God to represent Christ and his benefits, to confirm our interest in him, and to mark off his people from the world. In every sacrament there is a spiritual relation, even a sacramental union, between the sign and the thing signified, so that the names and effects of the one are attributed to the other.",
+            "Under the gospel Christ has appointed only two sacraments, Baptism and the Lord's Supper, and neither may be dispensed by any but a lawfully ordained minister of the Word."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                91,
+                92,
+                93
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                138,
+                139,
+                143
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Baptism",
+          "body": [
+            "Baptism is the sacrament of admission into the visible church, signifying and sealing union with Christ, regeneration, remission of sins, and the believer's engagement to be the Lord's. It is to be administered with water in the name of the Father, Son, and Holy Spirit, and dipping is not necessary, since pouring or sprinkling is rightly used. The infants of one or both believing parents are to be baptized, for the covenant promise belongs to them; yet grace is not so tied to the moment that none can be saved without it, nor that all the baptized are undoubtedly regenerated."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                94,
+                95
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                144,
+                146,
+                147
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "The Lord's Supper",
+          "body": [
+            "The Lord's Supper, by giving and receiving bread and wine according to Christ's appointment, shows forth his death and conveys to worthy receivers all his benefits for their spiritual nourishment and growth in grace. The Confession denies any change of substance in the elements and rejects the sacrifice of the Mass, while affirming that believers truly and really, though spiritually, feed upon the crucified Christ by faith. Those who receive worthily must examine themselves, for to come ignorantly or wickedly is to eat and drink judgment upon oneself."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                96,
+                97
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                168,
+                170,
+                174
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                151,
+                154,
+                157
+              ]
+            }
+          ]
+        }
+      ],
+      "study_prompts": [
+        "Read WSC 88 and WLC 153–155 and list the ordinances named, then ask what makes them effectual.",
+        "Compare WLC 167 on improving baptism with WLC 174–175 on receiving the Supper.",
+        "Trace the proofs in WCF 29 for feeding on Christ spiritually rather than corporally."
+      ],
+      "comparison_theme": "sacraments-and-means-of-grace"
+    },
+    {
+      "slug": "church-government-and-discipline",
+      "order": 22,
+      "unit": "Ecclesiology",
+      "title": "Church Government and Discipline",
+      "aim": "See why Christ has given his church officers, censures, and councils, and what ends these serve in guarding the gospel and the good of souls.",
+      "lead": "Christ rules his church not only by his Word and Spirit but through an appointed government. The Confession describes the keys committed to church officers, the censures they administer, and the synods and councils by which the church takes counsel together.",
+      "sections": [
+        {
+          "heading": "The keys and church censures",
+          "body": [
+            "The Lord Jesus, as King and Head of his church, has appointed a government in the hands of church officers, distinct from the civil magistrate. To these officers the keys of the kingdom are committed, by which they may retain and remit sins, shut the kingdom against the impenitent by the Word and censures, and open it to penitent sinners by the ministry of the gospel and the lifting of censures as occasion requires."
+          ],
+          "texts": [
+            {
+              "catechism": "wcf",
+              "numbers": [
+                158,
+                159
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "The ends of discipline",
+          "body": [
+            "Church censures are necessary for the reclaiming and gaining of offending brethren, for deterring others, for purging the leaven that might infect the whole lump, for vindicating the honour of Christ and his gospel, and for preventing the wrath of God upon his church. The Confession orders these censures by degrees — admonition, suspension from the sacrament, and excommunication — to be applied according to the nature of the offence and the demerit of the person, never as cruelty but as fatherly correction aimed at recovery."
+          ],
+          "texts": [
+            {
+              "catechism": "wcf",
+              "numbers": [
+                160,
+                161,
+                162
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "Synods and councils",
+          "body": [
+            "For the better government and edifying of the church, there ought to be assemblies commonly called synods or councils. These are to determine controversies of faith and cases of conscience, to set down rules for ordering public worship and the government of the church, and to receive complaints of maladministration. Their decrees, when agreeable to the Word, are to be received with reverence and submission. Yet councils may err, and many have erred; therefore they are not to be made the rule of faith but a help, and they are to handle nothing but what is ecclesiastical."
+          ],
+          "texts": [
+            {
+              "catechism": "wcf",
+              "numbers": [
+                163,
+                164,
+                165,
+                166
+              ]
+            }
+          ]
+        }
+      ],
+      "study_prompts": [
+        "Read WCF 30 and list the several purposes given for church censures.",
+        "In WCF 31 note both the authority of synods and the careful limits set upon them.",
+        "Trace the proofs for the keys of the kingdom committed to church officers."
+      ],
+      "comparison_theme": "church-government-and-discipline"
+    },
+    {
+      "slug": "prayer",
+      "order": 23,
+      "unit": "Ecclesiology",
+      "title": "Prayer and the Lord's Prayer",
+      "aim": "Understand prayer as a duty and gift, the rule Christ gave for it, and the shape of the Lord's Prayer in its preface and several petitions.",
+      "lead": "If the Word and sacraments are means by which God speaks to us, prayer is the means by which we are taught to speak to him. The Catechisms treat it as both a required duty and a sweet privilege, and they make Christ's own pattern the guide for how we are to pray.",
+      "sections": [
+        {
+          "heading": "The duty and rule of prayer",
+          "body": [
+            "Prayer is the offering up of our desires to God for things agreeable to his will, in the name of Christ, with confession of sins and thankful acknowledgment of his mercies. It is to be made to God alone, by the help of his Spirit, and grounded on his promises. Though the whole Word of God is of use to direct us, the special rule of direction is the form Christ taught his disciples, commonly called the Lord's Prayer — given not only as a set form to be used but as a pattern to shape all our praying."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                98,
+                99
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                178,
+                179,
+                186
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "The preface",
+          "body": [
+            "The Lord's Prayer opens, \"Our Father which art in heaven.\" Its preface teaches us to draw near with holy reverence and confidence, as children to a Father able and ready to help us. The word \"our\" reminds us to pray with and for others, not for ourselves alone, while \"in heaven\" lifts our thoughts to his majesty, power, and all-sufficiency. So the very address sets the soul between nearness and awe before a single petition is spoken."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                100
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                189
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "The six petitions",
+          "body": [
+            "The petitions fall into two groups. The first three set God's glory before our own concerns: that his name be hallowed, his kingdom come, and his will be done on earth as in heaven. Here we ask that God would enable us and others to know and honour him, that the kingdom of grace would advance and the kingdom of glory be hastened, and that we would obey and submit as the angels do.",
+            "The last three petitions seek our own good: daily bread for the support of this life, the forgiveness of our sins as we forgive others, and deliverance from temptation and the power of evil. Together they teach us to depend on God for body and soul, for pardon and for protection."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                101,
+                102,
+                103,
+                104,
+                105,
+                106
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                190,
+                193,
+                195
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "The conclusion",
+          "body": [
+            "The prayer closes with a conclusion that both grounds our boldness and frames our praise: that the kingdom, power, and glory belong to God forever. From him we take our encouragement in prayer, to him alone we ascribe all honour, and with \"Amen\" we testify our desire and assurance to be heard."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                107
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                196
+              ]
+            }
+          ]
+        }
+      ],
+      "study_prompts": [
+        "Read WSC 98–99 and WLC 178–179 together and ask what the Larger Catechism adds about the parts of prayer.",
+        "Work through WLC 190–195 and note for each petition what we confess and what we ask.",
+        "Compare the explanation of the preface in WSC 100 with WLC 189."
+      ],
+      "comparison_theme": "prayer"
+    },
+    {
+      "slug": "death-resurrection-and-last-judgment",
+      "order": 24,
+      "unit": "Eschatology",
+      "title": "Death, Resurrection, and Last Judgment",
+      "aim": "Trace what the Standards teach about the soul after death, the resurrection of the body, and the great judgment at the last day.",
+      "lead": "The Standards do not end with the believer's present comfort but carry the eye forward to the last things. They speak soberly of death, confidently of resurrection, and solemnly of the judgment in which all things are set right under Christ.",
+      "sections": [
+        {
+          "heading": "The state of men after death",
+          "body": [
+            "At death the bodies of men return to dust and see corruption, but their souls, which neither die nor sleep, return at once to God who gave them. The souls of the righteous are made perfect in holiness and received into the highest heavens, where they behold the face of God in light and glory, awaiting the redemption of their bodies. The souls of the wicked are cast into hell, reserved in torment to the judgment of the great day. Scripture knows no third place besides these two."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                37
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                82,
+                83,
+                86
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                167
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "The resurrection of the body",
+          "body": [
+            "At the last day all the dead shall be raised with the selfsame bodies, and none other, though with different qualities, to be united again to their souls forever. The bodies of the just, by the Spirit of Christ and in virtue of his resurrection, shall be raised in honour and made conformable to his own glorious body. The bodies of the unjust shall be raised in dishonour by his power. So the believer's hope reaches not merely to a deathless soul but to a renewed and glorified body."
+          ],
+          "texts": [
+            {
+              "catechism": "wsc",
+              "numbers": [
+                38
+              ]
+            },
+            {
+              "catechism": "wlc",
+              "numbers": [
+                87
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                168,
+                169
+              ]
+            }
+          ]
+        },
+        {
+          "heading": "The last judgment",
+          "body": [
+            "God has appointed a day in which he will judge the world in righteousness by Jesus Christ, to whom all power and judgment is given. All persons that have lived shall appear to give account, and to receive according to what they have done, whether good or evil. The righteous shall be acquitted, received into the fulness of joy, and made perfectly blessed in the presence of the Lord; the wicked shall be cast into eternal torments. Christ would have us certainly persuaded of this day, to deter us from sin and to comfort his people in adversity, watching, since we know neither the day nor the hour."
+          ],
+          "texts": [
+            {
+              "catechism": "wlc",
+              "numbers": [
+                88,
+                89,
+                90
+              ]
+            },
+            {
+              "catechism": "wcf",
+              "numbers": [
+                170,
+                171,
+                172
+              ]
+            }
+          ]
+        }
+      ],
+      "study_prompts": [
+        "Read WSC 37–38 with WLC 82–90 and note how the larger answers expand the communion in glory.",
+        "Compare WCF 32 on the resurrection with the proofs for the selfsame body raised.",
+        "In WCF 33 ask why Christ would have us certainly persuaded that there shall be a day of judgment."
+      ],
+      "comparison_theme": "death-resurrection-and-last-judgment"
+    }
+  ]
+}
