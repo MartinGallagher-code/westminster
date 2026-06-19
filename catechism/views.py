@@ -313,13 +313,33 @@ class DoctrineDetailView(TemplateView):
         return ctx
 
 
-def _scripture_map_for(question):
-    """Return {reference: text} for a question's proof texts (handles missing texts)."""
-    refs = question.get_proof_text_list()
-    if not refs:
-        return {}
-    passages = ScripturePassage.objects.filter(reference__in=refs)
-    return {p.reference: p.text for p in passages}
+def _resolve_text_links(text_refs):
+    """Resolve teaching-guide ``text`` references into link dicts for templates.
+
+    Each reference names a catechism slug and question/section numbers; the
+    result is a flat list of links (skipping any document not in the database).
+    """
+    links = []
+    for ref in text_refs:
+        catechism = Catechism.objects.filter(slug=ref['catechism']).first()
+        if catechism is None:
+            continue
+        questions = Question.objects.filter(
+            catechism=catechism, number__in=ref['numbers']
+        ).select_related('catechism', 'topic').order_by('number')
+        for question in questions:
+            links.append({
+                'pk': question.pk,
+                'url': question.get_absolute_url(),
+                'label': (
+                    f"{catechism.abbreviation} {catechism.item_prefix}"
+                    f"{question.display_number}"
+                ),
+                'abbreviation': catechism.abbreviation,
+                'catechism_name': catechism.name,
+                'question_text': question.question_text,
+            })
+    return links
 
 
 class LearnIndexView(TemplateView):
@@ -345,7 +365,7 @@ class LearnIndexView(TemplateView):
 
 
 class LearnLessonView(TemplateView):
-    """A single lesson, assembled from existing questions, proofs and commentary."""
+    """A single lesson: teaching prose that links out to the texts it expounds."""
     template_name = 'catechism/learn_lesson.html'
 
     def get_context_data(self, **kwargs):
@@ -355,35 +375,34 @@ class LearnLessonView(TemplateView):
             raise Http404
         ctx['lesson'] = lesson
 
-        commentary_prefetch = Prefetch(
-            'commentaries',
-            queryset=Commentary.objects.select_related('source').prefetch_related(
-                Prefetch(
-                    'sub_questions',
-                    queryset=FisherSubQuestion.objects.order_by('number'),
-                )
-            ),
-        )
-
-        reading_blocks = []
-        for reading in lesson.get('readings', []):
-            catechism = Catechism.objects.filter(slug=reading['catechism']).first()
-            if catechism is None:
-                continue
-            questions = list(
-                Question.objects.filter(
-                    catechism=catechism, number__in=reading['numbers']
-                ).select_related('topic', 'catechism').prefetch_related(
-                    commentary_prefetch
-                ).order_by('number')
-            )
-            entries = [
-                {'question': question, 'scripture_map': _scripture_map_for(question)}
-                for question in questions
-            ]
-            if entries:
-                reading_blocks.append({'catechism': catechism, 'entries': entries})
-        ctx['reading_blocks'] = reading_blocks
+        # Resolve each section's text references into links, and aggregate a
+        # de-duplicated "texts in this lesson" list grouped by document.
+        sections = []
+        text_groups = []
+        groups_by_abbr = {}
+        seen_pks = set()
+        for section in lesson.get('sections', []):
+            links = _resolve_text_links(section.get('texts', []))
+            sections.append({
+                'heading': section.get('heading'),
+                'body': section.get('body', []),
+                'text_links': links,
+            })
+            for link in links:
+                if link['pk'] in seen_pks:
+                    continue
+                seen_pks.add(link['pk'])
+                abbr = link['abbreviation']
+                if abbr not in groups_by_abbr:
+                    groups_by_abbr[abbr] = {
+                        'abbreviation': abbr,
+                        'name': link['catechism_name'],
+                        'links': [],
+                    }
+                    text_groups.append(groups_by_abbr[abbr])
+                groups_by_abbr[abbr]['links'].append(link)
+        ctx['sections'] = sections
+        ctx['text_groups'] = text_groups
 
         theme_slug = lesson.get('comparison_theme')
         if theme_slug:

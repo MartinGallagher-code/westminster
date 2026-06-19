@@ -113,12 +113,18 @@ class TestLearnViews:
         resp = client.get('/learn/chief-end-of-man/')
         assert resp.status_code == 200
 
-    def test_lesson_assembles_readings(self, client, setup_catechism):
-        """The lesson pulls in the WSC chief-end question already in the DB."""
+    def test_lesson_teaches_with_prose(self, client, setup_catechism):
+        """The lesson renders teaching prose, not a re-render of the Q&A."""
         resp = client.get('/learn/chief-end-of-man/')
-        blocks = resp.context['reading_blocks']
-        assert any(block['catechism'].slug == 'wsc' for block in blocks)
-        assert b'glorify God' in resp.content
+        assert resp.context['sections']
+        assert b'chief, or' in resp.content  # teaching prose, authored in the guide
+
+    def test_lesson_links_to_texts(self, client, setup_catechism):
+        """References resolve to links into the underlying question pages."""
+        resp = client.get('/learn/chief-end-of-man/')
+        groups = resp.context['text_groups']
+        assert any(g['abbreviation'] == 'WSC' for g in groups)
+        assert b'/wsc/questions/1/' in resp.content
 
     def test_lesson_404_unknown_slug(self, client, setup_catechism):
         resp = client.get('/learn/nope/')
