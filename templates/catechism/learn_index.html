@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}{{ intro.title }} - Study Reformed{% endblock %}
+{% block meta_description %}{{ intro.tagline }}{% endblock %}
+{% block og_title %}{{ intro.title }} - Study Reformed{% endblock %}
+{% block og_description %}{{ intro.tagline }}{% endblock %}
+{% block twitter_title %}{{ intro.title }} - Study Reformed{% endblock %}
+{% block twitter_description %}{{ intro.tagline }}{% endblock %}
+
+{% block content %}
+<div class="mb-4 pb-3 border-bottom">
+    <h1 class="mb-1">{{ intro.title }}</h1>
+    <p class="text-muted mb-0">{{ intro.tagline }}</p>
+</div>
+
+<div class="row g-5">
+    <div class="col-lg-7">
+        {% for paragraph in intro.paragraphs %}
+        <p>{{ paragraph }}</p>
+        {% endfor %}
+
+        {% for unit in units %}
+        <div class="mb-4">
+            <div class="flat-section-heading mb-3">{{ unit.name }}</div>
+            <div class="list-group">
+                {% for lesson in unit.lessons %}
+                <a href="{% url 'catechism:learn_lesson' lesson_slug=lesson.slug %}"
+                   class="list-group-item list-group-item-action py-3">
+                    <div class="d-flex w-100 justify-content-between align-items-start gap-3">
+                        <div>
+                            <div class="fw-semibold mb-1">
+                                <span class="text-muted me-2">{{ lesson.order }}.</span>{{ lesson.title }}
+                            </div>
+                            <div class="text-body-secondary small">{{ lesson.aim }}</div>
+                        </div>
+                        <i class="bi bi-chevron-right text-muted"></i>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="col-lg-5">
+        <div class="study-card h-100">
+            <i class="bi bi-mortarboard"></i>
+            <div class="study-card-title">How this guide works</div>
+            <div class="study-card-text">
+                <p class="mb-2">Each lesson brings together, from the content already on this site:</p>
+                <ul class="mb-3 ps-3">
+                    <li class="mb-1">The relevant Catechism questions and Confession sections, side by side.</li>
+                    <li class="mb-1">The Scripture proofs cited by the Westminster divines.</li>
+                    <li class="mb-1">Classic historical commentary on each question.</li>
+                    <li class="mb-1">A link to compare the doctrine across the wider Reformed standards.</li>
+                </ul>
+                <div class="d-flex flex-wrap gap-2">
+                    <span class="badge text-bg-secondary">{{ lesson_count }} lesson{{ lesson_count|pluralize }}</span>
+                    <span class="badge text-bg-secondary">Confession &amp; Catechisms</span>
+                    <span class="badge text-bg-secondary">Self-paced</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

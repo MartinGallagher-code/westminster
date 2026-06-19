@@ -99,6 +99,33 @@ class TestQuestionListRedirect:
 
 
 @pytest.mark.django_db
+class TestLearnViews:
+    def test_index_status_200(self, client, setup_catechism):
+        resp = client.get('/learn/')
+        assert resp.status_code == 200
+
+    def test_index_lists_lesson(self, client, setup_catechism):
+        resp = client.get('/learn/')
+        assert resp.context['lesson_count'] >= 1
+        assert b'The Chief End of Man' in resp.content
+
+    def test_lesson_status_200(self, client, setup_catechism):
+        resp = client.get('/learn/chief-end-of-man/')
+        assert resp.status_code == 200
+
+    def test_lesson_assembles_readings(self, client, setup_catechism):
+        """The lesson pulls in the WSC chief-end question already in the DB."""
+        resp = client.get('/learn/chief-end-of-man/')
+        blocks = resp.context['reading_blocks']
+        assert any(block['catechism'].slug == 'wsc' for block in blocks)
+        assert b'glorify God' in resp.content
+
+    def test_lesson_404_unknown_slug(self, client, setup_catechism):
+        resp = client.get('/learn/nope/')
+        assert resp.status_code == 404
+
+
+@pytest.mark.django_db
 class TestQuestionDetailView:
     def test_status_200(self, client, setup_catechism):
         resp = client.get('/wsc/questions/1/')

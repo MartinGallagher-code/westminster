@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% load catechism_tags %}
+
+{% block title %}{{ lesson.title }} - Teaching Guide - Study Reformed{% endblock %}
+{% block meta_description %}{{ lesson.aim }}{% endblock %}
+{% block og_title %}{{ lesson.title }} - Teaching Guide{% endblock %}
+{% block og_description %}{{ lesson.aim }}{% endblock %}
+{% block twitter_title %}{{ lesson.title }} - Teaching Guide{% endblock %}
+{% block twitter_description %}{{ lesson.aim }}{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'catechism:home' %}">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'catechism:learn_index' %}">Teaching Guide</a></li>
+        <li class="breadcrumb-item active">{{ lesson.title }}</li>
+    </ol>
+</nav>
+
+<div class="mb-4 pb-3 border-bottom">
+    <div class="text-muted small text-uppercase">{{ lesson.unit }} &middot; Lesson {{ lesson.order }}</div>
+    <h1 class="mb-2">{{ lesson.title }}</h1>
+    <p class="text-muted mb-0">{{ lesson.aim }}</p>
+</div>
+
+<div class="row g-5">
+    <div class="col-lg-8 col-separator">
+
+        {% if lesson.overview %}
+        <div class="study-callout mb-4">
+            <div>
+                <div class="fw-semibold">Overview</div>
+                <div class="text-muted small">{{ lesson.overview }}</div>
+            </div>
+        </div>
+        {% endif %}
+
+        {# ── Readings: questions/sections with proofs and commentary ── #}
+        {% for block in reading_blocks %}
+        <div class="mb-5">
+            <div class="flat-section-heading mb-3">
+                {{ block.catechism.name }}
+            </div>
+
+            {% for entry in block.entries %}
+            {% with question=entry.question %}
+            <div class="mb-4 pb-3 {% if not forloop.last %}border-bottom{% endif %}">
+                {% if block.catechism.is_prose_document %}
+                <h2 class="h6">{{ question.question_text }}</h2>
+                <p class="text-muted small mb-2">{{ block.catechism.item_name }} {{ question.display_number }}</p>
+                <div class="answer-text">{{ question.answer_text|format_confession_sections }}</div>
+                {% else %}
+                <h2 class="h6 mb-2">Q{{ question.number }}. {{ question.question_text }}</h2>
+                <p class="answer-text"><strong>A.</strong> {{ question.answer_text }}</p>
+                {% endif %}
+
+                <ul class="nav nav-tabs mt-3 mb-3" role="tablist">
+                    {% with proof_texts=question.get_proof_text_list %}
+                    {% if proof_texts %}
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" data-bs-toggle="tab"
+                                data-bs-target="#proofs-{{ question.pk }}" type="button" role="tab">
+                            <i class="bi bi-book me-1"></i>Scripture Proofs
+                        </button>
+                    </li>
+                    {% endif %}
+                    {% for commentary in question.commentaries.all %}
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link {% if not proof_texts and forloop.first %}active{% endif %}"
+                                data-bs-toggle="tab" data-bs-target="#lesson-comm-{{ commentary.pk }}"
+                                type="button" role="tab">{{ commentary.source.author }}</button>
+                    </li>
+                    {% endfor %}
+                    {% endwith %}
+                </ul>
+
+                <div class="tab-content">
+                    {% with proof_texts=question.get_proof_text_list %}
+                    {% if proof_texts %}
+                    <div class="tab-pane fade show active" id="proofs-{{ question.pk }}" role="tabpanel">
+                        {% for ref in proof_texts %}
+                        {% with verse_text=entry.scripture_map|get_item:ref %}
+                        <div class="scripture-passage mb-3">
+                            <div class="scripture-ref fw-bold text-primary">{{ ref }}</div>
+                            {% if verse_text %}
+                            <div class="esv-text ps-3 border-start border-primary mt-1">{{ verse_text }}</div>
+                            {% endif %}
+                        </div>
+                        {% endwith %}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    {% for commentary in question.commentaries.all %}
+                    <div class="tab-pane fade {% if not proof_texts and forloop.first %}show active{% endif %}"
+                         id="lesson-comm-{{ commentary.pk }}" role="tabpanel">
+                        {% if commentary.body %}
+                        <div class="commentary-text">{{ commentary.body|linebreaks }}</div>
+                        {% endif %}
+                        {% if commentary.sub_questions.all %}
+                        <div class="fisher-subquestions">
+                            {% for sq in commentary.sub_questions.all %}
+                            <div class="mb-3 ps-3 border-start border-2">
+                                <p class="mb-1"><strong>Q{{ sq.number }}.</strong> {{ sq.question_text }}</p>
+                                <p class="text-muted mb-0"><strong>A.</strong> {{ sq.answer_text }}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    {% endwith %}
+                </div>
+
+                <a href="{{ question.get_absolute_url }}" class="small text-decoration-none">
+                    Open full study page for {{ block.catechism.abbreviation }}
+                    {{ block.catechism.item_prefix }}{{ question.display_number }} &rarr;
+                </a>
+            </div>
+            {% endwith %}
+            {% endfor %}
+        </div>
+        {% endfor %}
+
+        {# ── Lesson navigation ── #}
+        <div class="d-flex justify-content-between mt-4 pt-4 border-top">
+            {% if previous_lesson %}
+            <a href="{% url 'catechism:learn_lesson' lesson_slug=previous_lesson.slug %}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-chevron-left me-1"></i>{{ previous_lesson.title }}
+            </a>
+            {% else %}<span></span>{% endif %}
+            {% if next_lesson %}
+            <a href="{% url 'catechism:learn_lesson' lesson_slug=next_lesson.slug %}" class="btn btn-outline-secondary btn-sm">
+                {{ next_lesson.title }}<i class="bi bi-chevron-right ms-1"></i>
+            </a>
+            {% else %}
+            <a href="{% url 'catechism:learn_index' %}" class="btn btn-outline-secondary btn-sm">
+                Back to guide<i class="bi bi-grid ms-1"></i>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    {# ── Sidebar: study prompts + compare ── #}
+    <div class="col-lg-4">
+        {% if lesson.study_prompts %}
+        <div class="study-card mb-4">
+            <i class="bi bi-compass"></i>
+            <div class="study-card-title">Study Prompts</div>
+            <div class="study-card-text">
+                <ul class="mb-0 ps-3">
+                    {% for prompt in lesson.study_prompts %}
+                    <li class="mb-2">{{ prompt }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if comparison_theme %}
+        <div class="study-card">
+            <i class="bi bi-layout-split"></i>
+            <div class="study-card-title">Compare across the standards</div>
+            <div class="study-card-text">
+                <p class="mb-3">See how this doctrine is stated across the Reformed confessions side by side.</p>
+                <a href="{% url 'catechism:doctrine_detail' theme_slug=comparison_theme.slug %}"
+                   class="btn btn-outline-primary btn-sm">
+                    {{ comparison_theme.name }} &rarr;
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
