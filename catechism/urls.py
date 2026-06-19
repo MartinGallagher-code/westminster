@@ -17,6 +17,10 @@ urlpatterns = [
     path('doctrine/', views.DoctrineIndexView.as_view(), name='doctrine_index'),
     path('doctrine/<slug:theme_slug>/', views.DoctrineDetailView.as_view(), name='doctrine_detail'),
 
+    # Teaching guide (guided learning path)
+    path('learn/', views.LearnIndexView.as_view(), name='learn_index'),
+    path('learn/<slug:lesson_slug>/', views.LearnLessonView.as_view(), name='learn_lesson'),
+
     # Scripture index
     path('scripture/', views.ScriptureIndexView.as_view(), name='scripture_index'),
     path('scripture/<slug:book_slug>/', views.ScriptureBookView.as_view(), name='scripture_book'),

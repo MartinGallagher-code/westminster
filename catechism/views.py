@@ -13,6 +13,9 @@ from django.views.generic import TemplateView, ListView, DetailView
 
 from .atlas import atlas_url, atlas_work_url
 from .document_guides import get_document_guide
+from .teaching_guide import (
+    get_guide_intro, get_lessons, get_lesson, get_adjacent_lessons,
+)
 from .models import (
     Catechism, Topic, Question, Commentary, FisherSubQuestion,
     ScripturePassage, StandardCrossReference,
@@ -273,6 +276,91 @@ class DoctrineDetailView(TemplateView):
         ctx['primary_theme'] = themes.first()
         ctx['theme_name'] = ctx['primary_theme'].name
         ctx['theme_description'] = ctx['primary_theme'].description
+        return ctx
+
+
+def _scripture_map_for(question):
+    """Return {reference: text} for a question's proof texts (handles missing texts)."""
+    refs = question.get_proof_text_list()
+    if not refs:
+        return {}
+    passages = ScripturePassage.objects.filter(reference__in=refs)
+    return {p.reference: p.text for p in passages}
+
+
+class LearnIndexView(TemplateView):
+    """Landing page for the guided teaching path."""
+    template_name = 'catechism/learn_index.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['intro'] = get_guide_intro()
+        units = []
+        units_by_name = {}
+        for lesson in get_lessons():
+            unit_name = lesson.get('unit', 'Lessons')
+            if unit_name not in units_by_name:
+                units_by_name[unit_name] = {'name': unit_name, 'lessons': []}
+                units.append(units_by_name[unit_name])
+            units_by_name[unit_name]['lessons'].append(lesson)
+        for unit in units:
+            unit['lessons'].sort(key=lambda lesson_data: lesson_data.get('order', 0))
+        ctx['units'] = units
+        ctx['lesson_count'] = len(get_lessons())
+        return ctx
+
+
+class LearnLessonView(TemplateView):
+    """A single lesson, assembled from existing questions, proofs and commentary."""
+    template_name = 'catechism/learn_lesson.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        lesson = get_lesson(self.kwargs['lesson_slug'])
+        if lesson is None:
+            raise Http404
+        ctx['lesson'] = lesson
+
+        commentary_prefetch = Prefetch(
+            'commentaries',
+            queryset=Commentary.objects.select_related('source').prefetch_related(
+                Prefetch(
+                    'sub_questions',
+                    queryset=FisherSubQuestion.objects.order_by('number'),
+                )
+            ),
+        )
+
+        reading_blocks = []
+        for reading in lesson.get('readings', []):
+            catechism = Catechism.objects.filter(slug=reading['catechism']).first()
+            if catechism is None:
+                continue
+            questions = list(
+                Question.objects.filter(
+                    catechism=catechism, number__in=reading['numbers']
+                ).select_related('topic', 'catechism').prefetch_related(
+                    commentary_prefetch
+                ).order_by('number')
+            )
+            entries = [
+                {'question': question, 'scripture_map': _scripture_map_for(question)}
+                for question in questions
+            ]
+            if entries:
+                reading_blocks.append({'catechism': catechism, 'entries': entries})
+        ctx['reading_blocks'] = reading_blocks
+
+        theme_slug = lesson.get('comparison_theme')
+        if theme_slug:
+            active_traditions = get_active_traditions(self.request)
+            ctx['comparison_theme'] = _comparison_themes_for_traditions(
+                active_traditions
+            ).filter(slug=theme_slug).first()
+
+        previous_lesson, next_lesson = get_adjacent_lessons(lesson['slug'])
+        ctx['previous_lesson'] = previous_lesson
+        ctx['next_lesson'] = next_lesson
         return ctx
 
 

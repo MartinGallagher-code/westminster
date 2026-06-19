@@ -15,3 +15,4 @@ staticfiles/
 htmlcov/
 data/pca_bco/bco.pdf
 data/pca_bco/bco_raw.txt
+venv/
