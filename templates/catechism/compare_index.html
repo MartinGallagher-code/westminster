@@ -25,6 +25,18 @@
     <div class="flat-section-heading mb-3">Custom Comparison</div>
     <p class="text-muted small mb-3">Select two or more documents to find shared doctrinal themes.</p>
 
+    {% if comparison_presets %}
+    <div class="mb-3">
+        <span class="text-muted small me-2">Quick presets:</span>
+        {% for preset in comparison_presets %}
+        <button type="button" class="btn btn-outline-primary btn-sm me-1 mb-1 preset-btn"
+                data-slugs="{{ preset.docs_param }}" title="{{ preset.description }}">
+            {{ preset.name }}
+        </button>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <div class="mb-2">
         <button type="button" class="btn btn-outline-secondary btn-sm me-1" id="select-all-btn">Select All</button>
         <button type="button" class="btn btn-outline-secondary btn-sm" id="clear-all-btn">Clear</button>

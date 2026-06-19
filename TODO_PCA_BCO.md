@@ -49,6 +49,7 @@ Total: 433 sections across 62 active chapters + preface.
 
 ## Future Work
 
-- Add cross-references to WCF, WLC, and WSC
+- [x] Add cross-references to WCF, WLC, and WSC — see `data/pca_bco/bco_cross_references.json` and `load_bco_crossrefs`
 - Strip GA action date footnotes if they cause display issues
 - Add to comparison themes if applicable
+- Expand the editorial cross-reference map to additional BCO chapters as needed

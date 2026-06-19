@@ -4,7 +4,7 @@ from django.test import Client
 
 from catechism.models import Catechism, ComparisonSet
 from .conftest import (
-    TopicFactory, QuestionFactory,
+    CatechismFactory, TopicFactory, QuestionFactory,
     BibleBookFactory, ScriptureIndexFactory,
     ComparisonThemeFactory, ComparisonEntryFactory,
     ScripturePassageFactory, OntologyAttributeFactory, QuestionOntologyTagFactory,
@@ -310,3 +310,48 @@ class TestLegacyRedirects:
         resp = client.get('/topics/of-god/')
         assert resp.status_code == 301
         assert '/wsc/topics/of-god/' in resp.url
+
+
+@pytest.mark.django_db
+class TestCompareIndexPresets:
+    def _seed_westminster(self):
+        wsc = Catechism.objects.get(slug='wsc')
+        wsc.tradition = Catechism.WESTMINSTER
+        wsc.save()
+        wcf = CatechismFactory(
+            slug='wcf', abbreviation='WCF', tradition=Catechism.WESTMINSTER,
+            document_type=Catechism.CONFESSION,
+        )
+        wlc = CatechismFactory(
+            slug='wlc', abbreviation='WLC', tradition=Catechism.WESTMINSTER,
+        )
+        for cat in (wsc, wcf, wlc):
+            ComparisonEntryFactory(catechism=cat)
+        return wsc, wcf, wlc
+
+    def test_westminster_preset_present(self, client):
+        self._seed_westminster()
+        resp = client.get('/compare/')
+        assert resp.status_code == 200
+        presets = resp.context['comparison_presets']
+        by_name = {p['name']: p for p in presets}
+        assert 'Westminster Standards' in by_name
+        assert set(by_name['Westminster Standards']['slugs']) == {'wcf', 'wlc', 'wsc'}
+        assert by_name['Westminster Standards']['docs_param']
+
+    def test_preset_rendered_in_template(self, client):
+        self._seed_westminster()
+        resp = client.get('/compare/')
+        content = resp.content.decode()
+        assert 'preset-btn' in content
+        assert 'Westminster Standards' in content
+
+    def test_preset_dropped_when_only_one_doc_available(self, client):
+        """A preset needs >= 2 available documents or it is omitted."""
+        wsc = Catechism.objects.get(slug='wsc')
+        wsc.tradition = Catechism.WESTMINSTER
+        wsc.save()
+        ComparisonEntryFactory(catechism=wsc)
+        resp = client.get('/compare/')
+        names = [p['name'] for p in resp.context['comparison_presets']]
+        assert 'Westminster Standards' not in names

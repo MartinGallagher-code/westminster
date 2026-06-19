@@ -27,6 +27,40 @@ SEARCH_STOP_WORDS = {
     'or', 'the', 'to', 'with',
 }
 
+# Curated quick-start groupings for the custom comparison selector. Each preset
+# is filtered against the documents currently available in the active
+# traditions, so a preset only appears when at least two of its documents are
+# available to compare.
+COMPARISON_PRESETS = [
+    {
+        'name': 'Westminster Standards',
+        'slugs': ['wcf', 'wlc', 'wsc'],
+        'description': 'The Confession of Faith with the Larger and Shorter Catechisms.',
+    },
+    {
+        'name': 'Three Forms of Unity',
+        'slugs': ['heidelberg', 'belgic', 'dort'],
+        'description': 'The Heidelberg Catechism, Belgic Confession, and Canons of Dort.',
+    },
+]
+
+
+def _available_comparison_presets(available_slugs):
+    """Return presets restricted to available documents, keeping only those
+    that still cover at least two documents."""
+    available = set(available_slugs)
+    presets = []
+    for preset in COMPARISON_PRESETS:
+        slugs = [s for s in preset['slugs'] if s in available]
+        if len(slugs) >= 2:
+            presets.append({
+                'name': preset['name'],
+                'description': preset['description'],
+                'slugs': slugs,
+                'docs_param': ','.join(slugs),
+            })
+    return presets
+
 
 def _comparison_sets_for_traditions(active_traditions):
     qs = ComparisonSet.objects.filter(
@@ -590,11 +624,15 @@ class CompareIndexView(ListView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         active_traditions = get_active_traditions(self.request)
-        ctx['all_catechisms'] = Catechism.objects.filter(
+        all_catechisms = Catechism.objects.filter(
             tradition__in=active_traditions,
             comparison_entries__isnull=False,
         ).distinct()
+        ctx['all_catechisms'] = all_catechisms
         ctx['active_traditions'] = active_traditions
+        ctx['comparison_presets'] = _available_comparison_presets(
+            all_catechisms.values_list('slug', flat=True)
+        )
         return ctx
 
 
