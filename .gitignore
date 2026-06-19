@@ -10,7 +10,7 @@ build/
 staticfiles/
 *.log
 .DS_Store
-.coverage
+.coverage*
 .pytest_cache/
 htmlcov/
 data/pca_bco/bco.pdf
