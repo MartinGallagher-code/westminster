@@ -12,7 +12,7 @@ A Django web application for studying the great Reformed confessional standards 
 - Browse a scripture index across loaded documents
 - Save personal notes and text highlights as an authenticated user
 - Use dark mode and print-friendly styles
-- Support the site through Stripe-powered supporter memberships
+- Support the site through Buy Me a Coffee
 
 ## Tech Stack
 
@@ -21,7 +21,7 @@ A Django web application for studying the great Reformed confessional standards 
 - **Frontend:** Bootstrap 5.3, vanilla JavaScript
 - **Hosting:** Render via `render.yaml`
 - **Static files:** WhiteNoise
-- **Payments:** Stripe Checkout and webhooks
+- **Donations:** Buy Me a Coffee (external link)
 
 ## Local Setup
 
@@ -92,10 +92,6 @@ Required production environment variables:
 - `SECRET_KEY`
 - `DATABASE_URL`
 - `ALLOWED_HOSTS`
-- `STRIPE_PUBLISHABLE_KEY`
-- `STRIPE_SECRET_KEY`
-- `STRIPE_WEBHOOK_SECRET`
-- `STRIPE_PRODUCT_ID`
 - `GOOGLE_ANALYTICS_ID` optional
 
 `build.sh` installs dependencies, collects static assets, migrates the database, loads source data, rebuilds indexes/cross-references, and clears the cache.
@@ -104,7 +100,7 @@ Required production environment variables:
 
 - Record user-visible changes in `CHANGELOG.md`.
 - Update `HANDOFF.md` before ending substantial work sessions.
-- Keep future work in `TODO.md`; keep Stripe setup in `TODO_STRIPE.md`; keep BCO-specific notes in `TODO_PCA_BCO.md`.
+- Keep future work in `TODO.md`; keep BCO-specific notes in `TODO_PCA_BCO.md`.
 
 ## License
 

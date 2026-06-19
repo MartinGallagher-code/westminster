@@ -35,13 +35,8 @@ urlpatterns = [
     # Password change
     path('password/change/', views.PasswordChangeView.as_view(), name='password_change'),
 
-    # Supporter subscription
+    # Support the project
     path('support/', views.SupportPageView.as_view(), name='support'),
-    path('support/checkout/', views.CreateCheckoutSessionView.as_view(), name='support_checkout'),
-    path('support/success/', views.CheckoutSuccessView.as_view(), name='support_success'),
-    path('support/cancel/', views.CheckoutCancelView.as_view(), name='support_cancel'),
-    path('support/portal/', views.CustomerPortalView.as_view(), name='support_portal'),
-    path('support/webhook/', views.stripe_webhook, name='stripe_webhook'),
 
     # Admin panel
     path('manage/users/', views.AdminUserListView.as_view(), name='admin_user_list'),

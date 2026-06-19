@@ -24,13 +24,5 @@ services:
         value: .onrender.com,.studyreformed.com
       - key: PYTHON_VERSION
         value: 3.12.0
-      - key: STRIPE_PUBLISHABLE_KEY
-        sync: false
-      - key: STRIPE_SECRET_KEY
-        sync: false
-      - key: STRIPE_WEBHOOK_SECRET
-        sync: false
-      - key: STRIPE_PRODUCT_ID
-        sync: false
       - key: GOOGLE_ANALYTICS_ID
         sync: false

@@ -18,10 +18,9 @@
 
 ## Operations
 
-1. **Stripe supporter membership**
-   - Complete `TODO_STRIPE.md`.
-   - Confirm Render uses `STRIPE_PRODUCT_ID`, not a stale price-only configuration.
-   - Test checkout, webhook handling, supporter badge display, and customer portal redirects.
+1. **Support / donations**
+   - The support page links out to Buy Me a Coffee (`buymeacoffee.com/martingallagher`).
+   - Update the link in `templates/accounts/support.html` if the username changes.
 
 2. **BCO update monitoring**
    - Periodically run `python manage.py check_bco_update`.
