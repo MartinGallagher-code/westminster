@@ -77,6 +77,9 @@ python manage.py load_prooftexts --catechism savoy
 # PCA Book of Church Order
 python manage.py load_pca_bco
 
+# Cross-references from the PCA BCO to the Westminster Standards
+python manage.py load_bco_crossrefs
+
 # Systematic Theologies
 python manage.py load_calvins_institutes
 python manage.py load_hodge_outlines

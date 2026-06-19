@@ -1,0 +1,222 @@
+{
+  "_comment": "Editorial cross-references from PCA Book of Church Order chapters to the Westminster Standards. Each BCO chapter's sections are linked to the listed WCF chapters (whole chapters, by chapter number), WLC question ranges, and WSC question ranges. Ranges are inclusive [start, end]; single questions may be given as a bare integer. Only doctrinally substantive BCO chapters are mapped; purely procedural chapters (e.g. licensure mechanics, appeals, evidence) are intentionally omitted.",
+  "mappings": [
+    {
+      "bco_chapter": 1,
+      "title": "The Doctrine of Church Government",
+      "wcf": [25, 30, 31],
+      "wlc": [[62, 65]],
+      "wsc": []
+    },
+    {
+      "bco_chapter": 2,
+      "title": "The Visible Church Defined",
+      "wcf": [25],
+      "wlc": [[61, 65]],
+      "wsc": []
+    },
+    {
+      "bco_chapter": 3,
+      "title": "The Nature and Extent of Church Power",
+      "wcf": [20, 30, 31],
+      "wlc": [],
+      "wsc": []
+    },
+    {
+      "bco_chapter": 4,
+      "title": "The Particular Church",
+      "wcf": [25],
+      "wlc": [[62, 63]],
+      "wsc": []
+    },
+    {
+      "bco_chapter": 5,
+      "title": "The Organization of a Particular Church",
+      "wcf": [25],
+      "wlc": [],
+      "wsc": []
+    },
+    {
+      "bco_chapter": 6,
+      "title": "Church Members",
+      "wcf": [25, 28],
+      "wlc": [[62, 63], 166],
+      "wsc": [[94, 95]]
+    },
+    {
+      "bco_chapter": 7,
+      "title": "Church Officers - General Classification",
+      "wcf": [25, 31],
+      "wlc": [],
+      "wsc": []
+    },
+    {
+      "bco_chapter": 8,
+      "title": "The Elder",
+      "wcf": [25, 30, 31],
+      "wlc": [],
+      "wsc": []
+    },
+    {
+      "bco_chapter": 9,
+      "title": "The Deacon",
+      "wcf": [25],
+      "wlc": [],
+      "wsc": []
+    },
+    {
+      "bco_chapter": 27,
+      "title": "Discipline - Its Nature, Subjects and Ends",
+      "wcf": [30],
+      "wlc": [],
+      "wsc": []
+    },
+    {
+      "bco_chapter": 29,
+      "title": "Offenses",
+      "wcf": [6, 15, 30],
+      "wlc": [],
+      "wsc": [[14, 16]]
+    },
+    {
+      "bco_chapter": 30,
+      "title": "Church Censures",
+      "wcf": [30],
+      "wlc": [],
+      "wsc": []
+    },
+    {
+      "bco_chapter": 36,
+      "title": "The Infliction of Church Censures",
+      "wcf": [30],
+      "wlc": [],
+      "wsc": []
+    },
+    {
+      "bco_chapter": 37,
+      "title": "The Removal of Censure",
+      "wcf": [15, 30],
+      "wlc": [],
+      "wsc": [[87, 87]]
+    },
+    {
+      "bco_chapter": 38,
+      "title": "Cases Without Process",
+      "wcf": [30],
+      "wlc": [],
+      "wsc": []
+    },
+    {
+      "bco_chapter": 47,
+      "title": "The Principles and Elements of Public Worship",
+      "wcf": [21],
+      "wlc": [[108, 109], [178, 196]],
+      "wsc": [[50, 51], 88]
+    },
+    {
+      "bco_chapter": 48,
+      "title": "The Sanctification of the Lord's Day",
+      "wcf": [21],
+      "wlc": [[115, 121]],
+      "wsc": [[57, 62]]
+    },
+    {
+      "bco_chapter": 49,
+      "title": "The Ordering of Public Worship",
+      "wcf": [21],
+      "wlc": [[108, 109]],
+      "wsc": [[50, 51]]
+    },
+    {
+      "bco_chapter": 50,
+      "title": "The Public Reading of the Holy Scripture",
+      "wcf": [1, 21],
+      "wlc": [[155, 157]],
+      "wsc": [[89, 90]]
+    },
+    {
+      "bco_chapter": 51,
+      "title": "The Singing of Psalms and Hymns",
+      "wcf": [21],
+      "wlc": [[108, 109]],
+      "wsc": []
+    },
+    {
+      "bco_chapter": 52,
+      "title": "Public Prayer",
+      "wcf": [21],
+      "wlc": [[178, 185]],
+      "wsc": [[98, 99]]
+    },
+    {
+      "bco_chapter": 53,
+      "title": "The Preaching of the Word",
+      "wcf": [21],
+      "wlc": [[155, 160]],
+      "wsc": [[89, 90]]
+    },
+    {
+      "bco_chapter": 54,
+      "title": "The Worship of God by Offerings",
+      "wcf": [21],
+      "wlc": [],
+      "wsc": []
+    },
+    {
+      "bco_chapter": 55,
+      "title": "Confessing the Faith",
+      "wcf": [14],
+      "wlc": [[72, 73]],
+      "wsc": [[86, 87]]
+    },
+    {
+      "bco_chapter": 56,
+      "title": "The Administration of Baptism",
+      "wcf": [28],
+      "wlc": [[165, 167]],
+      "wsc": [[94, 95]]
+    },
+    {
+      "bco_chapter": 57,
+      "title": "The Admission of Persons to Sealing Ordinances",
+      "wcf": [27, 29],
+      "wlc": [[168, 177]],
+      "wsc": [[96, 97]]
+    },
+    {
+      "bco_chapter": 58,
+      "title": "The Administration of the Lord's Supper",
+      "wcf": [29],
+      "wlc": [[168, 175]],
+      "wsc": [[96, 97]]
+    },
+    {
+      "bco_chapter": 59,
+      "title": "The Solemnization of Marriage",
+      "wcf": [24],
+      "wlc": [[137, 139]],
+      "wsc": [[70, 72]]
+    },
+    {
+      "bco_chapter": 61,
+      "title": "The Burial of the Dead",
+      "wcf": [32],
+      "wlc": [[84, 86]],
+      "wsc": [37]
+    },
+    {
+      "bco_chapter": 62,
+      "title": "Days of Fasting and Thanksgiving",
+      "wcf": [21],
+      "wlc": [[108, 109]],
+      "wsc": []
+    },
+    {
+      "bco_chapter": 63,
+      "title": "Christian Life in the Home",
+      "wcf": [21],
+      "wlc": [[117, 118]],
+      "wsc": []
+    }
+  ]
+}

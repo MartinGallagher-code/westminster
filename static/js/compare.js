@@ -46,6 +46,19 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
+        // Preset buttons select a curated group of documents, then let the
+        // reader refine the selection before comparing.
+        var presetBtns = document.querySelectorAll('.preset-btn');
+        presetBtns.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var slugs = (this.getAttribute('data-slugs') || '').split(',');
+                docCheckboxes.forEach(function(cb) {
+                    cb.checked = slugs.indexOf(cb.value) !== -1;
+                });
+                updateCompareButton();
+            });
+        });
+
         updateCompareButton();
     }
 

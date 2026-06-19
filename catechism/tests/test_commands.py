@@ -250,3 +250,69 @@ class TestExpandReferences:
         """Jude 6, 7 should NOT be expanded as chapters 6 and 7."""
         result = expand_references('Jude 6, 7')
         assert result == ['Jude 6, 7']
+
+
+# --- PCA BCO cross-references ---
+
+
+def test_expand_ranges_mixed_ints_and_pairs():
+    """_expand_ranges flattens bare ints and inclusive [start, end] pairs."""
+    from catechism.management.commands.load_bco_crossrefs import _expand_ranges
+    assert _expand_ranges([1, [3, 5], 9]) == {1, 3, 4, 5, 9}
+    assert _expand_ranges([]) == set()
+
+
+@pytest.mark.django_db
+def test_load_bco_crossrefs_smoke():
+    """load_bco_crossrefs links BCO sections to the Westminster Standards."""
+    from django.db.models import Q
+    from catechism.models import StandardCrossReference, Topic
+
+    call_command('load_catechism')  # WSC
+    call_command('load_wlc')
+    call_command('load_wcf')
+    call_command('load_pca_bco')
+    call_command('load_bco_crossrefs')
+
+    bco = Catechism.objects.get(slug='pca-bco')
+    bco_refs = StandardCrossReference.objects.filter(source_question__catechism=bco)
+    assert bco_refs.exists()
+
+    # BCO Chapter 2 (The Visible Church Defined) should link to the WLC
+    # visible-church questions (62-65).
+    ch2 = Topic.objects.get(catechism=bco, name__startswith='Chapter 2:')
+    ch2_section = Question.objects.filter(
+        catechism=bco, number=ch2.question_start
+    ).first()
+    linked = StandardCrossReference.objects.filter(
+        Q(source_question=ch2_section) | Q(target_question=ch2_section)
+    )
+
+    def _other(cr):
+        return cr.target_question if cr.source_question_id == ch2_section.id else cr.source_question
+
+    wlc_targets = {
+        _other(cr).number for cr in linked if _other(cr).catechism.slug == 'wlc'
+    }
+    assert {62, 63, 64, 65} <= wlc_targets
+
+
+@pytest.mark.django_db
+def test_load_bco_crossrefs_idempotent():
+    """Re-running the loader does not create duplicate cross-references."""
+    from catechism.models import StandardCrossReference
+
+    call_command('load_catechism')
+    call_command('load_wlc')
+    call_command('load_wcf')
+    call_command('load_pca_bco')
+    call_command('load_bco_crossrefs')
+    bco = Catechism.objects.get(slug='pca-bco')
+    first = StandardCrossReference.objects.filter(source_question__catechism=bco).count()
+
+    # Clear the data-version marker so the loader runs its body again.
+    from catechism.models import DataVersion
+    DataVersion.objects.filter(name='bco-crossrefs').delete()
+    call_command('load_bco_crossrefs')
+    second = StandardCrossReference.objects.filter(source_question__catechism=bco).count()
+    assert first == second

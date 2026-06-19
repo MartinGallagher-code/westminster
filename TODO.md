@@ -2,15 +2,15 @@
 
 ## Product
 
-1. **Configurable comparison page**
-   - Let users configure which documents to compare side-by-side on a topic.
-   - Consider presets such as “Westminster family” and “Continental Reformed”.
-   - Support a custom selector for picking documents manually.
+1. **Configurable comparison page** — _custom selector and presets implemented_
+   - Done: custom document selector plus "Westminster Standards" and "Three Forms of Unity" presets.
+   - Follow-up: consider per-topic deep-linking and saved/shareable custom comparisons.
 
-2. **BCO enrichment**
-   - Add cross-references from the PCA Book of Church Order to WCF, WLC, and WSC where appropriate.
+2. **BCO enrichment** — _cross-references implemented_
+   - Done: cross-references from the PCA Book of Church Order to WCF, WLC, and WSC (`load_bco_crossrefs`).
    - Strip General Assembly action-date footnotes if they cause display issues.
    - Add BCO material to comparison themes if it proves useful.
+   - Expand the editorial cross-reference map to additional BCO chapters as needed.
 
 3. **Search refinement**
    - Add PostgreSQL search indexes if production search becomes slow.
