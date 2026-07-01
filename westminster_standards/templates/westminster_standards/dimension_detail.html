@@ -1,5 +1,7 @@
 {% extends "westminster_standards/base.html" %}
 {% block title %}{{ dim.label }} — Westminster Standards Atlas{% endblock %}
+{% block ws_crumb %}<li class="breadcrumb-item"><a href="{% url 'westminster_standards:ontology' %}">Ontology</a></li><li class="breadcrumb-item active" aria-current="page">{{ dim.label }}</li>{% endblock %}
+
 {% block ws_content %}
 <section class="ws-hero">
   <span class="ws-eyebrow">Locus {{ dim.numeral }} · <a class="ws-link" href="{% url 'westminster_standards:ontology' %}">back to ontology</a></span>

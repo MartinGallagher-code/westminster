@@ -1,5 +1,7 @@
 {% extends "westminster_standards/base.html" %}
 {% block title %}{{ p.name }} — Westminster Standards Atlas{% endblock %}
+{% block ws_crumb %}<li class="breadcrumb-item"><a href="{% url 'westminster_standards:personas_list' %}">Personas</a></li><li class="breadcrumb-item active" aria-current="page">{{ p.name }}</li>{% endblock %}
+
 {% block ws_content %}
 <section class="ws-hero">
   <span class="ws-eyebrow">

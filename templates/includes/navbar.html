@@ -101,8 +101,25 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'catechism:doctrine_index' %}"><i class="bi bi-diagram-3 me-1"></i>Doctrine</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if request.resolver_match.namespace == 'westminster_standards' %}active{% endif %}" href="{% url 'westminster_standards:home' %}"><i class="bi bi-diagram-3 me-1"></i>Atlas</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {% if request.resolver_match.namespace == 'westminster_standards' %}active{% endif %}"
+                       href="#" id="atlas-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-diagram-3 me-1"></i>Atlas
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="atlas-dropdown">
+                        <li><a class="dropdown-item" href="{% url 'westminster_standards:home' %}"><i class="bi bi-house me-2"></i>Atlas Home</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'westminster_standards:ontology' %}"><i class="bi bi-diagram-3 me-2"></i>Ontology</a></li>
+                        <li><a class="dropdown-item" href="{% url 'westminster_standards:personas_list' %}"><i class="bi bi-people me-2"></i>Personas</a></li>
+                        <li><a class="dropdown-item" href="{% url 'westminster_standards:cruxes_list' %}"><i class="bi bi-signpost-split me-2"></i>Cruxes</a></li>
+                        <li><a class="dropdown-item" href="{% url 'westminster_standards:heads_list' %}"><i class="bi bi-list-nested me-2"></i>Heads of Doctrine</a></li>
+                        <li><a class="dropdown-item" href="{% url 'westminster_standards:schools_list' %}"><i class="bi bi-bank me-2"></i>Schools</a></li>
+                        <li><a class="dropdown-item" href="{% url 'westminster_standards:works_list' %}"><i class="bi bi-journals me-2"></i>Works</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'westminster_standards:compare_personas' %}"><i class="bi bi-people me-2"></i>Compare</a></li>
+                        <li><a class="dropdown-item" href="{% url 'westminster_standards:dimension_pairs' %}"><i class="bi bi-grid-3x3 me-2"></i>Intersections</a></li>
+                        <li><a class="dropdown-item" href="{% url 'westminster_standards:search' %}"><i class="bi bi-search me-2"></i>Search the Atlas</a></li>
+                    </ul>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'accounts:support' %}"><i class="bi bi-cup-hot me-1"></i>Support</a>

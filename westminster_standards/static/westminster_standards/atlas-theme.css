@@ -45,24 +45,10 @@
 
 /* --- Integration polish ---------------------------------------------- */
 
-/* The Atlas content sits inside Study Reformed's .container-fluid; keep the
-   section sub-nav as a full-width bar that reads as part of the page. */
-.ws-atlas .ws-nav {
-    margin: 0 -0.75rem 1.5rem;   /* full-bleed to the container gutter */
-    border-radius: 0;
-    position: sticky;
-    top: 0;
-    z-index: 5;
-}
-
-.ws-atlas .ws-page {
-    padding-top: 0.5rem;
-}
-
-/* Slightly heavier headings so Cormorant reads at Study Reformed's weight. */
-.ws-atlas .ws-hero h1,
-.ws-atlas .ws-card h2,
-.ws-atlas .ws-card h3 {
+/* Headings render in Study Reformed's serif weight. */
+.ws-page h1,
+.ws-page h2,
+.ws-page h3 {
     font-weight: 600;
     letter-spacing: 0.005em;
 }
