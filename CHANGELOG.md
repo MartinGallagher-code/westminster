@@ -5,6 +5,11 @@ reverse-chronological changelog rather than formal release tags.
 
 ## 2026-07-02
 
+### Fixed
+
+- Fixed low-contrast Atlas text on the light theme. The crux outcome badges, the persona active-obedience override marker, the school override pill, and the "planned" works pill used the Atlas's original bright accent colours as text, which were nearly invisible on Study Reformed's light background. They now use theme-aware "ink" colours (dark on light, bright on dark) via `--ws-ink-*` variables.
+- Fixed broken Atlas links from the "Ontology placement" doctrine-head chips (e.g. on `/wcf/sections/14`). The database's Confession-chapter heads (`eternal_decree`) and the Atlas's finer systematic heads (`the-eternal-decree`) use different slugs, so 25 of 33 head chips pointed at non-existent Atlas pages. `DoctrineHead.get_atlas_url` now links to the specific Atlas head page when one exists and otherwise falls back to the head's locus page, so a head chip never 404s.
+
 ### Changed
 
 - Made the Westminster Standards Atlas feel native to Study Reformed. The Atlas's own dark section sub-nav is replaced by an **Atlas dropdown** in the site navbar that lists every Atlas section (Ontology, Personas, Cruxes, Heads of Doctrine, Schools, Works, Compare, Intersections, Search). Atlas pages now use the site's standard layout — a Bootstrap breadcrumb (Home / Atlas / …), an `h1` + lead + rule page header, and cards styled to match Study Reformed's (`--wm-*` surfaces, `0.5rem` radius, subtle shadow) — instead of the ported standalone chrome. The eight locus accent colours are retained.

@@ -116,3 +116,33 @@ def test_confession_chapter_page_renders_atlas_loci_panel(client, confession):
     body = resp.content.decode()
     assert 'Loci treated here' in body
     assert '/atlas/dimension/scripture/' in body
+
+
+# --- Doctrine-head links resolve (specific page when it exists, else locus) --
+
+@pytest.mark.django_db
+def test_doctrine_head_link_falls_back_to_locus_when_no_atlas_head_page(client):
+    from catechism.models import OntologyLocus, DoctrineHead
+    locus = OntologyLocus.objects.create(slug='god_decree', name='God & Decree', order=2)
+    # The Confession-chapter head 'eternal_decree' has no Atlas head page
+    # (the Atlas uses 'the-eternal-decree'), so the chip must not 404.
+    head = DoctrineHead.objects.create(
+        slug='eternal_decree', name="Of God's Eternal Decree", locus=locus,
+        atlas_path='/westminster_standards/heads/eternal_decree/',
+    )
+    url = head.get_atlas_url()
+    assert url == '/atlas/dimension/god_decree/'
+    assert client.get(url).status_code == 200
+
+
+@pytest.mark.django_db
+def test_doctrine_head_link_uses_specific_page_when_it_exists(client):
+    from catechism.models import OntologyLocus, DoctrineHead
+    locus = OntologyLocus.objects.create(slug='soteriology', name='Soteriology', order=5)
+    head = DoctrineHead.objects.create(
+        slug='justification', name='Of Justification', locus=locus,
+        atlas_path='/westminster_standards/heads/justification/',
+    )
+    url = head.get_atlas_url()
+    assert url == '/atlas/heads/justification/'
+    assert client.get(url).status_code == 200

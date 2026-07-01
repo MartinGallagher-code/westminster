@@ -466,8 +466,8 @@ class DoctrineHead(models.Model):
         return self.name
 
     def get_atlas_url(self):
-        from .atlas import atlas_url
-        return atlas_url(self.atlas_path)
+        from .atlas import doctrine_head_atlas_url
+        return doctrine_head_atlas_url(self)
 
 
 class QuestionOntologyTag(models.Model):

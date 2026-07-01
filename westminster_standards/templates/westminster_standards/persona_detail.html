@@ -187,7 +187,7 @@
               <span class="ws-la-label">{{ row.attr.label }}</span>
               <span class="ws-la-value {% if row.is_override %}ws-la-override{% endif %}">
                 {{ row.value_label }}
-                {% if row.is_override %}<span class="ws-baseline-pill" style="background:rgba(248,113,113,0.18);color:#fda4af;font-size:0.65rem;">≠</span>{% endif %}
+                {% if row.is_override %}<span class="ws-baseline-pill" style="background:rgba(248,113,113,0.18);color:var(--ws-ink-rose);font-size:0.65rem;">≠</span>{% endif %}
               </span>
             {% endfor %}
           </div>
@@ -223,7 +223,7 @@
   }
   .ws-la-label { color: var(--text-muted); font-size: 0.8rem; line-height: 1.4; }
   .ws-la-value { color: var(--text-primary); font-size: 0.82rem; line-height: 1.4; }
-  .ws-la-override { color: #fda4af; }
+  .ws-la-override { color: var(--ws-ink-rose); }
   .ws-role-context {
     margin-top: 1rem;
     padding: 0.9rem 1.2rem;

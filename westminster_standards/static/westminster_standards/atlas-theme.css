@@ -41,6 +41,26 @@
 
     /* Shape */
     --radius: 10px;
+
+    /* Readable "ink" versions of the status/locus accent colours for use as
+       TEXT. The Atlas was authored for a dark ground where the bright hues
+       read well; on Study Reformed's light ground they need dark variants.
+       (The dark-theme block below restores the original bright values.) */
+    --ws-ink-green:  #0f7a52;
+    --ws-ink-amber:  #8a6a00;
+    --ws-ink-red:    #b42318;
+    --ws-ink-purple: #6d28d9;
+    --ws-ink-slate:  #475569;
+    --ws-ink-rose:   #be123c;
+}
+
+[data-bs-theme="dark"] {
+    --ws-ink-green:  #6ee7b7;
+    --ws-ink-amber:  #fcd34d;
+    --ws-ink-red:    #fca5a5;
+    --ws-ink-purple: #c4b5fd;
+    --ws-ink-slate:  #cbd5e1;
+    --ws-ink-rose:   #fda4af;
 }
 
 /* --- Integration polish ---------------------------------------------- */

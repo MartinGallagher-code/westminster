@@ -27,6 +27,33 @@ def dimension_url(locus_key):
     return atlas_url(f'dimension/{locus_key}/')
 
 
+def _atlas_head_slugs():
+    """Slugs of the doctrine-head pages that actually exist in the Atlas app."""
+    try:
+        from westminster_standards.heads_of_doctrine import HEADS_OF_DOCTRINE
+    except Exception:
+        return set()
+    return {h['slug'] for h in HEADS_OF_DOCTRINE}
+
+
+def doctrine_head_atlas_url(head):
+    """URL for a Study Reformed doctrine head in the Atlas.
+
+    The database's doctrine heads follow the Confession's chapter divisions
+    (e.g. ``eternal_decree``), while the Atlas heads use a finer systematic
+    scheme with different slugs (``the-eternal-decree``), so not every database
+    head has a matching Atlas head page. Link to the specific head page when
+    one exists; otherwise fall back to the head's locus page — which always
+    exists — so the chip never 404s.
+    """
+    if head.slug in _atlas_head_slugs():
+        return atlas_url(head.atlas_path or f'heads/{head.slug}/')
+    locus = getattr(head, 'locus', None)
+    if locus is not None:
+        return dimension_url(locus.slug)
+    return atlas_url()
+
+
 # --- Taxonomy crosswalk (Phase 4) -----------------------------------------
 #
 # The hand-authored comparison themes are tagged with a classical
