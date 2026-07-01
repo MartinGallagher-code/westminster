@@ -4,7 +4,7 @@ import urllib.request
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-BCO_URL = "https://www.pcaac.org/wp-content/uploads/2024/08/BCO-2024-1.pdf"
+BCO_URL = "https://www.pcaac.org/wp-content/uploads/2025/08/BCO2025-1.pdf"
 
 
 class Command(BaseCommand):

@@ -32,10 +32,10 @@ class Command(BaseCommand):
                 'description': (
                     'The Book of Church Order of the Presbyterian Church in America, '
                     'comprising the Form of Government, the Rules of Discipline, and '
-                    'the Directory for the Worship of God. 2024 edition, including '
-                    'amendments through the 51st General Assembly.'
+                    'the Directory for the Worship of God. 2025 edition, including '
+                    'amendments through the 52nd General Assembly.'
                 ),
-                'year': 2024,
+                'year': 2025,
                 'total_questions': total,
                 'document_type': Catechism.CONFESSION,
                 'tradition': Catechism.WESTMINSTER,
