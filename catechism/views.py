@@ -287,8 +287,9 @@ class DoctrineIndexView(TemplateView):
         grouped = defaultdict(list)
         for theme in themes:
             grouped[theme.locus or 'General Doctrine'].append(theme)
+        from .atlas import comparison_locus_atlas
         ctx['locus_groups'] = [
-            {'locus': locus, 'themes': items}
+            {'locus': locus, 'themes': items, 'atlas': comparison_locus_atlas(locus)}
             for locus, items in grouped.items()
         ]
         ctx['theme_count'] = themes.count()
@@ -578,6 +579,8 @@ class TopicDetailView(CatechismMixin, DetailView):
         ctx['questions'] = Question.objects.filter(
             catechism=self.catechism, topic=self.object
         )
+        from .atlas import topic_loci
+        ctx['atlas_loci'] = topic_loci(self.object)
         return ctx
 
 
