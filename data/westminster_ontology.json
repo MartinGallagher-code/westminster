@@ -10,11 +10,51 @@
       "order": 1,
       "atlas_path": "/westminster_standards/dimension/scripture/",
       "attributes": [
-        {"slug": "sufficiency", "name": "Sufficiency", "baseline_label": "Express And Good Consequence", "baseline_slug": "express_and_consequence", "baseline_description": "Whatever is necessary for God's glory and human salvation is either expressly stated in Scripture, or may be deduced from it by good and necessary consequence (WCF I.6).", "atlas_path": "/westminster_standards/dimension/scripture/sufficiency/express_and_consequence/", "order": 1},
-        {"slug": "canon", "name": "Canon", "baseline_label": "66 Book Protestant Canon", "baseline_slug": "sixty_six", "baseline_description": "The 39 books of the Old Testament and 27 of the New, enumerated in WCF I.2; the Apocrypha is explicitly excluded (I.3).", "atlas_path": "/westminster_standards/dimension/scripture/canon/sixty_six/", "order": 2},
-        {"slug": "authority", "name": "Authority", "baseline_label": "Self Authenticating With Internal Witness", "baseline_slug": "self_authenticating_with_spirit", "baseline_description": "Scripture's authority is grounded in God its author and is sealed to the believer's heart by the inward work of the Holy Spirit bearing witness with and by the Word (WCF I.4-5).", "atlas_path": "/westminster_standards/dimension/scripture/authority/self_authenticating_with_spirit/", "order": 3},
-        {"slug": "interpretation", "name": "Interpretation", "baseline_label": "Scripture Interprets Scripture", "baseline_slug": "analogia_scripturae", "baseline_description": "The infallible rule of interpretation is Scripture itself: when there is a question about the true sense of any passage, it must be searched and known by other places that speak more clearly (WCF I.9).", "atlas_path": "/westminster_standards/dimension/scripture/interpretation/analogia_scripturae/", "order": 4},
-        {"slug": "necessity", "name": "Necessity", "baseline_label": "Necessary After The Fall", "baseline_slug": "necessary_post_fall", "baseline_description": "Although the light of nature and the works of creation manifest God's goodness, wisdom, and power, they are not sufficient to give the knowledge of God and his will necessary for salvation; therefore the Lord committed his revelation wholly unto writing (WCF I.1).", "atlas_path": "/westminster_standards/dimension/scripture/necessity/necessary_post_fall/", "order": 5}
+        {
+          "slug": "sufficiency",
+          "name": "Sufficiency",
+          "baseline_label": "Express And Good Consequence",
+          "baseline_slug": "express_and_consequence",
+          "baseline_description": "Whatever is necessary for God's glory and human salvation is either expressly stated in Scripture, or may be deduced from it by good and necessary consequence (WCF I.6).",
+          "atlas_path": "/westminster_standards/dimension/scripture/sufficiency/express_and_consequence/",
+          "order": 1
+        },
+        {
+          "slug": "canon",
+          "name": "Canon",
+          "baseline_label": "66 Book Protestant Canon",
+          "baseline_slug": "sixty_six",
+          "baseline_description": "The 39 books of the Old Testament and 27 of the New, enumerated in WCF I.2; the Apocrypha is explicitly excluded (I.3).",
+          "atlas_path": "/westminster_standards/dimension/scripture/canon/sixty_six/",
+          "order": 2
+        },
+        {
+          "slug": "authority",
+          "name": "Authority",
+          "baseline_label": "Self Authenticating With Internal Witness",
+          "baseline_slug": "self_authenticating_with_spirit",
+          "baseline_description": "Scripture's authority is grounded in God its author and is sealed to the believer's heart by the inward work of the Holy Spirit bearing witness with and by the Word (WCF I.4-5).",
+          "atlas_path": "/westminster_standards/dimension/scripture/authority/self_authenticating_with_spirit/",
+          "order": 3
+        },
+        {
+          "slug": "interpretation",
+          "name": "Interpretation",
+          "baseline_label": "Scripture Interprets Scripture",
+          "baseline_slug": "analogia_scripturae",
+          "baseline_description": "The infallible rule of interpretation is Scripture itself: when there is a question about the true sense of any passage, it must be searched and known by other places that speak more clearly (WCF I.9).",
+          "atlas_path": "/westminster_standards/dimension/scripture/interpretation/analogia_scripturae/",
+          "order": 4
+        },
+        {
+          "slug": "necessity",
+          "name": "Necessity",
+          "baseline_label": "Necessary After The Fall",
+          "baseline_slug": "necessary_post_fall",
+          "baseline_description": "Although the light of nature and the works of creation manifest God's goodness, wisdom, and power, they are not sufficient to give the knowledge of God and his will necessary for salvation; therefore the Lord committed his revelation wholly unto writing (WCF I.1).",
+          "atlas_path": "/westminster_standards/dimension/scripture/necessity/necessary_post_fall/",
+          "order": 5
+        }
       ]
     },
     {
@@ -27,11 +67,51 @@
       "order": 2,
       "atlas_path": "/westminster_standards/dimension/god_decree/",
       "attributes": [
-        {"slug": "trinity_processions", "name": "Trinity", "baseline_label": "Nicene With Filioque", "baseline_slug": "nicene_with_filioque", "baseline_description": "One God in three persons; the Son eternally begotten of the Father, the Spirit eternally proceeding from the Father and the Son (WCF II.3).", "atlas_path": "/westminster_standards/dimension/god_decree/trinity_processions/nicene_with_filioque/", "order": 1},
-        {"slug": "order_of_decrees", "name": "Order of Decrees", "baseline_label": "Deliberately Permits Both", "baseline_slug": "permitted_both", "baseline_description": "WCF III's language is deliberately drafted to permit both supra- and infralapsarianism without imposing either.", "atlas_path": "/westminster_standards/dimension/god_decree/order_of_decrees/permitted_both/", "order": 2},
-        {"slug": "extent_of_atonement", "name": "Extent of Atonement", "baseline_label": "Particular", "baseline_slug": "particular", "baseline_description": "Christ purchased redemption only for the elect; the atonement is intended, designed, and applied for the elect alone (WCF III.6, VIII.5, VIII.8).", "atlas_path": "/westminster_standards/dimension/god_decree/extent_of_atonement/particular/", "order": 3},
-        {"slug": "reprobation", "name": "Reprobation", "baseline_label": "Preterition And Just Condemnation", "baseline_slug": "preterition_and_just_condemnation", "baseline_description": "God passes by the non-elect and ordains them to dishonour and wrath for their sin (WCF III.7).", "atlas_path": "/westminster_standards/dimension/god_decree/reprobation/preterition_and_just_condemnation/", "order": 4},
-        {"slug": "covenant_of_redemption", "name": "Covenant of Redemption", "baseline_label": "Implicit Affirmed", "baseline_slug": "implicit_affirmed", "baseline_description": "The Standards affirm the substance of the pactum salutis without the developed apparatus of later federal theologians.", "atlas_path": "/westminster_standards/dimension/god_decree/covenant_of_redemption/implicit_affirmed/", "order": 5}
+        {
+          "slug": "trinity_processions",
+          "name": "Trinity",
+          "baseline_label": "Nicene With Filioque",
+          "baseline_slug": "nicene_with_filioque",
+          "baseline_description": "One God in three persons; the Son eternally begotten of the Father, the Spirit eternally proceeding from the Father and the Son (WCF II.3).",
+          "atlas_path": "/westminster_standards/dimension/god_decree/trinity_processions/nicene_with_filioque/",
+          "order": 1
+        },
+        {
+          "slug": "order_of_decrees",
+          "name": "Order of Decrees",
+          "baseline_label": "Deliberately Permits Both",
+          "baseline_slug": "permitted_both",
+          "baseline_description": "WCF III's language is deliberately drafted to permit both supra- and infralapsarianism without imposing either.",
+          "atlas_path": "/westminster_standards/dimension/god_decree/order_of_decrees/permitted_both/",
+          "order": 2
+        },
+        {
+          "slug": "extent_of_atonement",
+          "name": "Extent of Atonement",
+          "baseline_label": "Particular",
+          "baseline_slug": "particular",
+          "baseline_description": "Christ purchased redemption only for the elect; the atonement is intended, designed, and applied for the elect alone (WCF III.6, VIII.5, VIII.8).",
+          "atlas_path": "/westminster_standards/dimension/god_decree/extent_of_atonement/particular/",
+          "order": 3
+        },
+        {
+          "slug": "reprobation",
+          "name": "Reprobation",
+          "baseline_label": "Preterition And Just Condemnation",
+          "baseline_slug": "preterition_and_just_condemnation",
+          "baseline_description": "God passes by the non-elect and ordains them to dishonour and wrath for their sin (WCF III.7).",
+          "atlas_path": "/westminster_standards/dimension/god_decree/reprobation/preterition_and_just_condemnation/",
+          "order": 4
+        },
+        {
+          "slug": "covenant_of_redemption",
+          "name": "Covenant of Redemption",
+          "baseline_label": "Implicit Affirmed",
+          "baseline_slug": "implicit_affirmed",
+          "baseline_description": "The Standards affirm the substance of the pactum salutis without the developed apparatus of later federal theologians.",
+          "atlas_path": "/westminster_standards/dimension/god_decree/covenant_of_redemption/implicit_affirmed/",
+          "order": 5
+        }
       ]
     },
     {
@@ -44,10 +124,42 @@
       "order": 3,
       "atlas_path": "/westminster_standards/dimension/covenant/",
       "attributes": [
-        {"slug": "number_of_covenants", "name": "Number of Covenants", "baseline_label": "Bi Covenantal", "baseline_slug": "bi", "baseline_description": "Two covenants: works with Adam, and grace with Christ and his elect (WCF VII.2-3).", "atlas_path": "/westminster_standards/dimension/covenant/number_of_covenants/bi/", "order": 1},
-        {"slug": "mosaic_covenant", "name": "Mosaic Covenant", "baseline_label": "Administration Of Grace", "baseline_slug": "administration_of_grace", "baseline_description": "The Mosaic dispensation is one administration of the one covenant of grace under the law (WCF VII.5-6).", "atlas_path": "/westminster_standards/dimension/covenant/mosaic_covenant/administration_of_grace/", "order": 2},
-        {"slug": "children_of_believers", "name": "Children of Believers", "baseline_label": "Federal Inclusion Paedobaptist", "baseline_slug": "paedo_federal", "baseline_description": "Children of one or both believing parents are in the visible church and receive its sign (WCF XXV.2, XXVIII.4).", "atlas_path": "/westminster_standards/dimension/covenant/children_of_believers/paedo_federal/", "order": 3},
-        {"slug": "testamental_continuity", "name": "Testamental Continuity", "baseline_label": "One Substance Different Administrations", "baseline_slug": "one_substance_different_administrations", "baseline_description": "The covenant of grace is one and the same in substance through both testaments, differently administered (WCF VII.6).", "atlas_path": "/westminster_standards/dimension/covenant/testamental_continuity/one_substance_different_administrations/", "order": 4}
+        {
+          "slug": "number_of_covenants",
+          "name": "Number of Covenants",
+          "baseline_label": "Bi Covenantal",
+          "baseline_slug": "bi",
+          "baseline_description": "Two covenants: works with Adam, and grace with Christ and his elect (WCF VII.2-3).",
+          "atlas_path": "/westminster_standards/dimension/covenant/number_of_covenants/bi/",
+          "order": 1
+        },
+        {
+          "slug": "mosaic_covenant",
+          "name": "Mosaic Covenant",
+          "baseline_label": "Administration Of Grace",
+          "baseline_slug": "administration_of_grace",
+          "baseline_description": "The Mosaic dispensation is one administration of the one covenant of grace under the law (WCF VII.5-6).",
+          "atlas_path": "/westminster_standards/dimension/covenant/mosaic_covenant/administration_of_grace/",
+          "order": 2
+        },
+        {
+          "slug": "children_of_believers",
+          "name": "Children of Believers",
+          "baseline_label": "Federal Inclusion Paedobaptist",
+          "baseline_slug": "paedo_federal",
+          "baseline_description": "Children of one or both believing parents are in the visible church and receive its sign (WCF XXV.2, XXVIII.4).",
+          "atlas_path": "/westminster_standards/dimension/covenant/children_of_believers/paedo_federal/",
+          "order": 3
+        },
+        {
+          "slug": "testamental_continuity",
+          "name": "Testamental Continuity",
+          "baseline_label": "One Substance Different Administrations",
+          "baseline_slug": "one_substance_different_administrations",
+          "baseline_description": "The covenant of grace is one and the same in substance through both testaments, differently administered (WCF VII.6).",
+          "atlas_path": "/westminster_standards/dimension/covenant/testamental_continuity/one_substance_different_administrations/",
+          "order": 4
+        }
       ]
     },
     {
@@ -60,10 +172,42 @@
       "order": 4,
       "atlas_path": "/westminster_standards/dimension/christology/",
       "attributes": [
-        {"slug": "natures", "name": "Natures", "baseline_label": "Chalcedonian Two Natures", "baseline_slug": "chalcedonian_two", "baseline_description": "Two whole, perfect, and distinct natures inseparably joined in one person, without conversion, composition, or confusion (WCF VIII.2).", "atlas_path": "/westminster_standards/dimension/christology/natures/chalcedonian_two/", "order": 1},
-        {"slug": "offices", "name": "Offices", "baseline_label": "Prophet Priest King", "baseline_slug": "prophet_priest_king", "baseline_description": "Three offices answering to the three deficiencies of fallen humanity (WCF VIII.1; LC Q. 42-45; SC Q. 23-26).", "atlas_path": "/westminster_standards/dimension/christology/offices/prophet_priest_king/", "order": 2},
-        {"slug": "states_and_descent", "name": "States & Descent", "baseline_label": "Humiliation And Exaltation; No Local Descent", "baseline_slug": "two_states_no_local_descent", "baseline_description": "Two states, humiliation and exaltation; the descendit is interpreted as the continued state of death between cross and resurrection.", "atlas_path": "/westminster_standards/dimension/christology/states_and_descent/two_states_no_local_descent/", "order": 3},
-        {"slug": "active_obedience_imputation", "name": "Active-Obedience Imputation", "baseline_label": "Active And Passive Obedience Imputed", "baseline_slug": "both_imputed", "baseline_description": "Both Christ's obedience and his sacrifice are imputed to the justified believer (WCF VIII.5; XI.1, 3).", "atlas_path": "/westminster_standards/dimension/christology/active_obedience_imputation/both_imputed/", "order": 4}
+        {
+          "slug": "natures",
+          "name": "Natures",
+          "baseline_label": "Chalcedonian Two Natures",
+          "baseline_slug": "chalcedonian_two",
+          "baseline_description": "Two whole, perfect, and distinct natures inseparably joined in one person, without conversion, composition, or confusion (WCF VIII.2).",
+          "atlas_path": "/westminster_standards/dimension/christology/natures/chalcedonian_two/",
+          "order": 1
+        },
+        {
+          "slug": "offices",
+          "name": "Offices",
+          "baseline_label": "Prophet Priest King",
+          "baseline_slug": "prophet_priest_king",
+          "baseline_description": "Three offices answering to the three deficiencies of fallen humanity (WCF VIII.1; LC Q. 42-45; SC Q. 23-26).",
+          "atlas_path": "/westminster_standards/dimension/christology/offices/prophet_priest_king/",
+          "order": 2
+        },
+        {
+          "slug": "states_and_descent",
+          "name": "States & Descent",
+          "baseline_label": "Humiliation And Exaltation; No Local Descent",
+          "baseline_slug": "two_states_no_local_descent",
+          "baseline_description": "Two states, humiliation and exaltation; the descendit is interpreted as the continued state of death between cross and resurrection.",
+          "atlas_path": "/westminster_standards/dimension/christology/states_and_descent/two_states_no_local_descent/",
+          "order": 3
+        },
+        {
+          "slug": "active_obedience_imputation",
+          "name": "Active-Obedience Imputation",
+          "baseline_label": "Active And Passive Obedience Imputed",
+          "baseline_slug": "both_imputed",
+          "baseline_description": "Both Christ's obedience and his sacrifice are imputed to the justified believer (WCF VIII.5; XI.1, 3).",
+          "atlas_path": "/westminster_standards/dimension/christology/active_obedience_imputation/both_imputed/",
+          "order": 4
+        }
       ]
     },
     {
@@ -76,11 +220,51 @@
       "order": 5,
       "atlas_path": "/westminster_standards/dimension/soteriology/",
       "attributes": [
-        {"slug": "effectual_calling", "name": "Effectual Calling", "baseline_label": "Effectual And Renewing", "baseline_slug": "irresistible_renewing", "baseline_description": "The Spirit effectually calls the elect by enlightening their minds, renewing their wills, and drawing them to Christ (WCF X.1-2).", "atlas_path": "/westminster_standards/dimension/soteriology/effectual_calling/irresistible_renewing/", "order": 1},
-        {"slug": "justification_ground", "name": "Justification Ground", "baseline_label": "Imputed Righteousness Of Christ", "baseline_slug": "imputed_righteousness", "baseline_description": "Justification is a forensic act grounded in the imputation of Christ's whole obedience and satisfaction, received by faith alone (WCF XI.1-4).", "atlas_path": "/westminster_standards/dimension/soteriology/justification_ground/imputed_righteousness/", "order": 2},
-        {"slug": "saving_faith", "name": "Saving Faith", "baseline_label": "Receptive Resting On Christ Alone", "baseline_slug": "receptive_resting", "baseline_description": "Saving faith receives and rests upon Christ alone for salvation, as he is offered in the gospel (WCF XIV.2; SC Q. 86).", "atlas_path": "/westminster_standards/dimension/soteriology/saving_faith/receptive_resting/", "order": 3},
-        {"slug": "perseverance", "name": "Perseverance", "baseline_label": "Certain For The Elect", "baseline_slug": "certain_for_elect", "baseline_description": "Those accepted in Christ, effectually called, and sanctified by his Spirit can neither totally nor finally fall away from grace (WCF XVII.1).", "atlas_path": "/westminster_standards/dimension/soteriology/perseverance/certain_for_elect/", "order": 4},
-        {"slug": "assurance", "name": "Assurance", "baseline_label": "Attainable But Not Essence Of Faith", "baseline_slug": "attainable_not_essence", "baseline_description": "Infallible assurance is attainable in this life but does not belong to the essence of faith (WCF XVIII.3).", "atlas_path": "/westminster_standards/dimension/soteriology/assurance/attainable_not_essence/", "order": 5}
+        {
+          "slug": "effectual_calling",
+          "name": "Effectual Calling",
+          "baseline_label": "Effectual And Renewing",
+          "baseline_slug": "irresistible_renewing",
+          "baseline_description": "The Spirit effectually calls the elect by enlightening their minds, renewing their wills, and drawing them to Christ (WCF X.1-2).",
+          "atlas_path": "/westminster_standards/dimension/soteriology/effectual_calling/irresistible_renewing/",
+          "order": 1
+        },
+        {
+          "slug": "justification_ground",
+          "name": "Justification Ground",
+          "baseline_label": "Imputed Righteousness Of Christ",
+          "baseline_slug": "imputed_righteousness",
+          "baseline_description": "Justification is a forensic act grounded in the imputation of Christ's whole obedience and satisfaction, received by faith alone (WCF XI.1-4).",
+          "atlas_path": "/westminster_standards/dimension/soteriology/justification_ground/imputed_righteousness/",
+          "order": 2
+        },
+        {
+          "slug": "saving_faith",
+          "name": "Saving Faith",
+          "baseline_label": "Receptive Resting On Christ Alone",
+          "baseline_slug": "receptive_resting",
+          "baseline_description": "Saving faith receives and rests upon Christ alone for salvation, as he is offered in the gospel (WCF XIV.2; SC Q. 86).",
+          "atlas_path": "/westminster_standards/dimension/soteriology/saving_faith/receptive_resting/",
+          "order": 3
+        },
+        {
+          "slug": "perseverance",
+          "name": "Perseverance",
+          "baseline_label": "Certain For The Elect",
+          "baseline_slug": "certain_for_elect",
+          "baseline_description": "Those accepted in Christ, effectually called, and sanctified by his Spirit can neither totally nor finally fall away from grace (WCF XVII.1).",
+          "atlas_path": "/westminster_standards/dimension/soteriology/perseverance/certain_for_elect/",
+          "order": 4
+        },
+        {
+          "slug": "assurance",
+          "name": "Assurance",
+          "baseline_label": "Attainable But Not Essence Of Faith",
+          "baseline_slug": "attainable_not_essence",
+          "baseline_description": "Infallible assurance is attainable in this life but does not belong to the essence of faith (WCF XVIII.3).",
+          "atlas_path": "/westminster_standards/dimension/soteriology/assurance/attainable_not_essence/",
+          "order": 5
+        }
       ]
     },
     {
@@ -93,10 +277,42 @@
       "order": 6,
       "atlas_path": "/westminster_standards/dimension/law_sanctification/",
       "attributes": [
-        {"slug": "uses_of_the_law", "name": "Uses of the Law", "baseline_label": "Three Uses Affirmed", "baseline_slug": "three_uses", "baseline_description": "Civil, pedagogical, and normative uses of the law are affirmed (WCF XIX.5-6).", "atlas_path": "/westminster_standards/dimension/law_sanctification/uses_of_the_law/three_uses/", "order": 1},
-        {"slug": "tripartite_division", "name": "Tripartite Division", "baseline_label": "Moral Judicial Ceremonial", "baseline_slug": "moral_judicial_ceremonial", "baseline_description": "Moral law remains perpetually binding; judicial law expired with the Jewish polity except for general equity; ceremonial law is abrogated in Christ (WCF XIX.3-5).", "atlas_path": "/westminster_standards/dimension/law_sanctification/tripartite_division/moral_judicial_ceremonial/", "order": 2},
-        {"slug": "sabbath", "name": "Sabbath", "baseline_label": "Lords Day Fourth Commandment Perpetual", "baseline_slug": "lords_day_perpetual", "baseline_description": "One day in seven is to be kept holy; changed to the first day of the week from the resurrection of Christ (WCF XXI.7-8).", "atlas_path": "/westminster_standards/dimension/law_sanctification/sabbath/lords_day_perpetual/", "order": 3},
-        {"slug": "good_works", "name": "Good Works", "baseline_label": "Necessary Fruit Not Meritorious", "baseline_slug": "necessary_fruit_not_meritorious", "baseline_description": "Good works are the fruits and evidences of a true and lively faith; they cannot merit pardon or eternal life (WCF XVI.2, 5).", "atlas_path": "/westminster_standards/dimension/law_sanctification/good_works/necessary_fruit_not_meritorious/", "order": 4}
+        {
+          "slug": "uses_of_the_law",
+          "name": "Uses of the Law",
+          "baseline_label": "Three Uses Affirmed",
+          "baseline_slug": "three_uses",
+          "baseline_description": "Civil, pedagogical, and normative uses of the law are affirmed (WCF XIX.5-6).",
+          "atlas_path": "/westminster_standards/dimension/law_sanctification/uses_of_the_law/three_uses/",
+          "order": 1
+        },
+        {
+          "slug": "tripartite_division",
+          "name": "Tripartite Division",
+          "baseline_label": "Moral Judicial Ceremonial",
+          "baseline_slug": "moral_judicial_ceremonial",
+          "baseline_description": "Moral law remains perpetually binding; judicial law expired with the Jewish polity except for general equity; ceremonial law is abrogated in Christ (WCF XIX.3-5).",
+          "atlas_path": "/westminster_standards/dimension/law_sanctification/tripartite_division/moral_judicial_ceremonial/",
+          "order": 2
+        },
+        {
+          "slug": "sabbath",
+          "name": "Sabbath",
+          "baseline_label": "Lords Day Fourth Commandment Perpetual",
+          "baseline_slug": "lords_day_perpetual",
+          "baseline_description": "One day in seven is to be kept holy; changed to the first day of the week from the resurrection of Christ (WCF XXI.7-8).",
+          "atlas_path": "/westminster_standards/dimension/law_sanctification/sabbath/lords_day_perpetual/",
+          "order": 3
+        },
+        {
+          "slug": "good_works",
+          "name": "Good Works",
+          "baseline_label": "Necessary Fruit Not Meritorious",
+          "baseline_slug": "necessary_fruit_not_meritorious",
+          "baseline_description": "Good works are the fruits and evidences of a true and lively faith; they cannot merit pardon or eternal life (WCF XVI.2, 5).",
+          "atlas_path": "/westminster_standards/dimension/law_sanctification/good_works/necessary_fruit_not_meritorious/",
+          "order": 4
+        }
       ]
     },
     {
@@ -109,10 +325,42 @@
       "order": 7,
       "atlas_path": "/westminster_standards/dimension/ecclesiology_worship/",
       "attributes": [
-        {"slug": "polity", "name": "Polity", "baseline_label": "Presbyterian Jure Divino", "baseline_slug": "presbyterian_jure_divino", "baseline_description": "Christ has instituted a graded series of presbyterial assemblies by divine right.", "atlas_path": "/westminster_standards/dimension/ecclesiology_worship/polity/presbyterian_jure_divino/", "order": 1},
-        {"slug": "sacraments_efficacy", "name": "Sacramental Efficacy", "baseline_label": "Signs And Seals Conferring Grace By Spirit", "baseline_slug": "signs_and_seals", "baseline_description": "Sacraments are signs and seals of the covenant of grace, conferring the grace signified by the Spirit and the word of institution upon worthy receivers.", "atlas_path": "/westminster_standards/dimension/ecclesiology_worship/sacraments_efficacy/signs_and_seals/", "order": 2},
-        {"slug": "regulative_principle", "name": "Regulative Principle", "baseline_label": "Strict Only What Commanded", "baseline_slug": "strict", "baseline_description": "Only what is instituted by God in Scripture may be done in worship (WCF XXI.1).", "atlas_path": "/westminster_standards/dimension/ecclesiology_worship/regulative_principle/strict/", "order": 3},
-        {"slug": "censures_and_synods", "name": "Censures & Synods", "baseline_label": "Three Degrees With Graded Synods", "baseline_slug": "three_degrees_with_synods", "baseline_description": "Admonition, suspension from the sacrament, excommunication, and graded synods are affirmed in the Standards.", "atlas_path": "/westminster_standards/dimension/ecclesiology_worship/censures_and_synods/three_degrees_with_synods/", "order": 4}
+        {
+          "slug": "polity",
+          "name": "Polity",
+          "baseline_label": "Presbyterian Jure Divino",
+          "baseline_slug": "presbyterian_jure_divino",
+          "baseline_description": "Christ has instituted a graded series of presbyterial assemblies by divine right.",
+          "atlas_path": "/westminster_standards/dimension/ecclesiology_worship/polity/presbyterian_jure_divino/",
+          "order": 1
+        },
+        {
+          "slug": "sacraments_efficacy",
+          "name": "Sacramental Efficacy",
+          "baseline_label": "Signs And Seals Conferring Grace By Spirit",
+          "baseline_slug": "signs_and_seals",
+          "baseline_description": "Sacraments are signs and seals of the covenant of grace, conferring the grace signified by the Spirit and the word of institution upon worthy receivers.",
+          "atlas_path": "/westminster_standards/dimension/ecclesiology_worship/sacraments_efficacy/signs_and_seals/",
+          "order": 2
+        },
+        {
+          "slug": "regulative_principle",
+          "name": "Regulative Principle",
+          "baseline_label": "Strict Only What Commanded",
+          "baseline_slug": "strict",
+          "baseline_description": "Only what is instituted by God in Scripture may be done in worship (WCF XXI.1).",
+          "atlas_path": "/westminster_standards/dimension/ecclesiology_worship/regulative_principle/strict/",
+          "order": 3
+        },
+        {
+          "slug": "censures_and_synods",
+          "name": "Censures & Synods",
+          "baseline_label": "Three Degrees With Graded Synods",
+          "baseline_slug": "three_degrees_with_synods",
+          "baseline_description": "Admonition, suspension from the sacrament, excommunication, and graded synods are affirmed in the Standards.",
+          "atlas_path": "/westminster_standards/dimension/ecclesiology_worship/censures_and_synods/three_degrees_with_synods/",
+          "order": 4
+        }
       ]
     },
     {
@@ -125,10 +373,42 @@
       "order": 8,
       "atlas_path": "/westminster_standards/dimension/civil_last_things/",
       "attributes": [
-        {"slug": "magistrate_role", "name": "Magistrate's Role", "baseline_label": "Custos Utriusque Tabulae (1646)", "baseline_slug": "custos_utriusque_tabulae", "baseline_description": "The 1646 text gives the magistrate duties toward both tables of the Decalogue.", "atlas_path": "/westminster_standards/dimension/civil_last_things/magistrate_role/custos_utriusque_tabulae/", "order": 1},
-        {"slug": "lawful_oaths_and_marriage", "name": "Oaths & Marriage", "baseline_label": "Oaths Lawful Serious; Divorce Adultery Or Desertion", "baseline_slug": "oaths_serious_marriage_two_grounds", "baseline_description": "Lawful oaths are a serious part of religious worship; divorce is limited to adultery or willful desertion.", "atlas_path": "/westminster_standards/dimension/civil_last_things/lawful_oaths_and_marriage/oaths_serious_marriage_two_grounds/", "order": 2},
-        {"slug": "intermediate_state", "name": "Intermediate State", "baseline_label": "Immediate Conscious With God Or Judgment", "baseline_slug": "immediate_conscious", "baseline_description": "Souls of the righteous are immediately received into heaven; souls of the wicked are cast into hell, reserved to judgment (WCF XXXII.1).", "atlas_path": "/westminster_standards/dimension/civil_last_things/intermediate_state/immediate_conscious/", "order": 3},
-        {"slug": "final_judgment", "name": "Final Judgment", "baseline_label": "Single Universal Judgment By Christ", "baseline_slug": "single_universal_judgment", "baseline_description": "God has appointed a day wherein he will judge the world in righteousness by Jesus Christ (WCF XXXIII.1-2; SC Q. 38).", "atlas_path": "/westminster_standards/dimension/civil_last_things/final_judgment/single_universal_judgment/", "order": 4}
+        {
+          "slug": "magistrate_role",
+          "name": "Magistrate's Role",
+          "baseline_label": "Custos Utriusque Tabulae (1646)",
+          "baseline_slug": "custos_utriusque_tabulae",
+          "baseline_description": "The 1646 text gives the magistrate duties toward both tables of the Decalogue.",
+          "atlas_path": "/westminster_standards/dimension/civil_last_things/magistrate_role/custos_utriusque_tabulae/",
+          "order": 1
+        },
+        {
+          "slug": "lawful_oaths_and_marriage",
+          "name": "Oaths & Marriage",
+          "baseline_label": "Oaths Lawful Serious; Divorce Adultery Or Desertion",
+          "baseline_slug": "oaths_serious_marriage_two_grounds",
+          "baseline_description": "Lawful oaths are a serious part of religious worship; divorce is limited to adultery or willful desertion.",
+          "atlas_path": "/westminster_standards/dimension/civil_last_things/lawful_oaths_and_marriage/oaths_serious_marriage_two_grounds/",
+          "order": 2
+        },
+        {
+          "slug": "intermediate_state",
+          "name": "Intermediate State",
+          "baseline_label": "Immediate Conscious With God Or Judgment",
+          "baseline_slug": "immediate_conscious",
+          "baseline_description": "Souls of the righteous are immediately received into heaven; souls of the wicked are cast into hell, reserved to judgment (WCF XXXII.1).",
+          "atlas_path": "/westminster_standards/dimension/civil_last_things/intermediate_state/immediate_conscious/",
+          "order": 3
+        },
+        {
+          "slug": "final_judgment",
+          "name": "Final Judgment",
+          "baseline_label": "Single Universal Judgment By Christ",
+          "baseline_slug": "single_universal_judgment",
+          "baseline_description": "God has appointed a day wherein he will judge the world in righteousness by Jesus Christ (WCF XXXIII.1-2; SC Q. 38).",
+          "atlas_path": "/westminster_standards/dimension/civil_last_things/final_judgment/single_universal_judgment/",
+          "order": 4
+        }
       ]
     }
   ],
@@ -140,14 +420,4854 @@
       "locus": "scripture",
       "order": 1,
       "atlas_path": "/westminster_standards/heads/prolegomena/"
+    },
+    {
+      "slug": "god_and_trinity",
+      "name": "Of God, and of the Holy Trinity",
+      "description": "The one true and living God: his infinite being, attributes, and the three persons of the Godhead — Father, Son, and Holy Spirit — of one substance, power, and eternity.",
+      "locus": "god_decree",
+      "order": 2,
+      "atlas_path": "/westminster_standards/heads/god_and_trinity/"
+    },
+    {
+      "slug": "eternal_decree",
+      "name": "Of God's Eternal Decree",
+      "description": "God's eternal, free, and unchangeable purpose ordaining whatsoever comes to pass, including his predestination of some to everlasting life and his passing by of the rest.",
+      "locus": "god_decree",
+      "order": 3,
+      "atlas_path": "/westminster_standards/heads/eternal_decree/"
+    },
+    {
+      "slug": "creation",
+      "name": "Of Creation",
+      "description": "God's creation of the world and all things in it, visible and invisible, in the space of six days, and all very good.",
+      "locus": "god_decree",
+      "order": 4,
+      "atlas_path": "/westminster_standards/heads/creation/"
+    },
+    {
+      "slug": "providence",
+      "name": "Of Providence",
+      "description": "God's most holy, wise, and powerful preserving and governing of all his creatures and their actions, ordering them to his own glory.",
+      "locus": "god_decree",
+      "order": 5,
+      "atlas_path": "/westminster_standards/heads/providence/"
+    },
+    {
+      "slug": "fall_and_sin",
+      "name": "Of the Fall of Man, of Sin, and of the Punishment thereof",
+      "description": "The fall of our first parents from their original righteousness through the temptation of Satan, the transmission of original sin to all their posterity, and the resulting bondage and punishment of sin.",
+      "locus": "covenant",
+      "order": 6,
+      "atlas_path": "/westminster_standards/heads/fall_and_sin/"
+    },
+    {
+      "slug": "covenant_with_man",
+      "name": "Of God's Covenant with Man",
+      "description": "The covenant of works made with Adam and, upon his fall, the covenant of grace freely offered to sinners in Christ, one in substance though variously administered.",
+      "locus": "covenant",
+      "order": 7,
+      "atlas_path": "/westminster_standards/heads/covenant_with_man/"
+    },
+    {
+      "slug": "christ_the_mediator",
+      "name": "Of Christ the Mediator",
+      "description": "The Son of God, the second person of the Trinity, taking upon himself man's nature to be the only Mediator between God and man, executing the offices of prophet, priest, and king.",
+      "locus": "christology",
+      "order": 8,
+      "atlas_path": "/westminster_standards/heads/christ_the_mediator/"
+    },
+    {
+      "slug": "free_will",
+      "name": "Of Free Will",
+      "description": "The natural liberty of man's will in its fourfold state — innocency, sin, grace, and glory — and its bondage and freedom under each.",
+      "locus": "soteriology",
+      "order": 9,
+      "atlas_path": "/westminster_standards/heads/free_will/"
+    },
+    {
+      "slug": "effectual_calling",
+      "name": "Of Effectual Calling",
+      "description": "God's effectual calling of all those, and those only, whom he has predestined unto life, by his Word and Spirit, out of the state of sin and death.",
+      "locus": "soteriology",
+      "order": 10,
+      "atlas_path": "/westminster_standards/heads/effectual_calling/"
+    },
+    {
+      "slug": "justification",
+      "name": "Of Justification",
+      "description": "The free act of God's grace in pardoning sin and accepting sinners as righteous, not for anything wrought in them, but for Christ's righteousness imputed and received by faith alone.",
+      "locus": "soteriology",
+      "order": 11,
+      "atlas_path": "/westminster_standards/heads/justification/"
+    },
+    {
+      "slug": "adoption",
+      "name": "Of Adoption",
+      "description": "The act of God's free grace by which believers are received into the number of, and enjoy the liberties and privileges of, the children of God.",
+      "locus": "soteriology",
+      "order": 12,
+      "atlas_path": "/westminster_standards/heads/adoption/"
+    },
+    {
+      "slug": "sanctification",
+      "name": "Of Sanctification",
+      "description": "The real and personal renewal of those effectually called and regenerated, after the image of God, through the sanctifying Spirit and the virtue of Christ's death and resurrection.",
+      "locus": "soteriology",
+      "order": 13,
+      "atlas_path": "/westminster_standards/heads/sanctification/"
+    },
+    {
+      "slug": "saving_faith",
+      "name": "Of Saving Faith",
+      "description": "The grace of faith wrought in the hearts of the elect by the Spirit of God, ordinarily through the ministry of the Word, by which they receive and rest upon Christ alone for salvation.",
+      "locus": "soteriology",
+      "order": 14,
+      "atlas_path": "/westminster_standards/heads/saving_faith/"
+    },
+    {
+      "slug": "repentance",
+      "name": "Of Repentance unto Life",
+      "description": "The evangelical grace by which a sinner, out of a true sense of sin and apprehension of God's mercy in Christ, grieves for and turns from all his sins unto God.",
+      "locus": "soteriology",
+      "order": 15,
+      "atlas_path": "/westminster_standards/heads/repentance/"
+    },
+    {
+      "slug": "good_works",
+      "name": "Of Good Works",
+      "description": "Good works, done in obedience to God's commandments, as the fruits and evidences of a true and lively faith, which cannot merit pardon of sin or eternal life.",
+      "locus": "law_sanctification",
+      "order": 16,
+      "atlas_path": "/westminster_standards/heads/good_works/"
+    },
+    {
+      "slug": "perseverance",
+      "name": "Of the Perseverance of the Saints",
+      "description": "The certain perseverance of those whom God has accepted in his Beloved, effectually called, and sanctified by his Spirit, who can neither totally nor finally fall away from the state of grace.",
+      "locus": "soteriology",
+      "order": 17,
+      "atlas_path": "/westminster_standards/heads/perseverance/"
+    },
+    {
+      "slug": "assurance",
+      "name": "Of the Assurance of Grace and Salvation",
+      "description": "The believer's infallible assurance of being in a state of grace, founded upon the divine truth of the promises of salvation, and attainable without extraordinary revelation.",
+      "locus": "soteriology",
+      "order": 18,
+      "atlas_path": "/westminster_standards/heads/assurance/"
+    },
+    {
+      "slug": "law_of_god",
+      "name": "Of the Law of God",
+      "description": "The moral law given to Adam as a covenant of works, delivered afterward on Mount Sinai in the ten commandments, and its abiding uses to believers and unbelievers alike.",
+      "locus": "law_sanctification",
+      "order": 19,
+      "atlas_path": "/westminster_standards/heads/law_of_god/"
+    },
+    {
+      "slug": "christian_liberty",
+      "name": "Of Christian Liberty, and Liberty of Conscience",
+      "description": "The liberty purchased for believers under the gospel from the guilt of sin, the rigor of the moral law, and the bondage of Satan, together with the liberty of conscience from doctrines and commandments of men.",
+      "locus": "law_sanctification",
+      "order": 20,
+      "atlas_path": "/westminster_standards/heads/christian_liberty/"
+    },
+    {
+      "slug": "worship_and_sabbath",
+      "name": "Of Religious Worship and the Sabbath-day",
+      "description": "The regulative principle governing acceptable worship of God, and the Sabbath — one day in seven kept holy, changed to the Lord's Day since Christ's resurrection.",
+      "locus": "ecclesiology_worship",
+      "order": 21,
+      "atlas_path": "/westminster_standards/heads/worship_and_sabbath/"
+    },
+    {
+      "slug": "oaths_and_vows",
+      "name": "Of Lawful Oaths and Vows",
+      "description": "The lawful use of oaths and vows as a part of religious worship, to be taken with due reverence and in accordance with truth, righteousness, and judgment.",
+      "locus": "civil_last_things",
+      "order": 22,
+      "atlas_path": "/westminster_standards/heads/oaths_and_vows/"
+    },
+    {
+      "slug": "civil_magistrate",
+      "name": "Of the Civil Magistrate",
+      "description": "God's ordination of civil magistrates for his own glory and the public good, their lawful authority, and the duty of the people to obey them in lawful things.",
+      "locus": "civil_last_things",
+      "order": 23,
+      "atlas_path": "/westminster_standards/heads/civil_magistrate/"
+    },
+    {
+      "slug": "marriage_and_divorce",
+      "name": "Of Marriage and Divorce",
+      "description": "Marriage as instituted between one man and one woman for their mutual help, the propagation of offspring, and the prevention of uncleanness, and the biblical grounds for divorce.",
+      "locus": "civil_last_things",
+      "order": 24,
+      "atlas_path": "/westminster_standards/heads/marriage_and_divorce/"
+    },
+    {
+      "slug": "the_church",
+      "name": "Of the Church",
+      "description": "The catholic or universal Church, invisible and visible, out of which there is ordinarily no possibility of salvation, and Christ's headship over it.",
+      "locus": "ecclesiology_worship",
+      "order": 25,
+      "atlas_path": "/westminster_standards/heads/the_church/"
+    },
+    {
+      "slug": "communion_of_saints",
+      "name": "Of the Communion of the Saints",
+      "description": "The fellowship believers have with Christ and with one another in grace, gifts, and duties, without infringing upon their rights of property or family.",
+      "locus": "ecclesiology_worship",
+      "order": 26,
+      "atlas_path": "/westminster_standards/heads/communion_of_saints/"
+    },
+    {
+      "slug": "sacraments",
+      "name": "Of the Sacraments",
+      "description": "The sacraments as holy signs and seals of the covenant of grace, instituted by God to represent Christ and his benefits and to distinguish the visible church from the world.",
+      "locus": "ecclesiology_worship",
+      "order": 27,
+      "atlas_path": "/westminster_standards/heads/sacraments/"
+    },
+    {
+      "slug": "baptism",
+      "name": "Of Baptism",
+      "description": "Baptism as a sacrament of the new testament, a sign and seal of ingrafting into Christ, to be administered once to a person by water in the name of the Trinity.",
+      "locus": "ecclesiology_worship",
+      "order": 28,
+      "atlas_path": "/westminster_standards/heads/baptism/"
+    },
+    {
+      "slug": "lords_supper",
+      "name": "Of the Lord's Supper",
+      "description": "The Lord's Supper as instituted by Christ for the perpetual remembrance of his sacrifice, the spiritual nourishment of believers, and their communion with him and each other.",
+      "locus": "ecclesiology_worship",
+      "order": 29,
+      "atlas_path": "/westminster_standards/heads/lords_supper/"
+    },
+    {
+      "slug": "church_censures",
+      "name": "Of Church Censures",
+      "description": "The keys of the kingdom of heaven committed to church officers, by which they open and shut the kingdom through censures including admonition, suspension, and excommunication.",
+      "locus": "ecclesiology_worship",
+      "order": 30,
+      "atlas_path": "/westminster_standards/heads/church_censures/"
+    },
+    {
+      "slug": "synods_and_councils",
+      "name": "Of Synods and Councils",
+      "description": "The calling of synods and councils for the better government and edification of the church, their proper authority, and the limits of that authority.",
+      "locus": "ecclesiology_worship",
+      "order": 31,
+      "atlas_path": "/westminster_standards/heads/synods_and_councils/"
+    },
+    {
+      "slug": "death_and_resurrection",
+      "name": "Of the State of Man After Death, and of the Resurrection of the Dead",
+      "description": "The immortality of the soul after death, its immediate entrance into glory or torment, and the resurrection of the bodies of all the dead at the last day.",
+      "locus": "civil_last_things",
+      "order": 32,
+      "atlas_path": "/westminster_standards/heads/death_and_resurrection/"
+    },
+    {
+      "slug": "last_judgment",
+      "name": "Of the Last Judgment",
+      "description": "The day appointed by God in which he will judge the world in righteousness by Jesus Christ, for the manifestation of his mercy and justice, and the everlasting destiny of the righteous and the wicked.",
+      "locus": "civil_last_things",
+      "order": 33,
+      "atlas_path": "/westminster_standards/heads/last_judgment/"
     }
   ],
   "question_tags": [
-    {"catechism": "wsc", "number": 1, "attributes": ["scripture:necessity", "scripture:authority"], "heads": ["prolegomena"]},
-    {"catechism": "wlc", "number": 1, "attributes": ["scripture:necessity", "scripture:authority"], "heads": ["prolegomena"]},
-    {"catechism": "wlc", "number": 2, "attributes": ["scripture:necessity", "scripture:authority"], "heads": ["prolegomena"]},
-    {"catechism": "wlc", "number": 3, "attributes": ["scripture:authority", "scripture:sufficiency"], "heads": ["prolegomena"]},
-    {"catechism": "wlc", "number": 4, "attributes": ["scripture:authority"], "heads": ["prolegomena"]},
-    {"catechism": "wlc", "number": 5, "attributes": ["scripture:sufficiency"], "heads": ["prolegomena"]}
+    {
+      "catechism": "wsc",
+      "number": 1,
+      "attributes": [
+        "scripture:necessity",
+        "scripture:authority"
+      ],
+      "heads": [
+        "prolegomena"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 2,
+      "attributes": [
+        "scripture:sufficiency",
+        "scripture:authority"
+      ],
+      "heads": [
+        "prolegomena"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 3,
+      "attributes": [
+        "scripture:sufficiency",
+        "scripture:canon"
+      ],
+      "heads": [
+        "prolegomena"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 4,
+      "attributes": [
+        "god_decree:trinity_processions"
+      ],
+      "heads": [
+        "god_and_trinity"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 5,
+      "attributes": [
+        "god_decree:trinity_processions"
+      ],
+      "heads": [
+        "god_and_trinity"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 6,
+      "attributes": [
+        "god_decree:trinity_processions"
+      ],
+      "heads": [
+        "god_and_trinity"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 7,
+      "attributes": [
+        "god_decree:order_of_decrees"
+      ],
+      "heads": [
+        "eternal_decree"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 8,
+      "attributes": [
+        "god_decree:order_of_decrees"
+      ],
+      "heads": [
+        "eternal_decree"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 9,
+      "attributes": [],
+      "heads": [
+        "creation"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 10,
+      "attributes": [],
+      "heads": [
+        "creation"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 11,
+      "attributes": [],
+      "heads": [
+        "providence"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 12,
+      "attributes": [
+        "covenant:number_of_covenants"
+      ],
+      "heads": [
+        "covenant_with_man"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 13,
+      "attributes": [
+        "covenant:number_of_covenants"
+      ],
+      "heads": [
+        "fall_and_sin"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 14,
+      "attributes": [
+        "law_sanctification:uses_of_the_law"
+      ],
+      "heads": [
+        "fall_and_sin"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 15,
+      "attributes": [],
+      "heads": [
+        "fall_and_sin"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 16,
+      "attributes": [
+        "covenant:children_of_believers"
+      ],
+      "heads": [
+        "fall_and_sin"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 17,
+      "attributes": [
+        "god_decree:reprobation"
+      ],
+      "heads": [
+        "fall_and_sin"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 18,
+      "attributes": [],
+      "heads": [
+        "fall_and_sin"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 19,
+      "attributes": [],
+      "heads": [
+        "fall_and_sin"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 20,
+      "attributes": [
+        "god_decree:covenant_of_redemption",
+        "covenant:number_of_covenants"
+      ],
+      "heads": [
+        "covenant_with_man"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 21,
+      "attributes": [
+        "christology:natures"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 22,
+      "attributes": [
+        "christology:natures"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 23,
+      "attributes": [
+        "christology:offices"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 24,
+      "attributes": [
+        "christology:offices"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 25,
+      "attributes": [
+        "christology:offices",
+        "god_decree:extent_of_atonement"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 26,
+      "attributes": [
+        "christology:offices"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 27,
+      "attributes": [
+        "christology:states_and_descent"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 28,
+      "attributes": [
+        "christology:states_and_descent"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 29,
+      "attributes": [
+        "soteriology:effectual_calling"
+      ],
+      "heads": [
+        "effectual_calling"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 30,
+      "attributes": [
+        "soteriology:effectual_calling",
+        "soteriology:saving_faith"
+      ],
+      "heads": [
+        "effectual_calling"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 31,
+      "attributes": [
+        "soteriology:effectual_calling"
+      ],
+      "heads": [
+        "effectual_calling"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 32,
+      "attributes": [
+        "soteriology:effectual_calling"
+      ],
+      "heads": [
+        "effectual_calling"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 33,
+      "attributes": [
+        "soteriology:justification_ground",
+        "christology:active_obedience_imputation"
+      ],
+      "heads": [
+        "justification"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 34,
+      "attributes": [
+        "soteriology:effectual_calling"
+      ],
+      "heads": [
+        "adoption"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 35,
+      "attributes": [
+        "law_sanctification:good_works"
+      ],
+      "heads": [
+        "sanctification"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 36,
+      "attributes": [
+        "soteriology:assurance",
+        "soteriology:perseverance"
+      ],
+      "heads": [
+        "assurance"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 37,
+      "attributes": [
+        "civil_last_things:intermediate_state"
+      ],
+      "heads": [
+        "death_and_resurrection"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 38,
+      "attributes": [
+        "civil_last_things:final_judgment"
+      ],
+      "heads": [
+        "last_judgment"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 39,
+      "attributes": [
+        "law_sanctification:uses_of_the_law"
+      ],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 40,
+      "attributes": [
+        "law_sanctification:tripartite_division"
+      ],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 41,
+      "attributes": [
+        "law_sanctification:tripartite_division"
+      ],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 42,
+      "attributes": [
+        "law_sanctification:uses_of_the_law"
+      ],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 43,
+      "attributes": [
+        "covenant:mosaic_covenant"
+      ],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 44,
+      "attributes": [
+        "covenant:mosaic_covenant"
+      ],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 45,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 46,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 47,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 48,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 49,
+      "attributes": [
+        "ecclesiology_worship:regulative_principle"
+      ],
+      "heads": [
+        "worship_and_sabbath"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 50,
+      "attributes": [
+        "ecclesiology_worship:regulative_principle"
+      ],
+      "heads": [
+        "worship_and_sabbath"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 51,
+      "attributes": [
+        "ecclesiology_worship:regulative_principle"
+      ],
+      "heads": [
+        "worship_and_sabbath"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 52,
+      "attributes": [
+        "ecclesiology_worship:regulative_principle"
+      ],
+      "heads": [
+        "worship_and_sabbath"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 53,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 54,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 55,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 56,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 57,
+      "attributes": [
+        "law_sanctification:sabbath"
+      ],
+      "heads": [
+        "worship_and_sabbath"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 58,
+      "attributes": [
+        "law_sanctification:sabbath"
+      ],
+      "heads": [
+        "worship_and_sabbath"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 59,
+      "attributes": [
+        "law_sanctification:sabbath"
+      ],
+      "heads": [
+        "worship_and_sabbath"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 60,
+      "attributes": [
+        "law_sanctification:sabbath"
+      ],
+      "heads": [
+        "worship_and_sabbath"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 61,
+      "attributes": [
+        "law_sanctification:sabbath"
+      ],
+      "heads": [
+        "worship_and_sabbath"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 62,
+      "attributes": [
+        "law_sanctification:sabbath"
+      ],
+      "heads": [
+        "worship_and_sabbath"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 63,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 64,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 65,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 66,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 67,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 68,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 69,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 70,
+      "attributes": [
+        "civil_last_things:lawful_oaths_and_marriage"
+      ],
+      "heads": [
+        "marriage_and_divorce"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 71,
+      "attributes": [
+        "civil_last_things:lawful_oaths_and_marriage"
+      ],
+      "heads": [
+        "marriage_and_divorce"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 72,
+      "attributes": [
+        "civil_last_things:lawful_oaths_and_marriage"
+      ],
+      "heads": [
+        "marriage_and_divorce"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 73,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 74,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 75,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 76,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 77,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 78,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 79,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 80,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 81,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 82,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 83,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 84,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 85,
+      "attributes": [
+        "soteriology:saving_faith"
+      ],
+      "heads": [
+        "repentance"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 86,
+      "attributes": [
+        "soteriology:saving_faith"
+      ],
+      "heads": [
+        "saving_faith"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 87,
+      "attributes": [
+        "soteriology:saving_faith"
+      ],
+      "heads": [
+        "repentance"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 88,
+      "attributes": [
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "sacraments"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 89,
+      "attributes": [
+        "scripture:sufficiency"
+      ],
+      "heads": [
+        "sacraments"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 90,
+      "attributes": [
+        "scripture:sufficiency"
+      ],
+      "heads": [
+        "sacraments"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 91,
+      "attributes": [
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "sacraments"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 92,
+      "attributes": [
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "sacraments"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 93,
+      "attributes": [
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "sacraments"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 94,
+      "attributes": [
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "baptism"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 95,
+      "attributes": [
+        "covenant:children_of_believers"
+      ],
+      "heads": [
+        "baptism"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 96,
+      "attributes": [
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "lords_supper"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 97,
+      "attributes": [
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "lords_supper"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 98,
+      "attributes": [],
+      "heads": [
+        "saving_faith"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 99,
+      "attributes": [
+        "scripture:sufficiency"
+      ],
+      "heads": [
+        "saving_faith"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 100,
+      "attributes": [],
+      "heads": [
+        "saving_faith"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 101,
+      "attributes": [],
+      "heads": [
+        "saving_faith"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 102,
+      "attributes": [],
+      "heads": [
+        "saving_faith"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 103,
+      "attributes": [],
+      "heads": [
+        "saving_faith"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 104,
+      "attributes": [],
+      "heads": [
+        "saving_faith"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 105,
+      "attributes": [
+        "soteriology:justification_ground"
+      ],
+      "heads": [
+        "saving_faith"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 106,
+      "attributes": [],
+      "heads": [
+        "saving_faith"
+      ]
+    },
+    {
+      "catechism": "wsc",
+      "number": 107,
+      "attributes": [],
+      "heads": [
+        "saving_faith"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 1,
+      "attributes": [
+        "scripture:necessity"
+      ],
+      "heads": [
+        "prolegomena"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 2,
+      "attributes": [
+        "scripture:necessity",
+        "scripture:authority"
+      ],
+      "heads": [
+        "prolegomena"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 3,
+      "attributes": [
+        "scripture:canon",
+        "scripture:authority"
+      ],
+      "heads": [
+        "prolegomena"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 4,
+      "attributes": [
+        "scripture:authority"
+      ],
+      "heads": [
+        "prolegomena"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 5,
+      "attributes": [
+        "scripture:sufficiency"
+      ],
+      "heads": [
+        "prolegomena"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 6,
+      "attributes": [
+        "god_decree:trinity_processions",
+        "god_decree:order_of_decrees"
+      ],
+      "heads": [
+        "god_and_trinity"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 7,
+      "attributes": [],
+      "heads": [
+        "god_and_trinity"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 8,
+      "attributes": [],
+      "heads": [
+        "god_and_trinity"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 9,
+      "attributes": [
+        "god_decree:trinity_processions"
+      ],
+      "heads": [
+        "god_and_trinity"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 10,
+      "attributes": [
+        "god_decree:trinity_processions"
+      ],
+      "heads": [
+        "god_and_trinity"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 11,
+      "attributes": [
+        "god_decree:trinity_processions"
+      ],
+      "heads": [
+        "god_and_trinity"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 12,
+      "attributes": [
+        "god_decree:order_of_decrees"
+      ],
+      "heads": [
+        "eternal_decree"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 13,
+      "attributes": [
+        "god_decree:order_of_decrees",
+        "god_decree:reprobation"
+      ],
+      "heads": [
+        "eternal_decree"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 14,
+      "attributes": [
+        "god_decree:order_of_decrees"
+      ],
+      "heads": [
+        "eternal_decree"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 15,
+      "attributes": [],
+      "heads": [
+        "creation"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 16,
+      "attributes": [],
+      "heads": [
+        "creation"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 17,
+      "attributes": [],
+      "heads": [
+        "creation"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 18,
+      "attributes": [],
+      "heads": [
+        "providence"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 19,
+      "attributes": [],
+      "heads": [
+        "providence"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 20,
+      "attributes": [
+        "law_sanctification:sabbath",
+        "civil_last_things:lawful_oaths_and_marriage"
+      ],
+      "heads": [
+        "providence"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 21,
+      "attributes": [],
+      "heads": [
+        "fall_and_sin"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 22,
+      "attributes": [
+        "covenant:number_of_covenants"
+      ],
+      "heads": [
+        "fall_and_sin"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 23,
+      "attributes": [],
+      "heads": [
+        "fall_and_sin"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 24,
+      "attributes": [
+        "law_sanctification:uses_of_the_law"
+      ],
+      "heads": [
+        "fall_and_sin"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 25,
+      "attributes": [],
+      "heads": [
+        "fall_and_sin"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 26,
+      "attributes": [
+        "covenant:children_of_believers"
+      ],
+      "heads": [
+        "fall_and_sin"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 27,
+      "attributes": [],
+      "heads": [
+        "fall_and_sin"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 28,
+      "attributes": [],
+      "heads": [
+        "fall_and_sin"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 29,
+      "attributes": [
+        "civil_last_things:final_judgment"
+      ],
+      "heads": [
+        "fall_and_sin"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 30,
+      "attributes": [
+        "covenant:number_of_covenants"
+      ],
+      "heads": [
+        "covenant_with_man"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 31,
+      "attributes": [
+        "god_decree:covenant_of_redemption"
+      ],
+      "heads": [
+        "covenant_with_man"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 32,
+      "attributes": [
+        "soteriology:saving_faith"
+      ],
+      "heads": [
+        "covenant_with_man"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 33,
+      "attributes": [
+        "covenant:testamental_continuity"
+      ],
+      "heads": [
+        "covenant_with_man"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 34,
+      "attributes": [
+        "covenant:testamental_continuity",
+        "covenant:mosaic_covenant"
+      ],
+      "heads": [
+        "covenant_with_man"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 35,
+      "attributes": [
+        "covenant:testamental_continuity",
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "covenant_with_man"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 36,
+      "attributes": [
+        "christology:natures"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 37,
+      "attributes": [
+        "christology:natures"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 38,
+      "attributes": [
+        "christology:natures"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 39,
+      "attributes": [
+        "christology:natures"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 40,
+      "attributes": [
+        "christology:natures"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 41,
+      "attributes": [
+        "christology:offices"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 42,
+      "attributes": [
+        "christology:offices"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 43,
+      "attributes": [
+        "christology:offices"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 44,
+      "attributes": [
+        "christology:offices"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 45,
+      "attributes": [
+        "christology:offices",
+        "ecclesiology_worship:polity"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 46,
+      "attributes": [
+        "christology:states_and_descent"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 47,
+      "attributes": [
+        "christology:states_and_descent"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 48,
+      "attributes": [
+        "christology:states_and_descent",
+        "christology:active_obedience_imputation"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 49,
+      "attributes": [
+        "christology:states_and_descent"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 50,
+      "attributes": [
+        "christology:states_and_descent"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 51,
+      "attributes": [
+        "christology:states_and_descent"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 52,
+      "attributes": [
+        "christology:states_and_descent"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 53,
+      "attributes": [
+        "christology:states_and_descent"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 54,
+      "attributes": [
+        "christology:states_and_descent"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 55,
+      "attributes": [
+        "christology:states_and_descent"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 56,
+      "attributes": [
+        "christology:states_and_descent",
+        "civil_last_things:final_judgment"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 57,
+      "attributes": [
+        "god_decree:extent_of_atonement"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 58,
+      "attributes": [
+        "soteriology:effectual_calling"
+      ],
+      "heads": [
+        "effectual_calling"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 59,
+      "attributes": [
+        "god_decree:extent_of_atonement",
+        "soteriology:effectual_calling"
+      ],
+      "heads": [
+        "effectual_calling"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 60,
+      "attributes": [
+        "god_decree:extent_of_atonement"
+      ],
+      "heads": [
+        "effectual_calling"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 61,
+      "attributes": [
+        "ecclesiology_worship:polity"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 62,
+      "attributes": [
+        "ecclesiology_worship:polity",
+        "covenant:children_of_believers"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 63,
+      "attributes": [
+        "ecclesiology_worship:polity"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 64,
+      "attributes": [
+        "ecclesiology_worship:polity"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 65,
+      "attributes": [],
+      "heads": [
+        "communion_of_saints"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 66,
+      "attributes": [
+        "soteriology:effectual_calling"
+      ],
+      "heads": [
+        "communion_of_saints"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 67,
+      "attributes": [
+        "soteriology:effectual_calling"
+      ],
+      "heads": [
+        "effectual_calling"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 68,
+      "attributes": [
+        "soteriology:effectual_calling",
+        "god_decree:reprobation"
+      ],
+      "heads": [
+        "effectual_calling"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 69,
+      "attributes": [],
+      "heads": [
+        "communion_of_saints"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 70,
+      "attributes": [
+        "soteriology:justification_ground",
+        "christology:active_obedience_imputation"
+      ],
+      "heads": [
+        "justification"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 71,
+      "attributes": [
+        "soteriology:justification_ground",
+        "christology:active_obedience_imputation"
+      ],
+      "heads": [
+        "justification"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 72,
+      "attributes": [
+        "soteriology:saving_faith"
+      ],
+      "heads": [
+        "saving_faith"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 73,
+      "attributes": [
+        "soteriology:saving_faith",
+        "soteriology:justification_ground"
+      ],
+      "heads": [
+        "saving_faith"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 74,
+      "attributes": [],
+      "heads": [
+        "adoption"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 75,
+      "attributes": [],
+      "heads": [
+        "sanctification"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 76,
+      "attributes": [],
+      "heads": [
+        "repentance"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 77,
+      "attributes": [
+        "soteriology:justification_ground"
+      ],
+      "heads": [
+        "sanctification"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 78,
+      "attributes": [],
+      "heads": [
+        "sanctification"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 79,
+      "attributes": [
+        "soteriology:perseverance"
+      ],
+      "heads": [
+        "perseverance"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 80,
+      "attributes": [
+        "soteriology:assurance"
+      ],
+      "heads": [
+        "assurance"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 81,
+      "attributes": [
+        "soteriology:assurance"
+      ],
+      "heads": [
+        "assurance"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 82,
+      "attributes": [
+        "civil_last_things:intermediate_state",
+        "civil_last_things:final_judgment"
+      ],
+      "heads": [
+        "communion_of_saints"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 83,
+      "attributes": [
+        "civil_last_things:intermediate_state"
+      ],
+      "heads": [
+        "communion_of_saints"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 84,
+      "attributes": [],
+      "heads": [
+        "death_and_resurrection"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 85,
+      "attributes": [
+        "civil_last_things:intermediate_state"
+      ],
+      "heads": [
+        "death_and_resurrection"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 86,
+      "attributes": [
+        "civil_last_things:intermediate_state"
+      ],
+      "heads": [
+        "death_and_resurrection"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 87,
+      "attributes": [],
+      "heads": [
+        "death_and_resurrection"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 88,
+      "attributes": [
+        "civil_last_things:final_judgment"
+      ],
+      "heads": [
+        "last_judgment"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 89,
+      "attributes": [
+        "civil_last_things:final_judgment"
+      ],
+      "heads": [
+        "last_judgment"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 90,
+      "attributes": [
+        "civil_last_things:final_judgment"
+      ],
+      "heads": [
+        "last_judgment"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 91,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 92,
+      "attributes": [
+        "law_sanctification:tripartite_division"
+      ],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 93,
+      "attributes": [
+        "law_sanctification:tripartite_division"
+      ],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 94,
+      "attributes": [
+        "law_sanctification:uses_of_the_law"
+      ],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 95,
+      "attributes": [
+        "law_sanctification:uses_of_the_law"
+      ],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 96,
+      "attributes": [
+        "law_sanctification:uses_of_the_law"
+      ],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 97,
+      "attributes": [
+        "law_sanctification:uses_of_the_law",
+        "law_sanctification:good_works"
+      ],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 98,
+      "attributes": [
+        "law_sanctification:tripartite_division"
+      ],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 99,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 100,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 101,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 102,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 103,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 104,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 105,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 106,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 107,
+      "attributes": [
+        "ecclesiology_worship:regulative_principle"
+      ],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 108,
+      "attributes": [
+        "ecclesiology_worship:regulative_principle"
+      ],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 109,
+      "attributes": [
+        "ecclesiology_worship:regulative_principle"
+      ],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 110,
+      "attributes": [
+        "ecclesiology_worship:regulative_principle"
+      ],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 111,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 112,
+      "attributes": [
+        "civil_last_things:lawful_oaths_and_marriage"
+      ],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 113,
+      "attributes": [
+        "civil_last_things:lawful_oaths_and_marriage"
+      ],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 114,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 115,
+      "attributes": [
+        "law_sanctification:sabbath"
+      ],
+      "heads": [
+        "worship_and_sabbath"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 116,
+      "attributes": [
+        "law_sanctification:sabbath"
+      ],
+      "heads": [
+        "worship_and_sabbath"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 117,
+      "attributes": [
+        "law_sanctification:sabbath"
+      ],
+      "heads": [
+        "worship_and_sabbath"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 118,
+      "attributes": [
+        "law_sanctification:sabbath"
+      ],
+      "heads": [
+        "worship_and_sabbath"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 119,
+      "attributes": [
+        "law_sanctification:sabbath"
+      ],
+      "heads": [
+        "worship_and_sabbath"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 120,
+      "attributes": [
+        "law_sanctification:sabbath"
+      ],
+      "heads": [
+        "worship_and_sabbath"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 121,
+      "attributes": [
+        "law_sanctification:sabbath"
+      ],
+      "heads": [
+        "worship_and_sabbath"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 122,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 123,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 124,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 125,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 126,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 127,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 128,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 129,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 130,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 131,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 132,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 133,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 134,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 135,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 136,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 137,
+      "attributes": [
+        "civil_last_things:lawful_oaths_and_marriage"
+      ],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 138,
+      "attributes": [
+        "civil_last_things:lawful_oaths_and_marriage"
+      ],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 139,
+      "attributes": [
+        "civil_last_things:lawful_oaths_and_marriage"
+      ],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 140,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 141,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 142,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 143,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 144,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 145,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 146,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 147,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 148,
+      "attributes": [],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 149,
+      "attributes": [
+        "law_sanctification:uses_of_the_law"
+      ],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 150,
+      "attributes": [
+        "law_sanctification:uses_of_the_law"
+      ],
+      "heads": [
+        "fall_and_sin"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 151,
+      "attributes": [
+        "law_sanctification:uses_of_the_law"
+      ],
+      "heads": [
+        "fall_and_sin"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 152,
+      "attributes": [
+        "law_sanctification:uses_of_the_law"
+      ],
+      "heads": [
+        "fall_and_sin"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 153,
+      "attributes": [
+        "soteriology:saving_faith"
+      ],
+      "heads": [
+        "saving_faith"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 154,
+      "attributes": [
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 155,
+      "attributes": [
+        "soteriology:effectual_calling"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 156,
+      "attributes": [
+        "scripture:necessity"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 157,
+      "attributes": [
+        "scripture:interpretation"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 158,
+      "attributes": [
+        "ecclesiology_worship:polity"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 159,
+      "attributes": [
+        "ecclesiology_worship:polity"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 160,
+      "attributes": [
+        "scripture:interpretation"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 161,
+      "attributes": [
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "sacraments"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 162,
+      "attributes": [
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "sacraments"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 163,
+      "attributes": [
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "sacraments"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 164,
+      "attributes": [
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "sacraments"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 165,
+      "attributes": [
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "baptism"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 166,
+      "attributes": [
+        "covenant:children_of_believers"
+      ],
+      "heads": [
+        "baptism"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 167,
+      "attributes": [
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "baptism"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 168,
+      "attributes": [
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "lords_supper"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 169,
+      "attributes": [
+        "ecclesiology_worship:regulative_principle"
+      ],
+      "heads": [
+        "lords_supper"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 170,
+      "attributes": [
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "lords_supper"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 171,
+      "attributes": [
+        "soteriology:assurance"
+      ],
+      "heads": [
+        "lords_supper"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 172,
+      "attributes": [
+        "soteriology:assurance"
+      ],
+      "heads": [
+        "lords_supper"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 173,
+      "attributes": [
+        "ecclesiology_worship:censures_and_synods"
+      ],
+      "heads": [
+        "lords_supper"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 174,
+      "attributes": [
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "lords_supper"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 175,
+      "attributes": [
+        "soteriology:assurance"
+      ],
+      "heads": [
+        "lords_supper"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 176,
+      "attributes": [
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "sacraments"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 177,
+      "attributes": [
+        "covenant:children_of_believers"
+      ],
+      "heads": [
+        "sacraments"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 178,
+      "attributes": [
+        "soteriology:saving_faith"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 179,
+      "attributes": [
+        "scripture:authority"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 180,
+      "attributes": [
+        "christology:offices"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 181,
+      "attributes": [
+        "christology:offices"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 182,
+      "attributes": [
+        "soteriology:effectual_calling"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 183,
+      "attributes": [
+        "civil_last_things:magistrate_role"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 184,
+      "attributes": [
+        "soteriology:saving_faith"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 185,
+      "attributes": [
+        "soteriology:saving_faith"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 186,
+      "attributes": [
+        "scripture:sufficiency"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 187,
+      "attributes": [
+        "scripture:sufficiency"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 188,
+      "attributes": [
+        "scripture:sufficiency"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 189,
+      "attributes": [
+        "soteriology:saving_faith"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 190,
+      "attributes": [
+        "soteriology:saving_faith"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 191,
+      "attributes": [
+        "civil_last_things:magistrate_role"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 192,
+      "attributes": [
+        "soteriology:saving_faith"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 193,
+      "attributes": [
+        "soteriology:saving_faith"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 194,
+      "attributes": [
+        "soteriology:justification_ground"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 195,
+      "attributes": [
+        "soteriology:perseverance"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wlc",
+      "number": 196,
+      "attributes": [
+        "soteriology:saving_faith"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 1,
+      "attributes": [
+        "scripture:necessity"
+      ],
+      "heads": [
+        "prolegomena"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 2,
+      "attributes": [
+        "scripture:canon"
+      ],
+      "heads": [
+        "prolegomena"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 3,
+      "attributes": [
+        "scripture:canon"
+      ],
+      "heads": [
+        "prolegomena"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 4,
+      "attributes": [
+        "scripture:authority"
+      ],
+      "heads": [
+        "prolegomena"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 5,
+      "attributes": [
+        "scripture:authority"
+      ],
+      "heads": [
+        "prolegomena"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 6,
+      "attributes": [
+        "scripture:sufficiency"
+      ],
+      "heads": [
+        "prolegomena"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 7,
+      "attributes": [
+        "scripture:sufficiency",
+        "scripture:interpretation"
+      ],
+      "heads": [
+        "prolegomena"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 8,
+      "attributes": [
+        "scripture:authority",
+        "scripture:interpretation"
+      ],
+      "heads": [
+        "prolegomena"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 9,
+      "attributes": [
+        "scripture:interpretation"
+      ],
+      "heads": [
+        "prolegomena"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 10,
+      "attributes": [
+        "scripture:authority",
+        "scripture:interpretation"
+      ],
+      "heads": [
+        "prolegomena"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 11,
+      "attributes": [
+        "god_decree:trinity_processions"
+      ],
+      "heads": [
+        "god_and_trinity"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 12,
+      "attributes": [
+        "god_decree:trinity_processions"
+      ],
+      "heads": [
+        "god_and_trinity"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 13,
+      "attributes": [
+        "god_decree:trinity_processions"
+      ],
+      "heads": [
+        "god_and_trinity"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 14,
+      "attributes": [
+        "god_decree:order_of_decrees"
+      ],
+      "heads": [
+        "eternal_decree"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 15,
+      "attributes": [
+        "god_decree:order_of_decrees"
+      ],
+      "heads": [
+        "eternal_decree"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 16,
+      "attributes": [
+        "god_decree:order_of_decrees",
+        "god_decree:reprobation"
+      ],
+      "heads": [
+        "eternal_decree"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 17,
+      "attributes": [
+        "god_decree:order_of_decrees"
+      ],
+      "heads": [
+        "eternal_decree"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 18,
+      "attributes": [
+        "god_decree:order_of_decrees"
+      ],
+      "heads": [
+        "eternal_decree"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 19,
+      "attributes": [
+        "god_decree:order_of_decrees",
+        "god_decree:extent_of_atonement"
+      ],
+      "heads": [
+        "eternal_decree"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 20,
+      "attributes": [
+        "god_decree:reprobation"
+      ],
+      "heads": [
+        "eternal_decree"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 21,
+      "attributes": [
+        "god_decree:order_of_decrees"
+      ],
+      "heads": [
+        "eternal_decree"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 22,
+      "attributes": [],
+      "heads": [
+        "creation"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 23,
+      "attributes": [],
+      "heads": [
+        "creation"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 24,
+      "attributes": [],
+      "heads": [
+        "providence"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 25,
+      "attributes": [],
+      "heads": [
+        "providence"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 26,
+      "attributes": [],
+      "heads": [
+        "providence"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 27,
+      "attributes": [
+        "god_decree:reprobation"
+      ],
+      "heads": [
+        "providence"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 28,
+      "attributes": [
+        "soteriology:perseverance"
+      ],
+      "heads": [
+        "providence"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 29,
+      "attributes": [
+        "god_decree:reprobation"
+      ],
+      "heads": [
+        "providence"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 30,
+      "attributes": [],
+      "heads": [
+        "providence"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 31,
+      "attributes": [],
+      "heads": [
+        "fall_and_sin"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 32,
+      "attributes": [
+        "covenant:number_of_covenants"
+      ],
+      "heads": [
+        "fall_and_sin"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 33,
+      "attributes": [
+        "covenant:children_of_believers"
+      ],
+      "heads": [
+        "fall_and_sin"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 34,
+      "attributes": [
+        "law_sanctification:uses_of_the_law"
+      ],
+      "heads": [
+        "fall_and_sin"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 35,
+      "attributes": [],
+      "heads": [
+        "fall_and_sin"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 36,
+      "attributes": [
+        "law_sanctification:uses_of_the_law"
+      ],
+      "heads": [
+        "fall_and_sin"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 37,
+      "attributes": [
+        "covenant:number_of_covenants"
+      ],
+      "heads": [
+        "covenant_with_man"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 38,
+      "attributes": [
+        "covenant:number_of_covenants"
+      ],
+      "heads": [
+        "covenant_with_man"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 39,
+      "attributes": [
+        "covenant:number_of_covenants"
+      ],
+      "heads": [
+        "covenant_with_man"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 40,
+      "attributes": [
+        "covenant:testamental_continuity"
+      ],
+      "heads": [
+        "covenant_with_man"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 41,
+      "attributes": [
+        "covenant:mosaic_covenant"
+      ],
+      "heads": [
+        "covenant_with_man"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 42,
+      "attributes": [
+        "covenant:testamental_continuity",
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "covenant_with_man"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 43,
+      "attributes": [
+        "christology:offices"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 44,
+      "attributes": [
+        "christology:natures"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 45,
+      "attributes": [
+        "christology:offices"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 46,
+      "attributes": [
+        "christology:states_and_descent"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 47,
+      "attributes": [
+        "christology:active_obedience_imputation"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 48,
+      "attributes": [
+        "god_decree:extent_of_atonement",
+        "covenant:testamental_continuity"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 49,
+      "attributes": [
+        "christology:natures"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 50,
+      "attributes": [
+        "god_decree:extent_of_atonement",
+        "soteriology:effectual_calling"
+      ],
+      "heads": [
+        "christ_the_mediator"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 51,
+      "attributes": [],
+      "heads": [
+        "free_will"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 52,
+      "attributes": [],
+      "heads": [
+        "free_will"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 53,
+      "attributes": [
+        "soteriology:effectual_calling"
+      ],
+      "heads": [
+        "free_will"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 54,
+      "attributes": [
+        "soteriology:effectual_calling",
+        "soteriology:perseverance"
+      ],
+      "heads": [
+        "free_will"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 55,
+      "attributes": [],
+      "heads": [
+        "free_will"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 56,
+      "attributes": [
+        "soteriology:effectual_calling"
+      ],
+      "heads": [
+        "effectual_calling"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 57,
+      "attributes": [
+        "soteriology:effectual_calling"
+      ],
+      "heads": [
+        "effectual_calling"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 58,
+      "attributes": [
+        "covenant:children_of_believers",
+        "soteriology:effectual_calling"
+      ],
+      "heads": [
+        "effectual_calling"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 59,
+      "attributes": [
+        "god_decree:reprobation",
+        "soteriology:effectual_calling"
+      ],
+      "heads": [
+        "effectual_calling"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 60,
+      "attributes": [
+        "soteriology:justification_ground"
+      ],
+      "heads": [
+        "justification"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 61,
+      "attributes": [
+        "soteriology:saving_faith",
+        "soteriology:justification_ground"
+      ],
+      "heads": [
+        "justification"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 62,
+      "attributes": [
+        "christology:active_obedience_imputation"
+      ],
+      "heads": [
+        "justification"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 63,
+      "attributes": [
+        "soteriology:justification_ground"
+      ],
+      "heads": [
+        "justification"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 64,
+      "attributes": [
+        "soteriology:assurance"
+      ],
+      "heads": [
+        "justification"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 65,
+      "attributes": [
+        "covenant:testamental_continuity"
+      ],
+      "heads": [
+        "justification"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 66,
+      "attributes": [
+        "soteriology:assurance"
+      ],
+      "heads": [
+        "adoption"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 67,
+      "attributes": [
+        "law_sanctification:good_works"
+      ],
+      "heads": [
+        "sanctification"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 68,
+      "attributes": [
+        "soteriology:perseverance"
+      ],
+      "heads": [
+        "sanctification"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 69,
+      "attributes": [
+        "soteriology:perseverance"
+      ],
+      "heads": [
+        "sanctification"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 70,
+      "attributes": [
+        "soteriology:saving_faith"
+      ],
+      "heads": [
+        "saving_faith"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 71,
+      "attributes": [
+        "soteriology:saving_faith"
+      ],
+      "heads": [
+        "saving_faith"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 72,
+      "attributes": [
+        "soteriology:assurance"
+      ],
+      "heads": [
+        "saving_faith"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 73,
+      "attributes": [
+        "law_sanctification:good_works"
+      ],
+      "heads": [
+        "repentance"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 74,
+      "attributes": [
+        "law_sanctification:good_works"
+      ],
+      "heads": [
+        "repentance"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 75,
+      "attributes": [
+        "soteriology:justification_ground"
+      ],
+      "heads": [
+        "repentance"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 76,
+      "attributes": [
+        "soteriology:assurance"
+      ],
+      "heads": [
+        "repentance"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 77,
+      "attributes": [
+        "law_sanctification:good_works"
+      ],
+      "heads": [
+        "repentance"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 78,
+      "attributes": [],
+      "heads": [
+        "repentance"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 79,
+      "attributes": [
+        "ecclesiology_worship:regulative_principle"
+      ],
+      "heads": [
+        "good_works"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 80,
+      "attributes": [
+        "law_sanctification:good_works",
+        "soteriology:assurance"
+      ],
+      "heads": [
+        "good_works"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 81,
+      "attributes": [
+        "law_sanctification:good_works"
+      ],
+      "heads": [
+        "good_works"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 82,
+      "attributes": [
+        "law_sanctification:good_works"
+      ],
+      "heads": [
+        "good_works"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 83,
+      "attributes": [
+        "soteriology:justification_ground",
+        "law_sanctification:good_works"
+      ],
+      "heads": [
+        "good_works"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 84,
+      "attributes": [
+        "law_sanctification:good_works"
+      ],
+      "heads": [
+        "good_works"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 85,
+      "attributes": [
+        "law_sanctification:good_works"
+      ],
+      "heads": [
+        "good_works"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 86,
+      "attributes": [
+        "soteriology:perseverance"
+      ],
+      "heads": [
+        "perseverance"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 87,
+      "attributes": [
+        "soteriology:perseverance"
+      ],
+      "heads": [
+        "perseverance"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 88,
+      "attributes": [
+        "soteriology:perseverance"
+      ],
+      "heads": [
+        "perseverance"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 89,
+      "attributes": [
+        "soteriology:assurance"
+      ],
+      "heads": [
+        "assurance"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 90,
+      "attributes": [
+        "soteriology:assurance"
+      ],
+      "heads": [
+        "assurance"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 91,
+      "attributes": [
+        "soteriology:assurance"
+      ],
+      "heads": [
+        "assurance"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 92,
+      "attributes": [
+        "soteriology:assurance"
+      ],
+      "heads": [
+        "assurance"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 93,
+      "attributes": [
+        "law_sanctification:uses_of_the_law"
+      ],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 94,
+      "attributes": [
+        "law_sanctification:tripartite_division"
+      ],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 95,
+      "attributes": [
+        "law_sanctification:tripartite_division",
+        "covenant:testamental_continuity"
+      ],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 96,
+      "attributes": [
+        "law_sanctification:tripartite_division"
+      ],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 97,
+      "attributes": [
+        "law_sanctification:uses_of_the_law"
+      ],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 98,
+      "attributes": [
+        "law_sanctification:uses_of_the_law"
+      ],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 99,
+      "attributes": [
+        "law_sanctification:uses_of_the_law"
+      ],
+      "heads": [
+        "law_of_god"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 100,
+      "attributes": [
+        "covenant:testamental_continuity"
+      ],
+      "heads": [
+        "christian_liberty"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 101,
+      "attributes": [
+        "scripture:authority"
+      ],
+      "heads": [
+        "christian_liberty"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 102,
+      "attributes": [
+        "law_sanctification:good_works"
+      ],
+      "heads": [
+        "christian_liberty"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 103,
+      "attributes": [
+        "civil_last_things:magistrate_role",
+        "ecclesiology_worship:censures_and_synods"
+      ],
+      "heads": [
+        "christian_liberty"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 104,
+      "attributes": [
+        "ecclesiology_worship:regulative_principle"
+      ],
+      "heads": [
+        "worship_and_sabbath"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 105,
+      "attributes": [
+        "ecclesiology_worship:regulative_principle",
+        "christology:offices"
+      ],
+      "heads": [
+        "worship_and_sabbath"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 106,
+      "attributes": [
+        "ecclesiology_worship:regulative_principle"
+      ],
+      "heads": [
+        "worship_and_sabbath"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 107,
+      "attributes": [
+        "ecclesiology_worship:regulative_principle"
+      ],
+      "heads": [
+        "worship_and_sabbath"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 108,
+      "attributes": [
+        "ecclesiology_worship:regulative_principle",
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "worship_and_sabbath"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 109,
+      "attributes": [
+        "ecclesiology_worship:regulative_principle"
+      ],
+      "heads": [
+        "worship_and_sabbath"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 110,
+      "attributes": [
+        "law_sanctification:sabbath"
+      ],
+      "heads": [
+        "worship_and_sabbath"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 111,
+      "attributes": [
+        "law_sanctification:sabbath"
+      ],
+      "heads": [
+        "worship_and_sabbath"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 112,
+      "attributes": [
+        "civil_last_things:lawful_oaths_and_marriage"
+      ],
+      "heads": [
+        "oaths_and_vows"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 113,
+      "attributes": [
+        "civil_last_things:lawful_oaths_and_marriage"
+      ],
+      "heads": [
+        "oaths_and_vows"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 114,
+      "attributes": [
+        "civil_last_things:lawful_oaths_and_marriage"
+      ],
+      "heads": [
+        "oaths_and_vows"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 115,
+      "attributes": [
+        "civil_last_things:lawful_oaths_and_marriage"
+      ],
+      "heads": [
+        "oaths_and_vows"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 116,
+      "attributes": [
+        "civil_last_things:lawful_oaths_and_marriage"
+      ],
+      "heads": [
+        "oaths_and_vows"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 117,
+      "attributes": [
+        "civil_last_things:lawful_oaths_and_marriage"
+      ],
+      "heads": [
+        "oaths_and_vows"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 118,
+      "attributes": [
+        "civil_last_things:lawful_oaths_and_marriage"
+      ],
+      "heads": [
+        "oaths_and_vows"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 119,
+      "attributes": [
+        "civil_last_things:magistrate_role"
+      ],
+      "heads": [
+        "civil_magistrate"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 120,
+      "attributes": [
+        "civil_last_things:magistrate_role"
+      ],
+      "heads": [
+        "civil_magistrate"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 121,
+      "attributes": [
+        "civil_last_things:magistrate_role",
+        "ecclesiology_worship:censures_and_synods"
+      ],
+      "heads": [
+        "civil_magistrate"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 122,
+      "attributes": [
+        "civil_last_things:magistrate_role"
+      ],
+      "heads": [
+        "civil_magistrate"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 123,
+      "attributes": [
+        "civil_last_things:lawful_oaths_and_marriage"
+      ],
+      "heads": [
+        "marriage_and_divorce"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 124,
+      "attributes": [
+        "civil_last_things:lawful_oaths_and_marriage"
+      ],
+      "heads": [
+        "marriage_and_divorce"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 125,
+      "attributes": [
+        "civil_last_things:lawful_oaths_and_marriage"
+      ],
+      "heads": [
+        "marriage_and_divorce"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 126,
+      "attributes": [
+        "civil_last_things:lawful_oaths_and_marriage"
+      ],
+      "heads": [
+        "marriage_and_divorce"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 127,
+      "attributes": [
+        "civil_last_things:lawful_oaths_and_marriage"
+      ],
+      "heads": [
+        "marriage_and_divorce"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 128,
+      "attributes": [
+        "civil_last_things:lawful_oaths_and_marriage"
+      ],
+      "heads": [
+        "marriage_and_divorce"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 129,
+      "attributes": [
+        "ecclesiology_worship:polity"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 130,
+      "attributes": [
+        "ecclesiology_worship:polity",
+        "covenant:children_of_believers"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 131,
+      "attributes": [
+        "ecclesiology_worship:polity"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 132,
+      "attributes": [
+        "ecclesiology_worship:polity"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 133,
+      "attributes": [
+        "ecclesiology_worship:polity"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 134,
+      "attributes": [
+        "christology:offices",
+        "ecclesiology_worship:polity"
+      ],
+      "heads": [
+        "the_church"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 135,
+      "attributes": [
+        "ecclesiology_worship:polity"
+      ],
+      "heads": [
+        "communion_of_saints"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 136,
+      "attributes": [
+        "ecclesiology_worship:polity"
+      ],
+      "heads": [
+        "communion_of_saints"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 137,
+      "attributes": [
+        "christology:natures",
+        "ecclesiology_worship:polity"
+      ],
+      "heads": [
+        "communion_of_saints"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 138,
+      "attributes": [
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "sacraments"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 139,
+      "attributes": [
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "sacraments"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 140,
+      "attributes": [
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "sacraments"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 141,
+      "attributes": [
+        "ecclesiology_worship:sacraments_efficacy",
+        "ecclesiology_worship:polity"
+      ],
+      "heads": [
+        "sacraments"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 142,
+      "attributes": [
+        "covenant:testamental_continuity",
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "sacraments"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 143,
+      "attributes": [
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "baptism"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 144,
+      "attributes": [
+        "ecclesiology_worship:regulative_principle"
+      ],
+      "heads": [
+        "baptism"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 145,
+      "attributes": [
+        "ecclesiology_worship:regulative_principle"
+      ],
+      "heads": [
+        "baptism"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 146,
+      "attributes": [
+        "covenant:children_of_believers"
+      ],
+      "heads": [
+        "baptism"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 147,
+      "attributes": [
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "baptism"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 148,
+      "attributes": [
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "baptism"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 149,
+      "attributes": [
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "baptism"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 150,
+      "attributes": [
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "lords_supper"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 151,
+      "attributes": [
+        "christology:active_obedience_imputation",
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "lords_supper"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 152,
+      "attributes": [
+        "ecclesiology_worship:regulative_principle"
+      ],
+      "heads": [
+        "lords_supper"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 153,
+      "attributes": [
+        "ecclesiology_worship:regulative_principle"
+      ],
+      "heads": [
+        "lords_supper"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 154,
+      "attributes": [
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "lords_supper"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 155,
+      "attributes": [
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "lords_supper"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 156,
+      "attributes": [
+        "ecclesiology_worship:sacraments_efficacy",
+        "soteriology:saving_faith"
+      ],
+      "heads": [
+        "lords_supper"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 157,
+      "attributes": [
+        "ecclesiology_worship:sacraments_efficacy"
+      ],
+      "heads": [
+        "lords_supper"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 158,
+      "attributes": [
+        "ecclesiology_worship:polity",
+        "christology:offices"
+      ],
+      "heads": [
+        "church_censures"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 159,
+      "attributes": [
+        "ecclesiology_worship:censures_and_synods"
+      ],
+      "heads": [
+        "church_censures"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 160,
+      "attributes": [
+        "ecclesiology_worship:censures_and_synods"
+      ],
+      "heads": [
+        "church_censures"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 161,
+      "attributes": [
+        "ecclesiology_worship:censures_and_synods"
+      ],
+      "heads": [
+        "church_censures"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 162,
+      "attributes": [
+        "ecclesiology_worship:censures_and_synods"
+      ],
+      "heads": [
+        "synods_and_councils"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 163,
+      "attributes": [
+        "ecclesiology_worship:censures_and_synods",
+        "civil_last_things:magistrate_role"
+      ],
+      "heads": [
+        "synods_and_councils"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 164,
+      "attributes": [
+        "ecclesiology_worship:censures_and_synods"
+      ],
+      "heads": [
+        "synods_and_councils"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 165,
+      "attributes": [
+        "ecclesiology_worship:censures_and_synods",
+        "scripture:authority"
+      ],
+      "heads": [
+        "synods_and_councils"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 166,
+      "attributes": [
+        "ecclesiology_worship:censures_and_synods",
+        "civil_last_things:magistrate_role"
+      ],
+      "heads": [
+        "synods_and_councils"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 167,
+      "attributes": [
+        "civil_last_things:intermediate_state"
+      ],
+      "heads": [
+        "death_and_resurrection"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 168,
+      "attributes": [
+        "civil_last_things:intermediate_state"
+      ],
+      "heads": [
+        "death_and_resurrection"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 169,
+      "attributes": [
+        "civil_last_things:intermediate_state"
+      ],
+      "heads": [
+        "death_and_resurrection"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 170,
+      "attributes": [
+        "civil_last_things:final_judgment"
+      ],
+      "heads": [
+        "last_judgment"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 171,
+      "attributes": [
+        "civil_last_things:final_judgment"
+      ],
+      "heads": [
+        "last_judgment"
+      ]
+    },
+    {
+      "catechism": "wcf",
+      "number": 172,
+      "attributes": [
+        "civil_last_things:final_judgment"
+      ],
+      "heads": [
+        "last_judgment"
+      ]
+    }
   ]
 }
