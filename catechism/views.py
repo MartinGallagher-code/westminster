@@ -11,7 +11,7 @@ from django.urls import reverse
 from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView
 
-from .atlas import atlas_url, atlas_work_url
+from .atlas import atlas_url
 from .document_guides import get_document_guide
 from .teaching_guide import (
     get_guide_intro, get_lessons, get_lesson, get_adjacent_lessons,
@@ -545,8 +545,6 @@ class QuestionDetailView(CatechismMixin, DetailView):
                 for p in ScripturePassage.objects.filter(reference__in=cq_refs):
                     chapter_scripture_map[p.reference] = p.text
         ctx['chapter_scripture_map'] = {**chapter_scripture_map, **ctx['scripture_map']}
-
-        ctx['atlas_url'] = atlas_work_url(self.catechism.slug, q)
 
         if self.request.user.is_authenticated:
             from accounts.models import UserNote

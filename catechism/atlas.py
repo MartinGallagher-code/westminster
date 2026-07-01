@@ -3,7 +3,11 @@ from urllib.parse import urljoin
 from django.conf import settings
 
 
-DEFAULT_ATLAS_BASE_URL = 'https://ontologicalatlas.com/westminster_standards/'
+# The Westminster Standards Atlas now lives natively in this project, mounted
+# at /atlas/ (see config/urls.py and the westminster_standards app), so links
+# resolve internally by default. Set WESTMINSTER_ATLAS_BASE_URL to point back
+# at the public ontologicalatlas.com deployment if that is ever wanted.
+DEFAULT_ATLAS_BASE_URL = '/atlas/'
 
 
 def atlas_base_url():
@@ -16,11 +20,3 @@ def atlas_url(path=''):
     if clean_path.startswith(legacy_prefix):
         clean_path = clean_path[len(legacy_prefix):]
     return urljoin(atlas_base_url(), clean_path)
-
-
-def atlas_work_url(catechism_slug, question):
-    if catechism_slug in ('wsc', 'wlc'):
-        return atlas_url(f'works/{catechism_slug}/q/{question.number}/')
-    if catechism_slug == 'wcf':
-        return atlas_url(f'works/wcf/chapter/{question.topic.order}/')
-    return ''

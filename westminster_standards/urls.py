@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views
+from . import bridge, views
 
 
 app_name = 'westminster_standards'
@@ -19,10 +19,12 @@ urlpatterns = [
     path('schools/', views.schools_list, name='schools_list'),
     path('schools/<slug:slug>/', views.school_detail, name='school_detail'),
     path('works/', views.works_list, name='works_list'),
-    path('works/wcf/chapter/<int:number>/', views.wcf_chapter_detail, name='wcf_chapter'),
+    # The Confession chapters and catechism questions are hosted natively by
+    # Study Reformed; redirect the Atlas's duplicate full-text pages there.
+    path('works/wcf/chapter/<int:number>/', bridge.wcf_chapter_redirect, name='wcf_chapter'),
     path('works/<slug:catechism_slug>/q/<int:number>/',
-         views.catechism_question_detail, name='catechism_question'),
-    path('works/<slug:slug>/', views.work_detail, name='work_detail'),
+         bridge.catechism_question_redirect, name='catechism_question'),
+    path('works/<slug:slug>/', bridge.work_detail_dispatch, name='work_detail'),
     path('dimension/<slug:dim_key>/', views.dimension_detail, name='dimension_detail'),
     path('dimension/<slug:dim_key>/<slug:attr_key>/<slug:value_key>/',
          views.value_detail, name='value_detail'),
