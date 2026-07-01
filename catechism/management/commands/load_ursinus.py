@@ -58,7 +58,11 @@ class Command(BaseCommand):
             if not text:
                 continue
 
-            question = Question.objects.get(catechism=catechism, number=num)
+            try:
+                question = Question.objects.get(catechism=catechism, number=num)
+            except Question.DoesNotExist:
+                self.stderr.write(self.style.WARNING(f"  Question {num} not found, skipping"))
+                continue
             Commentary.objects.update_or_create(
                 question=question,
                 source=source,

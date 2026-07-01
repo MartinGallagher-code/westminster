@@ -210,10 +210,12 @@ class HomeView(TemplateView):
         catechisms = list(Catechism.objects.filter(tradition__in=active_traditions))
         day_of_year = date.today().timetuple().tm_yday
         for cat in catechisms:
-            cat.featured_question = Question.objects.filter(
-                catechism=cat,
-                number=(day_of_year % cat.total_questions) + 1
-            ).select_related('topic').first()
+            cat.featured_question = None
+            if cat.total_questions:
+                cat.featured_question = Question.objects.filter(
+                    catechism=cat,
+                    number=(day_of_year % cat.total_questions) + 1
+                ).select_related('topic').first()
         ctx['catechisms'] = catechisms
         if catechisms:
             hero_cat = catechisms[day_of_year % len(catechisms)]
@@ -268,10 +270,12 @@ class CatechismHomeView(CatechismMixin, TemplateView):
         ]
 
         day_of_year = date.today().timetuple().tm_yday
-        ctx['featured_question'] = Question.objects.filter(
-            catechism=self.catechism,
-            number=(day_of_year % self.catechism.total_questions) + 1
-        ).select_related('topic').first()
+        ctx['featured_question'] = None
+        if self.catechism.total_questions:
+            ctx['featured_question'] = Question.objects.filter(
+                catechism=self.catechism,
+                number=(day_of_year % self.catechism.total_questions) + 1
+            ).select_related('topic').first()
         return ctx
 
 
@@ -846,6 +850,14 @@ class CustomCompareThemeView(TemplateView):
 
         primary_theme = themes.first()
         ctx['theme'] = primary_theme
+
+        if len(selected_slugs) < 2:
+            ctx['columns'] = []
+            ctx['selected_slugs'] = selected_slugs
+            ctx['selected_catechisms'] = Catechism.objects.filter(slug__in=selected_slugs)
+            ctx['docs_param'] = ','.join(selected_slugs)
+            ctx['error'] = 'Select at least two documents to compare.'
+            return ctx
 
         # Collect entries filtered to selected docs AND active traditions
         all_entries = ComparisonEntry.objects.filter(

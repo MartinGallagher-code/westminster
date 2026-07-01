@@ -4,7 +4,7 @@ from catechism.models import CommentarySource
 
 ACTIVE_SLUGS = [
     'fisher-erskine', 'flavel', 'henry', 'watson',
-    'vincent', 'ridgley', 'shaw', 'hodge',
+    'ridgley', 'shaw', 'hodge',
 ]
 
 

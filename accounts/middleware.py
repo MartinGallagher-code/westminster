@@ -1,5 +1,6 @@
 from django.contrib.auth import logout
 from django.contrib import messages
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
 
 
@@ -12,15 +13,16 @@ class BlockedUserMiddleware:
     def __call__(self, request):
         if request.user.is_authenticated:
             try:
-                if request.user.profile.is_blocked:
-                    logout(request)
-                    messages.error(
-                        request,
-                        'Your account has been blocked. '
-                        'Please contact the administrator.'
-                    )
-                    return redirect('accounts:login')
-            except Exception:
-                pass
+                is_blocked = request.user.profile.is_blocked
+            except ObjectDoesNotExist:
+                is_blocked = False
+            if is_blocked:
+                logout(request)
+                messages.error(
+                    request,
+                    'Your account has been blocked. '
+                    'Please contact the administrator.'
+                )
+                return redirect('accounts:login')
 
         return self.get_response(request)

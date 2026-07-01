@@ -147,6 +147,13 @@ class Command(BaseCommand):
                     topic = t
                     break
 
+            if topic is None:
+                self.stderr.write(self.style.WARNING(
+                    f"  Chapter {num} falls outside all OUTLINES_PARTS ranges, "
+                    f"skipping (Question.topic is required)"
+                ))
+                continue
+
             Question.objects.update_or_create(
                 catechism=catechism,
                 number=num,

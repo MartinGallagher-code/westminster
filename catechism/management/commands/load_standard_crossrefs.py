@@ -17,6 +17,16 @@ class Command(BaseCommand):
             return
 
         catechisms = {c.slug: c for c in Catechism.objects.all()}
+        required_slugs = {'wsc', 'wlc', 'wcf'}
+        missing_slugs = required_slugs - catechisms.keys()
+        if missing_slugs:
+            self.stderr.write(self.style.WARNING(
+                f"Catechism(s) not loaded yet, skipping cross-references: "
+                f"{', '.join(sorted(missing_slugs))}. Run load_catechism/"
+                f"load_wlc/load_wcf first."
+            ))
+            return
+
         created_count = 0
 
         # 1. Load WSC <-> WLC from existing file

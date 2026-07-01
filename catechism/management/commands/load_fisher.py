@@ -31,7 +31,11 @@ class Command(BaseCommand):
         total_subs = 0
         for entry in data["Data"]:
             num = int(entry["Number"])
-            question = Question.objects.get(catechism=catechism, number=num)
+            try:
+                question = Question.objects.get(catechism=catechism, number=num)
+            except Question.DoesNotExist:
+                self.stderr.write(self.style.WARNING(f"  Question {num} not found, skipping"))
+                continue
 
             commentary, _ = Commentary.objects.update_or_create(
                 question=question,
