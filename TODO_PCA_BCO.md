@@ -51,6 +51,12 @@ Total: 432 sections across 62 active chapters + preface.
 
 - **2026-07-01**: Updated to the 2025 edition (amendments through the 52nd General Assembly). Revised text for 13-6 (ministers transferring into a Presbytery), 32-19 (representation in cases of process), and 43-1 (complaints filed during a pending judicial process). While updating, also fixed two pre-existing extraction bugs unrelated to the new edition: a stray Private Use Area glyph (``, a leaked bullet-point character) scattered through several section texts, and a mis-split paragraph that had been extracted as a spurious duplicate "32-19" section when it was actually the tail end of 38-1's text referencing "BCO 32-19" — it's now correctly appended to 38-1 and the phantom chapter-32 duplicate is gone (total sections dropped from 433 to 432 as a result).
 
+## Known Gap: 53rd General Assembly (June 2026)
+
+The data above reflects the last **officially published** edition (2025, through the 52nd GA). The 53rd General Assembly met in June 2026 and ratified 9 more amendment items that had been approved at the 52nd GA and subsequently passed by the presbyteries (items 2, 4, 6, 7, 8, 9, 10, 11, 12 per GA reporting) — including raising the threshold for presbyteries to request the General Assembly assume original jurisdiction in a judicial case from 2 to 18 presbyteries (20%), and a new requirement that congregations list Session and Diaconate members in their minutes. One further amendment (from Ascension Presbytery, on listing officers) was itself sent to presbyteries for approval and is not yet ratified.
+
+These changes are constitutionally in effect but **pcaac.org has not yet published a 2026 edition PDF** codifying them (checked 2026-07-01; still serving `BCO2025-1.pdf`). Deliberately not reflected in `pca_bco.json` — the exact section text should come from the official reprint, not paraphrased from news/blog reporting of the Assembly's actions. Re-run `check_bco_update`, and update this data, once the 2026 edition PDF is published.
+
 ## Future Work
 
 - [x] Add cross-references to WCF, WLC, and WSC — see `data/pca_bco/bco_cross_references.json` and `load_bco_crossrefs`
