@@ -1,5 +1,7 @@
 {% extends "westminster_standards/base.html" %}
 {% block title %}Intersection — Westminster Standards Atlas{% endblock %}
+{% block ws_crumb %}<li class="breadcrumb-item"><a href="{% url 'westminster_standards:dimension_pairs' %}">Intersections</a></li><li class="breadcrumb-item active" aria-current="page">{% for d in dims %}{{ d.label }}{% if not forloop.last %} · {% endif %}{% endfor %}</li>{% endblock %}
+
 {% block ws_content %}
 
 <section class="ws-hero">

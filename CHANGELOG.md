@@ -3,6 +3,12 @@
 All notable project changes should be recorded here. This project uses a simple
 reverse-chronological changelog rather than formal release tags.
 
+## 2026-07-02
+
+### Changed
+
+- Made the Westminster Standards Atlas feel native to Study Reformed. The Atlas's own dark section sub-nav is replaced by an **Atlas dropdown** in the site navbar that lists every Atlas section (Ontology, Personas, Cruxes, Heads of Doctrine, Schools, Works, Compare, Intersections, Search). Atlas pages now use the site's standard layout — a Bootstrap breadcrumb (Home / Atlas / …), an `h1` + lead + rule page header, and cards styled to match Study Reformed's (`--wm-*` surfaces, `0.5rem` radius, subtle shadow) — instead of the ported standalone chrome. The eight locus accent colours are retained.
+
 ## 2026-07-01
 
 ### Added
