@@ -1,0 +1,440 @@
+{% extends "westminster_standards/base.html" %}
+{% block title %}{{ work.short_title }} Q.{{ question.number }} — Westminster Standards{% endblock %}
+{% block content %}
+<section class="ws-hero">
+  <span class="ws-eyebrow">
+    <a class="ws-link" href="{% url 'westminster_standards:work_detail' work.slug %}">← {{ work.title }}</a>
+    · Q.&nbsp;{{ question.number }}
+  </span>
+  <h1 class="ws-q-question">{{ question.question }}</h1>
+  {% if loci %}
+    <div style="margin-top:0.4rem;">
+      {% for dim in loci %}
+        <a class="ws-locus-chip ws-dim-{{ dim.key }}" href="{% url 'westminster_standards:dimension_detail' dim.key %}">{{ dim.icon }} {{ dim.label }}</a>
+      {% endfor %}
+    </div>
+  {% endif %}
+</section>
+
+<div class="ws-q-answer">
+  <p>{{ answer_html }}</p>
+</div>
+
+{% if question.proofs %}
+  <section class="ws-proofs" style="margin-top:1.4rem;">
+    <h2 class="ws-proofs-title">Scripture proofs</h2>
+    <p class="ws-proofs-note">
+      The Westminster Assembly's proof texts (KJV). The bracketed numbers in the
+      answer above mark the clause each set of references supports; expand a row
+      to read the verses.
+    </p>
+    <div class="ws-proofs-list">
+      {% for proof in question.proofs %}
+        <details class="ws-proof-row" id="proof-{{ proof.Id }}">
+          <summary class="ws-proof-sum">
+            <span class="ws-proof-num">{{ proof.Id }}</span>
+            <span class="ws-proof-refs">
+              {% for r in proof.References %}{{ r.ref }}{% if not forloop.last %}; {% endif %}{% endfor %}
+            </span>
+          </summary>
+          <div class="ws-proof-verses">
+            {% for r in proof.References %}
+              <div class="ws-proof-ref-block">
+                <span class="ws-proof-ref-label">{{ r.ref }}</span>
+                {% for v in r.verses %}
+                  <p class="ws-proof-verse">{% if r.verses|length > 1 %}<span class="ws-pv-ref">{{ v.ref }}</span> {% endif %}{{ v.t }}</p>
+                {% empty %}
+                  <p class="ws-proof-verse ws-pv-none">— full text not shown for this reference —</p>
+                {% endfor %}
+              </div>
+            {% endfor %}
+          </div>
+        </details>
+      {% endfor %}
+    </div>
+  </section>
+{% endif %}
+
+{% if cross_refs.wcf_sections or cross_refs.other_questions %}
+<section class="ws-xref" style="margin-top:1.5rem;">
+  <h2 style="font-family:var(--font-serif);font-size:1.15rem;margin:0 0 0.3rem;">This doctrine across the Standards</h2>
+  <p style="color:var(--text-secondary);font-size:0.86rem;margin:0 0 0.8rem;line-height:1.5;">
+    Where the Confession and the {{ cross_refs.other_title }} treat the same matter,
+    so the question can be studied alongside its parallel statements.
+  </p>
+
+  {% if cross_refs.wcf_sections %}
+  <div class="ws-xref-group">
+    <h3 class="ws-xref-head">In the Westminster Confession</h3>
+    <div class="ws-xref-list">
+      {% for item in cross_refs.wcf_sections %}
+        <details class="ws-xref-d">
+          <summary class="ws-xref-d-sum">
+            <span class="ws-xref-ref">{{ item.chapter.roman }}.{{ item.section.number }}</span>
+            <span class="ws-xref-preview">{{ item.section.content|truncatewords:18 }}</span>
+          </summary>
+          <div class="ws-xref-d-body">
+            <p class="ws-xref-fulltext">{{ item.section.content }}</p>
+            <a class="ws-link ws-xref-open" href="{% url 'westminster_standards:wcf_chapter' item.chapter.number %}#s{{ item.section.number }}">→ {{ item.chapter.roman }}.{{ item.section.number }} · {{ item.chapter.title }}</a>
+          </div>
+        </details>
+      {% endfor %}
+    </div>
+    {% if cross_refs.wcf_more %}
+      <p class="ws-xref-more">+{{ cross_refs.wcf_more }} more — see the full topical treatment below.</p>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  {% if cross_refs.other_questions %}
+  <div class="ws-xref-group">
+    <h3 class="ws-xref-head">In the {{ cross_refs.other_title }}</h3>
+    <div class="ws-xref-list">
+      {% for q in cross_refs.other_questions %}
+        <details class="ws-xref-d ws-xref-qa">
+          <summary class="ws-xref-d-sum">
+            <span class="ws-xref-ref">Q.{{ q.number }}</span>
+            <span class="ws-xref-preview">{{ q.question }}</span>
+          </summary>
+          <div class="ws-xref-d-body">
+            <p class="ws-xref-fulltext">{{ q.answer }}</p>
+            <a class="ws-link ws-xref-open" href="{% url 'westminster_standards:catechism_question' cross_refs.other_slug q.number %}">→ Open Q.{{ q.number }}</a>
+          </div>
+        </details>
+      {% endfor %}
+    </div>
+    {% if cross_refs.other_more %}
+      <p class="ws-xref-more">+{{ cross_refs.other_more }} more — see the full topical treatment below.</p>
+    {% endif %}
+  </div>
+  {% endif %}
+</section>
+{% endif %}
+
+{% if question_heads %}
+<section class="ws-related-cruxes" style="margin-top:1.5rem;">
+  <h2 style="font-family:var(--font-serif);font-size:1.15rem;margin:0 0 0.5rem;">Heads of doctrine</h2>
+  <ul class="ws-related-list">
+    {% for h in question_heads %}
+      <li>
+        <a class="ws-related-link" href="{% url 'westminster_standards:head_detail' h.slug %}">
+          <span class="ws-related-title">{{ h.name }}</span>
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+{% if question_attrs %}
+<section class="ws-related-cruxes" style="margin-top:1.5rem;">
+  <h2 style="font-family:var(--font-serif);font-size:1.15rem;margin:0 0 0.5rem;">Ontology placement</h2>
+  <p style="color:var(--text-secondary);font-size:0.88rem;margin:0 0 0.5rem;">
+    The attribute{{ question_attrs|length|pluralize }} of the Westminster ontology
+    this question bears on. Each links to the Westminster baseline value.
+  </p>
+  {% include "westminster_standards/_ontology_tags.html" with attrs=question_attrs %}
+  {% if has_rep_tags %}{% include "westminster_standards/_ontology_legend.html" %}{% endif %}
+</section>
+{% endif %}
+
+{% if related_cruxes %}
+<section class="ws-related-cruxes">
+  <h2 style="font-family:var(--font-serif);font-size:1.15rem;margin:0 0 0.5rem;">Cruxes that bear on this question</h2>
+  <ul class="ws-related-list">
+    {% for c in related_cruxes %}
+      <li>
+        <a class="ws-related-link" href="{% url 'westminster_standards:crux_detail' c.slug %}">
+          <span class="ws-related-title">{{ c.title }}</span>
+          {% if c.tagline %}<span class="ws-related-tag">{{ c.tagline }}</span>{% endif %}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+<nav class="ws-chapter-nav">
+  {% if prev_question %}
+    <a class="ws-link" href="{% url 'westminster_standards:catechism_question' work.slug prev_question.number %}">
+      ← Q.{{ prev_question.number }}
+    </a>
+  {% else %}<span></span>{% endif %}
+  {% if next_question %}
+    <a class="ws-link" href="{% url 'westminster_standards:catechism_question' work.slug next_question.number %}">
+      Q.{{ next_question.number }} →
+    </a>
+  {% endif %}
+</nav>
+
+<style>
+  .ws-q-question {
+    font-family: var(--font-serif);
+    font-size: 1.6rem;
+    line-height: 1.3;
+    color: var(--text-primary);
+    margin: 0.4rem 0;
+  }
+  .ws-q-answer {
+    background: var(--bg-card);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 1rem 1.4rem;
+    margin-top: 1rem;
+  }
+  .ws-q-answer p {
+    font-family: var(--font-serif);
+    font-size: 1.08rem;
+    line-height: 1.7;
+    color: var(--text-primary);
+    margin: 0;
+  }
+  /* Inline proof markers in the answer. */
+  .ws-pm {
+    font-size: 0.62em;
+    line-height: 0;
+    vertical-align: super;
+  }
+  .ws-pm a {
+    color: var(--gold);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0 0.05em;
+  }
+  .ws-pm a:hover { text-decoration: underline; }
+  /* Scripture-proof apparatus. */
+  .ws-proofs-title {
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    margin: 0 0 0.2rem;
+  }
+  .ws-proofs-note {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    line-height: 1.5;
+    margin: 0 0 0.7rem;
+  }
+  .ws-proofs-list {
+    display: grid;
+    gap: 0.3rem;
+  }
+  .ws-proof-row {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    overflow: hidden;
+    scroll-margin-top: 1rem;
+    transition: border-color 0.12s;
+  }
+  .ws-proof-row[open], .ws-proof-row:hover { border-color: var(--gold); }
+  .ws-proof-row:target { border-color: var(--gold); background: var(--bg-elevated); }
+  .ws-proof-sum {
+    display: grid;
+    grid-template-columns: 1.7rem 1fr;
+    gap: 0.6rem;
+    align-items: baseline;
+    padding: 0.5rem 0.7rem;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+  .ws-proof-sum::-webkit-details-marker { display: none; }
+  .ws-proof-num {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    color: var(--gold);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+  .ws-proof-num::before {
+    content: '▸';
+    font-size: 0.72rem;
+    margin-right: 0.15rem;
+    display: inline-block;
+    transition: transform 0.15s;
+  }
+  .ws-proof-row[open] .ws-proof-num::before { transform: rotate(90deg); }
+  .ws-proof-refs {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  .ws-proof-verses {
+    padding: 0.2rem 0.7rem 0.6rem 2.3rem;
+    border-top: 1px solid var(--border-subtle);
+  }
+  .ws-proof-ref-block { margin-top: 0.55rem; }
+  .ws-proof-ref-label {
+    display: block;
+    font-family: var(--font-serif);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--gold);
+    margin-bottom: 0.15rem;
+  }
+  .ws-proof-verse {
+    font-family: var(--font-serif);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--text-primary);
+    margin: 0.1rem 0;
+  }
+  .ws-pv-ref {
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-variant-numeric: tabular-nums;
+    margin-right: 0.25rem;
+  }
+  .ws-pv-none { color: var(--text-muted); font-style: italic; font-family: var(--font-sans); font-size: 0.82rem; }
+  .ws-chapter-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-subtle);
+    gap: 1rem;
+  }
+  .ws-locus-chip {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    text-decoration: none;
+    margin-right: 0.4rem;
+    border: 1px solid var(--border);
+    transition: border-color 0.12s;
+  }
+  .ws-locus-chip:hover { border-color: var(--gold); }
+  .ws-related-cruxes {
+    margin-top: 2rem;
+    padding: 1rem 1.25rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .ws-related-list {
+    list-style: none; padding: 0; margin: 0;
+    display: grid; gap: 0.4rem;
+  }
+  .ws-related-link {
+    display: block;
+    padding: 0.5rem 0.7rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: border-color 0.12s, background 0.12s;
+  }
+  .ws-related-link:hover { border-color: var(--gold); background: var(--bg-card); }
+  .ws-related-title {
+    display: block; font-weight: 500; color: var(--text-primary); font-size: 0.94rem;
+  }
+  .ws-related-tag {
+    display: block; color: var(--text-secondary); font-size: 0.84rem;
+    line-height: 1.4; margin-top: 0.2rem;
+  }
+  .ws-xref {
+    margin-top: 2rem;
+    padding: 1rem 1.25rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .ws-xref-group { margin-top: 0.6rem; }
+  .ws-xref-head {
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin: 0 0 0.4rem;
+  }
+  .ws-xref-list { display: grid; gap: 0.35rem; }
+  .ws-xref-d {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    overflow: hidden;
+    transition: border-color 0.12s;
+  }
+  .ws-xref-d[open], .ws-xref-d:hover { border-color: var(--gold); }
+  .ws-xref-d-sum {
+    display: grid;
+    grid-template-columns: 3.5rem 1fr;
+    gap: 0.6rem;
+    align-items: baseline;
+    padding: 0.45rem 0.65rem;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+  .ws-xref-d-sum::-webkit-details-marker { display: none; }
+  .ws-xref-ref {
+    color: var(--gold);
+    font-family: var(--font-serif);
+    font-variant-numeric: tabular-nums;
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+  .ws-xref-ref::before {
+    content: '▸';
+    margin-right: 0.3rem;
+    font-size: 0.72rem;
+    display: inline-block;
+    transition: transform 0.15s;
+  }
+  .ws-xref-d[open] .ws-xref-ref::before { transform: rotate(90deg); }
+  .ws-xref-preview {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.4;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+  }
+  .ws-xref-d[open] .ws-xref-preview { display: none; }
+  /* Catechism entries: the preview is the question, not a snippet of the
+     body, so keep it visible (and emphasised) when the answer is shown. */
+  .ws-xref-qa[open] .ws-xref-preview {
+    display: block;
+    -webkit-line-clamp: unset;
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+  .ws-xref-d-body {
+    padding: 0 0.7rem 0.6rem 4.1rem;
+    border-top: 1px solid var(--border-subtle);
+  }
+  .ws-xref-fulltext {
+    font-family: var(--font-serif);
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+    margin: 0.5rem 0 0.4rem;
+  }
+  .ws-xref-open { font-size: 0.82rem; }
+  .ws-xref-more {
+    color: var(--text-muted); font-size: 0.8rem; margin: 0.4rem 0 0; font-style: italic;
+  }
+</style>
+
+<script>
+  // Clicking an inline proof marker (a link to "#proof-N") opens that proof
+  // clause and scrolls to it.
+  (function () {
+    function reveal() {
+      var hash = window.location.hash;
+      if (!hash || hash.indexOf('#proof-') !== 0) return;
+      var el;
+      try { el = document.querySelector(hash); } catch (e) { return; }
+      if (!el) return;
+      if (el.tagName === 'DETAILS') el.open = true;
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    window.addEventListener('DOMContentLoaded', reveal);
+    window.addEventListener('hashchange', reveal);
+  })();
+</script>
+{% endblock %}

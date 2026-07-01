@@ -1,0 +1,306 @@
+{% extends "westminster_standards/base.html" %}
+{% block title %}{{ work.title }} — Westminster Standards Atlas{% endblock %}
+{% block content %}
+<section class="ws-hero">
+  <span class="ws-eyebrow">
+    <a class="ws-link" href="{% url 'westminster_standards:works_list' %}">← all works</a>
+    · {{ work.short_title }} · {{ work.year }}
+  </span>
+  <h1>{{ work.title }}</h1>
+  <p>{{ work.summary }}</p>
+  <p style="color:var(--text-muted);font-size:0.82rem;margin-top:0.5rem;">
+    Author: {{ work.author }} · Completed {{ work.date_completed }} ·
+    Source: {{ work.source_attribution }}
+    {% if work.source_url %}· <a class="ws-link" href="{{ work.source_url }}" rel="noopener" target="_blank">facsimile</a>{% endif %}
+  </p>
+</section>
+
+{% if work.is_stub %}
+  <div class="ws-card" style="border-left:3px solid var(--gold);margin-top:1rem;">
+    <strong>Full text not yet loaded.</strong>
+    <p style="margin:0.4rem 0 0;color:var(--text-secondary);font-size:0.88rem;line-height:1.5;">
+      The summary above describes the document; the full public-domain text
+      will be added in a subsequent pass by dropping the source JSON into
+      <code>westminster_standards/raw/</code> and adding a loader.
+    </p>
+  </div>
+  {% if work.sections_outline %}
+    <section style="margin-top:1.2rem;">
+      <h2 style="font-family:var(--font-serif);font-size:1.15rem;margin:0 0 0.5rem;">Contents outline</h2>
+      <ol style="margin:0;padding-left:1.3rem;color:var(--text-secondary);font-size:0.9rem;line-height:1.7;">
+        {% for section in work.sections_outline %}
+          <li>{{ section }}</li>
+        {% endfor %}
+      </ol>
+    </section>
+  {% endif %}
+{% endif %}
+
+{% if work.chapters and not work.is_directory %}
+  <section style="margin-top:1.5rem;">
+    <h2 style="font-family:var(--font-serif);font-size:1.25rem;margin:0 0 0.6rem;">Chapters</h2>
+    <ol class="ws-chapter-list">
+      {% for ch in work.chapters %}
+        <li>
+          <a class="ws-chapter-link" href="{% url 'westminster_standards:wcf_chapter' ch.number %}">
+            <span class="ws-chapter-roman">{{ ch.roman }}.</span>
+            <span class="ws-chapter-title">{{ ch.title }}</span>
+            <span class="ws-chapter-meta">{{ ch.sections|length }} §</span>
+          </a>
+        </li>
+      {% endfor %}
+    </ol>
+  </section>
+{% endif %}
+
+{% if annotated_sections %}
+  <section style="margin-top:1.5rem;">
+    <h2 style="font-family:var(--font-serif);font-size:1.25rem;margin:0 0 0.6rem;">Sections</h2>
+    {% if has_rep_tags %}{% include "westminster_standards/_ontology_legend.html" %}{% endif %}
+    {% for entry in annotated_sections %}
+      <details class="ws-dir-section" id="s{{ entry.section.number }}">
+        <summary class="ws-dir-summary">
+          <span class="ws-dir-num">{{ entry.section.number }}.</span>
+          <span class="ws-dir-title">{{ entry.section.title }}</span>
+          {% for dim in entry.loci %}
+            <span class="ws-dir-locus ws-dim-{{ dim.key }}">{{ dim.icon }}</span>
+          {% endfor %}
+        </summary>
+        <div class="ws-dir-body">
+          {{ entry.section.content|linebreaksbr }}
+          {% if entry.loci or entry.heads %}
+            <div class="ws-dir-links">
+              {% for dim in entry.loci %}
+                <a class="ws-dir-chip" href="{% url 'westminster_standards:dimension_detail' dim.key %}">{{ dim.icon }} {{ dim.label }}</a>
+              {% endfor %}
+              {% for h in entry.heads %}
+                <a class="ws-dir-chip ws-dir-head-chip" href="{% url 'westminster_standards:head_detail' h.slug %}">{{ h.name }}</a>
+              {% endfor %}
+            </div>
+          {% endif %}
+          {% include "westminster_standards/_ontology_tags.html" with attrs=entry.attrs %}
+        </div>
+      </details>
+    {% endfor %}
+  </section>
+{% elif work.is_directory and work.chapters %}
+  <section style="margin-top:1.5rem;">
+    <h2 style="font-family:var(--font-serif);font-size:1.25rem;margin:0 0 0.6rem;">Sections</h2>
+    {% for sec in work.chapters %}
+      <details class="ws-dir-section" id="s{{ sec.number }}">
+        <summary class="ws-dir-summary">
+          <span class="ws-dir-num">{{ sec.number }}.</span>
+          <span class="ws-dir-title">{{ sec.title }}</span>
+        </summary>
+        <div class="ws-dir-body">
+          {{ sec.content|linebreaksbr }}
+        </div>
+      </details>
+    {% endfor %}
+  </section>
+{% endif %}
+
+{% if question_groups %}
+  <section style="margin-top:1.5rem;">
+    <h2 style="font-family:var(--font-serif);font-size:1.25rem;margin:0 0 0.6rem;">Questions</h2>
+    {% for group in question_groups %}
+      <details class="ws-q-group">
+        <summary class="ws-q-group-summary">
+          {% if group.dim %}
+            <span class="ws-q-group-icon ws-dim-{{ group.dim.key }}">{{ group.dim.icon }}</span>
+          {% endif %}
+          <span class="ws-q-group-label">
+            {% if group.dim %}{{ group.dim.label }}{% else %}Other{% endif %}
+          </span>
+          <span class="ws-q-group-range">
+            Q.&nbsp;{{ group.questions.0.number }}–{{ group.questions|last|dictsort:"number"|last }}
+            · {{ group.questions|length }}
+          </span>
+        </summary>
+        <ol class="ws-question-list">
+          {% for q in group.questions %}
+            <li>
+              <a class="ws-question-link" href="{% url 'westminster_standards:catechism_question' work.slug q.number %}">
+                <span class="ws-question-num">Q.&nbsp;{{ q.number }}</span>
+                <span class="ws-question-text">{{ q.question }}</span>
+              </a>
+            </li>
+          {% endfor %}
+        </ol>
+      </details>
+    {% endfor %}
+  </section>
+{% elif work.questions %}
+  <section style="margin-top:1.5rem;">
+    <h2 style="font-family:var(--font-serif);font-size:1.25rem;margin:0 0 0.6rem;">Questions</h2>
+    <ol class="ws-question-list">
+      {% for q in work.questions %}
+        <li>
+          <a class="ws-question-link" href="{% url 'westminster_standards:catechism_question' work.slug q.number %}">
+            <span class="ws-question-num">Q.&nbsp;{{ q.number }}</span>
+            <span class="ws-question-text">{{ q.question }}</span>
+          </a>
+        </li>
+      {% endfor %}
+    </ol>
+  </section>
+{% endif %}
+
+<style>
+  .ws-dir-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 0.5rem;
+    overflow: hidden;
+  }
+  .ws-dir-summary {
+    cursor: pointer;
+    padding: 0.6rem 0.9rem;
+    list-style: none;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    user-select: none;
+  }
+  .ws-dir-summary::-webkit-details-marker { display: none; }
+  .ws-dir-summary::before {
+    content: '▸'; color: var(--gold); font-size: 0.8rem;
+    transition: transform 0.15s; display: inline-block;
+  }
+  .ws-dir-section[open] > .ws-dir-summary::before { transform: rotate(90deg); }
+  .ws-dir-summary:hover { background: var(--bg-elevated); }
+  .ws-dir-num { color: var(--gold); font-variant-numeric: tabular-nums; font-size: 0.88rem; }
+  .ws-dir-title { font-weight: 500; font-size: 0.92rem; color: var(--text-primary); }
+  .ws-dir-body {
+    padding: 0.5rem 1rem 0.8rem;
+    border-top: 1px solid var(--border-subtle);
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--text-primary);
+  }
+  .ws-dir-locus {
+    margin-left: auto;
+    font-size: 0.9rem;
+    opacity: 0.7;
+  }
+  .ws-dir-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin-top: 0.7rem;
+    padding-top: 0.5rem;
+    border-top: 1px dashed var(--border-subtle);
+    font-family: var(--font-sans);
+  }
+  .ws-dir-chip {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.74rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: border-color 0.12s, color 0.12s;
+  }
+  .ws-dir-chip:hover { border-color: var(--gold); color: var(--text-primary); }
+  .ws-dir-head-chip { font-style: italic; }
+  .ws-q-group {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 0.5rem;
+    overflow: hidden;
+  }
+  .ws-q-group-summary {
+    cursor: pointer;
+    padding: 0.55rem 0.85rem;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    user-select: none;
+    font-size: 0.92rem;
+  }
+  .ws-q-group-summary::-webkit-details-marker { display: none; }
+  .ws-q-group-summary::before {
+    content: '▸';
+    color: var(--gold);
+    font-size: 0.8rem;
+    transition: transform 0.15s;
+    display: inline-block;
+  }
+  .ws-q-group[open] > .ws-q-group-summary::before { transform: rotate(90deg); }
+  .ws-q-group-summary:hover { background: var(--bg-elevated); }
+  .ws-q-group-icon { font-size: 1rem; }
+  .ws-q-group-label { font-weight: 500; color: var(--text-primary); }
+  .ws-q-group-range { color: var(--text-muted); font-size: 0.82rem; margin-left: auto; font-variant-numeric: tabular-nums; }
+  .ws-q-group > .ws-question-list {
+    padding: 0.3rem 0.85rem 0.6rem;
+    border-top: 1px solid var(--border-subtle);
+  }
+  .ws-chapter-list, .ws-question-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.3rem;
+  }
+  .ws-chapter-link, .ws-question-link {
+    display: grid;
+    grid-template-columns: 4rem 1fr auto;
+    gap: 0.6rem;
+    align-items: baseline;
+    padding: 0.55rem 0.8rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: border-color 0.12s, background 0.12s;
+  }
+  .ws-chapter-link:hover, .ws-question-link:hover {
+    border-color: var(--gold);
+    background: var(--bg-card);
+  }
+  .ws-chapter-roman, .ws-question-num {
+    color: var(--gold);
+    font-family: var(--font-serif);
+    font-variant-numeric: tabular-nums;
+    font-size: 0.88rem;
+  }
+  .ws-chapter-title, .ws-question-text {
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    line-height: 1.35;
+  }
+  .ws-chapter-meta {
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .ws-question-link { grid-template-columns: 3.5rem 1fr; }
+</style>
+
+<script>
+  // When the page is reached via a "#sN" deep link (e.g. from a Head of
+  // Doctrine page), open the targeted collapsible section and scroll to it.
+  (function () {
+    function revealTarget() {
+      var hash = window.location.hash;
+      if (!hash || hash.length < 2) return;
+      var el;
+      try { el = document.querySelector(hash); } catch (e) { return; }
+      if (!el) return;
+      var details = el.closest ? el.closest('details') : null;
+      if (details) details.open = true;
+      if (el.tagName === 'DETAILS') el.open = true;
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    window.addEventListener('DOMContentLoaded', revealTarget);
+    window.addEventListener('hashchange', revealTarget);
+  })();
+</script>
+{% endblock %}

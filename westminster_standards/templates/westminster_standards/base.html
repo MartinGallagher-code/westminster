@@ -1,0 +1,352 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Westminster Standards Atlas{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'westminster_standards/atlas-base.css' %}?v=2">
+  <style>
+    /* Westminster-specific eight-locus colours. Each locus has a
+       primary hue, a dark ground for fills, and a faint glow for
+       backgrounds. These are independent of the Puritan palette so
+       the two atlases can coexist without colour collision. */
+    :root {
+      --scripture:              #fcd34d;
+      --scripture-dark:         #3a2d05;
+      --scripture-glow:         rgba(252,211,77,0.15);
+      --god_decree:             #c084fc;
+      --god_decree-dark:        #3a1f5e;
+      --god_decree-glow:        rgba(192,132,252,0.15);
+      --covenant:               #60a5fa;
+      --covenant-dark:          #1e3a5f;
+      --covenant-glow:          rgba(96,165,250,0.15);
+      --christology:            #f87171;
+      --christology-dark:       #3d0e0e;
+      --christology-glow:       rgba(248,113,113,0.15);
+      --soteriology:            #34d399;
+      --soteriology-dark:       #0d3326;
+      --soteriology-glow:       rgba(52,211,153,0.15);
+      --law_sanctification:     #fb923c;
+      --law_sanctification-dark:#3d1f08;
+      --law_sanctification-glow:rgba(251,146,60,0.15);
+      --ecclesiology_worship:   #f472b6;
+      --ecclesiology_worship-dark:#4a1130;
+      --ecclesiology_worship-glow:rgba(244,114,182,0.15);
+      --civil_last_things:      #38bdf8;
+      --civil_last_things-dark: #0c2e3d;
+      --civil_last_things-glow: rgba(56,189,248,0.15);
+    }
+
+    .ws-sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .ws-nav {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 0.7rem 1.5rem;
+      display: flex; gap: 1.2rem; align-items: center;
+      flex-wrap: wrap;
+      font-size: 0.9rem;
+    }
+    .ws-nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+      flex: 1 1 auto;
+    }
+    .ws-nav a { color: var(--text-secondary); text-decoration: none; transition: color 0.12s; }
+    .ws-nav a:hover { color: var(--gold); }
+    .ws-nav a.active { color: var(--gold); font-weight: 500; }
+    .ws-nav .brand a {
+      font-family: var(--font-serif);
+      font-size: 1.2rem;
+      font-weight: 600;
+      white-space: nowrap;
+      background: linear-gradient(135deg, var(--scripture), var(--god_decree), var(--covenant), var(--christology), var(--soteriology), var(--law_sanctification), var(--ecclesiology_worship), var(--civil_last_things));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 0.02em;
+      text-decoration: none;
+    }
+    .ws-nav .sep { color: var(--text-muted); }
+    .ws-nav-search { margin-left: auto; }
+    .ws-nav-search input {
+      background: var(--bg-primary); border: 1px solid var(--border);
+      color: var(--text-primary); padding: 0.3rem 0.6rem;
+      border-radius: 6px; font-size: 0.82rem; width: 11rem;
+    }
+    .ws-nav-search input:focus { border-color: var(--gold); outline: none; }
+    .ws-nav-toggle {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 2.25rem;
+      height: 2.25rem;
+      margin-left: auto;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+    .ws-nav-submit {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+
+    .ws-page { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .ws-hero h1 { font-family: var(--font-serif); font-size: 2.4rem; margin: 0.5rem 0; }
+    .ws-hero p { color: var(--text-secondary); }
+
+    .ws-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.4rem;
+      margin-bottom: 1rem;
+    }
+    .ws-card h3 { margin-top: 0; }
+    .ws-eyebrow {
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.78rem;
+      font-weight: 500;
+    }
+    .ws-link { color: var(--gold); text-decoration: none; }
+    .ws-link:hover { text-decoration: underline; }
+
+    .ws-dim-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-left-width: 4px;
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      margin-bottom: 0.85rem;
+    }
+    .ws-dim-card h2 { margin: 0 0 0.3rem; font-size: 1.2rem; }
+    .ws-dim-card h2 a { text-decoration: none; color: inherit; }
+    .ws-dim-card .ws-tagline { color: var(--text-secondary); font-size: 0.92rem; margin: 0.1rem 0 0.6rem; }
+    .ws-dim-card .ws-numeral { color: var(--text-muted); font-size: 0.82rem; margin-right: 0.4rem; }
+
+    .ws-dim-scripture          { border-left-color: var(--scripture); }
+    .ws-dim-god_decree         { border-left-color: var(--god_decree); }
+    .ws-dim-covenant           { border-left-color: var(--covenant); }
+    .ws-dim-christology        { border-left-color: var(--christology); }
+    .ws-dim-soteriology        { border-left-color: var(--soteriology); }
+    .ws-dim-law_sanctification { border-left-color: var(--law_sanctification); }
+    .ws-dim-ecclesiology_worship { border-left-color: var(--ecclesiology_worship); }
+    .ws-dim-civil_last_things  { border-left-color: var(--civil_last_things); }
+
+    .ws-attr-grid {
+      display: grid;
+      grid-template-columns: minmax(11rem, 1fr) 2fr;
+      gap: 0.35rem 1rem;
+      margin-top: 0.6rem;
+    }
+    .ws-attr-grid .lbl {
+      font-size: 0.84rem; color: var(--text-muted);
+    }
+    .ws-attr-grid .val {
+      font-size: 0.88rem; color: var(--text-primary);
+    }
+    .ws-attr-grid .val a { color: var(--text-primary); text-decoration: none; }
+    .ws-attr-grid .val a:hover { color: var(--gold); text-decoration: underline; }
+    .ws-baseline-pill {
+      display: inline-block;
+      padding: 0.05rem 0.4rem;
+      border-radius: 4px;
+      background: var(--bg-elevated);
+      color: var(--gold);
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-left: 0.35rem;
+      vertical-align: middle;
+    }
+
+    /* Ontology tags on work-sections (parallel to the head chips). */
+    .ws-onto-tags {
+      margin-top: 0.45rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .ws-onto-tags .ws-onto-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-right: 0.05rem;
+    }
+    .ws-attr-chip {
+      display: inline-block;
+      padding: 0.12rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.74rem;
+      text-decoration: none;
+      color: var(--text-secondary);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-left: 3px solid var(--border-subtle);
+      transition: color 0.12s, border-color 0.12s;
+    }
+    .ws-attr-chip:hover { color: var(--gold); }
+    /* Representative (nearest-fit) tags: dashed border + muted, with a ≈ mark. */
+    .ws-attr-chip--rep {
+      border-left-style: dashed;
+      font-style: italic;
+      opacity: 0.82;
+    }
+    .ws-attr-rep-mark { color: var(--text-muted); font-style: normal; }
+    .ws-onto-legend {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin: 0.6rem 0 0;
+      font-style: italic;
+    }
+    .ws-onto-legend em { font-style: normal; color: var(--text-secondary); }
+
+    .ws-value-list { list-style: none; padding: 0; margin: 0.5rem 0; }
+    .ws-value-list li {
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .ws-value-list li:last-child { border-bottom: none; }
+    .ws-value-list .key {
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .ws-value-list .def {
+      color: var(--text-secondary);
+      font-size: 0.92rem;
+      margin-top: 0.25rem;
+    }
+
+    .ws-prose h4 { margin: 1.1rem 0 0.3rem; color: var(--text-primary); font-size: 1rem; }
+    .ws-prose p { line-height: 1.55; color: var(--text-secondary); }
+    .ws-prose ul { padding-left: 1.1rem; }
+    .ws-prose ul li { margin: 0.4rem 0; color: var(--text-secondary); }
+
+    .ws-counts {
+      display: flex; flex-wrap: wrap; gap: 0.6rem;
+      margin-top: 0.6rem;
+    }
+    .ws-counts .chip {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.25rem 0.7rem;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+    .ws-counts .chip b { color: var(--text-primary); font-weight: 500; }
+
+    @media (max-width: 760px) {
+      .ws-nav {
+        gap: 0.75rem;
+        padding: 0.7rem 1rem;
+      }
+      .ws-nav-toggle { display: inline-flex; }
+      .ws-nav .sep { display: none; }
+      .ws-nav-links {
+        display: none;
+        flex-basis: 100%;
+        padding-top: 0.5rem;
+        gap: 0.45rem 0.85rem;
+      }
+      .ws-nav.is-open .ws-nav-links { display: flex; }
+      .ws-nav-links a {
+        padding: 0.15rem 0;
+      }
+      .ws-nav-search {
+        flex-basis: 100%;
+        margin-left: 0;
+      }
+      .ws-nav-search input {
+        width: 100%;
+        padding: 0.5rem 0.7rem;
+      }
+      .ws-page {
+        padding-top: 1.5rem;
+      }
+    }
+  </style>
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+<nav class="ws-nav" data-ws-nav>
+  <span class="brand"><a href="{% url 'westminster_standards:home' %}">Westminster Standards Atlas</a></span>
+  <button class="ws-nav-toggle" type="button" data-ws-nav-toggle aria-expanded="false" aria-controls="ws-nav-links" aria-label="Open navigation">☰</button>
+  <span class="sep">·</span>
+  <div class="ws-nav-links" id="ws-nav-links">
+    <a href="{% url 'westminster_standards:ontology' %}"
+       {% if request.resolver_match.url_name == 'ontology' %}class="active"{% endif %}>Ontology</a>
+    <a href="{% url 'westminster_standards:personas_list' %}"
+       {% if 'persona' in request.resolver_match.url_name %}class="active"{% endif %}>Personas</a>
+    <a href="{% url 'westminster_standards:cruxes_list' %}"
+       {% if 'crux' in request.resolver_match.url_name %}class="active"{% endif %}>Cruxes</a>
+    <a href="{% url 'westminster_standards:heads_list' %}"
+       {% if 'head' in request.resolver_match.url_name %}class="active"{% endif %}>Heads</a>
+    <a href="{% url 'westminster_standards:schools_list' %}"
+       {% if 'school' in request.resolver_match.url_name %}class="active"{% endif %}>Schools</a>
+    <a href="{% url 'westminster_standards:compare_personas' %}"
+       {% if 'compare' in request.resolver_match.url_name %}class="active"{% endif %}>Compare</a>
+    <a href="{% url 'westminster_standards:dimension_pairs' %}"
+       {% if 'dimension_pair' in request.resolver_match.url_name %}class="active"{% endif %}>Intersections</a>
+    <a href="{% url 'westminster_standards:works_list' %}"
+       {% if 'work' in request.resolver_match.url_name or 'wcf_chapter' in request.resolver_match.url_name or 'catechism_question' in request.resolver_match.url_name %}class="active"{% endif %}>Works</a>
+    <a href="https://buymeacoffee.com/martingallagher" target="_blank" rel="noopener" style="color: var(--gold);">♥ Support</a>
+    <form class="ws-nav-search" action="{% url 'westminster_standards:search' %}" method="get" role="search">
+      <label class="ws-sr-only" for="ws-global-search">Search Westminster Standards Atlas</label>
+      <input id="ws-global-search" type="search" name="q" placeholder="Search…" value="{{ request.GET.q|default:'' }}">
+      <button class="ws-nav-submit" type="submit">Search</button>
+    </form>
+  </div>
+</nav>
+
+<main class="ws-page">
+  {% block content %}{% endblock %}
+</main>
+
+<footer style="text-align:center;padding:2rem 1rem;color:var(--text-muted);font-size:0.82rem;border-top:1px solid var(--border);">
+  <p style="margin:0;">Westminster Standards Atlas &mdash; an ontology of the confessional Westminster landscape across eight loci.</p>
+  <p style="margin-top:0.5rem;font-size:0.75rem;">Martin J. Gallagher</p>
+</footer>
+<script>
+  (function () {
+    const nav = document.querySelector('[data-ws-nav]');
+    const toggle = document.querySelector('[data-ws-nav-toggle]');
+    if (!nav || !toggle) return;
+    toggle.addEventListener('click', function () {
+      const open = nav.classList.toggle('is-open');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      toggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+    });
+  }());
+</script>
+{% block extra_body %}{% endblock %}
+</body>
+</html>

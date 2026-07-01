@@ -1,0 +1,84 @@
+{% extends "westminster_standards/base.html" %}
+{% block title %}Intersection — Westminster Standards Atlas{% endblock %}
+{% block content %}
+
+<section class="ws-hero">
+  <span class="ws-eyebrow">
+    <a class="ws-link" href="{% url 'westminster_standards:dimension_pairs' %}">← all pairs</a>
+    · Intersection of {{ dims|length }} loci
+  </span>
+  <h1>{% for d in dims %}{{ d.icon }} {{ d.label }}{% if not forloop.last %} · {% endif %}{% endfor %}</h1>
+  <p style="color:var(--text-secondary);max-width:52rem;">
+    {{ clusters|length }} populated joint signature{{ clusters|length|pluralize }} across these loci.
+    Each cluster groups the schools and personas that hold the same combination of values
+    on every attribute in these dimensions.
+  </p>
+</section>
+
+{% for d in dims %}
+<div class="ws-card ws-dim-{{ d.key }}" style="border-left-width:3px;">
+  <span class="ws-eyebrow" style="font-size:0.72rem;">{{ d.numeral }} · {{ d.icon }}</span>
+  <h3 style="margin:0.2rem 0;"><a class="ws-link" href="{% url 'westminster_standards:dimension_detail' d.key %}">{{ d.label }}</a></h3>
+  <p style="color:var(--text-secondary);font-style:italic;font-size:0.9rem;margin:0;">{{ d.tagline }}</p>
+</div>
+{% endfor %}
+
+<h2 style="margin-top:1.5rem;font-family:var(--font-serif);font-size:1.2rem;">Joint clusters</h2>
+
+{% for c in clusters %}
+<div class="ws-card" style="margin-bottom:0.7rem;">
+  <span class="ws-eyebrow" style="font-size:0.72rem;">{{ c.count }} entit{{ c.count|pluralize:"y,ies" }}</span>
+  <table class="ws-cluster-table">
+    {% for label, value in c.values %}
+    <tr>
+      <td class="ws-ct-label">{{ label }}</td>
+      <td class="ws-ct-value">{{ value }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% if c.schools %}
+    <p style="margin:0.5rem 0 0.2rem;font-size:0.84rem;color:var(--text-muted);">
+      <strong style="color:var(--text-secondary);">Schools:</strong>
+      {% for s in c.schools %}<a class="ws-link" href="{% url 'westminster_standards:school_detail' s.slug %}">{{ s.name }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
+    </p>
+  {% endif %}
+  {% if c.personas %}
+    {% if c.personas|length > 12 %}
+    <details style="margin-top:0.4rem;">
+      <summary style="cursor:pointer;font-size:0.84rem;color:var(--text-muted);list-style:none;">
+        <span style="color:var(--gold);">▸</span> Personas <span style="color:var(--gold);font-weight:500;">{{ c.personas|length }}</span>
+      </summary>
+      <p style="margin:0.3rem 0 0;font-size:0.84rem;line-height:1.7;">
+        {% for p in c.personas %}<a class="ws-link" href="{% url 'westminster_standards:persona_detail' p.slug %}">{{ p.name }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
+      </p>
+    </details>
+    {% else %}
+    <p style="margin:0.2rem 0;font-size:0.84rem;color:var(--text-muted);">
+      <strong style="color:var(--text-secondary);">Personas:</strong>
+      {% for p in c.personas %}<a class="ws-link" href="{% url 'westminster_standards:persona_detail' p.slug %}">{{ p.name }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}
+    </p>
+    {% endif %}
+  {% endif %}
+</div>
+{% empty %}
+<div class="ws-card" style="text-align:center;">
+  <p style="margin:0;color:var(--text-secondary);">No populated combinations across these loci.</p>
+</div>
+{% endfor %}
+
+<style>
+  .ws-cluster-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.4rem 0;
+  }
+  .ws-cluster-table td {
+    padding: 0.25rem 0.5rem;
+    border-bottom: 1px solid var(--border-subtle);
+    font-size: 0.88rem;
+  }
+  .ws-cluster-table tr:last-child td { border-bottom: none; }
+  .ws-ct-label { color: var(--text-muted); width: 14rem; }
+  .ws-ct-value { color: var(--text-primary); }
+</style>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends "westminster_standards/base.html" %}
+{% block title %}Intersections — Westminster Standards Atlas{% endblock %}
+{% block content %}
+<section class="ws-hero">
+  <span class="ws-eyebrow">Intersections</span>
+  <h1>Pairs of loci</h1>
+  <p>
+    {{ items|length }} combinations of {{ n }} of the eight loci. Each intersection
+    shows how personas and schools cluster when two doctrinal questions interact —
+    e.g. who holds both Independent polity <em>and</em> hypothetical-universal atonement?
+  </p>
+</section>
+
+<div class="ws-card ws-prose" style="margin-top:1rem;">
+  <h3 style="margin:0 0 0.3rem;font-size:0.95rem;">What intersections show</h3>
+  <p style="margin:0 0 0.4rem;font-size:0.88rem;color:var(--text-secondary);line-height:1.5;">
+    The Westminster ontology has 8 loci, each with its own attributes. A single locus
+    (e.g. "Soteriology") tells you where a persona stands on calling, justification,
+    faith, perseverance, and assurance. But the interesting patterns appear when two
+    loci interact: does someone who holds <em>supralapsarian</em> decrees also tend to hold
+    <em>Independent</em> polity? (Thomas Goodwin did; Samuel Rutherford didn't.)
+  </p>
+  <p style="margin:0;font-size:0.88rem;color:var(--text-secondary);line-height:1.5;">
+    Each pair below opens a page showing the <strong>joint clusters</strong>: the
+    distinct combinations of attribute-values across both loci that at least one
+    persona or school actually holds. The biggest cluster is usually the Westminster
+    baseline on both loci; the smaller clusters are where the departures happen.
+  </p>
+</div>
+
+{% include "westminster_standards/_list_filter.html" with placeholder="Filter by locus name…" noun="pairs" %}
+
+<div class="ws-pairs-grid">
+  {% for item in items %}
+    <a class="ws-pair-card ws-filter-item" data-search="{% for label in item.labels %}{{ label|lower }} {% endfor %}" href="{% url 'westminster_standards:dimension_pair_detail' item.key %}">
+      {% for i in item.icons %}<span class="ws-pair-icon">{{ i }}</span>{% endfor %}
+      <span class="ws-pair-labels">{% for label in item.labels %}{{ label }}{% if not forloop.last %} · {% endif %}{% endfor %}</span>
+    </a>
+  {% endfor %}
+</div>
+
+<style>
+  .ws-pairs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 0.6rem;
+    margin-top: 1rem;
+  }
+  .ws-pair-card {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.85rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: var(--text-primary);
+    font-size: 0.92rem;
+    transition: border-color 0.12s;
+  }
+  .ws-pair-card:hover { border-color: var(--gold); }
+  .ws-pair-icon { font-size: 1.1rem; }
+  .ws-pair-labels { color: var(--text-secondary); }
+</style>
+{% endblock %}

@@ -1,0 +1,212 @@
+{% extends "westminster_standards/base.html" %}
+{% block title %}WCF {{ chapter.roman }} · {{ chapter.title }} — Westminster Standards{% endblock %}
+{% block content %}
+<section class="ws-hero">
+  <span class="ws-eyebrow">
+    <a class="ws-link" href="{% url 'westminster_standards:work_detail' 'wcf' %}">← Westminster Confession</a>
+    · Chapter {{ chapter.roman }}
+  </span>
+  <h1>{{ chapter.title }}</h1>
+  {% if loci %}
+    <div style="margin-top:0.4rem;">
+      {% for dim in loci %}
+        <a class="ws-locus-chip ws-dim-{{ dim.key }}" href="{% url 'westminster_standards:dimension_detail' dim.key %}">{{ dim.icon }} {{ dim.label }}</a>
+      {% endfor %}
+    </div>
+  {% endif %}
+</section>
+
+<div class="ws-chapter-body">
+  {% for s in chapter.sections %}
+    <div class="ws-section" id="s{{ s.number }}">
+      <div class="ws-section-marker">{{ chapter.roman }}.{{ s.number }}</div>
+      <div class="ws-section-content">
+        <p>{{ s.content }}</p>
+        {% if s.proofs %}
+          <details class="ws-proofs">
+            <summary>Proof texts ({{ s.proofs|length }})</summary>
+            <ul>
+              {% for proof in s.proofs %}
+                <li>
+                  <strong>[{{ proof.Id }}]</strong>
+                  {% for ref in proof.References %}{{ ref }}{% if not forloop.last %}; {% endif %}{% endfor %}
+                </li>
+              {% endfor %}
+            </ul>
+          </details>
+        {% endif %}
+        {% with heads=section_heads %}
+          {% for sn, shead_list in heads.items %}
+            {% if sn == s.number %}
+              <div class="ws-section-heads">
+                {% for h in shead_list %}
+                  <a class="ws-head-chip" href="{% url 'westminster_standards:head_detail' h.slug %}">{{ h.name }}</a>
+                {% endfor %}
+              </div>
+            {% endif %}
+          {% endfor %}
+        {% endwith %}
+        {% for sn, attr_rows in section_attrs.items %}
+          {% if sn == s.number %}{% include "westminster_standards/_ontology_tags.html" with attrs=attr_rows %}{% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% if has_rep_tags %}{% include "westminster_standards/_ontology_legend.html" %}{% endif %}
+
+{% if related_cruxes %}
+<section class="ws-related-cruxes">
+  <h2 style="font-family:var(--font-serif);font-size:1.15rem;margin:0 0 0.5rem;">Cruxes that bear on this chapter</h2>
+  <ul class="ws-related-list">
+    {% for c in related_cruxes %}
+      <li>
+        <a class="ws-related-link" href="{% url 'westminster_standards:crux_detail' c.slug %}">
+          <span class="ws-related-title">{{ c.title }}</span>
+          {% if c.tagline %}<span class="ws-related-tag">{{ c.tagline }}</span>{% endif %}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+<nav class="ws-chapter-nav">
+  {% if prev_chapter %}
+    <a class="ws-link" href="{% url 'westminster_standards:wcf_chapter' prev_chapter.number %}">
+      ← {{ prev_chapter.roman }}. {{ prev_chapter.title }}
+    </a>
+  {% else %}<span></span>{% endif %}
+  {% if next_chapter %}
+    <a class="ws-link" href="{% url 'westminster_standards:wcf_chapter' next_chapter.number %}">
+      {{ next_chapter.roman }}. {{ next_chapter.title }} →
+    </a>
+  {% endif %}
+</nav>
+
+<style>
+  .ws-chapter-body { margin-top: 1.5rem; }
+  .ws-section {
+    display: grid;
+    grid-template-columns: 4rem 1fr;
+    gap: 1rem;
+    padding: 0.9rem 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .ws-section:last-child { border-bottom: none; }
+  .ws-section-marker {
+    color: var(--gold);
+    font-family: var(--font-serif);
+    font-variant-numeric: tabular-nums;
+    font-size: 0.92rem;
+    padding-top: 0.18rem;
+  }
+  .ws-section-content p {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--text-primary);
+    margin: 0;
+  }
+  .ws-proofs {
+    margin-top: 0.5rem;
+    font-size: 0.82rem;
+  }
+  .ws-proofs > summary {
+    cursor: pointer;
+    color: var(--text-muted);
+    list-style: none;
+  }
+  .ws-proofs > summary::before {
+    content: '▸ ';
+    color: var(--gold);
+  }
+  .ws-proofs[open] > summary::before { content: '▾ '; }
+  .ws-proofs ul {
+    margin: 0.3rem 0 0;
+    padding-left: 1.1rem;
+    color: var(--text-secondary);
+    font-family: var(--font-sans);
+  }
+  .ws-proofs li { margin: 0.15rem 0; }
+  .ws-section-heads {
+    margin-top: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+  .ws-head-chip {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.76rem;
+    text-decoration: none;
+    color: var(--gold);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    transition: border-color 0.12s;
+  }
+  .ws-head-chip:hover { border-color: var(--gold); }
+  .ws-chapter-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-subtle);
+    gap: 1rem;
+    font-size: 0.92rem;
+  }
+  .ws-locus-chip {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    text-decoration: none;
+    margin-right: 0.4rem;
+    border: 1px solid var(--border);
+    transition: border-color 0.12s;
+  }
+  .ws-locus-chip:hover { border-color: var(--gold); }
+  .ws-related-cruxes {
+    margin-top: 2rem;
+    padding: 1rem 1.25rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .ws-related-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.4rem;
+  }
+  .ws-related-link {
+    display: block;
+    padding: 0.5rem 0.7rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: border-color 0.12s, background 0.12s;
+  }
+  .ws-related-link:hover {
+    border-color: var(--gold);
+    background: var(--bg-card);
+  }
+  .ws-related-title {
+    display: block;
+    font-weight: 500;
+    color: var(--text-primary);
+    font-size: 0.94rem;
+  }
+  .ws-related-tag {
+    display: block;
+    color: var(--text-secondary);
+    font-size: 0.84rem;
+    line-height: 1.4;
+    margin-top: 0.2rem;
+  }
+</style>
+{% endblock %}

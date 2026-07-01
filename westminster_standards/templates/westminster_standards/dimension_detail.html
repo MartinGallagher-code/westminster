@@ -1,0 +1,89 @@
+{% extends "westminster_standards/base.html" %}
+{% block title %}{{ dim.label }} — Westminster Standards Atlas{% endblock %}
+{% block content %}
+<section class="ws-hero">
+  <span class="ws-eyebrow">Locus {{ dim.numeral }} · <a class="ws-link" href="{% url 'westminster_standards:ontology' %}">back to ontology</a></span>
+  <h1>{{ dim.icon }} {{ dim.label }}</h1>
+  <p>{{ dim.tagline }}</p>
+</section>
+
+<div class="ws-card ws-prose">
+  <h4>Overview</h4>
+  <p>{{ dim.prose.overview }}</p>
+
+  <h4>Philosophical significance</h4>
+  <p>{{ dim.prose.philosophical_significance }}</p>
+
+  <h4>Scriptural ground</h4>
+  <p>{{ dim.prose.scriptural_perspective }}</p>
+
+  <h4>Key controversies</h4>
+  <ul>
+    {% for k in dim.prose.key_controversies %}
+      <li><strong>{{ k.title }}</strong> — {{ k.body }}</li>
+    {% endfor %}
+  </ul>
+</div>
+
+{% if wcf_chapters or wsc_question_count or wlc_question_count %}
+<section style="margin-top:1.5rem;">
+  <h3 style="font-family:var(--font-serif);margin:0 0 0.5rem;">Standards text under this locus</h3>
+  {% if wcf_chapters %}
+    <div class="ws-card" style="margin-bottom:0.6rem;">
+      <h4 style="margin:0 0 0.4rem;font-size:0.95rem;">Westminster Confession</h4>
+      <ul class="ws-locus-text-list">
+        {% for ch in wcf_chapters %}
+          <li><a class="ws-link" href="{% url 'westminster_standards:wcf_chapter' ch.number %}">{{ ch.roman }}. {{ ch.title }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+  {% if wsc_question_count %}
+    <div class="ws-card" style="margin-bottom:0.6rem;">
+      <h4 style="margin:0 0 0.3rem;font-size:0.95rem;">Shorter Catechism</h4>
+      <p style="margin:0;font-size:0.9rem;color:var(--text-secondary);">
+        Q. {{ wsc_question_range }} ({{ wsc_question_count }} questions)
+        · <a class="ws-link" href="{% url 'westminster_standards:catechism_question' 'wsc' wsc_first_q %}">start reading →</a>
+      </p>
+    </div>
+  {% endif %}
+  {% if wlc_question_count %}
+    <div class="ws-card" style="margin-bottom:0.6rem;">
+      <h4 style="margin:0 0 0.3rem;font-size:0.95rem;">Larger Catechism</h4>
+      <p style="margin:0;font-size:0.9rem;color:var(--text-secondary);">
+        Q. {{ wlc_question_range }} ({{ wlc_question_count }} questions)
+        · <a class="ws-link" href="{% url 'westminster_standards:catechism_question' 'wlc' wlc_first_q %}">start reading →</a>
+      </p>
+    </div>
+  {% endif %}
+  {% for dw in dir_works %}
+    <div class="ws-card" style="margin-bottom:0.6rem;">
+      <h4 style="margin:0 0 0.3rem;font-size:0.95rem;">{{ dw.label }}</h4>
+      <ul class="ws-locus-text-list">
+        {% for sec in dw.sections %}
+          <li><a class="ws-link" href="{% url 'westminster_standards:work_detail' dw.slug %}">{{ sec.title }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endfor %}
+</section>
+{% endif %}
+
+<h3 style="margin-top:1.5rem;">Attributes</h3>
+{% for row in rows %}
+  <div class="ws-card ws-dim-{{ dim.key }}" style="border-left-width:3px;">
+    <h3 style="margin:0 0 0.4rem;">{{ row.attr.label }}</h3>
+    <ul class="ws-value-list">
+      {% for v in row.attr.values %}
+        <li>
+          <span class="key">
+            <a class="ws-link" href="{% url 'westminster_standards:value_detail' dim.key row.attr.key v.key %}">{{ v.label }}</a>
+            {% if v.label == row.baseline_label %}<span class="ws-baseline-pill">WCF</span>{% endif %}
+          </span>
+          <div class="def">{{ v.definition }}</div>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endfor %}
+{% endblock %}

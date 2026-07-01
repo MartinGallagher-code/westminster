@@ -3,6 +3,12 @@
 All notable project changes should be recorded here. This project uses a simple
 reverse-chronological changelog rather than formal release tags.
 
+## 2026-07-01
+
+### Added
+
+- Ported the Westminster Standards Atlas into Study Reformed as the self-contained `westminster_standards` app, mounted at `/atlas/`. Brings the full ontology (8 loci, 35 attributes with contested-value spreads), 181 personas, 30 cruxes, 16 schools, and 39 heads of doctrine on-site as native pages, rather than linking out to ontologicalatlas.com. The app is pure-Python (no models/migrations), and its shared stylesheet is vendored into the app's own static files (`static/westminster_standards/atlas-base.css`) so it renders standalone. Mounted ahead of the catechism catch-all route so `/atlas/...` is not shadowed. (Phase 1 of the Atlas merge: mechanical port; reskin to the Study Reformed base template and internal cross-linking to follow.)
+
 ## 2026-06-19
 
 ### Changed

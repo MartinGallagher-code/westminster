@@ -1,0 +1,104 @@
+{% extends "westminster_standards/base.html" %}
+{% block title %}Works — Westminster Standards Atlas{% endblock %}
+{% block content %}
+<section class="ws-hero">
+  <span class="ws-eyebrow">The Westminster corpus</span>
+  <h1>Works</h1>
+  <p>
+    The Westminster Standards comprise a confession, two catechisms, and two
+    service-books — completed between 1645 and 1647 and adopted by the Long
+    Parliament and the Scottish General Assembly. The Confession and the two
+    Catechisms are loaded here in full, with the proof-text apparatus; the
+    Directory for Public Worship, the Form of Presbyterial Church Government,
+    and the Sum of Saving Knowledge are summarised with their full text to be
+    added in a subsequent pass.
+  </p>
+</section>
+
+<div class="ws-works-grid">
+  {% for w in works %}
+    <a class="ws-work-card{% if w.is_stub %} ws-work-stub{% endif %}" href="{% url 'westminster_standards:work_detail' w.slug %}">
+      <span class="ws-work-short">{{ w.short_title }}</span>
+      <span class="ws-work-title">{{ w.title }}</span>
+      <span class="ws-work-meta">{{ w.year }} · {{ w.form }}</span>
+      <span class="ws-work-summary">{{ w.summary }}</span>
+      {% if w.is_stub %}
+        <span class="ws-work-stub-pill">summary only</span>
+      {% else %}
+        {% if w.chapters %}
+          <span class="ws-work-count">{{ w.chapters|length }} chapters</span>
+        {% elif w.questions %}
+          <span class="ws-work-count">{{ w.questions|length }} questions</span>
+        {% endif %}
+      {% endif %}
+    </a>
+  {% endfor %}
+</div>
+
+<style>
+  .ws-works-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 0.85rem;
+    margin-top: 1rem;
+  }
+  .ws-work-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 1rem 1.2rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: border-color 0.12s, background 0.12s;
+  }
+  .ws-work-card:hover {
+    border-color: var(--gold);
+    background: var(--bg-elevated);
+  }
+  .ws-work-stub { opacity: 0.78; }
+  .ws-work-short {
+    font-family: var(--font-serif);
+    font-size: 1.45rem;
+    color: var(--gold);
+    letter-spacing: 0.02em;
+    font-weight: 600;
+  }
+  .ws-work-title {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    line-height: 1.25;
+  }
+  .ws-work-meta {
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .ws-work-summary {
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    line-height: 1.45;
+    margin-top: 0.3rem;
+  }
+  .ws-work-count, .ws-work-stub-pill {
+    display: inline-block;
+    align-self: flex-start;
+    padding: 0.15rem 0.55rem;
+    margin-top: 0.4rem;
+    border-radius: 999px;
+    font-size: 0.74rem;
+    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    color: var(--text-secondary);
+  }
+  .ws-work-stub-pill {
+    border-color: rgba(252,211,77,0.3);
+    color: #fcd34d;
+    background: rgba(252,211,77,0.08);
+  }
+</style>
+{% endblock %}

@@ -14,6 +14,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'catechism',
     'accounts',
+    'westminster_standards',
 ]
 
 MIDDLEWARE = [

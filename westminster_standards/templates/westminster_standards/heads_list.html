@@ -1,0 +1,74 @@
+{% extends "westminster_standards/base.html" %}
+{% block title %}Heads of Doctrine — Westminster Standards Atlas{% endblock %}
+{% block content %}
+<section class="ws-hero">
+  <span class="ws-eyebrow">Topical Index</span>
+  <h1>Heads of Doctrine</h1>
+  <p style="color:var(--text-secondary);max-width:52rem;margin:0.4rem 0 0;">
+    {{ total }} traditional Reformed systematic theology topics mapped to specific
+    WCF sections, Larger Catechism questions, and Shorter Catechism questions.
+    Grouped under the eight loci of the Westminster ontology.
+  </p>
+</section>
+
+{% include "westminster_standards/_list_filter.html" with placeholder="Filter heads of doctrine…" noun="heads" %}
+
+{% for group in groups %}
+  <section class="ws-heads-group ws-filter-group" style="margin-top:1.5rem;">
+    <div class="ws-dim-card ws-dim-{{ group.dim.key }}" style="cursor:pointer;" onclick="this.nextElementSibling.classList.toggle('ws-collapsed')">
+      <h2>
+        <span class="ws-numeral">{{ group.dim.numeral }}.</span>
+        {{ group.dim.icon }} {{ group.dim.label }}
+        <span style="font-weight:400;font-size:0.85rem;color:var(--text-muted);margin-left:0.5rem;">
+          {{ group.heads|length }} head{{ group.heads|length|pluralize }}
+        </span>
+      </h2>
+      <p class="ws-tagline">{{ group.dim.tagline }}</p>
+    </div>
+    <div class="ws-heads-items">
+      {% for item in group.heads %}
+        <a class="ws-card ws-head-card ws-filter-item" data-search="{{ item.head.name|lower }} {{ item.head.description|lower }}" href="{% url 'westminster_standards:head_detail' item.head.slug %}" style="text-decoration:none;display:block;">
+          <p class="ws-eyebrow" style="margin:0 0 0.2rem;font-size:0.7rem;">Head {{ item.head.number }}</p>
+          <h3 style="margin:0 0 0.3rem;font-size:1.05rem;color:var(--text-primary);">{{ item.head.name }}</h3>
+          <p style="color:var(--text-secondary);font-size:0.88rem;line-height:1.45;margin:0 0 0.5rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
+            {{ item.head.description }}
+          </p>
+          <div class="ws-counts" style="margin-top:0;">
+            {% if item.wcf_count %}
+              <span class="chip"><b>{{ item.wcf_count }}</b> WCF section{{ item.wcf_count|pluralize }}</span>
+            {% endif %}
+            {% if item.wsc_count %}
+              <span class="chip"><b>{{ item.wsc_count }}</b> SC Q{{ item.wsc_count|pluralize }}</span>
+            {% endif %}
+            {% if item.wlc_count %}
+              <span class="chip"><b>{{ item.wlc_count }}</b> LC Q{{ item.wlc_count|pluralize }}</span>
+            {% endif %}
+            {% if item.crux_count %}
+              <span class="chip"><b>{{ item.crux_count }}</b> crux{{ item.crux_count|pluralize:"es" }}</span>
+            {% endif %}
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  </section>
+{% endfor %}
+
+<style>
+  .ws-heads-items {
+    display: grid;
+    gap: 0;
+    overflow: hidden;
+    transition: max-height 0.25s ease;
+  }
+  .ws-heads-items.ws-collapsed {
+    max-height: 0 !important;
+    overflow: hidden;
+  }
+  .ws-head-card {
+    transition: border-color 0.12s;
+  }
+  .ws-head-card:hover {
+    border-color: var(--gold);
+  }
+</style>
+{% endblock %}

@@ -1,0 +1,208 @@
+{% extends "westminster_standards/base.html" %}
+{% block title %}Search — Westminster Standards Atlas{% endblock %}
+{% block content %}
+<section class="ws-hero">
+  <span class="ws-eyebrow">Search across all layers</span>
+  <h1>Search</h1>
+  <form method="get" action="{% url 'westminster_standards:search' %}" role="search" style="margin-top:0.8rem;">
+    <label class="ws-sr-only" for="ws-search-page-input">Search Westminster Standards Atlas</label>
+    <input id="ws-search-page-input" class="ws-search-input" type="search" name="q" value="{{ q }}" placeholder="Search personas, cruxes, schools, WCF chapters, catechism Q&As…" autofocus>
+    <button class="ws-search-btn" type="submit">Search</button>
+  </form>
+</section>
+
+{% if q %}
+<p style="color:var(--text-muted);font-size:0.88rem;margin-top:1rem;">
+  {{ total }} result{{ total|pluralize }} for <strong>"{{ q }}"</strong>
+</p>
+{% endif %}
+
+{% if results.personas %}
+<section style="margin-top:1.2rem;">
+  <h2 class="ws-search-heading">Personas <span class="ws-search-count">{{ results.personas|length }}</span></h2>
+  <div class="ws-search-grid">
+    {% for p in results.personas %}
+      <a class="ws-search-card" href="{% url 'westminster_standards:persona_detail' p.slug %}">
+        <span class="ws-sc-title">{{ p.name }}</span>
+        <span class="ws-sc-meta">{{ p.dates }} · {{ p.role }}</span>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if results.cruxes %}
+<section style="margin-top:1.2rem;">
+  <h2 class="ws-search-heading">Cruxes <span class="ws-search-count">{{ results.cruxes|length }}</span></h2>
+  <div class="ws-search-grid">
+    {% for c in results.cruxes %}
+      <a class="ws-search-card" href="{% url 'westminster_standards:crux_detail' c.slug %}">
+        <span class="ws-sc-title">{{ c.title }}</span>
+        <span class="ws-sc-meta">{{ c.dates }}</span>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if results.heads %}
+<section style="margin-top:1.2rem;">
+  <h2 class="ws-search-heading">Heads of Doctrine <span class="ws-search-count">{{ results.heads|length }}</span></h2>
+  <div class="ws-search-grid">
+    {% for h in results.heads %}
+      <a class="ws-search-card" href="{% url 'westminster_standards:head_detail' h.slug %}">
+        <span class="ws-sc-title">{{ h.name }}</span>
+        <span class="ws-sc-meta">Head {{ h.number }}</span>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if results.directory_sections %}
+<section style="margin-top:1.2rem;">
+  <h2 class="ws-search-heading">DPW / FPCG / SSK Sections <span class="ws-search-count">{{ results.directory_sections|length }}</span></h2>
+  <div class="ws-search-grid">
+    {% for item in results.directory_sections %}
+      <a class="ws-search-card" href="{% url 'westminster_standards:work_detail' item.work_slug %}">
+        <span class="ws-sc-title">{{ item.work_title }}: {{ item.section.title }}</span>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if results.schools %}
+<section style="margin-top:1.2rem;">
+  <h2 class="ws-search-heading">Schools <span class="ws-search-count">{{ results.schools|length }}</span></h2>
+  <div class="ws-search-grid">
+    {% for s in results.schools %}
+      <a class="ws-search-card" href="{% url 'westminster_standards:school_detail' s.slug %}">
+        <span class="ws-sc-title">{{ s.name }}</span>
+        <span class="ws-sc-meta">{{ s.origin }}</span>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if results.wcf_chapters %}
+<section style="margin-top:1.2rem;">
+  <h2 class="ws-search-heading">WCF Chapters <span class="ws-search-count">{{ results.wcf_chapters|length }}</span></h2>
+  <div class="ws-search-grid">
+    {% for ch in results.wcf_chapters %}
+      <a class="ws-search-card" href="{% url 'westminster_standards:wcf_chapter' ch.number %}">
+        <span class="ws-sc-title">{{ ch.roman }}. {{ ch.title }}</span>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if results.catechism_qs %}
+<section style="margin-top:1.2rem;">
+  <h2 class="ws-search-heading">Catechism Questions <span class="ws-search-count">{{ results.catechism_qs|length }}</span></h2>
+  <div class="ws-search-grid">
+    {% for item in results.catechism_qs %}
+      <a class="ws-search-card" href="{% url 'westminster_standards:catechism_question' item.cat_slug item.q.number %}">
+        <span class="ws-sc-title">{{ item.cat_title }} Q. {{ item.q.number }}</span>
+        <span class="ws-sc-meta">{{ item.q.question }}</span>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if q and total == 0 %}
+<div class="ws-card" style="margin-top:1.5rem;text-align:center;">
+  <p style="margin:0;color:var(--text-secondary);">No results found for <strong>"{{ q }}"</strong>. Try a different term.</p>
+</div>
+{% endif %}
+
+{% if not q %}
+<div class="ws-card ws-prose" style="margin-top:1.5rem;">
+  <h3 style="margin:0 0 0.4rem;font-size:0.95rem;">Try searching for</h3>
+  <p style="margin:0;font-size:0.88rem;color:var(--text-secondary);line-height:1.7;">
+    <a class="ws-link" href="?q=justification">justification</a> ·
+    <a class="ws-link" href="?q=Sabbath">Sabbath</a> ·
+    <a class="ws-link" href="?q=atonement">atonement</a> ·
+    <a class="ws-link" href="?q=Calamy">Calamy</a> ·
+    <a class="ws-link" href="?q=Erastian">Erastian</a> ·
+    <a class="ws-link" href="?q=baptism">baptism</a> ·
+    <a class="ws-link" href="?q=glorify God">glorify God</a> ·
+    <a class="ws-link" href="?q=reprobation">reprobation</a> ·
+    <a class="ws-link" href="?q=Rutherford">Rutherford</a> ·
+    <a class="ws-link" href="?q=magistrate">magistrate</a>
+  </p>
+  <p style="margin:0.5rem 0 0;font-size:0.82rem;color:var(--text-muted);">
+    Search covers persona names and bios, crux titles and confessional language,
+    school names and descriptions, WCF chapter text, and catechism Q&As.
+  </p>
+</div>
+{% endif %}
+
+<style>
+  .ws-search-input {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    font-size: 1rem;
+    width: min(100%, 36rem);
+    outline: none;
+  }
+  .ws-search-input:focus { border-color: var(--gold); }
+  .ws-search-btn {
+    background: var(--gold);
+    color: var(--bg-primary);
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    font-size: 0.92rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-left: 0.4rem;
+  }
+  .ws-search-heading {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    margin: 0 0 0.5rem;
+  }
+  .ws-search-count {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: normal;
+  }
+  .ws-search-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 0.5rem;
+  }
+  .ws-search-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 3.5rem;
+    padding: 0.45rem 0.7rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: border-color 0.12s;
+  }
+  .ws-search-card:hover { border-color: var(--gold); }
+  .ws-sc-title { display: block; font-weight: 500; font-size: 0.9rem; line-height: 1.25; }
+  .ws-sc-meta {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    margin-top: 0.1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
+{% endblock %}

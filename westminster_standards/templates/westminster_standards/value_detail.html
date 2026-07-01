@@ -1,0 +1,201 @@
+{% extends "westminster_standards/base.html" %}
+{% block title %}{{ value.label }} — {{ attr.label }} — Westminster Standards Atlas{% endblock %}
+{% block content %}
+<section class="ws-hero">
+  <span class="ws-eyebrow">
+    <a class="ws-link" href="{% url 'westminster_standards:dimension_detail' dim.key %}">{{ dim.icon }} {{ dim.label }}</a>
+    · {{ attr.label }}
+  </span>
+  <h1>
+    {{ value.label }}
+    {% if is_baseline %}<span class="ws-baseline-pill" style="font-size:0.7rem;vertical-align:middle;">WCF baseline</span>{% endif %}
+  </h1>
+</section>
+
+<div class="ws-card ws-prose">
+  <p style="margin:0;">{{ value.definition }}</p>
+</div>
+
+{% if is_baseline %}
+  <div class="vd-status vd-baseline">
+    <strong>This is the position the Westminster Standards take on {{ attr.label }}.</strong>
+    <p>
+      The Confession affirms this position as its confessional norm. Personas and
+      schools that hold the Westminster baseline on this attribute will show this
+      value; those who depart from it will show one of the alternatives below.
+    </p>
+  </div>
+{% else %}
+  <div class="vd-status vd-alternative">
+    <strong>This is a contested or rejected alternative.</strong>
+    <p>
+      The Westminster baseline on {{ attr.label }} is
+      <em>{{ baseline_label }}</em>. Personas and schools listed below hold this
+      alternative position instead — either because they argued for it at the
+      Assembly (like the Erastians on polity) or because they represent a
+      receiving tradition that departed from the Standards on this point.
+    </p>
+  </div>
+{% endif %}
+
+{% if personas_here or schools_here %}
+<section style="margin-top:1.5rem;">
+  <h2 class="vd-section-title">Who holds this position</h2>
+
+  {% if schools_here %}
+    <div style="margin-bottom:0.8rem;">
+      <span class="ws-eyebrow" style="font-size:0.7rem;">Schools ({{ schools_here|length }})</span>
+      <div class="vd-chip-row">
+        {% for s in schools_here %}
+          <a class="vd-chip" href="{% url 'westminster_standards:school_detail' s.slug %}">{{ s.name }}</a>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
+  {% if personas_here %}
+    <div>
+      <details>
+        <summary class="vd-expand-summary">
+          <span class="ws-eyebrow" style="font-size:0.7rem;">Personas ({{ personas_here|length }})</span>
+        </summary>
+        <div class="vd-persona-grid">
+          {% for p in personas_here %}
+            <a class="vd-persona-card" href="{% url 'westminster_standards:persona_detail' p.slug %}">
+              <span class="vd-pname">{{ p.name }}</span>
+              <span class="vd-pdates">{{ p.dates }}</span>
+            </a>
+          {% endfor %}
+        </div>
+      </details>
+    </div>
+  {% endif %}
+</section>
+{% endif %}
+
+{% if attr_cruxes %}
+<section style="margin-top:1.5rem;">
+  <h2 class="vd-section-title">Cruxes on this attribute</h2>
+  <p style="color:var(--text-secondary);font-size:0.88rem;margin:0 0 0.6rem;">
+    The Assembly navigated {{ attr_cruxes|length }} crux{{ attr_cruxes|length|pluralize:"es" }}
+    that bear directly on <strong>{{ attr.label }}</strong>.
+  </p>
+  <div class="vd-crux-list">
+    {% for cx in attr_cruxes %}
+      <a class="vd-crux-card" href="{% url 'westminster_standards:crux_detail' cx.slug %}">
+        <span class="vd-cx-title">{{ cx.title }}</span>
+        <span class="vd-cx-meta">{{ cx.dates }}</span>
+        {% if cx.tagline %}<span class="vd-cx-tag">{{ cx.tagline }}</span>{% endif %}
+      </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<section style="margin-top:1.5rem;">
+  <h2 class="vd-section-title">Other positions on {{ attr.label }}</h2>
+  <div class="vd-siblings">
+    {% for s in siblings %}
+      <a class="vd-sibling" href="{% url 'westminster_standards:value_detail' dim.key attr.key s.key %}">
+        <span class="vd-sib-name">{{ s.label }}{% if s.label == baseline_label %} <span class="ws-baseline-pill" style="font-size:0.65rem;">WCF</span>{% endif %}</span>
+        <span class="vd-sib-def">{{ s.definition }}</span>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+
+<style>
+  .vd-status {
+    border-radius: var(--radius);
+    padding: 0.7rem 1rem;
+    margin-top: 0.8rem;
+    font-size: 0.9rem;
+  }
+  .vd-status p { margin: 0.3rem 0 0; color: var(--text-secondary); font-size: 0.86rem; line-height: 1.5; }
+  .vd-baseline { background: rgba(52,211,153,0.06); border: 1px solid rgba(52,211,153,0.2); }
+  .vd-alternative { background: rgba(251,191,36,0.06); border: 1px solid rgba(251,191,36,0.2); }
+
+  .vd-section-title {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    margin: 0 0 0.4rem;
+  }
+
+  .vd-chip-row { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.3rem; }
+  .vd-chip {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: border-color 0.12s;
+  }
+  .vd-chip:hover { border-color: var(--gold); color: var(--text-primary); }
+
+  .vd-expand-summary {
+    cursor: pointer;
+    list-style: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .vd-expand-summary::-webkit-details-marker { display: none; }
+  .vd-expand-summary::before {
+    content: '▸'; color: var(--gold); font-size: 0.8rem;
+    transition: transform 0.15s; display: inline-block;
+  }
+  details[open] > .vd-expand-summary::before { transform: rotate(90deg); }
+
+  .vd-persona-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.35rem;
+    margin-top: 0.4rem;
+  }
+  .vd-persona-card {
+    display: block;
+    padding: 0.35rem 0.55rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 5px;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: border-color 0.12s;
+  }
+  .vd-persona-card:hover { border-color: var(--gold); }
+  .vd-pname { display: block; font-weight: 500; font-size: 0.86rem; }
+  .vd-pdates { display: block; color: var(--text-muted); font-size: 0.72rem; }
+
+  .vd-crux-list { display: grid; gap: 0.4rem; }
+  .vd-crux-card {
+    display: block;
+    padding: 0.55rem 0.75rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    text-decoration: none;
+    transition: border-color 0.12s;
+  }
+  .vd-crux-card:hover { border-color: var(--gold); }
+  .vd-cx-title { display: block; font-weight: 500; font-size: 0.92rem; color: var(--text-primary); }
+  .vd-cx-meta { display: block; color: var(--text-muted); font-size: 0.78rem; }
+  .vd-cx-tag { display: block; color: var(--text-secondary); font-size: 0.84rem; margin-top: 0.15rem; line-height: 1.4; }
+
+  .vd-siblings { display: grid; gap: 0.4rem; }
+  .vd-sibling {
+    display: block;
+    padding: 0.55rem 0.75rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    text-decoration: none;
+    transition: border-color 0.12s;
+  }
+  .vd-sibling:hover { border-color: var(--gold); }
+  .vd-sib-name { display: block; font-weight: 500; font-size: 0.9rem; color: var(--text-primary); }
+  .vd-sib-def { display: block; color: var(--text-secondary); font-size: 0.82rem; line-height: 1.45; margin-top: 0.2rem; }
+</style>
+{% endblock %}

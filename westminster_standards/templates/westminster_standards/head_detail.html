@@ -1,0 +1,440 @@
+{% extends "westminster_standards/base.html" %}
+{% block title %}{{ head.name }} — Heads of Doctrine — Westminster Standards{% endblock %}
+{% block content %}
+<section class="ws-hero">
+  <span class="ws-eyebrow">
+    <a class="ws-link" href="{% url 'westminster_standards:heads_list' %}">← Heads of Doctrine</a>
+    · Head {{ head.number }}
+  </span>
+  <h1>{{ head.name }}</h1>
+  {% if dim %}
+    <div style="margin-top:0.4rem;">
+      <a class="ws-locus-chip ws-dim-{{ dim.key }}" href="{% url 'westminster_standards:dimension_detail' dim.key %}">{{ dim.icon }} {{ dim.label }}</a>
+    </div>
+  {% endif %}
+</section>
+
+<div class="ws-card ws-prose" style="margin-top:1rem;">
+  <p style="margin:0;line-height:1.6;">{{ head.description }}</p>
+</div>
+
+{# ── Jump nav for long pages ── #}
+<nav class="hd-jump-nav">
+  {% if wcf_section_texts %}<a href="#hd-wcf">WCF <span class="hd-badge">{{ wcf_section_texts|length }}</span></a>{% endif %}
+  {% if wsc_questions %}<a href="#hd-wsc">SC <span class="hd-badge">{{ wsc_questions|length }}</span></a>{% endif %}
+  {% if wlc_questions %}<a href="#hd-wlc">LC <span class="hd-badge">{{ wlc_questions|length }}</span></a>{% endif %}
+  {% if dpw_section_texts %}<a href="#hd-dpw">DPW <span class="hd-badge">{{ dpw_section_texts|length }}</span></a>{% endif %}
+  {% if fpcg_section_texts %}<a href="#hd-fpcg">FPCG <span class="hd-badge">{{ fpcg_section_texts|length }}</span></a>{% endif %}
+  {% if ssk_section_texts %}<a href="#hd-ssk">SSK <span class="hd-badge">{{ ssk_section_texts|length }}</span></a>{% endif %}
+  {% if related_cruxes %}<a href="#hd-cruxes">Cruxes <span class="hd-badge">{{ related_cruxes|length }}</span></a>{% endif %}
+  {% if related_personas %}<a href="#hd-personas">Personas <span class="hd-badge">{{ related_personas|length }}</span></a>{% endif %}
+</nav>
+
+{# ── WCF sections ── #}
+{% if wcf_section_texts %}
+<section style="margin-top:1.5rem;" id="hd-wcf">
+  <details class="hd-block">
+    <summary class="hd-block-summary">
+      <h2 class="hd-block-title">Westminster Confession</h2>
+      <span class="hd-block-count">{{ wcf_section_texts|length }} section{{ wcf_section_texts|length|pluralize }}</span>
+    </summary>
+    <div class="hd-block-body">
+      {% for item in wcf_section_texts %}
+        <div class="hd-wcf-row">
+          <a class="hd-ref" href="{% url 'westminster_standards:wcf_chapter' item.chapter.number %}#s{{ item.section.number }}">{{ item.chapter.roman }}.{{ item.section.number }}</a>
+          <div class="hd-wcf-content">
+            <a class="hd-head-link hd-wcf-ch-label" href="{% url 'westminster_standards:wcf_chapter' item.chapter.number %}#s{{ item.section.number }}">{{ item.chapter.title }} →</a>
+            <p class="hd-wcf-text">{{ item.section.content }}</p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </details>
+</section>
+{% endif %}
+
+{# ── Shorter Catechism ── #}
+{% if wsc_questions %}
+<section style="margin-top:1rem;" id="hd-wsc">
+  <details class="hd-block">
+    <summary class="hd-block-summary">
+      <h2 class="hd-block-title">Shorter Catechism</h2>
+      <span class="hd-block-count">{{ wsc_questions|length }} question{{ wsc_questions|length|pluralize }}</span>
+    </summary>
+    <div class="hd-block-body">
+      {% for q in wsc_questions %}
+        <div class="hd-qa-row">
+          <a class="hd-ref" href="{% url 'westminster_standards:catechism_question' 'wsc' q.number %}">Q.{{ q.number }}</a>
+          <div>
+            <a class="hd-head-link hd-qa-q" href="{% url 'westminster_standards:catechism_question' 'wsc' q.number %}">{{ q.question }} →</a>
+            <p class="hd-qa-a">{{ q.answer }}</p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </details>
+</section>
+{% endif %}
+
+{# ── Larger Catechism ── #}
+{% if wlc_questions %}
+<section style="margin-top:1rem;" id="hd-wlc">
+  <details class="hd-block">
+    <summary class="hd-block-summary">
+      <h2 class="hd-block-title">Larger Catechism</h2>
+      <span class="hd-block-count">{{ wlc_questions|length }} question{{ wlc_questions|length|pluralize }}</span>
+    </summary>
+    <div class="hd-block-body">
+      {% for q in wlc_questions %}
+        <div class="hd-qa-row">
+          <a class="hd-ref" href="{% url 'westminster_standards:catechism_question' 'wlc' q.number %}">Q.{{ q.number }}</a>
+          <div>
+            <a class="hd-head-link hd-qa-q" href="{% url 'westminster_standards:catechism_question' 'wlc' q.number %}">{{ q.question }} →</a>
+            <p class="hd-qa-a">{{ q.answer }}</p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </details>
+</section>
+{% endif %}
+
+{# ── Directory for Public Worship ── #}
+{% if dpw_section_texts %}
+<section style="margin-top:1rem;" id="hd-dpw">
+  <details class="hd-block">
+    <summary class="hd-block-summary">
+      <h2 class="hd-block-title">Directory for Public Worship</h2>
+      <span class="hd-block-count">{{ dpw_section_texts|length }} section{{ dpw_section_texts|length|pluralize }}</span>
+    </summary>
+    <div class="hd-block-body">
+      {% for sec in dpw_section_texts %}
+        <details class="hd-dir-item">
+          <summary class="hd-dir-item-summary">
+            <span class="hd-dir-item-title">{{ sec.title }}</span>
+            <a class="hd-dir-item-ref" href="{% url 'westminster_standards:work_detail' 'dpw' %}#s{{ sec.number }}">§{{ sec.number }} →</a>
+          </summary>
+          <div class="hd-dir-item-body">
+            {{ sec.content|linebreaksbr }}
+            <p style="margin:0.5rem 0 0;"><a class="ws-link" style="font-size:0.82rem;" href="{% url 'westminster_standards:work_detail' 'dpw' %}#s{{ sec.number }}">→ This section in the Directory for Public Worship</a></p>
+          </div>
+        </details>
+      {% endfor %}
+    </div>
+  </details>
+</section>
+{% endif %}
+
+{# ── Form of Church Government ── #}
+{% if fpcg_section_texts %}
+<section style="margin-top:1rem;" id="hd-fpcg">
+  <details class="hd-block">
+    <summary class="hd-block-summary">
+      <h2 class="hd-block-title">Form of Church Government</h2>
+      <span class="hd-block-count">{{ fpcg_section_texts|length }} section{{ fpcg_section_texts|length|pluralize }}</span>
+    </summary>
+    <div class="hd-block-body">
+      {% for sec in fpcg_section_texts %}
+        <details class="hd-dir-item">
+          <summary class="hd-dir-item-summary">
+            <span class="hd-dir-item-title">{{ sec.title }}</span>
+            <a class="hd-dir-item-ref" href="{% url 'westminster_standards:work_detail' 'fpcg' %}#s{{ sec.number }}">§{{ sec.number }} →</a>
+          </summary>
+          <div class="hd-dir-item-body">
+            {{ sec.content|linebreaksbr }}
+            <p style="margin:0.5rem 0 0;"><a class="ws-link" style="font-size:0.82rem;" href="{% url 'westminster_standards:work_detail' 'fpcg' %}#s{{ sec.number }}">→ This section in the Form of Church Government</a></p>
+          </div>
+        </details>
+      {% endfor %}
+    </div>
+  </details>
+</section>
+{% endif %}
+
+{# ── Sum of Saving Knowledge ── #}
+{% if ssk_section_texts %}
+<section style="margin-top:1rem;" id="hd-ssk">
+  <details class="hd-block">
+    <summary class="hd-block-summary">
+      <h2 class="hd-block-title">Sum of Saving Knowledge</h2>
+      <span class="hd-block-count">{{ ssk_section_texts|length }} section{{ ssk_section_texts|length|pluralize }}</span>
+    </summary>
+    <div class="hd-block-body">
+      {% for sec in ssk_section_texts %}
+        <details class="hd-dir-item">
+          <summary class="hd-dir-item-summary">
+            <span class="hd-dir-item-title">{{ sec.title }}</span>
+            <a class="hd-dir-item-ref" href="{% url 'westminster_standards:work_detail' 'ssk' %}#s{{ sec.number }}">§{{ sec.number }} →</a>
+          </summary>
+          <div class="hd-dir-item-body">
+            {{ sec.content|linebreaksbr }}
+            <p style="margin:0.5rem 0 0;"><a class="ws-link" style="font-size:0.82rem;" href="{% url 'westminster_standards:work_detail' 'ssk' %}#s{{ sec.number }}">→ This section in the Sum of Saving Knowledge</a></p>
+          </div>
+        </details>
+      {% endfor %}
+    </div>
+  </details>
+</section>
+{% endif %}
+
+{# ── Cruxes ── #}
+{% if related_cruxes %}
+<section style="margin-top:1rem;" id="hd-cruxes">
+  <details class="hd-block">
+    <summary class="hd-block-summary">
+      <h2 class="hd-block-title">Related Cruxes</h2>
+      <span class="hd-block-count">{{ related_cruxes|length }}</span>
+    </summary>
+    <div class="hd-block-body">
+      <div class="hd-crux-grid">
+        {% for c in related_cruxes %}
+          <a class="hd-crux-card" href="{% url 'westminster_standards:crux_detail' c.slug %}">
+            <span class="hd-crux-title">{{ c.title }}</span>
+            <span class="hd-crux-dates">{{ c.dates }}</span>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  </details>
+</section>
+{% endif %}
+
+{# ── Personas ── #}
+{% if related_personas %}
+<section style="margin-top:1rem;" id="hd-personas">
+  <details class="hd-block">
+    <summary class="hd-block-summary">
+      <h2 class="hd-block-title">Related Personas</h2>
+      <span class="hd-block-count">{{ related_personas|length }}</span>
+    </summary>
+    <div class="hd-block-body">
+      <p style="color:var(--text-secondary);font-size:0.84rem;margin:0 0 0.5rem;">
+        Personas whose positions on {{ dim.label }} differ from the Westminster baseline.
+      </p>
+      <div class="hd-persona-chips">
+        {% for p in related_personas %}
+          <a class="hd-persona-chip" href="{% url 'westminster_standards:persona_detail' p.slug %}">{{ p.name }}</a>
+        {% endfor %}
+      </div>
+    </div>
+  </details>
+</section>
+{% endif %}
+
+<style>
+  .hd-jump-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.8rem;
+  }
+  .hd-jump-nav a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: border-color 0.12s;
+  }
+  .hd-jump-nav a:hover { border-color: var(--gold); color: var(--text-primary); }
+  .hd-badge {
+    background: var(--bg-card);
+    padding: 0 0.35rem;
+    border-radius: 4px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--gold);
+  }
+
+  .hd-block {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .hd-block-summary {
+    cursor: pointer;
+    padding: 0.6rem 1rem;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    user-select: none;
+  }
+  .hd-block-summary::-webkit-details-marker { display: none; }
+  .hd-block-summary::before {
+    content: '▸'; color: var(--gold); font-size: 0.82rem;
+    margin-right: 0.5rem; transition: transform 0.15s; display: inline-block;
+  }
+  .hd-block[open] > .hd-block-summary::before { transform: rotate(90deg); }
+  .hd-block-summary:hover { background: var(--bg-elevated); }
+  .hd-block-title {
+    font-family: var(--font-serif); font-size: 1.05rem; margin: 0; display: inline;
+  }
+  .hd-block-count {
+    margin-left: auto; color: var(--text-muted); font-size: 0.8rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .hd-block-body {
+    padding: 0.4rem 1rem 0.8rem;
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .hd-wcf-row, .hd-qa-row {
+    display: grid;
+    grid-template-columns: 3.5rem 1fr;
+    gap: 0.6rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .hd-wcf-row:last-child, .hd-qa-row:last-child { border-bottom: none; }
+  .hd-ref {
+    display: inline-block;
+    align-self: start;
+    color: var(--gold);
+    font-family: var(--font-serif);
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 0.12rem 0.45rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: 5px;
+    background: var(--bg-elevated);
+    white-space: nowrap;
+    transition: border-color 0.12s, color 0.12s, background 0.12s;
+  }
+  .hd-ref:hover { border-color: var(--gold); background: var(--bg-card); }
+  /* Heading-level links: the chapter title / question text itself navigates. */
+  .hd-head-link {
+    display: inline-block;
+    text-decoration: none;
+    transition: color 0.12s;
+  }
+  .hd-head-link:hover { color: var(--gold); text-decoration: underline; }
+  .hd-wcf-ch-label {
+    color: var(--text-muted);
+    font-size: 0.76rem;
+    margin: 0 0 0.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .hd-wcf-text {
+    font-family: var(--font-serif);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+    margin: 0;
+  }
+  .hd-qa-q {
+    font-weight: 500;
+    font-size: 0.88rem;
+    color: var(--text-primary);
+    margin: 0 0 0.2rem;
+  }
+  .hd-qa-a {
+    font-family: var(--font-serif);
+    font-size: 0.88rem;
+    line-height: 1.55;
+    color: var(--text-secondary);
+    margin: 0;
+  }
+
+  .hd-dir-item {
+    border: 1px solid var(--border-subtle);
+    border-radius: 5px;
+    margin-bottom: 0.4rem;
+    overflow: hidden;
+  }
+  .hd-dir-item-summary {
+    cursor: pointer;
+    padding: 0.4rem 0.7rem;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.88rem;
+  }
+  .hd-dir-item-summary::-webkit-details-marker { display: none; }
+  .hd-dir-item-summary::before {
+    content: '▸'; color: var(--text-muted); font-size: 0.72rem;
+    transition: transform 0.15s; display: inline-block;
+  }
+  .hd-dir-item[open] > .hd-dir-item-summary::before { transform: rotate(90deg); }
+  .hd-dir-item-summary:hover { background: var(--bg-elevated); }
+  .hd-dir-badge {
+    padding: 0.08rem 0.35rem; border-radius: 3px;
+    font-size: 0.68rem; font-weight: 600;
+    background: var(--bg-elevated); color: var(--gold);
+    border: 1px solid var(--border-subtle);
+  }
+  .hd-dir-item-title { color: var(--text-primary); font-weight: 500; font-size: 0.86rem; }
+  .hd-dir-item-ref {
+    margin-left: auto;
+    color: var(--gold);
+    font-family: var(--font-serif);
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .hd-dir-item-ref:hover { text-decoration: underline; }
+  .hd-dir-item-body {
+    padding: 0.4rem 0.7rem 0.6rem;
+    border-top: 1px solid var(--border-subtle);
+    font-family: var(--font-serif);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+  }
+
+  .hd-crux-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 0.4rem;
+  }
+  .hd-crux-card {
+    display: block;
+    padding: 0.4rem 0.6rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 5px;
+    text-decoration: none;
+    transition: border-color 0.12s;
+  }
+  .hd-crux-card:hover { border-color: var(--gold); }
+  .hd-crux-title { display: block; font-weight: 500; font-size: 0.86rem; color: var(--text-primary); }
+  .hd-crux-dates { display: block; color: var(--text-muted); font-size: 0.74rem; }
+
+  .hd-persona-chips {
+    display: flex; flex-wrap: wrap; gap: 0.3rem;
+  }
+  .hd-persona-chip {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: border-color 0.12s;
+  }
+  .hd-persona-chip:hover { border-color: var(--gold); color: var(--text-primary); }
+
+  .ws-locus-chip {
+    display: inline-block; padding: 0.2rem 0.6rem; border-radius: 6px;
+    font-size: 0.82rem; text-decoration: none; border: 1px solid var(--border);
+    transition: border-color 0.12s;
+  }
+  .ws-locus-chip:hover { border-color: var(--gold); }
+
+  @media (max-width: 600px) {
+    .hd-wcf-row, .hd-qa-row { grid-template-columns: 1fr; }
+    .hd-ref { margin-bottom: 0.2rem; }
+  }
+</style>
+{% endblock %}

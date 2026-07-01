@@ -1,0 +1,91 @@
+{% extends "westminster_standards/base.html" %}
+{% block title %}Schools — Westminster Standards Atlas{% endblock %}
+{% block content %}
+<section class="ws-hero">
+  <span class="ws-eyebrow">{{ total }} parties and receiving traditions</span>
+  <h1>Schools</h1>
+  <p>
+    The Assembly parties — the blocs discernible in the 1643–1649 debates — and
+    the confessional communities that adopted, adapted, or revised the Standards
+    after the Assembly closed. Each school has a complete 35-attribute ontology
+    profile showing where it departs from the Westminster baseline.
+  </p>
+</section>
+
+<div class="ws-card ws-prose" style="margin-top:1rem;">
+  <h3 style="margin:0 0 0.3rem;font-size:0.95rem;">Two kinds of school</h3>
+  <p style="margin:0 0 0.4rem;font-size:0.88rem;color:var(--text-secondary);line-height:1.5;">
+    <strong>Assembly parties</strong> are the blocs that formed inside the 1643–1649 sessions:
+    the English Presbyterian majority who drafted the text, the Scottish Commissioners who
+    pressed jure-divino presbyterianism, the Five Dissenting Brethren who argued for
+    Independent congregational polity, the Erastians who wanted the magistrate supreme, the
+    Hypothetical Universalists who broadened the atonement's scope, and the Supralapsarians
+    who held election prior to the fall. Each party's 35-attribute profile shows its
+    characteristic departures from the baseline the Standards eventually adopted.
+  </p>
+  <p style="margin:0;font-size:0.88rem;color:var(--text-secondary);line-height:1.5;">
+    <strong>Receiving traditions</strong> are the confessional communities that took up the
+    Westminster Standards after the Assembly closed — adopting them wholesale (the Free Church
+    of Scotland, 1843), revising them for a new context (the American 1788 revision), or
+    adapting them with deliberate departures (the 1689 Particular Baptists on baptism, the
+    Cumberland Presbyterians on the decree). Each tradition's profile shows where it departs
+    from the 1646 original.
+  </p>
+</div>
+
+{% include "westminster_standards/_list_filter.html" with placeholder="Filter schools…" noun="schools" %}
+
+<section style="margin-top:1.5rem;" class="ws-filter-group">
+  <h2 style="font-family:var(--font-serif);font-size:1.25rem;margin:0 0 0.6rem;">Assembly parties</h2>
+  <div class="ws-schools-grid">
+    {% for s in parties %}
+      <a class="ws-school-card ws-filter-item" data-search="{{ s.name|lower }} {{ s.origin|lower }}" href="{% url 'westminster_standards:school_detail' s.slug %}">
+        <span class="ws-school-name">{{ s.name }}</span>
+        <span class="ws-school-origin">{{ s.origin }}</span>
+        <span class="ws-school-anchors">{{ s.anchor_persona_slugs|length }} anchor personas</span>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+
+<section style="margin-top:2rem;" class="ws-filter-group">
+  <h2 style="font-family:var(--font-serif);font-size:1.25rem;margin:0 0 0.6rem;">Receiving traditions</h2>
+  <div class="ws-schools-grid">
+    {% for s in traditions %}
+      <a class="ws-school-card ws-filter-item" data-search="{{ s.name|lower }} {{ s.origin|lower }}" href="{% url 'westminster_standards:school_detail' s.slug %}">
+        <span class="ws-school-name">{{ s.name }}</span>
+        <span class="ws-school-origin">{{ s.origin }}</span>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+
+<style>
+  .ws-schools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 0.7rem;
+  }
+  .ws-school-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0.65rem 0.85rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: border-color 0.12s;
+    min-height: 4.5rem;
+    justify-content: center;
+  }
+  .ws-school-card:hover { border-color: var(--gold); }
+  .ws-school-name { font-weight: 500; font-size: 0.92rem; line-height: 1.25; }
+  .ws-school-origin {
+    color: var(--text-muted); font-size: 0.78rem;
+    display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .ws-school-anchors { color: var(--text-secondary); font-size: 0.78rem; margin-top: 0.15rem; }
+</style>
+{% endblock %}

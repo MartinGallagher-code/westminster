@@ -1,0 +1,216 @@
+{% extends "westminster_standards/base.html" %}
+{% block title %}Compare Personas — Westminster Standards Atlas{% endblock %}
+{% block content %}
+<section class="ws-hero">
+  <span class="ws-eyebrow">Side-by-side ontology comparison</span>
+  <h1>Compare Personas</h1>
+  <p>Select two personas to see where their 35-attribute ontology placements agree and diverge.</p>
+</section>
+
+<form method="get" action="{% url 'westminster_standards:compare_personas' %}" class="ws-compare-form">
+  <div class="ws-compare-selectors">
+    <div>
+      <label class="ws-eyebrow" for="persona-a-picker">Persona A</label>
+      <input type="hidden" name="a" id="sel-a" value="{% if p_a %}{{ p_a.slug }}{% endif %}">
+      <input
+        name="a_text"
+        id="persona-a-picker"
+        class="ws-compare-select"
+        type="search"
+        list="persona-options"
+        autocomplete="off"
+        value="{% if p_a %}{{ p_a.name }} ({{ p_a.dates }}){% endif %}"
+        placeholder="Type a name…"
+        aria-describedby="compare-persona-help">
+    </div>
+    <div>
+      <label class="ws-eyebrow" for="persona-b-picker">Persona B</label>
+      <input type="hidden" name="b" id="sel-b" value="{% if p_b %}{{ p_b.slug }}{% endif %}">
+      <input
+        name="b_text"
+        id="persona-b-picker"
+        class="ws-compare-select"
+        type="search"
+        list="persona-options"
+        autocomplete="off"
+        value="{% if p_b %}{{ p_b.name }} ({{ p_b.dates }}){% endif %}"
+        placeholder="Type a name…"
+        aria-describedby="compare-persona-help">
+    </div>
+    <button type="submit" class="ws-compare-btn">Compare</button>
+  </div>
+  <p id="compare-persona-help" class="ws-sr-only">Start typing a persona name, then choose a match.</p>
+  <datalist id="persona-options">
+    {% for p in personas %}
+      <option value="{{ p.name }} ({{ p.dates }})" data-slug="{{ p.slug }}"></option>
+    {% endfor %}
+  </datalist>
+</form>
+
+{% if not comparison %}
+<div class="ws-card ws-prose" style="margin-top:1.5rem;">
+  <h3 style="margin:0 0 0.4rem;font-size:0.95rem;">Suggested comparisons</h3>
+  <p style="margin:0;font-size:0.88rem;color:var(--text-secondary);line-height:1.7;">
+    <a class="ws-link" href="?a=edmund-calamy-elder&b=john-selden">Calamy vs Selden</a> (3 diffs: atonement, polity, magistrate) ·
+    <a class="ws-link" href="?a=samuel-rutherford&b=philip-nye">Rutherford vs Nye</a> (3 diffs: decree, polity, pactum) ·
+    <a class="ws-link" href="?a=samuel-rutherford&b=thomas-goodwin">Rutherford vs Goodwin</a> (1 diff: polity only) ·
+    <a class="ws-link" href="?a=anthony-tuckney&b=edward-reynolds">Tuckney vs Reynolds</a> (0 diffs: pure baseline) ·
+    <a class="ws-link" href="?a=william-twisse&b=edmund-calamy-elder">Twisse vs Calamy</a> (2 diffs: decree + atonement) ·
+    <a class="ws-link" href="?a=james-ussher&b=george-gillespie">Ussher vs Gillespie</a> (polity + worship)
+  </p>
+</div>
+{% endif %}
+
+{% if comparison %}
+<section style="margin-top:1.5rem;">
+  <div class="ws-compare-header">
+    <div></div>
+    <div class="ws-ch-name"><a class="ws-link" href="{% url 'westminster_standards:persona_detail' p_a.slug %}">{{ p_a.name }}</a><br><span class="ws-ch-dates">{{ p_a.dates }}</span></div>
+    <div class="ws-ch-name"><a class="ws-link" href="{% url 'westminster_standards:persona_detail' p_b.slug %}">{{ p_b.name }}</a><br><span class="ws-ch-dates">{{ p_b.dates }}</span></div>
+  </div>
+
+  <p style="color:var(--text-secondary);font-size:0.88rem;margin:0.5rem 0 1rem;">
+    <strong>{{ comparison.diffs }}</strong> of 35 attributes differ.
+    Differences highlighted in <span style="background:rgba(251,191,36,0.12);padding:0.1rem 0.4rem;border-radius:3px;">gold</span>.
+  </p>
+
+  {% for group in comparison.rows %}
+    <div class="ws-compare-dim ws-dim-{{ group.dim.key }}">
+      <h3 class="ws-compare-dim-title">
+        <span style="color:var(--text-muted);">{{ group.dim.numeral }}.</span>
+        {{ group.dim.icon }} {{ group.dim.label }}
+      </h3>
+      <div class="ws-compare-grid">
+        {% for row in group.attrs %}
+          <div class="ws-cg-label">{{ row.attr.label }}</div>
+          <div class="ws-cg-val {% if row.is_diff %}ws-cg-diff{% endif %}">
+            {% if row.vkey_a %}<a class="ws-cg-link" href="{% url 'westminster_standards:value_detail' row.dim_key row.attr.key row.vkey_a %}">{{ row.val_a }}</a>{% else %}{{ row.val_a }}{% endif %}
+            {% if row.a_is_baseline %}<span class="ws-baseline-pill">WCF</span>{% endif %}
+          </div>
+          <div class="ws-cg-val {% if row.is_diff %}ws-cg-diff{% endif %}">
+            {% if row.vkey_b %}<a class="ws-cg-link" href="{% url 'westminster_standards:value_detail' row.dim_key row.attr.key row.vkey_b %}">{{ row.val_b }}</a>{% else %}{{ row.val_b }}{% endif %}
+            {% if row.b_is_baseline %}<span class="ws-baseline-pill">WCF</span>{% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+</section>
+{% endif %}
+
+<style>
+  .ws-compare-form { margin-top: 1rem; }
+  .ws-compare-selectors {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+    flex-wrap: wrap;
+  }
+  .ws-compare-select {
+    display: block;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 0.5rem 0.7rem;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    width: 22rem;
+    max-width: 100%;
+    margin-top: 0.3rem;
+  }
+  .ws-compare-btn {
+    background: var(--gold);
+    color: var(--bg-primary);
+    border: none;
+    padding: 0.5rem 1.2rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .ws-compare-header {
+    display: grid;
+    grid-template-columns: 12rem 1fr 1fr;
+    gap: 0.6rem;
+    padding: 0.6rem 0;
+    border-bottom: 2px solid var(--border);
+  }
+  .ws-ch-name {
+    font-weight: 500;
+    font-size: 1rem;
+  }
+  .ws-ch-dates {
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-weight: normal;
+  }
+  .ws-compare-dim {
+    border-left: 3px solid var(--border);
+    padding: 0.4rem 0 0.4rem 0.8rem;
+    margin-top: 0.8rem;
+  }
+  .ws-compare-dim-title {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    margin: 0 0 0.4rem;
+  }
+  .ws-compare-grid {
+    display: grid;
+    grid-template-columns: 12rem 1fr 1fr;
+    gap: 0.15rem 0.6rem;
+    font-size: 0.86rem;
+  }
+  .ws-cg-label {
+    color: var(--text-muted);
+    padding: 0.25rem 0;
+  }
+  .ws-cg-val {
+    color: var(--text-primary);
+    padding: 0.25rem 0.4rem;
+    border-radius: 3px;
+  }
+  .ws-cg-diff {
+    background: rgba(251,191,36,0.08);
+    border: 1px solid rgba(251,191,36,0.2);
+  }
+  .ws-cg-link {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px dotted var(--text-muted);
+  }
+  .ws-cg-link:hover {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+  @media (max-width: 720px) {
+    .ws-compare-header,
+    .ws-compare-grid { grid-template-columns: 1fr; }
+    .ws-compare-selectors { flex-direction: column; }
+    .ws-compare-select { width: 100%; }
+  }
+</style>
+{% endblock %}
+{% block extra_body %}
+{{ block.super }}
+<script>
+  (function () {
+    const options = Array.from(document.querySelectorAll('#persona-options option'));
+    const byLabel = new Map(options.map((option) => [option.value, option.dataset.slug]));
+
+    function syncPersona(inputId, hiddenId) {
+      const input = document.getElementById(inputId);
+      const hidden = document.getElementById(hiddenId);
+      if (!input || !hidden) return;
+      const setSlug = function () {
+        hidden.value = byLabel.get(input.value) || '';
+      };
+      input.addEventListener('input', setSlug);
+      input.form && input.form.addEventListener('submit', setSlug);
+      setSlug();
+    }
+
+    syncPersona('persona-a-picker', 'sel-a');
+    syncPersona('persona-b-picker', 'sel-b');
+  }());
+</script>
+{% endblock %}
