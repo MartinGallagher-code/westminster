@@ -1,11 +1,23 @@
 # Westminster Standards Atlas
 
-A Django app — mounted at `/westminster_standards/` in the
-TimeSpaceMatterObserver project, designed for eventual extraction to its
-own repository — that catalogues the Westminster confessional landscape
-through a structured ontology and exposes it as a browseable atlas of
-the Confession (1646), the Larger and Shorter Catechisms (1647), and
-their two service-books (1645).
+> **Integration note.** This app was ported from the
+> TimeSpaceMatterObserver project (ontologicalatlas.com) into **Study
+> Reformed**, where it is mounted at **`/atlas/`** (see `config/urls.py`).
+> Its templates extend Study Reformed's site `base.html` and its design
+> tokens are bridged to the site theme in
+> `static/westminster_standards/atlas-theme.css`. The Confession-chapter
+> and catechism-question full-text pages redirect to Study Reformed's own
+> pages via `bridge.py`. Sections below that describe the tsmo mount,
+> `/puritans/`, or `core/` describe the app's origin and may not apply
+> here. The data layer is unchanged, so it can still be synced with the
+> upstream app.
+
+A Django app — mounted at `/atlas/` in Study Reformed (originally at
+`/westminster_standards/` in the TimeSpaceMatterObserver project) — that
+catalogues the Westminster confessional landscape through a structured
+ontology and exposes it as a browseable atlas of the Confession (1646),
+the Larger and Shorter Catechisms (1647), and their two service-books
+(1645).
 
 Sister app to `/puritans/`. Where the Puritan atlas maps the wider
 seventeenth-century Reformed-Puritan tradition (190 personas, 500 works,
