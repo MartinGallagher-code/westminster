@@ -7,7 +7,11 @@ reverse-chronological changelog rather than formal release tags.
 
 ### Added
 
-- Ported the Westminster Standards Atlas into Study Reformed as the self-contained `westminster_standards` app, mounted at `/atlas/`. Brings the full ontology (8 loci, 35 attributes with contested-value spreads), 181 personas, 30 cruxes, 16 schools, and 39 heads of doctrine on-site as native pages, rather than linking out to ontologicalatlas.com. The app is pure-Python (no models/migrations), and its shared stylesheet is vendored into the app's own static files (`static/westminster_standards/atlas-base.css`) so it renders standalone. Mounted ahead of the catechism catch-all route so `/atlas/...` is not shadowed. (Phase 1 of the Atlas merge: mechanical port; reskin to the Study Reformed base template and internal cross-linking to follow.)
+- Ported the Westminster Standards Atlas into Study Reformed as the self-contained `westminster_standards` app, mounted at `/atlas/`. Brings the full ontology (8 loci, 35 attributes with contested-value spreads), 181 personas, 30 cruxes, 16 schools, and 39 heads of doctrine on-site as native pages, rather than linking out to ontologicalatlas.com. The app is pure-Python (no models/migrations). Mounted ahead of the catechism catch-all route so `/atlas/...` is not shadowed. (Phase 1 of the Atlas merge.)
+
+### Changed
+
+- Integrated the Atlas visually into Study Reformed (Phase 2). The Atlas templates now extend the site `base.html`, inheriting the shared navbar, footer, and light/dark/colour-scheme switching. The Atlas's standalone design tokens (`--bg-*`, `--text-*`, `--gold`, `--font-*`, …) are re-mapped onto Study Reformed's `--wm-*` tokens in `static/westminster_standards/atlas-theme.css`, so the Atlas follows the site theme with no per-page rework; the eight locus accent colours are retained. The Atlas's own navigation is kept as a section sub-nav beneath the site navbar. The navbar "Atlas" link now points to the internal `/atlas/` home instead of opening ontologicalatlas.com in a new tab. (The foreign core stylesheet vendored in Phase 1 is dropped in favour of the token bridge.)
 
 ## 2026-06-19
 

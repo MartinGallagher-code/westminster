@@ -1,13 +1,10 @@
+{% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}Westminster Standards Atlas{% endblock %}</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'westminster_standards/atlas-base.css' %}?v=2">
+
+{% block title %}Westminster Standards Atlas{% endblock %}
+
+{% block extra_head %}
+  <link rel="stylesheet" href="{% static 'westminster_standards/atlas-theme.css' %}?v=1">
   <style>
     /* Westminster-specific eight-locus colours. Each locus has a
        primary hue, a dark ground for fills, and a faint glow for
@@ -294,9 +291,11 @@
       }
     }
   </style>
-  {% block extra_head %}{% endblock %}
-</head>
-<body>
+  {% block ws_extra_head %}{% endblock %}
+{% endblock %}
+
+{% block content %}
+<div class="ws-atlas">
 <nav class="ws-nav" data-ws-nav>
   <span class="brand"><a href="{% url 'westminster_standards:home' %}">Westminster Standards Atlas</a></span>
   <button class="ws-nav-toggle" type="button" data-ws-nav-toggle aria-expanded="false" aria-controls="ws-nav-links" aria-label="Open navigation">☰</button>
@@ -318,7 +317,6 @@
        {% if 'dimension_pair' in request.resolver_match.url_name %}class="active"{% endif %}>Intersections</a>
     <a href="{% url 'westminster_standards:works_list' %}"
        {% if 'work' in request.resolver_match.url_name or 'wcf_chapter' in request.resolver_match.url_name or 'catechism_question' in request.resolver_match.url_name %}class="active"{% endif %}>Works</a>
-    <a href="https://buymeacoffee.com/martingallagher" target="_blank" rel="noopener" style="color: var(--gold);">♥ Support</a>
     <form class="ws-nav-search" action="{% url 'westminster_standards:search' %}" method="get" role="search">
       <label class="ws-sr-only" for="ws-global-search">Search Westminster Standards Atlas</label>
       <input id="ws-global-search" type="search" name="q" placeholder="Search…" value="{{ request.GET.q|default:'' }}">
@@ -328,13 +326,12 @@
 </nav>
 
 <main class="ws-page">
-  {% block content %}{% endblock %}
+  {% block ws_content %}{% endblock %}
 </main>
+</div>
+{% endblock %}
 
-<footer style="text-align:center;padding:2rem 1rem;color:var(--text-muted);font-size:0.82rem;border-top:1px solid var(--border);">
-  <p style="margin:0;">Westminster Standards Atlas &mdash; an ontology of the confessional Westminster landscape across eight loci.</p>
-  <p style="margin-top:0.5rem;font-size:0.75rem;">Martin J. Gallagher</p>
-</footer>
+{% block extra_js %}
 <script>
   (function () {
     const nav = document.querySelector('[data-ws-nav]');
@@ -347,6 +344,5 @@
     });
   }());
 </script>
-{% block extra_body %}{% endblock %}
-</body>
-</html>
+{% block ws_extra_body %}{% endblock %}
+{% endblock %}

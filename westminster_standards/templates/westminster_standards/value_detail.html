@@ -1,6 +1,6 @@
 {% extends "westminster_standards/base.html" %}
 {% block title %}{{ value.label }} — {{ attr.label }} — Westminster Standards Atlas{% endblock %}
-{% block content %}
+{% block ws_content %}
 <section class="ws-hero">
   <span class="ws-eyebrow">
     <a class="ws-link" href="{% url 'westminster_standards:dimension_detail' dim.key %}">{{ dim.icon }} {{ dim.label }}</a>

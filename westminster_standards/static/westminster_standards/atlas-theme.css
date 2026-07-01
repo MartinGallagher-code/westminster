@@ -1,0 +1,68 @@
+/* ================================================================
+   Westminster Standards Atlas — Study Reformed integration theme.
+
+   The Atlas templates were authored against a standalone dark palette
+   expressed through a set of design tokens (--bg-*, --text-*, --border*,
+   --gold, --font-*, --radius). Rather than ship that standalone
+   stylesheet, this file re-defines those tokens in terms of Study
+   Reformed's own `--wm-*` tokens. Because the `--wm-*` tokens already
+   switch between light, dark, and the ocean/forest/stone/royal colour
+   schemes via `[data-bs-theme]`, the Atlas inherits all of that
+   automatically — one bridge, every theme.
+
+   The eight locus accent colours (--scripture, --god_decree, …) stay as
+   defined in the Atlas base template: they are the Atlas's signature and
+   read well on both light and dark grounds.
+   ================================================================ */
+
+:root {
+    /* Surfaces */
+    --bg-primary: var(--wm-body-bg);
+    --bg-secondary: var(--wm-card-bg);
+    --bg-card: var(--wm-card-bg);
+    --bg-elevated: var(--wm-code-bg);
+
+    /* Borders */
+    --border: var(--wm-border);
+    --border-subtle: var(--wm-card-border);
+
+    /* Text */
+    --text-primary: var(--wm-text);
+    --text-secondary: var(--wm-text-muted);
+    --text-muted: var(--wm-text-muted);
+
+    /* Accent — Study Reformed gold */
+    --gold: var(--wm-accent);
+    --gold-light: var(--wm-accent-light);
+
+    /* Typography — match Study Reformed (Cormorant headings, Libre body) */
+    --font-serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+    --font-sans: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
+
+    /* Shape */
+    --radius: 10px;
+}
+
+/* --- Integration polish ---------------------------------------------- */
+
+/* The Atlas content sits inside Study Reformed's .container-fluid; keep the
+   section sub-nav as a full-width bar that reads as part of the page. */
+.ws-atlas .ws-nav {
+    margin: 0 -0.75rem 1.5rem;   /* full-bleed to the container gutter */
+    border-radius: 0;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+}
+
+.ws-atlas .ws-page {
+    padding-top: 0.5rem;
+}
+
+/* Slightly heavier headings so Cormorant reads at Study Reformed's weight. */
+.ws-atlas .ws-hero h1,
+.ws-atlas .ws-card h2,
+.ws-atlas .ws-card h3 {
+    font-weight: 600;
+    letter-spacing: 0.005em;
+}
