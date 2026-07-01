@@ -372,6 +372,12 @@ class ComparisonTheme(models.Model):
             'theme_slug': self.slug,
         })
 
+    def atlas_locus(self):
+        """The nearest Westminster Standards Atlas locus for this theme's
+        classical locus, or None. See catechism.atlas.comparison_locus_atlas."""
+        from .atlas import comparison_locus_atlas
+        return comparison_locus_atlas(self.locus)
+
 
 class ComparisonEntry(models.Model):
     theme = models.ForeignKey(

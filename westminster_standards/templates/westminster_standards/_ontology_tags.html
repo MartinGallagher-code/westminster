@@ -1,0 +1,25 @@
+{% comment %}
+Ontology tags for a work-section. Expects `attrs` — a list of resolved
+attribute rows (dim, attr, short_attr_key, baseline_label,
+baseline_value_key, representative) from views._resolve_attr_rows. Each chip
+links to the Westminster baseline value's page (or the locus page when no
+baseline value is recorded) and is tinted by its locus colour. Chips marked
+`representative` (nearest-fit, where the ontology has no dedicated contested
+axis for the doctrine) render with a dashed border and a trailing ≈.
+{% endcomment %}
+{% if attrs %}
+<div class="ws-onto-tags">
+  <span class="ws-onto-label">Ontology</span>
+  {% for row in attrs %}
+    {% if row.baseline_value_key %}
+      <a class="ws-attr-chip{% if row.representative %} ws-attr-chip--rep{% endif %}" style="border-left-color: var(--{{ row.dim.key }});"
+         href="{% url 'westminster_standards:value_detail' row.dim.key row.short_attr_key row.baseline_value_key %}"
+         title="{{ row.dim.label }} · {{ row.attr.label }} — Westminster baseline: {{ row.baseline_label }}{% if row.representative %} (representative tag: the ontology has no dedicated contested axis for this doctrine){% endif %}">{{ row.dim.icon }} {{ row.attr.label }}{% if row.representative %} <span class="ws-attr-rep-mark">≈</span>{% endif %}</a>
+    {% else %}
+      <a class="ws-attr-chip{% if row.representative %} ws-attr-chip--rep{% endif %}" style="border-left-color: var(--{{ row.dim.key }});"
+         href="{% url 'westminster_standards:dimension_detail' row.dim.key %}"
+         title="{{ row.dim.label }} · {{ row.attr.label }}{% if row.representative %} (representative tag: the ontology has no dedicated contested axis for this doctrine){% endif %}">{{ row.dim.icon }} {{ row.attr.label }}{% if row.representative %} <span class="ws-attr-rep-mark">≈</span>{% endif %}</a>
+    {% endif %}
+  {% endfor %}
+</div>
+{% endif %}

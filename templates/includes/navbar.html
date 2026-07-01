@@ -102,7 +102,7 @@
                     <a class="nav-link" href="{% url 'catechism:doctrine_index' %}"><i class="bi bi-diagram-3 me-1"></i>Doctrine</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ atlas_home_url }}" target="_blank" rel="noopener noreferrer"><i class="bi bi-diagram-3 me-1"></i>Atlas</a>
+                    <a class="nav-link {% if request.resolver_match.namespace == 'westminster_standards' %}active{% endif %}" href="{% url 'westminster_standards:home' %}"><i class="bi bi-diagram-3 me-1"></i>Atlas</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'accounts:support' %}"><i class="bi bi-cup-hot me-1"></i>Support</a>

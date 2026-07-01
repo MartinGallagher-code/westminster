@@ -1,0 +1,253 @@
+{% extends "westminster_standards/base.html" %}
+{% block title %}{{ p.name }} — Westminster Standards Atlas{% endblock %}
+{% block ws_content %}
+<section class="ws-hero">
+  <span class="ws-eyebrow">
+    <a class="ws-link" href="{% url 'westminster_standards:personas_list' %}">← all personas</a>
+    · {{ p.role }}
+    · <a class="ws-link" href="{% url 'westminster_standards:compare_personas' %}?a={{ p.slug }}">compare with…</a>
+  </span>
+  <h1>{{ p.name }}</h1>
+  <p style="color:var(--text-muted);font-variant-numeric:tabular-nums;margin:0.1rem 0 0.6rem;">
+    {{ p.dates }}
+  </p>
+  {% if p.tagline %}
+    <p style="font-family:var(--font-serif);font-style:italic;font-size:1.1rem;color:var(--text-primary);max-width:52rem;margin:0.4rem 0;">
+      {{ p.tagline }}
+    </p>
+  {% endif %}
+  {% if persona_schools %}
+    <div style="margin-top:0.5rem;">
+      {% for s in persona_schools %}
+        <a class="ws-school-chip" href="{% url 'westminster_standards:school_detail' s.slug %}">{{ s.name }}</a>
+      {% endfor %}
+    </div>
+  {% endif %}
+</section>
+
+<div class="ws-card ws-prose">
+  <h4 style="margin-top:0;">Biography</h4>
+  <p>{{ p.bio }}</p>
+
+  {% if p.works %}
+    <h4>Principal works</h4>
+    <ul>
+      {% for w in p.works %}<li>{{ w }}</li>{% endfor %}
+    </ul>
+  {% endif %}
+</div>
+
+{% if role_context %}
+  <div class="ws-role-context">
+    <span class="ws-role-context-eyebrow">Role at the Assembly</span>
+    <p class="ws-role-context-label">{{ role_context.label }}</p>
+    <p class="ws-role-context-text">{{ role_context.text }}</p>
+  </div>
+{% endif %}
+
+{% if crux_appearances %}
+<section style="margin-top:1.5rem;">
+  <details class="ws-section-collapse">
+    <summary class="ws-section-summary">
+      <h2 style="font-family:var(--font-serif);font-size:1.15rem;margin:0;display:inline;">
+        Party in {{ crux_appearances|length }} crux{{ crux_appearances|length|pluralize:"es" }}
+      </h2>
+    </summary>
+    <div class="ws-section-body">
+      <ul class="ws-crux-appearances">
+        {% for ca in crux_appearances %}
+          <li>
+            <a class="ws-crux-appearance-card" href="{% url 'westminster_standards:crux_detail' ca.crux.slug %}">
+              <span class="ws-cax-title">{{ ca.crux.title }}</span>
+              <span class="ws-cax-meta">{{ ca.crux.dates }} · <em>{{ ca.party_name }}</em></span>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </details>
+</section>
+
+<style>
+  .ws-section-collapse {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .ws-section-summary {
+    cursor: pointer;
+    padding: 0.6rem 0.9rem;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    user-select: none;
+  }
+  .ws-section-summary::-webkit-details-marker { display: none; }
+  .ws-section-summary::before {
+    content: '▸';
+    color: var(--gold);
+    font-size: 0.82rem;
+    margin-right: 0.5rem;
+    transition: transform 0.15s;
+    display: inline-block;
+  }
+  .ws-section-collapse[open] > .ws-section-summary::before { transform: rotate(90deg); }
+  .ws-section-summary:hover { background: var(--bg-elevated); }
+  .ws-section-body { padding: 0.3rem 0.9rem 0.7rem; border-top: 1px solid var(--border-subtle); }
+  .ws-crux-appearances {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 0.4rem;
+  }
+  .ws-crux-appearance-card {
+    display: block;
+    padding: 0.45rem 0.65rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 5px;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: border-color 0.12s;
+  }
+  .ws-crux-appearance-card:hover { border-color: var(--gold); }
+  .ws-cax-title {
+    display: block;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+  }
+  .ws-cax-meta {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+    margin-top: 0.1rem;
+  }
+  .ws-cax-party {
+    display: block;
+    font-size: 0.84rem;
+    color: var(--gold);
+    margin-top: 0.35rem;
+  }
+  .ws-cax-party em {
+    color: var(--text-primary);
+    font-style: italic;
+  }
+  .ws-school-chip {
+    display: inline-block;
+    padding: 0.18rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    text-decoration: none;
+    margin-right: 0.3rem;
+    transition: border-color 0.12s;
+  }
+  .ws-school-chip:hover { border-color: var(--gold); color: var(--gold); }
+  .ws-cax-position {
+    display: block;
+    font-size: 0.86rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-top: 0.3rem;
+  }
+</style>
+{% endif %}
+
+<section style="margin-top:1.5rem;">
+  <details class="ws-section-collapse">
+    <summary class="ws-section-summary">
+      <h2 style="font-family:var(--font-serif);font-size:1.15rem;margin:0;display:inline;">
+        Ontology placement
+        <span style="color:var(--text-muted);font-size:0.85rem;font-weight:normal;">
+          · {{ override_count }} override{{ override_count|pluralize }} of 35
+        </span>
+      </h2>
+    </summary>
+    <div class="ws-section-body">
+      {% for entry in by_dim %}
+        {% with has_override=0 %}
+        {% for row in entry.rows %}{% if row.is_override %}{% with has_override=1 %}{% endwith %}{% endif %}{% endfor %}
+        {% endwith %}
+        <div class="ws-locus-row ws-dim-{{ entry.dim.key }}">
+          <div class="ws-locus-header">
+            <span style="color:var(--text-muted);font-size:0.82rem;">{{ entry.dim.numeral }}.</span>
+            <a class="ws-link" style="font-size:0.92rem;" href="{% url 'westminster_standards:dimension_detail' entry.dim.key %}">{{ entry.dim.icon }} {{ entry.dim.label }}</a>
+          </div>
+          <div class="ws-locus-attrs">
+            {% for row in entry.rows %}
+              <span class="ws-la-label">{{ row.attr.label }}</span>
+              <span class="ws-la-value {% if row.is_override %}ws-la-override{% endif %}">
+                {{ row.value_label }}
+                {% if row.is_override %}<span class="ws-baseline-pill" style="background:rgba(248,113,113,0.18);color:#fda4af;font-size:0.65rem;">≠</span>{% endif %}
+              </span>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </details>
+</section>
+
+<style>
+  .ws-locus-row {
+    display: grid;
+    grid-template-columns: 11rem 1fr;
+    gap: 0.3rem 0.8rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-subtle);
+    border-left: 3px solid var(--border);
+    padding-left: 0.7rem;
+  }
+  .ws-locus-row:last-child { border-bottom: none; }
+  .ws-locus-header {
+    display: flex;
+    gap: 0.3rem;
+    align-items: baseline;
+    grid-column: 1 / -1;
+    margin-bottom: 0.15rem;
+  }
+  .ws-locus-attrs {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 10rem 1fr;
+    gap: 0.05rem 0.6rem;
+  }
+  .ws-la-label { color: var(--text-muted); font-size: 0.8rem; line-height: 1.4; }
+  .ws-la-value { color: var(--text-primary); font-size: 0.82rem; line-height: 1.4; }
+  .ws-la-override { color: #fda4af; }
+  .ws-role-context {
+    margin-top: 1rem;
+    padding: 0.9rem 1.2rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+  .ws-role-context-eyebrow {
+    display: block;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+  }
+  .ws-role-context-label {
+    font-family: var(--font-serif);
+    font-size: 1.02rem;
+    color: var(--text-primary);
+    margin: 0.2rem 0 0.35rem;
+  }
+  .ws-role-context-text {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin: 0;
+  }
+</style>
+{% endblock %}

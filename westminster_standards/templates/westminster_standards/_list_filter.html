@@ -1,0 +1,87 @@
+{% comment %}
+Reusable list filter, consistent with the main atlas's list behaviour.
+Include this with a "placeholder" and "noun" arg. Tag each card with the
+class ws-filter-item plus a data-search attribute, and wrap each group or
+section (if any) in an element with the class ws-filter-group.
+{% endcomment %}
+<div class="ws-listfilter">
+  <input type="search" id="ws-list-filter" class="ws-listfilter-input"
+         placeholder="{{ placeholder|default:'Filter…' }}" autocomplete="off"
+         aria-label="{{ placeholder|default:'Filter list' }}">
+  <span class="ws-listfilter-count" id="ws-list-count"></span>
+</div>
+<p class="ws-listfilter-empty" id="ws-list-empty" hidden>No {{ noun|default:"items" }} match that filter.</p>
+
+<style>
+  .ws-listfilter {
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+    margin: 1.1rem 0 0.4rem;
+  }
+  .ws-listfilter-input {
+    flex: 1 1 22rem;
+    min-width: 14rem;
+    padding: 0.55rem 0.9rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: 0.92rem;
+  }
+  .ws-listfilter-input:focus { outline: none; border-color: var(--gold); }
+  .ws-listfilter-count {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .ws-listfilter-empty {
+    margin-top: 1.5rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+  .ws-filter-item[hidden], .ws-filter-group[hidden] { display: none !important; }
+</style>
+
+<script>
+  (function () {
+    function init() {
+      var input = document.getElementById('ws-list-filter');
+      if (!input) return;
+      var items = Array.prototype.slice.call(document.querySelectorAll('.ws-filter-item'));
+      var groups = Array.prototype.slice.call(document.querySelectorAll('.ws-filter-group'));
+      var countEl = document.getElementById('ws-list-count');
+      var emptyEl = document.getElementById('ws-list-empty');
+      var total = items.length;
+
+      function apply() {
+        var q = input.value.trim().toLowerCase();
+        var shown = 0;
+        items.forEach(function (it) {
+          var hay = it.getAttribute('data-search') || it.textContent.toLowerCase();
+          var match = !q || hay.indexOf(q) !== -1;
+          it.hidden = !match;
+          if (match) shown++;
+        });
+        groups.forEach(function (g) {
+          g.hidden = g.querySelectorAll('.ws-filter-item:not([hidden])').length === 0;
+        });
+        if (countEl) countEl.textContent = q ? (shown + ' of ' + total) : (total + ' shown');
+        if (emptyEl) emptyEl.hidden = shown !== 0;
+      }
+
+      input.addEventListener('input', apply);
+      apply();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+</script>

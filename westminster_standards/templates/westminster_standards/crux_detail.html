@@ -1,0 +1,201 @@
+{% extends "westminster_standards/base.html" %}
+{% block title %}{{ crux.title }} — Westminster Cruxes{% endblock %}
+{% block ws_content %}
+<section class="ws-hero">
+  <span class="ws-eyebrow">
+    <a class="ws-link" href="{% url 'westminster_standards:cruxes_list' %}">← all cruxes</a>
+    {% if dim %}
+      · <a class="ws-link" href="{% url 'westminster_standards:dimension_detail' dim.key %}">{{ dim.icon }} {{ dim.label }}</a>
+    {% endif %}
+    · {{ crux.dates }}
+  </span>
+  <h1>{{ crux.title }}</h1>
+  {% if crux.tagline %}
+    <p style="font-family:var(--font-serif);font-style:italic;font-size:1.1rem;color:var(--text-primary);max-width:52rem;margin:0.4rem 0;">
+      {{ crux.tagline }}
+    </p>
+  {% endif %}
+  <p style="margin-top:0.5rem;">
+    <span class="ws-outcome-pill ws-outcome-{{ crux.outcome }}">{{ outcome_label }}</span>
+  </p>
+</section>
+
+<div class="ws-card ws-prose">
+  <h4 style="margin-top:0;">Background</h4>
+  <p>{{ crux.background }}</p>
+
+  <h4>The Assembly’s handling</h4>
+  <p>{{ crux.summary }}</p>
+</div>
+
+{% if parties %}
+<section style="margin-top:1.5rem;">
+  <h2 style="font-family:var(--font-serif);font-size:1.25rem;margin:0 0 0.6rem;">Parties</h2>
+  <div class="ws-parties-grid">
+    {% for party in parties %}
+      <div class="ws-card" style="margin:0;">
+        <h4 style="margin:0 0 0.3rem;font-size:1rem;">{{ party.name }}</h4>
+        <p style="color:var(--text-secondary);font-size:0.92rem;margin:0 0 0.6rem;">{{ party.position }}</p>
+        {% if party.people %}
+          <div class="ws-party-people">
+            <span class="ws-eyebrow" style="font-size:0.7rem;">Identifiable members</span>
+            <ul class="ws-party-people-list">
+              {% for p in party.people %}
+                <li><a class="ws-link" href="{% url 'westminster_standards:persona_detail' p.slug %}">{{ p.name }}</a>{% if p.dates %} <span style="color:var(--text-muted);font-size:0.78rem;">({{ p.dates }})</span>{% endif %}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if crux.language %}
+<section style="margin-top:1.5rem;">
+  <h2 style="font-family:var(--font-serif);font-size:1.25rem;margin:0 0 0.4rem;">Confessional language</h2>
+  <blockquote class="ws-confessional-quote">{{ language_html|linebreaksbr }}</blockquote>
+</section>
+{% endif %}
+
+{% if attr_rows %}
+<section style="margin-top:1.5rem;">
+  <h2 style="font-family:var(--font-serif);font-size:1.25rem;margin:0 0 0.4rem;">Ontology placement</h2>
+  <p style="color:var(--text-secondary);font-size:0.9rem;margin:0 0 0.6rem;">
+    This crux bears on the following attribute{{ attr_rows|length|pluralize }} of the
+    Westminster ontology. The Westminster baseline value is marked <span class="ws-baseline-pill">WCF</span>.
+  </p>
+  {% for row in attr_rows %}
+    <div class="ws-card ws-dim-{{ row.dim.key }}" style="border-left-width:3px;margin-bottom:0.6rem;">
+      <p style="margin:0 0 0.4rem;color:var(--text-muted);font-size:0.82rem;">
+        {{ row.dim.numeral }} · <a class="ws-link" href="{% url 'westminster_standards:dimension_detail' row.dim.key %}">{{ row.dim.label }}</a> ·
+        <strong style="color:var(--text-primary);">{{ row.attr.label }}</strong>
+      </p>
+      <div>
+        {% for v in row.attr.values %}
+          <a class="ws-link" style="margin-right:0.4rem;font-size:0.88rem;"
+             href="{% url 'westminster_standards:value_detail' row.dim.key row.short_attr_key v.key %}">{{ v.label }}</a>{% if v.label == row.baseline_label %}<span class="ws-baseline-pill">WCF</span>{% endif %}{% if not forloop.last %} <span style="color:var(--text-muted);">·</span> {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+</section>
+{% endif %}
+
+{% if crux.legacy %}
+<section style="margin-top:1.5rem;">
+  <h2 style="font-family:var(--font-serif);font-size:1.25rem;margin:0 0 0.4rem;">Legacy</h2>
+  <div class="ws-card ws-prose">
+    <p style="margin:0;">{{ crux.legacy }}</p>
+  </div>
+  {% if legacy_schools %}
+    <div style="margin-top:0.6rem;">
+      <span class="ws-eyebrow" style="font-size:0.7rem;">Receiving traditions mentioned</span>
+      <div style="margin-top:0.3rem;">
+        {% for s in legacy_schools %}
+          <a class="ws-school-chip" href="{% url 'westminster_standards:school_detail' s.slug %}">{{ s.name }}</a>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+</section>
+{% endif %}
+
+{% if references_html %}
+<section style="margin-top:1rem;">
+  <h2 style="font-family:var(--font-serif);font-size:1.1rem;margin:0 0 0.3rem;">References</h2>
+  <ul style="color:var(--text-secondary);font-size:0.9rem;">
+    {% for r in references_html %}<li>{{ r }}</li>{% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+{% if crux_heads %}
+<section style="margin-top:1.5rem;">
+  <h2 style="font-family:var(--font-serif);font-size:1.15rem;margin:0 0 0.5rem;">Heads of Doctrine</h2>
+  <ul class="ws-related-list">
+    {% for h in crux_heads %}
+      <li>
+        <a class="ws-related-link" href="{% url 'westminster_standards:head_detail' h.slug %}">
+          <span class="ws-related-title">{{ h.name }}</span>
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+{% if related_cruxes %}
+<section style="margin-top:1.5rem;">
+  <h2 style="font-family:var(--font-serif);font-size:1.15rem;margin:0 0 0.5rem;">See also</h2>
+  <ul class="ws-related-list">
+    {% for rc in related_cruxes %}
+      <li>
+        <a class="ws-related-link" href="{% url 'westminster_standards:crux_detail' rc.slug %}">
+          <span class="ws-related-title">{{ rc.title }}</span>
+          {% if rc.tagline %}<span class="ws-related-tag">{{ rc.tagline }}</span>{% endif %}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+<style>
+  .ws-parties-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 0.85rem;
+  }
+  .ws-party-people-list {
+    list-style: none;
+    padding: 0;
+    margin: 0.3rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.9rem;
+  }
+  .ws-party-people-list li { font-size: 0.86rem; }
+  .ws-confessional-quote {
+    font-family: var(--font-serif);
+    border-left: 3px solid var(--gold);
+    padding: 0.5rem 1rem;
+    color: var(--text-primary);
+    font-style: italic;
+    margin: 0;
+    background: var(--bg-card);
+    border-radius: 0 6px 6px 0;
+  }
+  .ws-outcome-pill {
+    display: inline-block;
+    padding: 0.18rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    text-transform: lowercase;
+    letter-spacing: 0.02em;
+  }
+  .ws-outcome-settled-clear         { background: rgba(52,211,153,0.12); color: #6ee7b7; border: 1px solid rgba(52,211,153,0.25); }
+  .ws-outcome-settled-with-latitude { background: rgba(252,211,77,0.12); color: #fcd34d; border: 1px solid rgba(252,211,77,0.25); }
+  .ws-outcome-rejected-alternative  { background: rgba(248,113,113,0.12); color: #fca5a5; border: 1px solid rgba(248,113,113,0.25); }
+  .ws-outcome-mixed                 { background: rgba(192,132,252,0.12); color: #c4b5fd; border: 1px solid rgba(192,132,252,0.25); }
+  .ws-outcome-deferred              { background: rgba(148,163,184,0.12); color: #cbd5e1; border: 1px solid rgba(148,163,184,0.25); }
+  .ws-related-list {
+    list-style: none; padding: 0; margin: 0;
+    display: grid; gap: 0.4rem;
+  }
+  .ws-related-link {
+    display: block;
+    padding: 0.5rem 0.7rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: border-color 0.12s, background 0.12s;
+  }
+  .ws-related-link:hover { border-color: var(--gold); background: var(--bg-card); }
+  .ws-related-title { display: block; font-weight: 500; font-size: 0.94rem; }
+  .ws-related-tag { display: block; color: var(--text-secondary); font-size: 0.84rem; line-height: 1.4; margin-top: 0.2rem; }
+</style>
+{% endblock %}

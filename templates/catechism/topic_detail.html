@@ -25,6 +25,30 @@
 <p class="text-muted mb-3">{{ topic.description }}</p>
 <p class="text-muted small">{{ catechism.item_name_plural }} {{ topic.display_start }}&ndash;{{ topic.display_end }}</p>
 
+{% if atlas_loci %}
+<div class="study-atlas-panel mb-4">
+    <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-3">
+        <div>
+            <div class="small text-muted">Westminster Standards Atlas</div>
+            <div class="fw-semibold">Loci treated here</div>
+        </div>
+        <a href="{% url 'westminster_standards:ontology' %}" class="btn btn-outline-secondary btn-sm">
+            Browse the Atlas <i class="bi bi-arrow-right ms-1"></i>
+        </a>
+    </div>
+    <div class="study-atlas-chip-group">
+        {% for locus in atlas_loci %}
+        <a href="{{ locus.url }}" class="study-atlas-chip"
+           style="border-left-color: {{ locus.color }};"
+           title="{{ locus.tagline }}">
+            <span>{{ locus.icon }}</span>
+            <span>{{ locus.label }}</span>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
 {% if catechism.is_confession %}
 <div class="chapter-full-text">
     {% for q in questions %}

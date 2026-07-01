@@ -1,0 +1,305 @@
+{% extends "westminster_standards/base.html" %}
+{% block title %}Ontology — Westminster Standards Atlas{% endblock %}
+{% block ws_content %}
+<section class="ws-hero">
+  <span class="ws-eyebrow">Eight loci · {{ attr_count }} questions</span>
+  <h1>The Westminster Ontology</h1>
+  <p>
+    The Westminster Standards are a single, carefully argued system of doctrine.
+    This page lays that system out as a map: the <strong>eight great topics</strong>
+    the divines treated, and — under each one — the precise questions they had to
+    settle and the answer the Confession gives.
+  </p>
+</section>
+
+<div class="ont-guide">
+  <h2>How to read this page</h2>
+  <p>
+    Each of the eight sections below is a <strong>locus</strong> — a major area of
+    Christian doctrine, from Scripture through to the Last Things. A short overview
+    introduces each one. Beneath it are the specific <strong>questions</strong> the
+    Assembly answered.
+  </p>
+  <p>
+    For every question you'll see the position the Confession actually takes, marked
+    <span class="ws-baseline-pill">WCF</span> and explained in a sentence, followed by
+    the rival positions it weighed and rejected — Roman Catholic, Arminian, Socinian,
+    Independent, Erastian, antinomian. Follow a rejected position or a locus heading
+    to read more.
+  </p>
+</div>
+
+<nav class="ont-jump" aria-label="Ontology loci">
+  {% for entry in annotated_dimensions %}
+    <a class="ont-jump-link ws-dim-{{ entry.dim.key }}" href="#{{ entry.dim.key }}">
+      <span>{{ entry.dim.numeral }}. {{ entry.dim.icon }}</span>
+      <strong>{{ entry.dim.label }}</strong>
+      <small>{{ entry.attrs|length }} questions</small>
+    </a>
+  {% endfor %}
+</nav>
+
+{% for entry in annotated_dimensions %}
+  <section class="ont-locus ws-dim-{{ entry.dim.key }}" id="{{ entry.dim.key }}">
+    <div class="ont-locus-header">
+      <div class="ont-locus-left">
+        <span class="ont-numeral">{{ entry.dim.numeral }}.</span>
+        <span class="ont-icon">{{ entry.dim.icon }}</span>
+        <h2 class="ont-label">{{ entry.dim.label }}</h2>
+      </div>
+      <div class="ont-tagline">{{ entry.dim.tagline }}</div>
+    </div>
+
+    {% if entry.dim.prose.overview %}
+      <p class="ont-overview">
+        {{ entry.dim.prose.overview|truncatewords:50 }}
+        <a class="ont-more" href="{% url 'westminster_standards:dimension_detail' entry.dim.key %}">Read the full overview →</a>
+      </p>
+    {% endif %}
+
+    <p class="ont-attrs-intro">The questions the Confession settles under this head:</p>
+
+    <div class="ont-attrs">
+      {% for a in entry.attrs %}
+        <div class="ont-attr">
+          <p class="ont-attr-name">{{ a.attr.label }}</p>
+
+          {% if a.baseline %}
+            <a class="ont-pos ont-pos-wcf" href="{% url 'westminster_standards:value_detail' entry.dim.key a.attr.key a.baseline.value.key %}">
+              <span class="ont-pos-head">
+                <span class="ws-baseline-pill">WCF holds</span>
+                <span class="ont-pos-name">{{ a.baseline.display_label }}</span>
+              </span>
+              {% if a.baseline.value.definition %}
+                <span class="ont-pos-def">{{ a.baseline.value.definition }}</span>
+              {% endif %}
+            </a>
+          {% endif %}
+
+          {% if a.alternatives %}
+            <p class="ont-alts-label">The Confession weighs and sets aside:</p>
+            {% for alt in a.alternatives %}
+              <a class="ont-pos ont-pos-alt" href="{% url 'westminster_standards:value_detail' entry.dim.key a.attr.key alt.value.key %}">
+                <span class="ont-pos-head">
+                  <span class="ont-pos-name">{{ alt.display_label }}</span>
+                </span>
+                {% if alt.value.definition %}
+                  <span class="ont-pos-def">{{ alt.value.definition }}</span>
+                {% endif %}
+              </a>
+            {% endfor %}
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <a class="ont-locus-foot" href="{% url 'westminster_standards:dimension_detail' entry.dim.key %}">
+      Explore {{ entry.dim.label }}
+      <span class="ont-foot-ctx">
+        {% if entry.wcf_count %}{{ entry.wcf_count }} WCF chapters{% endif %}{% if entry.wsc_count %} · {{ entry.wsc_count }} SC{% endif %}{% if entry.wlc_count %} · {{ entry.wlc_count }} LC{% endif %}{% if entry.crux_count %} · {{ entry.crux_count }} crux{{ entry.crux_count|pluralize:"es" }}{% endif %}
+      </span>
+      →
+    </a>
+  </section>
+{% endfor %}
+
+<style>
+  .ont-guide {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.3rem;
+    margin-top: 1.2rem;
+  }
+  .ont-guide h2 {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    margin: 0 0 0.4rem;
+    color: var(--text-primary);
+  }
+  .ont-guide p {
+    font-size: 0.88rem;
+    line-height: 1.55;
+    color: var(--text-secondary);
+    margin: 0 0 0.4rem;
+  }
+  .ont-guide p:last-child { margin-bottom: 0; }
+
+  .ont-jump {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: 0.55rem;
+    margin-top: 1rem;
+  }
+  .ont-jump-link {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.05rem 0.5rem;
+    align-items: baseline;
+    padding: 0.55rem 0.7rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-left: 3px solid var(--border);
+    border-radius: 7px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: border-color 0.12s, background 0.12s;
+  }
+  .ont-jump-link:hover {
+    background: var(--bg-elevated);
+    border-color: var(--gold);
+    color: var(--text-primary);
+  }
+  .ont-jump-link strong {
+    color: var(--text-primary);
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+  .ont-jump-link small {
+    grid-column: 2;
+    color: var(--text-muted);
+    font-size: 0.74rem;
+  }
+
+  .ont-locus {
+    border: 1px solid var(--border);
+    border-left-width: 4px;
+    border-radius: var(--radius);
+    margin-top: 1.5rem;
+    overflow: hidden;
+  }
+
+  .ont-locus-header {
+    padding: 0.95rem 1.3rem 0.5rem;
+  }
+  .ont-locus-left {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+  }
+  .ont-numeral { color: var(--text-muted); font-size: 0.95rem; }
+  .ont-icon { font-size: 1.2rem; }
+  .ont-label {
+    font-family: var(--font-serif);
+    font-size: 1.4rem;
+    color: var(--text-primary);
+    font-weight: 500;
+    margin: 0;
+  }
+  .ont-tagline {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-top: 0.2rem;
+    font-style: italic;
+  }
+
+  .ont-overview {
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+    line-height: 1.6;
+    margin: 0.3rem 1.3rem 0.9rem;
+    max-width: 58rem;
+  }
+  .ont-more { white-space: nowrap; font-size: 0.86rem; }
+
+  .ont-attrs-intro {
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin: 0;
+    padding: 0.5rem 1.3rem;
+    border-top: 1px solid var(--border-subtle);
+    background: var(--bg-elevated);
+  }
+
+  .ont-attr {
+    padding: 1rem 1.3rem 1.1rem;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .ont-attr:last-of-type { border-bottom: none; }
+  .ont-attr-name {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    margin: 0 0 0.6rem;
+  }
+
+  /* Each doctrinal position is a readable, linked block. */
+  .ont-pos {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    padding: 0.55rem 0.8rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: 7px;
+    margin-bottom: 0.45rem;
+    transition: border-color 0.12s, background 0.12s;
+  }
+  .ont-pos:hover { border-color: var(--gold); background: var(--bg-elevated); }
+  .ont-pos-wcf {
+    border-left: 3px solid var(--gold);
+    background: var(--bg-card);
+  }
+  .ont-pos-alt { opacity: 0.92; }
+  .ont-pos-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+  }
+  .ont-pos-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+  }
+  .ont-pos:hover .ont-pos-name { color: var(--gold); }
+  .ont-pos-alt .ont-pos-name { color: var(--text-secondary); font-weight: 500; }
+  .ont-pos-def {
+    display: block;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    margin-top: 0.3rem;
+    max-width: 60rem;
+  }
+  .ont-alts-label {
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-style: italic;
+    margin: 0.6rem 0 0.4rem;
+  }
+
+  .ont-locus-foot {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1.3rem;
+    border-top: 1px solid var(--border-subtle);
+    background: var(--bg-elevated);
+    text-decoration: none;
+    color: var(--gold);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background 0.12s;
+  }
+  .ont-locus-foot:hover { background: var(--bg-card); }
+  .ont-foot-ctx {
+    color: var(--text-muted);
+    font-size: 0.76rem;
+    font-weight: 400;
+    margin-left: auto;
+    text-align: right;
+  }
+
+  @media (max-width: 700px) {
+    .ont-overview, .ont-locus-header, .ont-attrs-intro, .ont-attr, .ont-locus-foot {
+      padding-left: 0.95rem; padding-right: 0.95rem;
+    }
+    .ont-overview { margin-left: 0; margin-right: 0; }
+    .ont-foot-ctx { display: none; }
+    .ont-jump { grid-template-columns: 1fr; }
+  }
+</style>
+{% endblock %}

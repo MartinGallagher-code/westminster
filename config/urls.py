@@ -20,5 +20,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('health/', health_check, name='health_check'),
     path('accounts/', include('accounts.urls')),
+    # Westminster Standards Atlas — mounted before the catechism catch-all
+    # (`<slug:catechism_slug>/`) so `/atlas/...` is not shadowed by it.
+    path('atlas/', include('westminster_standards.urls')),
     path('', include('catechism.urls')),
 ]

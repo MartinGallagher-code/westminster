@@ -1,0 +1,136 @@
+{% extends "westminster_standards/base.html" %}
+{% block title %}{{ school.name }} — Westminster Standards Atlas{% endblock %}
+{% block ws_content %}
+<section class="ws-hero">
+  <span class="ws-eyebrow">
+    <a class="ws-link" href="{% url 'westminster_standards:schools_list' %}">← all schools</a>
+    · {{ school.period }}
+  </span>
+  <h1>{{ school.name }}</h1>
+  <p style="color:var(--text-muted);font-size:0.88rem;margin:0.2rem 0 0.6rem;">{{ school.origin }}</p>
+</section>
+
+<div class="ws-card ws-prose">
+  <p style="margin:0;">{{ school.description }}</p>
+</div>
+
+{% if anchors %}
+<section style="margin-top:1.5rem;">
+  <h2 style="font-family:var(--font-serif);font-size:1.15rem;margin:0 0 0.5rem;">Anchor personas</h2>
+  <div class="ws-anchors-grid">
+    {% for p in anchors %}
+      <a class="ws-anchor-card" href="{% url 'westminster_standards:persona_detail' p.slug %}">
+        <span class="ws-anchor-name">{{ p.name }}</span>
+        <span class="ws-anchor-dates">{{ p.dates }}</span>
+        {% if p.role %}<span class="ws-anchor-role">{{ p.role }}</span>{% endif %}
+      </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<section style="margin-top:1.5rem;">
+  <h2 style="font-family:var(--font-serif);font-size:1.15rem;margin:0 0 0.3rem;">
+    Departures from the Westminster baseline
+  </h2>
+  {% if override_rows %}
+    <p style="color:var(--text-secondary);font-size:0.9rem;margin:0 0 0.6rem;">
+      {{ school.name }} departs from the Westminster baseline on
+      <strong>{{ override_rows|length }}</strong> of the 35 attributes.
+    </p>
+    {% for row in override_rows %}
+      <div class="ws-card ws-dim-{{ row.dim.key }}" style="border-left-width:3px;margin-bottom:0.5rem;">
+        <p style="margin:0 0 0.3rem;color:var(--text-muted);font-size:0.82rem;">
+          {{ row.dim.numeral }} · {{ row.dim.label }} · <strong style="color:var(--text-primary);">{{ row.attr.label }}</strong>
+        </p>
+        <p style="margin:0;font-size:0.92rem;">
+          {% if row.value_key %}
+            <a class="ws-link" href="{% url 'westminster_standards:value_detail' row.dim.key row.attr.key row.value_key %}">{{ row.value_label }}</a>
+          {% else %}
+            {{ row.value_label }}
+          {% endif %}
+          <span class="ws-baseline-pill" style="background:rgba(248,113,113,0.18);color:#fda4af;">override</span>
+          <span style="color:var(--text-muted);font-size:0.8rem;margin-left:0.3rem;">vs WCF: {{ row.baseline_label }}</span>
+        </p>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="ws-card" style="border-left:3px solid rgba(52,211,153,0.4);">
+      <strong>Full confessional alignment.</strong>
+      <p style="margin:0.3rem 0 0;color:var(--text-secondary);font-size:0.88rem;">
+        This school holds the Westminster baseline on all 35 attributes — no departures
+        from the Standards' own positions on Scripture, the decree, covenant, Christology,
+        soteriology, law, ecclesiology, or civil matters.
+      </p>
+    </div>
+    <p style="color:var(--text-secondary);font-size:0.92rem;display:none;">
+      This school holds the Westminster baseline on all 35 attributes — no departures.
+    </p>
+  {% endif %}
+</section>
+
+{% if related_cruxes %}
+<section style="margin-top:1.5rem;">
+  <h2 style="font-family:var(--font-serif);font-size:1.15rem;margin:0 0 0.3rem;">
+    Connected cruxes <span style="color:var(--text-muted);font-size:0.85rem;font-weight:normal;">{{ related_cruxes|length }}</span>
+  </h2>
+  <p style="color:var(--text-secondary);font-size:0.86rem;margin:0 0 0.6rem;">
+    Cruxes where this school's anchor personas were active parties, or where
+    this tradition is mentioned in the legacy narrative.
+  </p>
+  <div class="ws-school-cruxes">
+    {% for cx in related_cruxes %}
+      <a class="ws-school-crux-card" href="{% url 'westminster_standards:crux_detail' cx.slug %}">
+        <span class="ws-scx-title">{{ cx.title }}</span>
+        <span class="ws-scx-dates">{{ cx.dates }}</span>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<section style="margin-top:1.5rem;">
+  <p style="font-size:0.88rem;color:var(--text-muted);">
+    <a class="ws-link" href="{% url 'westminster_standards:compare_schools' %}?a={{ school.slug }}">Compare this school with another →</a>
+  </p>
+</section>
+
+<style>
+  .ws-school-cruxes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 0.4rem;
+  }
+  .ws-school-crux-card {
+    display: block;
+    padding: 0.45rem 0.65rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 5px;
+    text-decoration: none;
+    transition: border-color 0.12s;
+  }
+  .ws-school-crux-card:hover { border-color: var(--gold); }
+  .ws-scx-title { display: block; font-weight: 500; font-size: 0.88rem; color: var(--text-primary); }
+  .ws-scx-dates { display: block; color: var(--text-muted); font-size: 0.74rem; }
+  .ws-anchors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.5rem;
+  }
+  .ws-anchor-card {
+    display: block;
+    padding: 0.5rem 0.7rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: border-color 0.12s;
+  }
+  .ws-anchor-card:hover { border-color: var(--gold); }
+  .ws-anchor-name { display: block; font-weight: 500; font-size: 0.92rem; }
+  .ws-anchor-dates { display: block; color: var(--text-muted); font-size: 0.78rem; }
+  .ws-anchor-role { display: block; color: var(--text-secondary); font-size: 0.82rem; margin-top: 0.15rem; }
+</style>
+{% endblock %}

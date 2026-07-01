@@ -1,0 +1,214 @@
+{% extends "westminster_standards/base.html" %}
+{% block title %}Westminster Standards Atlas — eight loci of the Westminster consensus{% endblock %}
+{% block ws_content %}
+<div class="container">
+
+<section class="ws-home-hero">
+  <p class="ws-eyebrow">An ontology of the Westminster confessional landscape</p>
+  <h1 class="ws-home-title">Westminster Standards Atlas</h1>
+  <div class="ws-home-dots" aria-hidden="true">
+    {% for dim in dimensions %}<span class="ws-home-dot" style="background:var(--{{ dim.color }});" title="{{ dim.label }}"></span>{% endfor %}
+  </div>
+  <p class="ws-home-lede">
+    An atlas of the world the Westminster divines actually argued in: Scripture, the
+    decree, covenant, the person of Christ, the application of redemption, the moral
+    law, polity and worship, and the last things. Eight loci, each with its own
+    attributes; the Confession's own position marked as <span class="ws-baseline-pill">WCF</span>
+    against every alternative the Assembly debated.
+  </p>
+  <div class="ws-home-counts">
+    <span><strong>{{ counts.dimensions }}</strong> loci</span>
+    <span class="sep">·</span>
+    <span><strong>{{ counts.attributes }}</strong> attributes</span>
+    <span class="sep">·</span>
+    <span><a href="{% url 'westminster_standards:personas_list' %}" style="color:inherit;text-decoration:none;"><strong>{{ counts.personas }}</strong> personas</a></span>
+    <span class="sep">·</span>
+    <span><a href="{% url 'westminster_standards:cruxes_list' %}" style="color:inherit;text-decoration:none;"><strong>{{ counts.cruxes }}</strong> cruxes</a></span>
+    <span class="sep">·</span>
+    <span><a href="{% url 'westminster_standards:heads_list' %}" style="color:inherit;text-decoration:none;"><strong>{{ counts.heads }}</strong> heads</a></span>
+    <span class="sep">·</span>
+    <span><a href="{% url 'westminster_standards:works_list' %}" style="color:inherit;text-decoration:none;"><strong>{{ counts.works }}</strong> works</a></span>
+    <span class="sep">·</span>
+    <span><a href="{% url 'westminster_standards:schools_list' %}" style="color:inherit;text-decoration:none;"><strong>{{ counts.schools }}</strong> schools</a></span>
+  </div>
+</section>
+
+{% if daily_text %}
+<section class="ws-home-daily">
+  <a class="ws-daily-link" href="{{ daily_text.url }}">
+    <span class="ws-eyebrow">From the Standards · {{ daily_text.reference }}</span>
+    {% if daily_text.kind == 'wsc' %}
+      <p class="ws-daily-q">{{ daily_text.q.question }}</p>
+      <p class="ws-daily-a">{{ daily_text.q.answer }}</p>
+    {% elif daily_text.kind == 'wcf_section' %}
+      <p class="ws-daily-a">{{ daily_text.section.content }}</p>
+    {% endif %}
+  </a>
+</section>
+{% endif %}
+
+{% comment %}
+Feature cards temporarily removed; the nav bar still links to every layer.
+The ws-home-featured / ws-feat-* CSS below is kept for easy restoration.
+{% endcomment %}
+
+<style>
+  .ws-home-hero {
+    text-align: center;
+    padding: 2.5rem 1rem 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+  .ws-home-hero .ws-eyebrow { display: block; }
+  .ws-home-title {
+    font-family: var(--font-serif);
+    font-size: clamp(2.4rem, 5.4vw, 3.8rem);
+    line-height: 1.05;
+    margin: 0.6rem 0 0.9rem;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+  }
+  .ws-home-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 0.6rem 0 1.1rem;
+  }
+  .ws-home-dot {
+    width: 0.55rem; height: 0.55rem;
+    border-radius: 999px;
+    display: inline-block;
+    box-shadow: 0 0 8px currentColor;
+    opacity: 0.85;
+  }
+  .ws-home-lede {
+    max-width: 52rem;
+    margin: 0 auto;
+    color: var(--text-secondary);
+    font-size: 1.02rem;
+    line-height: 1.6;
+    text-wrap: balance;
+  }
+  .ws-home-counts {
+    margin: 1.1rem auto 0;
+    font-family: var(--font-sans);
+    font-size: 0.84rem;
+    color: var(--text-muted);
+    display: flex; flex-wrap: wrap; justify-content: center;
+    gap: 0.5rem;
+  }
+  .ws-home-counts strong { color: var(--gold); font-weight: 600; }
+
+  .ws-home-daily {
+    max-width: 65ch;
+    margin: 1.5rem auto 0;
+    text-align: center;
+    padding: 0.4rem 1.5rem 0.4rem;
+  }
+  .ws-daily-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    padding: 1rem 1.2rem;
+    border-radius: var(--radius);
+    border: 1px solid transparent;
+    transition: border-color 0.12s, background 0.12s;
+  }
+  .ws-daily-link:hover {
+    border-color: var(--border);
+    background: var(--bg-card);
+  }
+  .ws-home-daily .ws-eyebrow {
+    display: block;
+    margin-bottom: 0.6rem;
+  }
+  .ws-daily-q {
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    line-height: 1.55;
+    color: var(--text-primary);
+    margin: 0 0 0.4rem;
+    text-wrap: balance;
+  }
+  .ws-daily-a {
+    font-family: var(--font-serif);
+    font-size: 1.0rem;
+    line-height: 1.65;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .ws-home-counts .sep { color: var(--text-muted); opacity: 0.6; }
+
+  .ws-home-section-title {
+    text-align: center;
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 1.25rem;
+  }
+
+  .ws-home-featured {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.25rem 0 0.5rem;
+  }
+  .ws-feat-card {
+    text-decoration: none;
+    padding: 0.85rem 1.1rem;
+    margin: 0;
+    display: block;
+  }
+  .ws-feat-card .ws-eyebrow { font-size: 0.7rem; margin: 0; }
+  .ws-feat-title {
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    color: var(--text-primary);
+    margin: 0.25rem 0 0.2rem;
+    line-height: 1.2;
+  }
+  .ws-feat-meta {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin: 0 0 0.35rem;
+  }
+  .ws-feat-excerpt {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.45;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  @media (max-width: 560px) {
+    .ws-home-featured { grid-template-columns: 1fr; }
+  }
+
+  .ws-home-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+  .ws-loc-card {
+    text-decoration: none;
+    display: block;
+    padding: 1rem 1.1rem;
+    margin: 0;
+  }
+  .ws-loc-card .ws-eyebrow { display: block; }
+  .ws-loc-tagline {
+    color: var(--text-secondary);
+    margin: 0.4rem 0 0;
+    font-size: 0.92rem;
+    line-height: 1.45;
+  }
+</style>
+
+</div>
+{% endblock %}

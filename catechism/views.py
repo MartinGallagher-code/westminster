@@ -11,7 +11,7 @@ from django.urls import reverse
 from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView
 
-from .atlas import atlas_url, atlas_work_url
+from .atlas import atlas_url
 from .document_guides import get_document_guide
 from .teaching_guide import (
     get_guide_intro, get_lessons, get_lesson, get_adjacent_lessons,
@@ -291,8 +291,9 @@ class DoctrineIndexView(TemplateView):
         grouped = defaultdict(list)
         for theme in themes:
             grouped[theme.locus or 'General Doctrine'].append(theme)
+        from .atlas import comparison_locus_atlas
         ctx['locus_groups'] = [
-            {'locus': locus, 'themes': items}
+            {'locus': locus, 'themes': items, 'atlas': comparison_locus_atlas(locus)}
             for locus, items in grouped.items()
         ]
         ctx['theme_count'] = themes.count()
@@ -550,8 +551,6 @@ class QuestionDetailView(CatechismMixin, DetailView):
                     chapter_scripture_map[p.reference] = p.text
         ctx['chapter_scripture_map'] = {**chapter_scripture_map, **ctx['scripture_map']}
 
-        ctx['atlas_url'] = atlas_work_url(self.catechism.slug, q)
-
         if self.request.user.is_authenticated:
             from accounts.models import UserNote
             from accounts.forms import NoteForm
@@ -584,6 +583,8 @@ class TopicDetailView(CatechismMixin, DetailView):
         ctx['questions'] = Question.objects.filter(
             catechism=self.catechism, topic=self.object
         )
+        from .atlas import topic_loci
+        ctx['atlas_loci'] = topic_loci(self.object)
         return ctx
 
 

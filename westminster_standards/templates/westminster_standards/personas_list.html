@@ -1,0 +1,238 @@
+{% extends "westminster_standards/base.html" %}
+{% block title %}Personas — Westminster Standards Atlas{% endblock %}
+{% block ws_content %}
+<section class="ws-hero">
+  <span class="ws-eyebrow">{{ total }} divines, lay assessors, and named-but-declined figures</span>
+  <h1>Personas</h1>
+  <p>
+    The Westminster Assembly's full roster: ministerial commissioners and
+    elders from Scotland, the English Presbyterian drafting core, the Dissenting
+    Brethren, the Erastians, the parliamentary lay assessors from both Houses,
+    and the originally-named royalist absentees who refused to sit.
+  </p>
+</section>
+
+<div class="pl-controls">
+  <div class="pl-search">
+    <input type="search" id="pl-filter" placeholder="Filter by name…" autocomplete="off" aria-label="Filter personas by name">
+    <span class="pl-count" id="pl-count"></span>
+  </div>
+  <div class="pl-toggle" role="group" aria-label="Grouping">
+    <button type="button" id="pl-btn-flat" class="pl-tab is-active" aria-pressed="true">All&nbsp;A–Z</button>
+    <button type="button" id="pl-btn-grouped" class="pl-tab" aria-pressed="false">Group&nbsp;by&nbsp;role</button>
+  </div>
+</div>
+
+{# Flat, alphabetical view — visible by default so every persona is in view. #}
+<div id="pl-flat">
+  <div class="ws-personas-grid pl-flat-grid">
+    {% for p in personas_flat %}
+      <a class="ws-persona-card pl-card" data-name="{{ p.name|lower }}" href="{% url 'westminster_standards:persona_detail' p.slug %}">
+        <span class="ws-persona-name">{{ p.name }}</span>
+        <span class="ws-persona-dates">{{ p.dates }}{% if p.role %} · {{ p.role }}{% endif %}</span>
+      </a>
+    {% endfor %}
+  </div>
+</div>
+
+{# Grouped-by-role view — hidden until selected. #}
+<div id="pl-grouped" hidden>
+  {% for group in groups %}
+    <details class="ws-group-collapse pl-group" data-role="{{ group.role|lower }}">
+      <summary class="ws-group-summary">
+        <h2 class="ws-group-title">
+          {{ group.role }}
+          <span class="ws-group-count">{{ group.people|length }}</span>
+        </h2>
+      </summary>
+      <div class="ws-personas-grid">
+        {% for p in group.people %}
+          <a class="ws-persona-card pl-card" data-name="{{ p.name|lower }}" href="{% url 'westminster_standards:persona_detail' p.slug %}">
+            <span class="ws-persona-name">{{ p.name }}</span>
+            <span class="ws-persona-dates">{{ p.dates }}</span>
+          </a>
+        {% endfor %}
+      </div>
+    </details>
+  {% endfor %}
+</div>
+
+<p id="pl-empty" class="pl-empty" hidden>No personas match that name.</p>
+
+<style>
+  .pl-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1rem;
+  }
+  .pl-search { position: relative; flex: 1 1 16rem; min-width: 12rem; }
+  #pl-filter {
+    width: 100%;
+    padding: 0.5rem 0.8rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 0.92rem;
+  }
+  #pl-filter:focus { outline: none; border-color: var(--gold); }
+  .pl-count {
+    display: block;
+    margin-top: 0.3rem;
+    font-size: 0.76rem;
+    color: var(--text-muted);
+  }
+  .pl-toggle {
+    display: inline-flex;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .pl-tab {
+    background: var(--bg-card);
+    border: none;
+    color: var(--text-secondary);
+    font-size: 0.84rem;
+    padding: 0.5rem 0.85rem;
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s;
+  }
+  .pl-tab + .pl-tab { border-left: 1px solid var(--border); }
+  .pl-tab:hover { background: var(--bg-elevated); color: var(--text-primary); }
+  .pl-tab.is-active { background: var(--gold); color: #1a1206; font-weight: 600; }
+  .pl-flat-grid {
+    padding: 0;
+    border-top: none;
+    margin-top: 1rem;
+  }
+  .pl-card[hidden] { display: none; }
+  .pl-group[hidden] { display: none; }
+  .pl-empty {
+    margin-top: 1.5rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  .ws-group-collapse {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-top: 0.8rem;
+    overflow: hidden;
+  }
+  .ws-group-summary {
+    cursor: pointer;
+    padding: 0.7rem 1rem;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    user-select: none;
+  }
+  .ws-group-summary::-webkit-details-marker { display: none; }
+  .ws-group-summary::before {
+    content: '▸';
+    color: var(--gold);
+    font-size: 0.85rem;
+    margin-right: 0.6rem;
+    transition: transform 0.15s;
+    display: inline-block;
+  }
+  .ws-group-collapse[open] > .ws-group-summary::before { transform: rotate(90deg); }
+  .ws-group-summary:hover { background: var(--bg-elevated); }
+  .ws-group-title {
+    font-family: var(--font-serif);
+    margin: 0;
+    font-size: 1.1rem;
+    display: inline;
+  }
+  .ws-group-count {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    font-weight: normal;
+    margin-left: 0.5rem;
+  }
+  .ws-personas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 0.45rem;
+    padding: 0.4rem 1rem 0.8rem;
+    border-top: 1px solid var(--border-subtle);
+  }
+  .ws-persona-card {
+    display: block;
+    padding: 0.4rem 0.6rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 5px;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: border-color 0.12s;
+  }
+  .ws-persona-card:hover { border-color: var(--gold); }
+  .ws-persona-name {
+    display: block;
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+  .ws-persona-dates {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.74rem;
+  }
+</style>
+
+<script>
+  (function () {
+    var filter = document.getElementById('pl-filter');
+    var flat = document.getElementById('pl-flat');
+    var grouped = document.getElementById('pl-grouped');
+    var empty = document.getElementById('pl-empty');
+    var count = document.getElementById('pl-count');
+    var btnFlat = document.getElementById('pl-btn-flat');
+    var btnGrouped = document.getElementById('pl-btn-grouped');
+    var total = document.querySelectorAll('#pl-flat .pl-card').length;
+    var isGrouped = false;
+
+    function apply() {
+      var q = filter.value.trim().toLowerCase();
+      var container = isGrouped ? grouped : flat;
+      var shown = 0;
+      container.querySelectorAll('.pl-card').forEach(function (card) {
+        var match = !q || card.getAttribute('data-name').indexOf(q) !== -1;
+        card.hidden = !match;
+        if (match) shown++;
+      });
+      if (isGrouped) {
+        grouped.querySelectorAll('.pl-group').forEach(function (g) {
+          var visible = g.querySelectorAll('.pl-card:not([hidden])').length;
+          g.hidden = (visible === 0);
+          // Auto-open groups while searching; otherwise leave collapsed.
+          if (q) g.open = visible > 0;
+        });
+      }
+      empty.hidden = shown !== 0;
+      count.textContent = q ? (shown + ' of ' + total) : (total + ' personas');
+    }
+
+    function setMode(groupedMode) {
+      isGrouped = groupedMode;
+      flat.hidden = groupedMode;
+      grouped.hidden = !groupedMode;
+      btnFlat.classList.toggle('is-active', !groupedMode);
+      btnGrouped.classList.toggle('is-active', groupedMode);
+      btnFlat.setAttribute('aria-pressed', String(!groupedMode));
+      btnGrouped.setAttribute('aria-pressed', String(groupedMode));
+      apply();
+    }
+
+    filter.addEventListener('input', apply);
+    btnFlat.addEventListener('click', function () { setMode(false); });
+    btnGrouped.addEventListener('click', function () { setMode(true); });
+    apply();
+  })();
+</script>
+{% endblock %}

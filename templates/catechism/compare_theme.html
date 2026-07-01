@@ -51,9 +51,13 @@
         <a href="{% url 'catechism:search' %}?q={{ theme.name|urlencode }}" class="btn btn-outline-primary btn-sm">
             Search Topic
         </a>
-        {% if comparison_set.slug == 'westminster' %}
-        <a href="{{ atlas_home_url }}" class="btn btn-outline-secondary btn-sm" target="_blank" rel="noopener noreferrer">
-            Open Doctrine Map <i class="bi bi-box-arrow-up-right ms-1"></i>
+        {% if theme.atlas_locus %}
+        <a href="{{ theme.atlas_locus.url }}" class="btn btn-outline-secondary btn-sm">
+            Atlas: {{ theme.atlas_locus.label }} <i class="bi bi-arrow-right ms-1"></i>
+        </a>
+        {% elif comparison_set.slug == 'westminster' %}
+        <a href="{{ atlas_home_url }}" class="btn btn-outline-secondary btn-sm">
+            Open Doctrine Map <i class="bi bi-arrow-right ms-1"></i>
         </a>
         {% endif %}
     </div>
