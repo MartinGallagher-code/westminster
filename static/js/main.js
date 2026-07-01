@@ -80,10 +80,14 @@ document.addEventListener('DOMContentLoaded', function() {
     if (tabButtons.length) {
         var savedTab = localStorage.getItem('activeTab');
         if (savedTab) {
-            var target = document.querySelector('[data-bs-target="' + savedTab + '"]');
-            if (target) {
-                var tab = new bootstrap.Tab(target);
-                tab.show();
+            try {
+                var target = document.querySelector('[data-bs-target="' + CSS.escape(savedTab) + '"]');
+                if (target) {
+                    var tab = new bootstrap.Tab(target);
+                    tab.show();
+                }
+            } catch (e) {
+                localStorage.removeItem('activeTab');
             }
         }
         tabButtons.forEach(function(btn) {

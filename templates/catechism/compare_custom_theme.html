@@ -39,6 +39,10 @@
 <p class="text-muted mb-3">{{ theme.description }}</p>
 {% endif %}
 
+{% if error %}
+<div class="alert alert-warning">{{ error }}</div>
+{% endif %}
+
 <div class="study-callout mb-4">
     <div>
         <div class="fw-semibold">At a glance</div>

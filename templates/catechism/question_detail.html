@@ -436,7 +436,7 @@
             {% endif %}
 
             {% for cq in chapter_questions %}
-            <div class="chapter-mode-item"
+            <div class="chapter-mode-item{% if cq.id == question.id %} chapter-mode-active{% endif %}"
                  data-question-url="{{ cq.get_absolute_url }}"
                  data-question-id="{{ cq.id }}"
                  id="chapter-q-{{ cq.id }}">

@@ -12,7 +12,9 @@
    - Add BCO material to comparison themes if it proves useful.
    - Expand the editorial cross-reference map to additional BCO chapters as needed.
 
-3. **Search refinement**
+3. **Thomas Vincent commentary** — `load_vincent` was removed (2026-07 cleanup): it pointed at a `data/vincent_commentary/` directory that was never populated, so it silently created an empty `CommentarySource` row every build with no content behind it. Source and re-add the command if Vincent's *The Shorter Catechism Explained from Scripture* (1674) text is ever digitized. (Note: `data/shorter_catechism_explained.json` is a different, already-loaded work — Fisher & Erskine's *The Assembly's Shorter Catechism Explained*, loaded by `load_fisher`.)
+
+4. **Search refinement**
    - Add PostgreSQL search indexes if production search becomes slow.
    - Consider result snippets/highlighting once full-text ranking is stable.
 
