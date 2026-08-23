@@ -13,10 +13,12 @@ class Catechism(models.Model):
 
     WESTMINSTER = 'westminster'
     THREE_FORMS_OF_UNITY = 'three_forms_of_unity'
+    REFORMED_CONFESSIONS = 'reformed_confessions'
     OTHER = 'other'
     TRADITION_CHOICES = [
         (WESTMINSTER, 'Westminster Standards'),
         (THREE_FORMS_OF_UNITY, 'Three Forms of Unity'),
+        (REFORMED_CONFESSIONS, 'Reformed Confessions'),
         (OTHER, 'Other'),
     ]
 

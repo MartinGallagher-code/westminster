@@ -5,6 +5,21 @@ reverse-chronological changelog rather than formal release tags.
 
 ## 2026-08-23
 
+### Added
+
+- Published the five Reformed confessions that were loaded but unreachable. The 1689 London Baptist Confession, Savoy Declaration, Scots Confession, Second Helvetic Confession, and Irish Articles were all created with the default tradition (`other`), which every view gates on, so the documents and the two comparison sets built on them — Confessional Lineage and Pre-Westminster Confessions — could not be reached from anywhere on the site. They now form a third document collection, **Reformed Confessions**, with its own filter toggle; a data migration moves the existing rows. Also added "Confessional Lineage" and "Pre-Westminster" quick-start presets to the custom comparison selector.
+
+### Changed
+
+- Comparison columns are ordered oldest-document-first instead of alphabetically by abbreviation, which had put the 1689 before the 1646 Confession it revises.
+- Comparison theme pages name the documents in the set that have no parallel section for that theme, rather than silently showing a narrower table — the omission (the 1689 has no chapter answering WCF XXXI) is part of what the comparison shows.
+
+### Fixed
+
+- `sitemap.xml` advertised doctrine and comparison pages that 404 for search engines. Those pages are gated on the visitor's active collections and a crawler sends no filter cookie, but the sitemap was built over every valid tradition — so a theme carried only by the 1689 and Savoy (e.g. "Of the Gospel") was advertised and then 404'd. The sitemap is now built over the anonymous defaults.
+
+## 2026-08-23
+
 ### Fixed
 
 - Stopped the sitemap advertising comparison URLs that 404. A theme inside a comparison set that references an unsupported tradition — e.g. the Confessional Lineage set's "Of Church Government", whose 1689 and Savoy ranges are null, leaving it with only a Westminster entry — passed the per-theme tradition filter and was listed in `sitemap.xml`, while `CompareSetThemeView` gates the whole *set* and returned 404. `_comparison_themes_for_traditions` is now set-aware, matching `_comparison_sets_for_traditions`, so `/compare/1689-baptist/of-church-government/` is no longer advertised or linked from the doctrine index.

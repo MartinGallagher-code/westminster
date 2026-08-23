@@ -63,6 +63,18 @@
     </div>
 </div>
 
+{% if documents_without_entry %}
+<div class="alert alert-light border small d-flex align-items-start gap-2" role="note">
+    <i class="bi bi-info-circle mt-1"></i>
+    <div>
+        <strong>No parallel here:</strong>
+        {% for doc in documents_without_entry %}{{ doc.name }}{% if not forloop.last %}, {% endif %}{% endfor %}
+        {{ documents_without_entry|pluralize:"has,have" }} no corresponding section for this theme.
+        The omission is part of what the comparison shows.
+    </div>
+</div>
+{% endif %}
+
 {# Column visibility toggles #}
 {% if columns|length > 2 %}
 <div class="mb-3">

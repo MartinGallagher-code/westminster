@@ -4,7 +4,7 @@ import re
 from xml.sax.saxutils import escape
 
 from django.db import connection
-from django.db.models import Q, Count, Prefetch
+from django.db.models import Q, Count, Prefetch, F
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
@@ -22,7 +22,7 @@ from .models import (
     BibleBook, ScriptureIndex, ComparisonSet, ComparisonTheme,
     ComparisonEntry, QuestionDoctrineHead, QuestionOntologyTag,
 )
-from .utils import VALID_TRADITIONS, get_active_traditions
+from .utils import DEFAULT_TRADITIONS, VALID_TRADITIONS, get_active_traditions
 
 
 SEARCH_STOP_WORDS = {
@@ -44,6 +44,22 @@ COMPARISON_PRESETS = [
         'name': 'Three Forms of Unity',
         'slugs': ['heidelberg', 'belgic', 'dort'],
         'description': 'The Heidelberg Catechism, Belgic Confession, and Canons of Dort.',
+    },
+    {
+        'name': 'Confessional Lineage',
+        'slugs': ['wcf', 'savoy', '1689'],
+        'description': (
+            'Westminster (1646) to Savoy (1658) to the Second London Baptist '
+            'Confession (1689) — Presbyterian to Congregationalist to Baptist.'
+        ),
+    },
+    {
+        'name': 'Pre-Westminster',
+        'slugs': ['scots', 'second-helvetic', 'irish', 'wcf'],
+        'description': (
+            'The Scots Confession (1560), Second Helvetic (1566), and Irish '
+            'Articles (1615) beside the Confession they shaped.'
+        ),
     },
 ]
 
@@ -168,12 +184,17 @@ def sitemap_xml(request):
         urls.extend(question.get_absolute_url() for question in catechism.questions.all())
 
     urls.extend(book.get_absolute_url() for book in BibleBook.objects.all())
+
+    # Comparison and doctrine pages are gated on the *visitor's* active
+    # traditions, and a crawler sends no docFilters cookie — so advertise only
+    # what resolves under DEFAULT_TRADITIONS. Listing more means listing 404s
+    # (e.g. /doctrine/of-the-gospel/, whose only entries are 1689 and Savoy).
     urls.extend(
         comparison_set.get_absolute_url()
-        for comparison_set in _comparison_sets_for_traditions(VALID_TRADITIONS)
+        for comparison_set in _comparison_sets_for_traditions(DEFAULT_TRADITIONS)
     )
 
-    comparison_themes = _comparison_themes_for_traditions(VALID_TRADITIONS)
+    comparison_themes = _comparison_themes_for_traditions(DEFAULT_TRADITIONS)
     urls.extend(theme.get_absolute_url() for theme in comparison_themes)
     urls.extend(
         reverse('catechism:doctrine_detail', kwargs={'theme_slug': slug})
@@ -637,7 +658,10 @@ class SearchView(ListView):
         ctx['atlas_results'] = search_entities(ctx['query'])
         ctx['atlas_total'] = sum(group['total'] for group in ctx['atlas_results'])
 
-        tradition_order = {'westminster': 0, 'three_forms_of_unity': 1, 'other': 2}
+        tradition_order = {
+            'westminster': 0, 'three_forms_of_unity': 1,
+            'reformed_confessions': 2, 'other': 3,
+        }
         document_order = {
             'wcf': 0,
             'wlc': 1,
@@ -710,7 +734,10 @@ class ScriptureBookView(DetailView):
             grouped[cat.pk].append({'question': entry.question, 'reference': entry.reference})
             catechism_map[cat.pk] = cat
 
-        tradition_order = {'westminster': 0, 'three_forms_of_unity': 1, 'other': 2}
+        tradition_order = {
+            'westminster': 0, 'three_forms_of_unity': 1,
+            'reformed_confessions': 2, 'other': 3,
+        }
         ordered_cats = sorted(
             catechism_map.values(),
             key=lambda c: (tradition_order.get(c.tradition, 99), c.abbreviation),
@@ -761,6 +788,19 @@ class CompareIndexView(ListView):
             all_catechisms.values_list('slug', flat=True)
         )
         return ctx
+
+
+def _order_entries_chronologically(entries):
+    """Oldest document first.
+
+    The default ordering is alphabetical by abbreviation, which puts the 1689
+    before the Confession it revises. These sets are read left-to-right as a
+    lineage, so order by the document's year and fall back to the abbreviation
+    when a year is missing.
+    """
+    return entries.order_by(
+        F('catechism__year').asc(nulls_last=True), 'catechism__abbreviation',
+    )
 
 
 def _build_columns(entries):
@@ -1023,11 +1063,26 @@ class CompareSetThemeView(DetailView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         active_traditions = get_active_traditions(self.request)
-        entries = self.object.entries.filter(
-            catechism__tradition__in=active_traditions
-        ).select_related('catechism')
+        entries = _order_entries_chronologically(
+            self.object.entries.filter(
+                catechism__tradition__in=active_traditions
+            ).select_related('catechism')
+        )
         ctx['columns'] = _build_columns(entries)
         ctx['comparison_set'] = self.object.comparison_set
+
+        # Documents in this set that have no parallel for this theme. The
+        # absence is itself informative — the 1689 has no chapter answering
+        # WCF XXXI, for instance — so name them rather than silently showing
+        # a narrower table.
+        covered = {entry.catechism_id for entry in entries}
+        ctx['documents_without_entry'] = [
+            catechism for catechism in Catechism.objects.filter(
+                comparison_entries__theme__comparison_set=self.object.comparison_set,
+                tradition__in=active_traditions,
+            ).distinct()
+            if catechism.id not in covered
+        ]
 
         # Prev/next theme navigation within the same set (filtered to active traditions)
         all_themes = list(

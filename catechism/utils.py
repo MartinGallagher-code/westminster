@@ -1,7 +1,11 @@
 import json
 import urllib.parse
 
-VALID_TRADITIONS = {'westminster', 'three_forms_of_unity'}
+VALID_TRADITIONS = {'westminster', 'three_forms_of_unity', 'reformed_confessions'}
+
+# What a visitor with no docFilters cookie sees — including every search-engine
+# crawler. Anything advertised in sitemap.xml has to resolve under these.
+DEFAULT_TRADITIONS = ['westminster']
 
 
 def get_active_traditions(request):
@@ -20,4 +24,4 @@ def get_active_traditions(request):
                 return active
         except (ValueError, TypeError):
             pass
-    return ['westminster']
+    return list(DEFAULT_TRADITIONS)
