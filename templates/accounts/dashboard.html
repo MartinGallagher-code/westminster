@@ -56,6 +56,24 @@
     </div>
 </div>
 
+<a href="{% url 'accounts:memorize' %}" class="study-callout mb-4 text-decoration-none"
+   style="color: inherit;">
+    <div>
+        <div class="fw-semibold"><i class="bi bi-lightbulb me-1"></i>Memorisation deck</div>
+        <div class="text-muted small">
+            {% if memorisation_total %}
+                {% if memorisation_due %}{{ memorisation_due }} answer{{ memorisation_due|pluralize }} due today{% else %}Nothing due today{% endif %}
+                &middot; {{ memorisation_total }} in your deck.
+            {% else %}
+                Commit the catechism to memory — each answer returns just before you would forget it.
+            {% endif %}
+        </div>
+    </div>
+    <span class="btn btn-outline-primary btn-sm">
+        {% if memorisation_due %}Review now{% elif memorisation_total %}Open deck{% else %}Start memorising{% endif %}
+    </span>
+</a>
+
 {% if notes or inline_comments or highlight_count %}
 <p class="text-muted">
     You have {{ notes|length }} note{{ notes|length|pluralize }}

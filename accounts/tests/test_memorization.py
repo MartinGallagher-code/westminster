@@ -114,10 +114,18 @@ def test_a_long_interval_counts_as_known(learner, wsc_question):
 
 
 @pytest.mark.django_db
-def test_deck_page_requires_login(client):
-    resp = client.get('/accounts/memorize/')
-    assert resp.status_code == 302
-    assert '/accounts/login/' in resp['Location']
+def test_the_deck_page_is_public_but_the_deck_itself_is_not(client, learner, wsc_question):
+    """Signed out it explains the feature; the cards belong to an account."""
+    MemorizationCard.objects.create(user=learner, question=wsc_question)
+
+    anonymous = client.get('/accounts/memorize/')
+    assert anonymous.status_code == 200
+    assert 'Create an account' in anonymous.content.decode()
+    assert 'due today' not in anonymous.content.decode()
+
+    # Acting on a deck still requires an account.
+    assert client.get('/accounts/memorize/review/').status_code == 302
+    assert client.post('/accounts/memorize/add-document/', {'catechism': 'wsc'}).status_code == 302
 
 
 @pytest.mark.django_db

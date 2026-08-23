@@ -3,6 +3,16 @@
 All notable project changes should be recorded here. This project uses a simple
 reverse-chronological changelog rather than formal release tags.
 
+## 2026-08-24
+
+### Changed
+
+- Made the memorisation deck findable. It shipped behind a login wall whose only entry point was a navbar link that signed-out visitors never saw, so nobody who did not already know about it could find it. `/accounts/memorize/` now explains itself to signed-out visitors — what it is, how the schedule works, and what can be memorised — instead of bouncing them to a login form, and is listed in the sitemap. The navbar offers it to everyone; the study desk shows what is due with a link through; the home page carries a "Memorise the Catechism" card; and catechism and topic pages offer to add a whole document or one topic at a time. Confessions are deliberately left out of the shortcuts — memorising prose section by section is a different exercise from a catechism's questions and answers.
+
+### Added
+
+- Added every answer under one topic to the deck in a single action (`/accounts/memorize/add-topic/<pk>/`), which is the unit a reader working through a catechism actually uses.
+
 ## 2026-08-23 (later still)
 
 ### Changed

@@ -47,7 +47,7 @@ def test_signed_in_readers_are_never_served_a_cached_page(catechism, topic, ques
     response = signed_in.get('/wsc/questions/1/')
 
     assert 'X-Page-Cache' not in response
-    assert 'Memorise' in response.content.decode()
+    assert '/accounts/memorize/add/' in response.content.decode()
 
 
 @override_settings(PAGE_CACHE_SECONDS=60)
@@ -61,7 +61,8 @@ def test_a_signed_in_page_is_never_written_to_the_cache(catechism, topic, questi
     anonymous = Client()
     response = anonymous.get('/wsc/questions/1/')
     assert response['X-Page-Cache'] == 'miss'
-    assert 'Memorise' not in response.content.decode()
+    # The per-question "add to deck" form is rendered for signed-in readers only.
+    assert '/accounts/memorize/add/' not in response.content.decode()
 
 
 @override_settings(PAGE_CACHE_SECONDS=60)

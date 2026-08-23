@@ -20,7 +20,7 @@ from .models import UserNote, Highlight, InlineComment, MemorizationCard, UserPr
 from .export import export_filename, notes_markdown
 from . import scheduling
 from .forms import SignupForm
-from catechism.models import Catechism, Question, Commentary
+from catechism.models import Catechism, Question, Commentary, Topic
 from catechism.utils import get_active_traditions
 
 logger = logging.getLogger(__name__)
@@ -68,6 +68,10 @@ class DashboardView(LoginRequiredMixin, ListView):
         ctx['note_count'] = UserNote.objects.filter(user=self.request.user).count()
         ctx['annotation_count'] = InlineComment.objects.filter(user=self.request.user).count()
         ctx['highlight_count'] = Highlight.objects.filter(user=self.request.user).count()
+
+        deck = MemorizationCard.objects.filter(user=self.request.user)
+        ctx['memorisation_total'] = deck.count()
+        ctx['memorisation_due'] = deck.filter(due_on__lte=timezone.localdate()).count()
 
         # Searching your own study material: the notes queryset is already
         # filtered above, so narrow the annotations and highlights to match.
@@ -412,13 +416,25 @@ def _deck(user):
     )
 
 
-class MemorizeHomeView(LoginRequiredMixin, TemplateView):
-    """The reader's deck: what is due, what is being learned, what is known."""
+class MemorizeHomeView(TemplateView):
+    """The reader's deck — or, signed out, an explanation of what it is.
+
+    Deliberately not login-required. Bouncing an anonymous visitor to a login
+    form tells them nothing about what they would be signing in for, and makes
+    the feature invisible to anyone who has not already found it.
+    """
 
     template_name = 'accounts/memorize.html'
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
+        if not self.request.user.is_authenticated:
+            ctx['memorisable'] = Catechism.objects.filter(
+                document_type=Catechism.CATECHISM,
+                tradition__in=get_active_traditions(self.request),
+            ).order_by('abbreviation')
+            return ctx
+
         today = timezone.localdate()
         deck = _deck(self.request.user)
 
@@ -492,6 +508,34 @@ class MemorizeRemoveView(LoginRequiredMixin, View):
         messages.success(request, 'Removed from your memorisation deck.')
         question = get_object_or_404(Question, pk=question_pk)
         return redirect(request.POST.get('next') or question.get_absolute_url())
+
+
+@method_decorator(ratelimit(key='user', rate='10/m', method='POST', block=True), name='post')
+class MemorizeAddTopicView(LoginRequiredMixin, View):
+    """Add every question under one topic — the natural unit for a reader
+    working through a catechism a section at a time."""
+
+    def post(self, request, topic_pk):
+        topic = get_object_or_404(Topic, pk=topic_pk)
+        existing = set(
+            MemorizationCard.objects.filter(
+                user=request.user, question__topic=topic,
+            ).values_list('question_id', flat=True)
+        )
+        new_cards = [
+            MemorizationCard(user=request.user, question=question)
+            for question in topic.questions.all()
+            if question.pk not in existing
+        ]
+        MemorizationCard.objects.bulk_create(new_cards)
+        messages.success(
+            request,
+            f'Added {len(new_cards)} answer{"" if len(new_cards) == 1 else "s"} '
+            f'from “{topic.name}” to your memorisation deck.'
+            if new_cards else
+            f'Every answer in “{topic.name}” is already in your deck.',
+        )
+        return redirect(request.POST.get('next') or topic.get_absolute_url())
 
 
 @method_decorator(ratelimit(key='user', rate='10/m', method='POST', block=True), name='post')

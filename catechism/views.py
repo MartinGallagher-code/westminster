@@ -186,6 +186,8 @@ def sitemap_xml(request):
         reverse('catechism:doctrine_index'),
         reverse('accounts:signup'),
         reverse('accounts:login'),
+        # Public explainer for signed-out visitors, so it is discoverable.
+        reverse('accounts:memorize'),
     ]
 
     supported_catechisms = Catechism.objects.filter(
