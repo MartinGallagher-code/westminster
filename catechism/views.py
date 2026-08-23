@@ -25,6 +25,7 @@ from .models import (
     ComparisonEntry, QuestionDoctrineHead, QuestionOntologyTag,
 )
 from .cache import cache_read_only_page
+from .diffing import build_diff
 from .citations import bibtex, citation_label, citation_text, resolve_reference, ris
 from .handout import build_handout
 from .scripture_refs import (
@@ -1293,4 +1294,56 @@ class HandoutView(TemplateView):
         ctx['catechism'] = catechism
         ctx['items'] = build_handout(questions)
         ctx['generated_on'] = date.today()
+        return ctx
+
+
+class CompareDiffView(TemplateView):
+    """Word-level diff between two editions of the same chapter.
+
+    The Savoy Declaration and the 1689 are revisions of the Confession; side by
+    side they look identical and the edits are easy to miss. This shows what
+    actually changed.
+    """
+
+    template_name = 'catechism/compare_diff.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        active_traditions = get_active_traditions(self.request)
+
+        theme = get_object_or_404(
+            ComparisonTheme,
+            slug=self.kwargs['theme_slug'],
+            comparison_set__slug=self.kwargs['set_slug'],
+        )
+        entries = list(
+            _order_entries_chronologically(
+                theme.entries.filter(
+                    catechism__tradition__in=active_traditions,
+                ).select_related('catechism')
+            )
+        )
+        if len(entries) < 2:
+            ctx['theme'] = theme
+            ctx['comparison_set'] = theme.comparison_set
+            ctx['error'] = (
+                'This theme needs two documents in your active collections '
+                'before it can be compared word by word.'
+            )
+            ctx['entries'] = entries
+            return ctx
+
+        by_slug = {entry.catechism.slug: entry for entry in entries}
+        left_entry = by_slug.get(self.request.GET.get('a'), entries[0])
+        right_entry = by_slug.get(self.request.GET.get('b'))
+        if right_entry is None or right_entry == left_entry:
+            right_entry = next(entry for entry in entries if entry != left_entry)
+
+        ctx['theme'] = theme
+        ctx['comparison_set'] = theme.comparison_set
+        ctx['entries'] = entries
+        ctx['left'] = left_entry.catechism
+        ctx['right'] = right_entry.catechism
+        ctx['rows'] = build_diff(left_entry.get_questions(), right_entry.get_questions())
+        ctx['changed_rows'] = sum(1 for row in ctx['rows'] if not row['unchanged'])
         return ctx

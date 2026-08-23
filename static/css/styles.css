@@ -754,6 +754,36 @@ a {
     border-color: var(--wm-primary) !important;
 }
 
+/* ── Cross-edition diff ── */
+.diff-text {
+    line-height: 1.7;
+}
+
+ins.diff-ins {
+    background-color: #d8f0dc;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+}
+
+del.diff-del {
+    background-color: #f7dcdc;
+    text-decoration: line-through;
+}
+
+[data-bs-theme="dark"] ins.diff-ins {
+    background-color: #1e3a24;
+    color: #d9f2df;
+}
+
+[data-bs-theme="dark"] del.diff-del {
+    background-color: #43201f;
+    color: #f5d9d8;
+}
+
+.diff-row.diff-unchanged .diff-text {
+    color: var(--bs-secondary-color, #6c757d);
+}
+
 /* ── Session handout ──
    Screen-readable, but laid out for paper: a group leader prints it or saves
    it as a PDF from the browser. */

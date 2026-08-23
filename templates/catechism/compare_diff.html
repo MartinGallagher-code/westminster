@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block body_attrs %}data-filter-sensitive="true"{% endblock %}
+{% block title %}{{ theme.name }} — what changed — Study Reformed{% endblock %}
+{% block meta_description %}Word-level differences between {{ left.name }} and {{ right.name }} on {{ theme.name }}.{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'catechism:compare_index' %}">Compare</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'catechism:compare_set' set_slug=comparison_set.slug %}">{{ comparison_set.name }}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'catechism:compare_set_theme' set_slug=comparison_set.slug theme_slug=theme.slug %}">{{ theme.name }}</a></li>
+        <li class="breadcrumb-item active">What changed</li>
+    </ol>
+</nav>
+
+<h1 class="mb-2">{{ theme.name }}: what changed</h1>
+
+{% if error %}
+<div class="study-callout mb-4">
+    <div>
+        <div class="fw-semibold">Not enough to compare</div>
+        <div class="text-muted small">{{ error }}</div>
+    </div>
+</div>
+{% else %}
+<p class="lead text-muted">
+    From <strong>{{ left.name }}</strong>{% if left.year %} ({{ left.year }}){% endif %}
+    to <strong>{{ right.name }}</strong>{% if right.year %} ({{ right.year }}){% endif %}.
+    {{ changed_rows }} of {{ rows|length }} section{{ rows|length|pluralize }} differ.
+</p>
+
+<form method="get" class="d-flex flex-wrap gap-2 align-items-end mb-4">
+    <div>
+        <label class="form-label small mb-1" for="diff-a">From</label>
+        <select class="form-select form-select-sm" name="a" id="diff-a">
+            {% for entry in entries %}
+            <option value="{{ entry.catechism.slug }}" {% if entry.catechism == left %}selected{% endif %}>
+                {{ entry.catechism.name }}{% if entry.catechism.year %} ({{ entry.catechism.year }}){% endif %}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div>
+        <label class="form-label small mb-1" for="diff-b">To</label>
+        <select class="form-select form-select-sm" name="b" id="diff-b">
+            {% for entry in entries %}
+            <option value="{{ entry.catechism.slug }}" {% if entry.catechism == right %}selected{% endif %}>
+                {{ entry.catechism.name }}{% if entry.catechism.year %} ({{ entry.catechism.year }}){% endif %}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit" class="btn btn-outline-primary btn-sm">Compare</button>
+</form>
+
+<p class="small text-muted">
+    <del class="diff-del">Struck through</del> is in {{ left.abbreviation }} only;
+    <ins class="diff-ins">underlined</ins> is in {{ right.abbreviation }} only.
+    Punctuation and capitalisation are ignored — they were modernised freely, and
+    would otherwise bury the substantive edits.
+</p>
+
+{% for row in rows %}
+<section class="diff-row {% if row.unchanged %}diff-unchanged{% endif %} mb-4">
+    <div class="d-flex justify-content-between align-items-baseline gap-2 flex-wrap">
+        <h2 class="h6 mb-1">
+            {% if row.left %}<a href="{{ row.left.get_absolute_url }}">{{ left.abbreviation }} {{ row.left.display_number }}</a>{% else %}<span class="text-muted">{{ left.abbreviation }} — none</span>{% endif %}
+            <span class="text-muted">→</span>
+            {% if row.right %}<a href="{{ row.right.get_absolute_url }}">{{ right.abbreviation }} {{ row.right.display_number }}</a>{% else %}<span class="text-muted">{{ right.abbreviation }} — none</span>{% endif %}
+        </h2>
+        {% if row.unchanged %}
+        <span class="badge text-bg-light">unchanged</span>
+        {% else %}
+        <span class="badge text-bg-secondary">{{ row.change_ratio|floatformat:"0" }}% changed</span>
+        {% endif %}
+    </div>
+    <p class="diff-text mb-0">{% for op, text in row.segments %}{% if op == 'equal' %}{{ text }}{% elif op == 'inserted' %}<ins class="diff-ins">{{ text }}</ins>{% else %}<del class="diff-del">{{ text }}</del>{% endif %}{% endfor %}</p>
+</section>
+{% endfor %}
+{% endif %}
+{% endblock %}
