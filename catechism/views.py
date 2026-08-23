@@ -113,6 +113,11 @@ def _comparison_themes_for_traditions(active_traditions):
     ).select_related('comparison_set').distinct()
 
 
+# A query matching a topic name pulls in that topic's questions too. Bounded
+# so a one-letter query cannot build an unbounded id array.
+MAX_TOPIC_MATCH_IDS = 500
+
+
 def _search_questions(query, active_traditions):
     base_qs = Question.objects.filter(
         catechism__tradition__in=active_traditions
@@ -120,23 +125,33 @@ def _search_questions(query, active_traditions):
     terms = _search_terms(query)
 
     if connection.vendor == 'postgresql':
-        from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
+        # Match against the stored, GIN-indexed search_vector column added in
+        # migration 0023 rather than building a tsvector per row per query.
+        # The column lives in the database only — declaring it as a model field
+        # would break every SQLite migration — so the condition is raw SQL
+        # against the real table name, which no join alias can shift.
+        from django.db.models.expressions import RawSQL
 
-        vector = (
-            SearchVector('question_text', weight='A') +
-            SearchVector('answer_text', weight='B') +
-            SearchVector('topic__name', weight='B') +
-            SearchVector('proof_texts', weight='C')
+        tsquery = "websearch_to_tsquery('english', %s)"
+        # Topic names live in another table, so they cannot go in the generated
+        # column. Resolving them to ids first keeps the OR between two
+        # index-backed conditions — the GIN index on search_vector and the
+        # primary key — which a subquery in the OR would have ruled out.
+        topic_question_ids = list(
+            Question.objects.filter(topic__name__icontains=query)
+            .values_list('id', flat=True)[:MAX_TOPIC_MATCH_IDS]
         )
-        search_query = SearchQuery(query, search_type='websearch')
-        for term in terms:
-            search_query |= SearchQuery(term, search_type='plain')
         return base_qs.annotate(
-            search=vector,
-            rank=SearchRank(vector, search_query),
-        ).filter(search=search_query).order_by(
-            '-rank', 'catechism__abbreviation', 'number'
-        )
+            rank=RawSQL(
+                f'ts_rank(catechism_question.search_vector, {tsquery})', (query,),
+            ),
+        ).extra(
+            where=[
+                f'(catechism_question.search_vector @@ {tsquery}'
+                ' OR catechism_question.id = ANY(%s))'
+            ],
+            params=[query, topic_question_ids],
+        ).order_by('-rank', 'catechism__abbreviation', 'number')
 
     search_filter = (
         Q(question_text__icontains=query) |
