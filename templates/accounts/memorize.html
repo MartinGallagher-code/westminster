@@ -124,6 +124,25 @@
     <button type="submit" class="btn btn-outline-primary">Add all</button>
 </form>
 
+{% if heatmap.total_days %}
+<h2 class="h5 mt-4">Practice</h2>
+<p class="text-muted small mb-2">
+    {{ heatmap.total_days }} day{{ heatmap.total_days|pluralize }} practised in the last few months.
+</p>
+<div class="practice-heatmap" role="img"
+     aria-label="Practice over the last {{ heatmap.weeks|length }} weeks: {{ heatmap.total_days }} days practised.">
+    {% for week in heatmap.weeks %}
+    <div class="practice-week">
+        {% for day in week %}
+        <span class="practice-day practice-level-{{ day.level }}{% if day.future %} is-future{% endif %}"
+              title="{{ day.day|date:'j F Y' }} — {% if day.reviews %}{{ day.reviews }} review{{ day.reviews|pluralize }}{% else %}nothing{% endif %}"></span>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
+<p class="text-muted small mt-1 mb-4">Each column is a week; each square a day.</p>
+{% endif %}
+
 {% if due_cards %}
 <h2 class="h5">Due now</h2>
 <div class="mb-4">

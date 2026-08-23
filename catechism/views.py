@@ -286,12 +286,22 @@ class HomeView(TemplateView):
         ]
         ctx['atlas_home_url'] = atlas_url()
         if self.request.user.is_authenticated:
-            from accounts.models import UserNote
+            from accounts.models import MemorizationCard, ReadingPosition, UserNote
             ctx['recent_note'] = UserNote.objects.filter(
                 user=self.request.user
             ).select_related(
                 'question', 'question__catechism', 'question__topic'
             ).order_by('-updated_at').first()
+
+            # Where you were, what is due, what to read next — the three
+            # things a returning reader wants before they want anything else.
+            ctx['reading_positions'] = list(
+                ReadingPosition.objects.filter(user=self.request.user)
+                .select_related('question', 'question__catechism', 'question__topic')[:3]
+            )
+            ctx['memorisation_due'] = MemorizationCard.objects.filter(
+                user=self.request.user, due_on__lte=date.today(),
+            ).count()
         return ctx
 
 
@@ -603,7 +613,8 @@ class QuestionDetailView(CatechismMixin, DetailView):
         if self.request.user.is_authenticated:
             from accounts.models import UserNote
             from accounts.forms import NoteForm
-            from accounts.models import MemorizationCard
+            from accounts.models import MemorizationCard, ReadingPosition
+            ReadingPosition.remember(self.request.user, q)
             ctx['user_note'] = UserNote.objects.filter(
                 user=self.request.user, question=q
             ).first()
