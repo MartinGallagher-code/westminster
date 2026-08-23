@@ -39,7 +39,7 @@
     <div class="study-atlas-chip-group">
         {% for locus in atlas_loci %}
         <a href="{{ locus.url }}" class="study-atlas-chip"
-           style="border-left-color: {{ locus.color }};"
+           style="--locus-color: {{ locus.color }};"
            title="{{ locus.tagline }}">
             <span>{{ locus.icon }}</span>
             <span>{{ locus.label }}</span>

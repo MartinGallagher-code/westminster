@@ -754,6 +754,69 @@ a {
     border-color: var(--wm-primary) !important;
 }
 
+/* ── Comparison: narrow-screen document switcher ──
+   Below lg the comparison columns stack, so a side-by-side reading becomes
+   three documents in sequence. The tabs show one at a time instead. */
+.comparison-doc-tabs {
+    display: flex;
+    gap: 0.25rem;
+    overflow-x: auto;
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    padding: 0.5rem 0;
+    background: var(--bs-body-bg);
+    border-bottom: 1px solid var(--wm-border);
+    -webkit-overflow-scrolling: touch;
+}
+
+.comparison-doc-tabs .doc-tab {
+    flex: 0 0 auto;
+    border: 1px solid var(--wm-border);
+    background: transparent;
+    color: var(--bs-body-color);
+    border-radius: 999px;
+    padding: 0.3rem 0.9rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.comparison-doc-tabs .doc-tab.is-active {
+    background: var(--bs-primary, #0d6efd);
+    border-color: var(--bs-primary, #0d6efd);
+    color: #fff;
+}
+
+.comparison-doc-tabs .doc-tab:focus-visible {
+    outline: 2px solid var(--bs-primary, #0d6efd);
+    outline-offset: 2px;
+}
+
+@media (max-width: 991.98px) {
+    #comparison-columns.has-doc-tabs .comparison-col {
+        display: none !important;
+    }
+    #comparison-columns.has-doc-tabs .comparison-col.is-active {
+        display: block !important;
+    }
+}
+
+/* Belt and braces with Bootstrap's display utilities: the switcher and the
+   desktop column checkboxes are mutually exclusive, and must stay that way
+   even if the Bootstrap stylesheet fails to load. */
+@media (min-width: 992px) {
+    .comparison-doc-tabs {
+        display: none !important;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .comparison-col-toggles {
+        display: none !important;
+    }
+}
+
 /* Search hits — distinct from a reader's saved highlights below. */
 mark.search-hit {
     background-color: #d1e7ff;
@@ -1336,13 +1399,46 @@ mark.user-annotation.active {
     padding: 1rem;
 }
 
+[data-bs-theme="dark"] .study-atlas-chip {
+    border-left-color: var(--locus-color, var(--wm-accent));
+}
+
+/* Skip link — self-contained so it still works if Bootstrap's utility
+   classes fail to load. */
+.skip-link {
+    position: absolute;
+    left: 0.5rem;
+    top: -3rem;
+    z-index: 1080;
+    padding: 0.5rem 0.9rem;
+    background: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    border: 1px solid var(--wm-border);
+    border-radius: 0.25rem;
+    transition: top 0.15s ease-in-out;
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+    top: 0.5rem;
+}
+
+#main-content:focus {
+    outline: none;
+}
+
 .study-atlas-chip-group {
     display: flex;
     flex-wrap: wrap;
     gap: 0.4rem;
 }
 
+/* Locus accent. The eight Atlas colours are bright pastels chosen against the
+   Atlas's dark ground; on a light card they are too faint to read as a
+   boundary, so darken them there and use them as-is in dark mode. Falls back
+   to the theme accent when no locus colour is set. */
 .study-atlas-chip {
+    border-left-color: color-mix(in srgb, var(--locus-color, var(--wm-accent)) 65%, #333);
     align-items: center;
     background: color-mix(in srgb, var(--wm-card-bg) 82%, var(--bs-body-bg));
     border: 1px solid var(--wm-border);

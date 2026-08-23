@@ -174,7 +174,7 @@
                     {% for tag in ontology_tags %}
                     <a href="{{ tag.attribute.get_atlas_url }}"
                        class="study-atlas-chip"
-                       style="border-left-color: {{ tag.attribute.locus.color }};"
+                       style="--locus-color: {{ tag.attribute.locus.color }};"
                        title="{{ tag.attribute.baseline_description }}">
                         <span>{{ tag.attribute.locus.icon }}</span>
                         <span>{{ tag.attribute.name }}</span>
@@ -189,7 +189,7 @@
                     {% for head in doctrine_heads %}
                     <a href="{{ head.get_atlas_url }}"
                        class="study-atlas-chip"
-                       {% if head.locus %}style="border-left-color: {{ head.locus.color }};"{% endif %}>
+                       {% if head.locus %}style="--locus-color: {{ head.locus.color }};"{% endif %}>
                         {% if head.locus %}<span>{{ head.locus.icon }}</span>{% endif %}
                         <span>{{ head.name }}</span>
                     </a>

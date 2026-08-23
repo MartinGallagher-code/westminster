@@ -82,10 +82,10 @@
     {% block extra_head %}{% endblock %}
 </head>
 <body {% block body_attrs %}{% endblock %}>
-    <a href="#main-content" class="visually-hidden-focusable">Skip to main content</a>
+    <a href="#main-content" class="skip-link visually-hidden-focusable">Skip to main content</a>
     {% include "includes/navbar.html" %}
 
-    <div class="{% block main_wrapper_class %}container-fluid py-4{% endblock %}" id="main-content">
+    <main class="{% block main_wrapper_class %}container-fluid py-4{% endblock %}" id="main-content" tabindex="-1">
         {% if messages %}
         <div class="mb-3">
             {% for message in messages %}
@@ -97,7 +97,7 @@
         </div>
         {% endif %}
         {% block content %}{% endblock %}
-    </div>
+    </main>
 
     {% include "includes/footer.html" %}
 

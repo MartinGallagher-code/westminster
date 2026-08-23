@@ -62,7 +62,41 @@ document.addEventListener('DOMContentLoaded', function() {
         updateCompareButton();
     }
 
-    // ── 2. Column Toggle (theme detail pages) ──
+    // ── 2. Narrow-screen document switcher (theme detail pages) ──
+    //
+    // Below lg the comparison columns stack, so the documents are read in
+    // sequence rather than side by side. These tabs show one at a time in
+    // place. The classes are maintained at every width; the CSS media query
+    // decides when they take effect, so resizing needs no JS.
+
+    var docTabs = document.querySelectorAll('.comparison-doc-tabs .doc-tab');
+    var tabbedColumns = document.getElementById('comparison-columns');
+
+    if (docTabs.length && tabbedColumns) {
+        var columns = tabbedColumns.querySelectorAll('.comparison-col');
+
+        function showDocument(slug) {
+            columns.forEach(function(col) {
+                col.classList.toggle('is-active', col.getAttribute('data-doc') === slug);
+            });
+            docTabs.forEach(function(tab) {
+                var active = tab.getAttribute('data-doc') === slug;
+                tab.classList.toggle('is-active', active);
+                tab.setAttribute('aria-pressed', active ? 'true' : 'false');
+            });
+        }
+
+        tabbedColumns.classList.add('has-doc-tabs');
+        showDocument(docTabs[0].getAttribute('data-doc'));
+
+        docTabs.forEach(function(tab) {
+            tab.addEventListener('click', function() {
+                showDocument(this.getAttribute('data-doc'));
+            });
+        });
+    }
+
+    // ── 3. Column Toggle (theme detail pages) ──
 
     var colToggles = document.querySelectorAll('.col-toggle');
     var comparisonColumns = document.getElementById('comparison-columns');

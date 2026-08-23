@@ -7,6 +7,19 @@ reverse-chronological changelog rather than formal release tags.
 
 ### Added
 
+- Site search now shows the part of a result that matched, with the search terms marked, instead of the opening words of the question and answer.
+- Typing a Scripture reference into the search box ("Rom 8:30", "1 Cor 13") goes to that book's page in the Scripture index, narrowed to the chapter, with a link back to a plain text search. Only references with a chapter number are recognised, so searching for "acts" or "job" still searches the text.
+- Comparison pages gained a document switcher on narrow screens. The columns previously stacked below `lg`, turning a side-by-side reading into three documents in sequence; the switcher shows one at a time in place so you can flip between them without losing your position.
+- The Atlas is now in `sitemap.xml` — 432 pages (personas, cruxes, schools, heads of doctrine, and every locus, attribute and value page) that were previously unindexed.
+
+### Changed
+
+- Accessibility: the skip link now targets a real `<main>` landmark that can take focus and is styled without depending on Bootstrap's utility classes; the document-collection toggles expose their pressed state; and the eight Atlas locus accents are passed to CSS as a custom property so the stylesheet can darken them for the light theme, where the pastels were too faint to read as a boundary.
+
+## 2026-08-23
+
+### Added
+
 - Published the five Reformed confessions that were loaded but unreachable. The 1689 London Baptist Confession, Savoy Declaration, Scots Confession, Second Helvetic Confession, and Irish Articles were all created with the default tradition (`other`), which every view gates on, so the documents and the two comparison sets built on them — Confessional Lineage and Pre-Westminster Confessions — could not be reached from anywhere on the site. They now form a third document collection, **Reformed Confessions**, with its own filter toggle; a data migration moves the existing rows. Also added "Confessional Lineage" and "Pre-Westminster" quick-start presets to the custom comparison selector.
 
 ### Changed

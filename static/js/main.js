@@ -165,6 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
             var check = btn.querySelector('.tradition-check');
             var active = !!filters[tradition];
             btn.classList.toggle('active', active);
+            btn.setAttribute('aria-pressed', active ? 'true' : 'false');
             if (check) check.style.visibility = active ? 'visible' : 'hidden';
         });
     }
