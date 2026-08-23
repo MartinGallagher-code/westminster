@@ -20,6 +20,14 @@ jobs:
       - run: pytest --cov
         env:
           DJANGO_SETTINGS_MODULE: config.settings.development
+      # Collect with the production storage: the manifest resolves every
+      # url() inside the vendored CSS, so a dangling font reference fails
+      # here rather than on deploy.
+      - run: python manage.py collectstatic --noinput
+        env:
+          DJANGO_SETTINGS_MODULE: config.settings.production
+          SECRET_KEY: ci-collectstatic-only
+          ALLOWED_HOSTS: example.com
 
   # The unit suite runs against factories — a few rows built for one test —
   # so defects that only appear in the loaded corpus survive it. Two already
