@@ -1,5 +1,5 @@
 from collections import defaultdict
-from urllib.parse import urlencode
+from urllib.parse import quote, urlencode
 from datetime import date
 from xml.sax.saxutils import escape
 
@@ -1349,3 +1349,79 @@ class CompareDiffView(TemplateView):
         ctx['rows'] = build_diff(left_entry.get_questions(), right_entry.get_questions())
         ctx['changed_rows'] = sum(1 for row in ctx['rows'] if not row['unchanged'])
         return ctx
+
+
+# ── Unified suggestions ───────────────────────────────────────────────────
+
+SUGGEST_MIN_LENGTH = 2
+SUGGEST_PER_GROUP = 5
+
+
+@method_decorator(ratelimit(key='ip', rate='240/m', method='GET', block=True), name='get')
+class SearchSuggestView(View):
+    """Typeahead across everything the site holds.
+
+    Site search covered the standards' text and the Atlas had a search of its
+    own, so a reader had to know the Atlas existed before they could find a
+    divine or a position in it. One box, results grouped by what they are.
+    """
+
+    def get(self, request):
+        query = request.GET.get('q', '').strip()
+        if len(query) < SUGGEST_MIN_LENGTH:
+            return JsonResponse({'groups': []})
+
+        groups = []
+
+        reference = parse_scripture_reference(query)
+        if reference:
+            groups.append({'label': 'Scripture', 'items': [{
+                'name': reference['label'],
+                'detail': 'see where this passage is cited',
+                'url': reference['book'].get_absolute_url() + f"?ref={reference['ref']}",
+            }]})
+
+        questions = _search_questions(
+            query, get_active_traditions(request),
+        ).select_related('catechism', 'topic')[:SUGGEST_PER_GROUP]
+        if questions:
+            groups.append({'label': 'In the standards', 'items': [
+                {
+                    'name': f'{q.catechism.abbreviation} {q.catechism.item_prefix}{q.display_number}',
+                    'detail': q.question_text[:90],
+                    'url': q.get_absolute_url(),
+                }
+                for q in questions
+            ]})
+
+        from westminster_standards.entity_search import search_entities
+        for group in search_entities(query, limit=SUGGEST_PER_GROUP):
+            groups.append({'label': group['label'], 'items': [
+                {
+                    'name': item['name'],
+                    'detail': (item.get('description') or '')[:90],
+                    'url': item['url'],
+                }
+                for item in group['items']
+            ]})
+
+        from westminster_standards.glossary import UNIQUE_BY_LABEL, url_for
+        lowered = query.lower()
+        positions = [
+            entry for label, entry in UNIQUE_BY_LABEL.items()
+            if lowered in label.lower()
+        ][:SUGGEST_PER_GROUP]
+        if positions:
+            groups.append({'label': 'Positions', 'items': [
+                {
+                    'name': entry['label'],
+                    'detail': entry['definition'][:90],
+                    'url': url_for(entry),
+                }
+                for entry in positions
+            ]})
+
+        return JsonResponse({
+            'groups': groups,
+            'search_url': f"{reverse('catechism:search')}?q={quote(query)}",
+        })

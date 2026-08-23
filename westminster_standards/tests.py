@@ -558,3 +558,43 @@ class DeparturesInTheHeader(TestCase):
         )
         body = self.client.get(f"/atlas/personas/{plain['slug']}/").content.decode()
         self.assertIn('Holds the Westminster position', body)
+
+
+class FacetedBrowse(TestCase):
+    """The value pages answer "who held this?" one position at a time; the
+    persona list should answer it for any position, and for the more useful
+    question of who departed from the Confession at all."""
+
+    def test_filtering_by_a_position_narrows_the_list(self):
+        resp = self.client.get('/atlas/personas/', {
+            'attr': 'god_decree_extent_of_atonement',
+            'value': 'Hypothetical-Universal',
+        })
+        assert resp.status_code == 200
+        self.assertLess(resp.context['shown'], resp.context['total'])
+        for persona in resp.context['personas_flat']:
+            self.assertEqual(
+                persona['attrs']['god_decree_extent_of_atonement'],
+                'Hypothetical-Universal',
+            )
+
+    def test_filtering_to_those_who_depart_from_the_confession(self):
+        from .data import WESTMINSTER_BASELINE_ATTRS
+
+        resp = self.client.get('/atlas/personas/', {'departures': '1'})
+        self.assertLess(resp.context['shown'], resp.context['total'])
+        for persona in resp.context['personas_flat']:
+            self.assertTrue(any(
+                WESTMINSTER_BASELINE_ATTRS.get(key) != value
+                for key, value in persona['attrs'].items()
+            ), f"{persona['slug']} holds the baseline throughout")
+
+    def test_an_unrecognised_facet_is_ignored_rather_than_erroring(self):
+        resp = self.client.get('/atlas/personas/', {'attr': 'nonsense', 'value': 'x'})
+        self.assertEqual(resp.status_code, 200)
+        self.assertFalse(resp.context['facet']['active'])
+        self.assertEqual(resp.context['shown'], resp.context['total'])
+
+    def test_no_facet_shows_everyone(self):
+        resp = self.client.get('/atlas/personas/')
+        self.assertEqual(resp.context['shown'], resp.context['total'])

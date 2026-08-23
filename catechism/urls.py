@@ -10,6 +10,7 @@ urlpatterns = [
 
     # API
     path('api/question/<int:pk>/preview/', views.question_preview_json, name='question_preview'),
+    path('api/suggest/', views.SearchSuggestView.as_view(), name='search_suggest'),
 
     # Site-wide
     path('', views.HomeView.as_view(), name='home'),

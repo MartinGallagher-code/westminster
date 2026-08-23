@@ -754,6 +754,90 @@ a {
     border-color: var(--wm-primary) !important;
 }
 
+/* ── Search suggestions ── */
+.navbar form { position: relative; }
+
+.suggest-panel {
+    position: absolute;
+    top: calc(100% + 0.35rem);
+    left: 0;
+    right: 0;
+    min-width: 20rem;
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 1060;
+    background: var(--bs-body-bg);
+    border: 1px solid var(--wm-border);
+    border-radius: 0.4rem;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+    padding: 0.3rem 0;
+}
+
+.suggest-group {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--bs-secondary-color, #6c757d);
+    padding: 0.5rem 0.8rem 0.2rem;
+}
+
+.suggest-item,
+.suggest-all {
+    display: block;
+    padding: 0.35rem 0.8rem;
+    text-decoration: none;
+    color: var(--bs-body-color);
+}
+
+.suggest-item.is-active,
+.suggest-item:hover,
+.suggest-item:focus,
+.suggest-all.is-active,
+.suggest-all:hover {
+    background: color-mix(in srgb, var(--wm-accent, #8a6d3b) 14%, transparent);
+}
+
+.suggest-name { display: block; font-weight: 600; font-size: 0.9rem; }
+
+.suggest-detail {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--bs-secondary-color, #6c757d);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.suggest-all {
+    border-top: 1px solid var(--wm-border);
+    margin-top: 0.3rem;
+    font-size: 0.85rem;
+}
+
+/* ── Keyboard shortcuts help ── */
+.shortcuts-help {
+    position: fixed;
+    right: 1.2rem;
+    bottom: 1.2rem;
+    z-index: 1080;
+    background: var(--bs-body-bg);
+    border: 1px solid var(--wm-border);
+    border-radius: 0.5rem;
+    padding: 0.9rem 1.1rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+    font-size: 0.86rem;
+}
+
+.shortcuts-help dl {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.15rem 0.8rem;
+    margin: 0.5rem 0 0;
+}
+
+.shortcuts-help dt { font-family: var(--bs-font-monospace, monospace); }
+.shortcuts-help dd { margin: 0; color: var(--bs-secondary-color, #6c757d); }
+
 /* ── Memorisation drills ── */
 .drill-modes {
     display: flex;
