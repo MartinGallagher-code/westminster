@@ -1,5 +1,5 @@
 from django.urls import path
-from . import bridge, views
+from . import atlas_citations, bridge, views
 
 
 app_name = 'westminster_standards'
@@ -31,4 +31,7 @@ urlpatterns = [
     path('heads/', views.heads_list, name='heads_list'),
     path('heads/<slug:slug>/', views.head_detail, name='head_detail'),
     path('search/', views.search, name='search'),
+    # The Atlas's own pages, citable. A <path> converter because a position's
+    # reference carries its locus and attribute with it.
+    path('cite/<path:ref>/', atlas_citations.cite, name='cite'),
 ]

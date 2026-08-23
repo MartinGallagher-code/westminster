@@ -9,6 +9,7 @@ prose were dead ends, though each has a page.
 import re
 
 from django import template
+from django.urls import reverse
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
 
@@ -96,3 +97,34 @@ def link_divines(text, exclude_slug=''):
         return f'<a class="ws-link" href="{url}">{name}</a>'
 
     return mark_safe(_PERSONA_RE.sub(replace, escaped))
+
+
+@register.inclusion_tag(
+    'westminster_standards/_cite.html', takes_context=True, name='cite_atlas'
+)
+def cite_atlas(context, kind, *parts):
+    """Render the citation panel for an Atlas page.
+
+    Usage: ``{% cite_atlas "persona" p.slug %}`` or
+    ``{% cite_atlas "position" dim.key attr.key value.key %}``.
+
+    Renders nothing when the reference does not resolve, so a template can
+    call it without knowing whether the ontology holds the entity.
+    """
+    from ..atlas_citations import citation_text, ontology_version, resolve
+
+    ref = '/'.join([str(kind)] + [str(part) for part in parts])
+    entity = resolve(ref)
+    if entity is None:
+        return {'entity': None}
+
+    request = context.get('request')
+    permalink = reverse('westminster_standards:cite', kwargs={'ref': entity['ref']})
+    absolute = request.build_absolute_uri(permalink) if request else permalink
+    version = ontology_version()
+    return {
+        'entity': entity,
+        'permalink': permalink,
+        'version': version,
+        'citation': citation_text(entity, url=absolute, version=version),
+    }

@@ -1,0 +1,34 @@
+{% if entity %}
+<details class="ws-cite">
+  <summary>Cite this {{ entity.kind|lower }}</summary>
+  <div class="ws-cite-body">
+    <p class="ws-cite-line" data-cite-text>{{ citation }}</p>
+    <p class="ws-cite-links">
+      <a class="ws-link" href="{{ permalink }}">Permalink</a>
+      · <a class="ws-link" href="{{ permalink }}?format=bibtex">BibTeX</a>
+      · <a class="ws-link" href="{{ permalink }}?format=ris">RIS</a>
+      <button type="button" class="ws-cite-copy" data-cite-copy>Copy</button>
+    </p>
+    {% if version %}
+    <p class="ws-cite-version">
+      Ontology version {{ version }} &mdash; the state of the Atlas you are
+      reading, so a citation stays checkable when the ontology is revised.
+    </p>
+    {% endif %}
+  </div>
+</details>
+<script>
+(function () {
+  var button = document.currentScript.previousElementSibling.querySelector('[data-cite-copy]');
+  var line = document.currentScript.previousElementSibling.querySelector('[data-cite-text]');
+  if (!button || !line || !navigator.clipboard) { if (button) button.hidden = true; return; }
+  button.addEventListener('click', function () {
+    navigator.clipboard.writeText(line.textContent.trim()).then(function () {
+      var was = button.textContent;
+      button.textContent = 'Copied';
+      setTimeout(function () { button.textContent = was; }, 1500);
+    });
+  });
+})();
+</script>
+{% endif %}
