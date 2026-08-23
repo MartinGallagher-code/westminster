@@ -77,10 +77,27 @@
     </div>
 </div>
 
+{% if profile.review_streak %}
+<p class="practice-streak mb-3">
+    <strong>{{ profile.review_streak }}-day streak</strong>
+    <span class="text-muted small">
+        {% if practising_today %}practised today{% else %}practise today to keep it{% endif %}
+        &middot; {{ profile.total_reviews }} review{{ profile.total_reviews|pluralize }} in all
+        {% if profile.longest_streak > profile.review_streak %}&middot; best {{ profile.longest_streak }} days{% endif %}
+    </span>
+</p>
+{% endif %}
+
 {% if due_count %}
-<a href="{% url 'accounts:memorize_review' %}" class="btn btn-primary btn-lg mb-4">
+<a href="{% url 'accounts:memorize_review' %}" class="btn btn-primary btn-lg mb-2">
     Review {{ due_count }} answer{{ due_count|pluralize }}
 </a>
+<div class="drill-modes mb-4">
+    <span class="text-muted small me-1 align-self-center">or drill by:</span>
+    {% for key, label, help_text in drill_modes %}{% if key != 'recall' %}
+    <a class="drill-mode" href="{% url 'accounts:memorize_review' %}?mode={{ key }}" title="{{ help_text }}">{{ label }}</a>
+    {% endif %}{% endfor %}
+</div>
 {% elif total_count %}
 <div class="study-callout mb-4">
     <div>

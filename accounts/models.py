@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_save
@@ -15,8 +17,35 @@ class UserProfile(models.Model):
     )
     is_blocked = models.BooleanField(default=False)
 
+    # Memorisation practice. A streak is the one number that reliably brings
+    # someone back tomorrow, and it costs two fields to keep.
+    review_streak = models.PositiveIntegerField(default=0)
+    longest_streak = models.PositiveIntegerField(default=0)
+    last_review_on = models.DateField(null=True, blank=True)
+    total_reviews = models.PositiveIntegerField(default=0)
+
     def __str__(self):
         return f"Profile for {self.user.username}"
+
+    def record_review(self, today=None):
+        """Count one review and keep the daily streak.
+
+        A streak counts consecutive *days* on which something was reviewed,
+        not reviews — twenty in one sitting is one day's practice.
+        """
+        today = today or timezone.localdate()
+        if self.last_review_on != today:
+            if self.last_review_on == today - timedelta(days=1):
+                self.review_streak += 1
+            else:
+                self.review_streak = 1
+            self.last_review_on = today
+        self.longest_streak = max(self.longest_streak, self.review_streak)
+        self.total_reviews += 1
+        self.save(update_fields=[
+            'review_streak', 'longest_streak', 'last_review_on', 'total_reviews',
+        ])
+        return self
 
 
 @receiver(post_save, sender='auth.User')

@@ -754,6 +754,85 @@ a {
     border-color: var(--wm-primary) !important;
 }
 
+/* ── Memorisation drills ── */
+.drill-modes {
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+}
+
+.drill-mode {
+    border: 1px solid var(--wm-border);
+    border-radius: 999px;
+    padding: 0.25rem 0.8rem;
+    font-size: 0.82rem;
+    text-decoration: none;
+    color: var(--bs-body-color);
+}
+
+.drill-mode.is-active {
+    background: var(--bs-primary, #0d6efd);
+    border-color: var(--bs-primary, #0d6efd);
+    color: #fff;
+}
+
+.drill-mode:focus-visible {
+    outline: 2px solid var(--bs-primary, #0d6efd);
+    outline-offset: 2px;
+}
+
+/* First letters: monospaced so the underscores line up as a rhythm. */
+.drill-initials {
+    font-family: var(--bs-font-monospace, ui-monospace, monospace);
+    font-size: 1.05rem;
+    letter-spacing: 0.04em;
+    line-height: 2;
+    word-spacing: 0.3em;
+}
+
+.drill-cloze {
+    font-size: 1.05rem;
+    line-height: 2.1;
+}
+
+.drill-gap {
+    display: inline-block;
+    min-width: 4.5rem;
+    border-bottom: 2px solid var(--wm-accent, #8a6d3b);
+    margin-bottom: -2px;
+}
+
+.drill-marked {
+    line-height: 2;
+}
+
+.drill-w {
+    border-radius: 2px;
+    padding: 0 2px;
+}
+
+.drill-correct { color: inherit; }
+
+.drill-missing,
+.drill-wrong {
+    background-color: #f7dcdc;
+    text-decoration: underline;
+    text-decoration-style: wavy;
+}
+
+[data-bs-theme="dark"] .drill-missing,
+[data-bs-theme="dark"] .drill-wrong {
+    background-color: #43201f;
+    color: #f5d9d8;
+}
+
+/* Practice streak */
+.practice-streak {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.4rem;
+}
+
 /* ── Cross-edition diff ── */
 .diff-text {
     line-height: 1.7;

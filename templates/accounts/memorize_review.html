@@ -11,33 +11,92 @@
     </ol>
 </nav>
 
-<div class="d-flex justify-content-between align-items-baseline mb-3">
+<div class="d-flex justify-content-between align-items-baseline mb-3 flex-wrap gap-2">
     <h1 class="h4 mb-0">{{ card.question.catechism.abbreviation }} {{ card.question.display_number }}</h1>
     <span class="text-muted small">{{ remaining }} left today</span>
+</div>
+
+{# Drill picker: how much help the answer gives you. #}
+<div class="drill-modes mb-3" role="group" aria-label="Choose how to practise">
+    {% for key, label, help_text in modes %}
+    <a class="drill-mode{% if key == mode %} is-active{% endif %}"
+       href="{% url 'accounts:memorize_review' %}?mode={{ key }}" title="{{ help_text }}">{{ label }}</a>
+    {% endfor %}
 </div>
 
 <div class="study-card mb-3">
     <div class="study-card-title">{{ card.question.question_text }}</div>
 </div>
 
-<div id="answer-panel" hidden>
+{% if mode == 'initials' %}
+<p class="text-muted small mb-1">Say the answer aloud, using the first letters as your guide.</p>
+<div class="study-card mb-3">
+    <div class="drill-initials">{{ initials }}</div>
+</div>
+
+{% elif mode == 'cloze' %}
+<p class="text-muted small mb-1">Supply the missing words from memory.</p>
+<div class="study-card mb-3">
+    <div class="drill-cloze">
+        {% for token in cloze_tokens %}{% if token.blank %}<span class="drill-gap" aria-label="missing word">&nbsp;</span> {% else %}{{ token.text }} {% endif %}{% endfor %}
+    </div>
+</div>
+
+{% elif mode == 'type' %}
+    {% if result %}
+    <div class="study-card mb-3">
+        <div class="d-flex justify-content-between align-items-baseline flex-wrap gap-2 mb-2">
+            <strong>{% if result.is_perfect %}Word perfect.{% else %}{{ result.correct_words }} of {{ result.expected_words }} words{% endif %}</strong>
+            <span class="badge {% if result.percentage >= 90 %}text-bg-success{% elif result.percentage >= 70 %}text-bg-secondary{% else %}text-bg-danger{% endif %}">{{ result.percentage }}%</span>
+        </div>
+        <p class="drill-marked mb-2">
+            {% for word in result.marked %}<span class="drill-w drill-{{ word.status }}">{{ word.text }}</span> {% endfor %}
+        </p>
+        {% if result.extras %}
+        <p class="text-muted small mb-0">Not in the answer: {% for extra in result.extras %}<em>{{ extra }}</em>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+        {% endif %}
+    </div>
+    {% else %}
+    <form method="post" class="mb-3">
+        {% csrf_token %}
+        <input type="hidden" name="card" value="{{ card.pk }}">
+        <input type="hidden" name="mode" value="type">
+        <input type="hidden" name="action" value="check">
+        <label class="form-label small" for="typed">Write the answer from memory</label>
+        <textarea class="form-control mb-2" id="typed" name="typed" rows="4" autofocus></textarea>
+        <button type="submit" class="btn btn-primary">Check it</button>
+    </form>
+    {% endif %}
+{% endif %}
+
+{% if mode != 'type' or result %}
+<div id="answer-panel" {% if not result %}hidden{% endif %}>
+    {% if not result %}
     <div class="study-card mb-3">
         <div class="study-card-text">{{ card.question.answer_text|linebreaksbr }}</div>
     </div>
+    {% endif %}
 
     <form method="post" class="d-flex flex-wrap gap-2">
         {% csrf_token %}
         <input type="hidden" name="card" value="{{ card.pk }}">
+        <input type="hidden" name="mode" value="{{ mode }}">
         {% for grade, label in grades %}
         <button type="submit" name="grade" value="{{ grade }}"
-                class="btn {% if grade == 'again' %}btn-outline-danger{% elif grade == 'easy' %}btn-outline-success{% else %}btn-outline-secondary{% endif %}">
-            {{ label }}
+                class="btn {% if grade == suggested_grade %}btn-primary{% elif grade == 'again' %}btn-outline-danger{% elif grade == 'easy' %}btn-outline-success{% else %}btn-outline-secondary{% endif %}">
+            {{ label }}{% if grade == suggested_grade %} <span class="visually-hidden">(suggested)</span>{% endif %}
         </button>
         {% endfor %}
     </form>
+    {% if suggested_grade %}
+    <p class="text-muted small mt-2 mb-0">Suggested from your accuracy — you know better than the score does.</p>
+    {% endif %}
 </div>
 
+{% if not result %}
 <button type="button" id="reveal-answer" class="btn btn-primary">Show the answer</button>
+{% endif %}
+{% endif %}
 
 <p class="mt-4">
     <a class="small" href="{{ card.question.get_absolute_url }}">Open the full page for this answer</a>
