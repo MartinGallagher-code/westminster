@@ -3,6 +3,12 @@
 All notable project changes should be recorded here. This project uses a simple
 reverse-chronological changelog rather than formal release tags.
 
+## 2026-08-23 (later still)
+
+### Changed
+
+- Vendored Bootstrap, Bootstrap Icons and both typefaces under `static/vendor/`, served by WhiteNoise from this origin. They previously loaded from `cdn.jsdelivr.net` and Google Fonts, which made the entire design contingent on two other companies being reachable — with those blocked the site rendered as unstyled markup — and disclosed every visitor's IP address to both on every page load. Licences travel with the code (MIT for Bootstrap and its icons, the SIL Open Font License for the fonts). CI now runs `collectstatic` with the production storage, so a dangling font reference fails there rather than on deploy.
+
 ## 2026-08-23 (later)
 
 ### Added

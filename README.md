@@ -18,7 +18,7 @@ A Django web application for studying the great Reformed confessional standards 
 
 - **Backend:** Django 4.2, Python 3.12
 - **Database:** PostgreSQL in production, SQLite in local development
-- **Frontend:** Bootstrap 5.3, vanilla JavaScript
+- **Frontend:** Bootstrap 5.3, vanilla JavaScript (vendored under `static/vendor/`, no CDN)
 - **Hosting:** Render via `render.yaml`
 - **Static files:** WhiteNoise
 - **Donations:** Buy Me a Coffee (external link)

@@ -136,6 +136,24 @@ modern critical print edition — the Free Presbyterian Publications text, or th
 OPC's — remains editorial work that needs the book in hand; the command accepts
 any reference with the same shape, so that collation can reuse it.
 
+## Front-end assets
+
+Bootstrap, Bootstrap Icons and both typefaces are vendored under
+`static/vendor/` and served by WhiteNoise from this origin. Nothing on a page
+load reaches a third-party host.
+
+To update one, replace the files and re-run the checks — `collectstatic` with
+the production storage will reject a dangling `url()` reference, and CI runs it:
+
+```bash
+DJANGO_SETTINGS_MODULE=config.settings.production SECRET_KEY=x ALLOWED_HOSTS=x \
+  python manage.py collectstatic --noinput
+pytest catechism/tests/test_no_external_assets.py
+```
+
+Licences travel with the code: `LICENSE` (MIT) beside Bootstrap and its icons,
+`OFL.txt` beside the fonts.
+
 ## Environment variables
 
 | Variable | Required | Purpose |
