@@ -65,3 +65,56 @@ def test_switcher_comment_is_not_rendered_into_the_page(lineage):
 
     assert 'Narrow-screen document switcher' not in body
     assert '{#' not in body
+
+
+@pytest.fixture
+def custom_pair(db):
+    wcf = CatechismFactory(
+        name='Westminster Confession', abbreviation='WCF', slug='wcf', year=1646,
+        total_questions=5, tradition=Catechism.WESTMINSTER,
+    )
+    lbc = CatechismFactory(
+        name='1689 London Baptist Confession', abbreviation='1689', slug='1689',
+        year=1689, total_questions=5, tradition=Catechism.REFORMED_CONFESSIONS,
+    )
+    cs = ComparisonSetFactory(name='Lineage', slug='lineage', order=1)
+    theme = ComparisonThemeFactory(name='Scripture', slug='scripture', comparison_set=cs)
+    ComparisonEntryFactory(theme=theme, catechism=wcf, question_start=1, question_end=1)
+    ComparisonEntryFactory(theme=theme, catechism=lbc, question_start=1, question_end=1)
+    return wcf, lbc
+
+
+@pytest.mark.django_db
+class TestCustomComparisonsAreShareable:
+    """The chosen documents live in ?docs=, so a link reproduces the view."""
+
+    def test_a_pasted_link_reproduces_the_same_columns(self, custom_pair):
+        cookie = {'westminster': True, 'reformed_confessions': True}
+        url = '/compare/custom/scripture/?docs=wcf,1689'
+
+        first = client_with_cookie(cookie).get(url)
+        # A different visitor, no shared session, following the same link.
+        second = client_with_cookie(cookie).get(url)
+
+        assert first.status_code == second.status_code == 200
+        assert (
+            [col['catechism'].slug for col in first.context['columns']]
+            == [col['catechism'].slug for col in second.context['columns']]
+            == ['wcf', '1689']
+        )
+
+    def test_the_page_offers_a_copy_link_control(self, custom_pair):
+        c = client_with_cookie({'westminster': True, 'reformed_confessions': True})
+        body = c.get('/compare/custom/scripture/?docs=wcf,1689').content.decode()
+        assert 'data-copy="url"' in body
+        assert 'Copy shareable link' in body
+
+    def test_no_copy_control_before_a_selection_is_made(self, custom_pair):
+        c = client_with_cookie({'westminster': True, 'reformed_confessions': True})
+        body = c.get('/compare/custom/').content.decode()
+        assert 'data-copy="url"' not in body
+
+    def test_theme_links_carry_the_selection_forward(self, custom_pair):
+        c = client_with_cookie({'westminster': True, 'reformed_confessions': True})
+        body = c.get('/compare/custom/?docs=wcf,1689').content.decode()
+        assert '?docs=wcf,1689' in body

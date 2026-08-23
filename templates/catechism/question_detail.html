@@ -149,9 +149,33 @@
                 </div>
                 <div class="d-flex gap-2 flex-wrap">
                     <button type="button" class="btn btn-outline-secondary btn-sm" id="copy-citation-btn"
-                            data-citation="{{ catechism.abbreviation }} {{ catechism.item_prefix }}{{ question.display_number }}{% if not catechism.is_prose_document %}.{% endif %} {{ question.question_text }}">
+                            data-citation="{{ citation_text }}">
                         <i class="bi bi-link-45deg me-1"></i>Copy Citation
                     </button>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-quote me-1"></i>Cite {{ citation_label }}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="{% url 'catechism:citation_permalink' catechism_slug=catechism.slug reference=citation_reference %}">
+                                    Permalink &mdash; /cite/{{ catechism.slug }}/{{ citation_reference }}/
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'catechism:citation_export' catechism_slug=catechism.slug reference=citation_reference fmt='bibtex' %}">
+                                    Download BibTeX
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'catechism:citation_export' catechism_slug=catechism.slug reference=citation_reference fmt='ris' %}">
+                                    Download RIS &mdash; Zotero, EndNote
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                     <a href="{% url 'catechism:search' %}?q={{ question.topic.name|urlencode }}" class="btn btn-outline-primary btn-sm">
                         Search Topic
                     </a>

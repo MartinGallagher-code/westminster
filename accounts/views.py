@@ -13,10 +13,11 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, ListView, DeleteView, TemplateView, View
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django_ratelimit.decorators import ratelimit
 
 from .models import UserNote, Highlight, InlineComment, MemorizationCard, UserProfile
+from .export import export_filename, notes_markdown
 from . import scheduling
 from .forms import SignupForm
 from catechism.models import Catechism, Question, Commentary
@@ -37,11 +38,19 @@ class DashboardView(LoginRequiredMixin, ListView):
     context_object_name = 'notes'
 
     def get_queryset(self):
-        return UserNote.objects.filter(
+        notes = UserNote.objects.filter(
             user=self.request.user
         ).select_related(
             'question', 'question__topic', 'question__catechism'
         ).order_by('question__catechism__name', 'question__number')
+        query = self.request.GET.get('q', '').strip()
+        if query:
+            notes = notes.filter(
+                Q(text__icontains=query)
+                | Q(question__question_text__icontains=query)
+                | Q(question__answer_text__icontains=query)
+            )
+        return notes
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -59,6 +68,23 @@ class DashboardView(LoginRequiredMixin, ListView):
         ctx['note_count'] = UserNote.objects.filter(user=self.request.user).count()
         ctx['annotation_count'] = InlineComment.objects.filter(user=self.request.user).count()
         ctx['highlight_count'] = Highlight.objects.filter(user=self.request.user).count()
+
+        # Searching your own study material: the notes queryset is already
+        # filtered above, so narrow the annotations and highlights to match.
+        query = self.request.GET.get('q', '').strip()
+        ctx['query'] = query
+        if query:
+            ctx['inline_comments'] = [
+                comment for comment in ctx['inline_comments']
+                if query.lower() in comment.comment_text.lower()
+                or query.lower() in comment.selected_text.lower()
+            ]
+            ctx['highlights'] = Highlight.objects.filter(
+                user=self.request.user, selected_text__icontains=query,
+            ).select_related('commentary__source', 'commentary__question__catechism')
+            ctx['result_count'] = (
+                len(ctx['notes']) + len(ctx['inline_comments']) + len(ctx['highlights'])
+            )
         return ctx
 
 
@@ -491,3 +517,18 @@ class MemorizeAddDocumentView(LoginRequiredMixin, View):
             f'Every {catechism.abbreviation} answer is already in your deck.',
         )
         return redirect('accounts:memorize')
+
+
+class NotesExportView(LoginRequiredMixin, View):
+    """Download every note, annotation and highlight as one Markdown file."""
+
+    def get(self, request):
+        today = timezone.localdate()
+        markdown = notes_markdown(
+            request.user, today, base_url=request.build_absolute_uri('/').rstrip('/'),
+        )
+        response = HttpResponse(markdown, content_type='text/markdown; charset=utf-8')
+        response['Content-Disposition'] = (
+            f'attachment; filename="{export_filename(today)}"'
+        )
+        return response

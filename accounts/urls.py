@@ -32,6 +32,8 @@ urlpatterns = [
     path('comments/<int:pk>/update/', views.InlineCommentUpdateView.as_view(), name='comment_update'),
     path('comments/<int:pk>/delete/', views.InlineCommentDeleteView.as_view(), name='comment_delete'),
 
+    path('notes/export/', views.NotesExportView.as_view(), name='notes_export'),
+
     # Memorisation
     path('memorize/', views.MemorizeHomeView.as_view(), name='memorize'),
     path('memorize/review/', views.MemorizeReviewView.as_view(), name='memorize_review'),

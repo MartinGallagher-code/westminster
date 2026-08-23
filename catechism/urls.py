@@ -32,6 +32,12 @@ urlpatterns = [
     path('compare/<slug:set_slug>/', views.CompareSetView.as_view(), name='compare_set'),
     path('compare/<slug:set_slug>/<slug:theme_slug>/', views.CompareSetThemeView.as_view(), name='compare_set_theme'),
 
+    # Citations: the reference a reader writes ("WCF 3.4"), made addressable
+    path('cite/<slug:catechism_slug>/<str:reference>/',
+         views.CitationPermalinkView.as_view(), name='citation_permalink'),
+    path('cite/<slug:catechism_slug>/<str:reference>/<str:fmt>/',
+         views.CitationExportView.as_view(), name='citation_export'),
+
     # Legacy WSC redirects (preserve old bookmarks)
     path('questions/', RedirectView.as_view(url='/wsc/questions/', permanent=True)),
     path('questions/<int:number>/', views.LegacyQuestionRedirect.as_view(), name='legacy_question'),

@@ -111,6 +111,25 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
+
+    // ── Copy-to-clipboard buttons ──
+    //
+    // <button data-copy="url"> copies the current address, including its query
+    // string — which is what makes a custom comparison shareable, since the
+    // chosen documents live in ?docs=. Any other value is copied literally.
+    document.querySelectorAll('[data-copy]').forEach(function(btn) {
+        if (!navigator.clipboard) return;
+        btn.addEventListener('click', function() {
+            var value = btn.getAttribute('data-copy');
+            var text = value === 'url' ? window.location.href : value;
+            var original = btn.innerHTML;
+            navigator.clipboard.writeText(text).then(function() {
+                btn.innerHTML = '<i class="bi bi-check2 me-1"></i>Link copied';
+                setTimeout(function() { btn.innerHTML = original; }, 1600);
+            });
+        });
+    });
+
     // ── Document tradition filter ──
     // Keep this list in sync with VALID_TRADITIONS in catechism/utils.py and
     // the FOUC-prevention script in templates/base.html.

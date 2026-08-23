@@ -22,6 +22,7 @@ from .models import (
     BibleBook, ScriptureIndex, ComparisonSet, ComparisonTheme,
     ComparisonEntry, QuestionDoctrineHead, QuestionOntologyTag,
 )
+from .citations import bibtex, citation_label, citation_text, resolve_reference, ris
 from .scripture_refs import (
     chapter_from_ref, parse_scripture_reference, reference_matches_chapter,
 )
@@ -587,6 +588,14 @@ class QuestionDetailView(CatechismMixin, DetailView):
             ctx['memorization_card'] = MemorizationCard.objects.filter(
                 user=self.request.user, question=q
             ).first()
+
+        ctx['citation_reference'] = q.display_number
+        ctx['citation_label'] = citation_label(q)
+        ctx['citation_text'] = citation_text(
+            q, self.request.build_absolute_uri(reverse('catechism:citation_permalink', kwargs={
+                'catechism_slug': q.catechism.slug, 'reference': q.display_number,
+            })),
+        )
 
         return ctx
 
@@ -1166,3 +1175,53 @@ class LegacyTopicRedirect(View):
     def get(self, request, slug):
         return redirect('catechism:topic_detail',
                         catechism_slug='wsc', slug=slug, permanent=True)
+
+
+# ── Citations ─────────────────────────────────────────────────────────────
+
+
+def _resolve_citation(catechism_slug, reference):
+    """The question a '/cite/<doc>/<reference>/' URL denotes, or 404."""
+    catechism = get_object_or_404(Catechism, slug=catechism_slug)
+    question = resolve_reference(catechism, reference)
+    if question is None:
+        raise Http404(f'No {catechism.abbreviation} {reference}')
+    return question
+
+
+class CitationPermalinkView(View):
+    """'/cite/wcf/3.4/' — the reference a reader actually writes.
+
+    Redirects to the canonical page, whose URL is built from the sequential
+    question number and so cannot be derived from a citation by hand.
+    """
+
+    def get(self, request, catechism_slug, reference):
+        question = _resolve_citation(catechism_slug, reference)
+        return redirect(question.get_absolute_url(), permanent=True)
+
+
+class CitationExportView(View):
+    """Download one section or question as BibTeX or RIS."""
+
+    FORMATS = {
+        'bibtex': (bibtex, 'application/x-bibtex', 'bib'),
+        'ris': (ris, 'application/x-research-info-systems', 'ris'),
+    }
+
+    def get(self, request, catechism_slug, reference, fmt):
+        if fmt not in self.FORMATS:
+            raise Http404(f'Unknown citation format {fmt!r}')
+        question = _resolve_citation(catechism_slug, reference)
+        render_citation, content_type, extension = self.FORMATS[fmt]
+
+        permalink = request.build_absolute_uri(
+            reverse('catechism:citation_permalink', kwargs={
+                'catechism_slug': catechism_slug, 'reference': reference,
+            })
+        )
+        body = render_citation(question, url=permalink, accessed=date.today())
+        response = HttpResponse(body, content_type=f'{content_type}; charset=utf-8')
+        filename = f'{catechism_slug}-{reference.replace(".", "-")}.{extension}'
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        return response
