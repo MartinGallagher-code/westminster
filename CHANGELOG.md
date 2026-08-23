@@ -3,6 +3,31 @@
 All notable project changes should be recorded here. This project uses a simple
 reverse-chronological changelog rather than formal release tags.
 
+## 2026-08-23 (later)
+
+### Added
+
+- **Memorisation deck.** Signed-in readers can add an answer from its own page or a whole catechism at once, and review what is due. Scheduling is an SM-2 variant (`accounts/scheduling.py`): recall widens the gap (1, 6, 15, 38, 95 days…), a miss returns it tomorrow with reduced ease. The deck reports what is due, what is being learned, and what is known.
+- **Notes export and search.** Every note, annotation and highlight downloads as one Markdown file grouped by document and question, with absolute links back. The study desk now searches your own material too.
+- **Printable small-group handout** for any question or chapter: the text, proof texts with their verses, where the other standards treat the same ground, leader's notes excerpted from the commentators, and discussion prompts built from that passage's own proofs, parallels and Assembly cruxes.
+- **Citations.** `/cite/wcf/3.4/` resolves the reference a reader actually writes and redirects to the canonical page; the same reference exports as BibTeX or RIS.
+- **Cross-edition diff.** Parallel chapters of the Confession, Savoy and 1689 diffed word by word, ignoring punctuation and capitalisation so the substantive revisions surface.
+- **Transcription check.** `check_transcription` compares the loaded text against the Atlas's independently sourced copy and ranks the divergences.
+- **Data-integrity CI job.** `check_site_integrity` loads the real corpus and asserts what only a populated database can answer — every sitemap URL fetchable by an anonymous crawler, every Atlas page and chip resolving, every Westminster item carrying a doctrine head. A second CI job runs the whole suite against Postgres, which nothing previously did.
+- **Sentry** error monitoring behind `SENTRY_DSN`, with PII off.
+- **Operations runbook** (`docs/OPERATIONS.md`) covering backups, a rehearsed restore procedure with `scripts/verify_restore.sh`, and health-check monitoring.
+
+### Changed
+
+- The Postgres search matches a stored, GIN-indexed `search_vector` column instead of building a tsvector per row per query.
+- Read-only pages are cached for anonymous visitors, keyed by path and active collections; signed-in readers are never served from or written to the cache.
+- Rate limiting extended to password reset, search, and the new endpoints.
+- `build.sh`'s load sequence moved to `scripts/load_data.sh` so deploys and CI load identically.
+
+### Fixed
+
+- Submitting the password-reset form raised `NoReverseMatch`: Django's default success URL is not namespaced.
+
 ## 2026-08-23
 
 ### Added
