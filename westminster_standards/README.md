@@ -11,6 +11,14 @@
 > `/puritans/`, or `core/` describe the app's origin and may not apply
 > here. The data layer is unchanged, so it can still be synced with the
 > upstream app.
+>
+> This app is also the **single source of truth for the heads of doctrine**:
+> Study Reformed's `load_westminster_ontology` mirrors
+> `heads_of_doctrine.py` into its database and derives every
+> question-to-head link from the coverage lists here, so add or rename a
+> head in this file and nowhere else. `entity_search.py` exposes the
+> persona/crux/school/head layers to the site-wide search without touching
+> `views.py`.
 
 A Django app — mounted at `/atlas/` in Study Reformed (originally at
 `/westminster_standards/` in the TimeSpaceMatterObserver project) — that

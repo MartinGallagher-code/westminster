@@ -1,6 +1,7 @@
 from urllib.parse import urljoin
 
 from django.conf import settings
+from django.db.models import Q
 
 
 # The Westminster Standards Atlas now lives natively in this project, mounted
@@ -88,29 +89,54 @@ def comparison_locus_atlas(locus_text):
     return {'key': key, 'label': label, 'url': dimension_url(key)}
 
 
+def _topic_loci_keys_from_db(topic):
+    """Locus keys for a topic's questions, read from the loaded ontology.
+
+    Draws on both halves of the ontology: the hand-authored per-question
+    attribute tags (attribute -> locus) and the question -> doctrine-head
+    links (head -> locus, mirrored from the Atlas by
+    ``load_westminster_ontology``). The head links cover every Confession
+    section and catechism question, so this is complete once the ontology has
+    been loaded; it returns an empty set when it has not been.
+    """
+    from .models import OntologyLocus
+
+    return set(
+        OntologyLocus.objects.filter(
+            Q(attributes__question_tags__question__topic=topic)
+            | Q(doctrine_heads__question_links__question__topic=topic)
+        ).values_list('slug', flat=True).distinct()
+    )
+
+
 def topic_loci(topic):
     """The Atlas loci a Westminster chapter/topic bears on, for reverse links.
 
-    Uses the Atlas's comprehensive chapter/question -> locus mapping (which
-    covers every Confession chapter and catechism question), so the panel is
-    populated even though the per-question ontology tags in the database are
-    still sparse. Returns an ordered list of ``{'key','label','icon','tagline','url'}``
-    in canonical locus order; empty for non-Westminster documents.
+    Prefers the loaded ontology (see ``_topic_loci_keys_from_db``) so the panel
+    reflects the same tags rendered on the individual question pages. Falls
+    back to the Atlas's static chapter/question -> locus mapping when the
+    ontology tables are empty — a database that has the Westminster texts but
+    has not run ``load_westminster_ontology``. Returns an ordered list of
+    ``{'key','label','icon','tagline','color','url'}`` in canonical locus
+    order; empty for non-Westminster documents.
     """
     slug = topic.catechism.slug
-    from westminster_standards.data import DIMENSIONS
-    from westminster_standards.locus_mapping import (
-        wcf_chapter_loci, catechism_question_loci,
-    )
-
-    keys = set()
-    if slug == 'wcf':
-        keys.update(wcf_chapter_loci(topic.order))
-    elif slug in ('wsc', 'wlc'):
-        for question in topic.questions.all():
-            keys.update(catechism_question_loci(slug, question.number))
-    else:
+    if slug not in ('wcf', 'wsc', 'wlc'):
         return []
+
+    from westminster_standards.data import DIMENSIONS
+
+    keys = _topic_loci_keys_from_db(topic)
+    if not keys:
+        from westminster_standards.locus_mapping import (
+            wcf_chapter_loci, catechism_question_loci,
+        )
+        if slug == 'wcf':
+            keys = set(wcf_chapter_loci(topic.order))
+        else:
+            keys = set()
+            for question in topic.questions.all():
+                keys.update(catechism_question_loci(slug, question.number))
 
     payload = []
     for d in DIMENSIONS:                     # canonical locus order

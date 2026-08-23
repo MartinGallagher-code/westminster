@@ -1,4 +1,5 @@
 import json
+from collections import defaultdict
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -14,10 +15,16 @@ class Command(BaseCommand):
     help = "Load Westminster Standards Atlas ontology metadata"
 
     def handle(self, *args, **options):
+        # The loci and attributes (and the hand-authored per-question attribute
+        # tags) come from the JSON; the doctrine-head taxonomy is owned by the
+        # Atlas app itself, so the module is part of this load's source data.
+        from westminster_standards import heads_of_doctrine as atlas_heads
+
         data_path = settings.BASE_DIR / "data" / "westminster_ontology.json"
+        heads_path = settings.BASE_DIR / "westminster_standards" / "heads_of_doctrine.py"
         version_key = "westminster-ontology"
 
-        if data_is_current(version_key, data_path):
+        if data_is_current(version_key, data_path, heads_path):
             self.stdout.write("Westminster ontology unchanged, skipping.")
             return
 
@@ -63,26 +70,47 @@ class Command(BaseCommand):
                 slug__in=loaded_attr_slugs
             ).delete()
 
+        heads = self._load_doctrine_heads(atlas_heads, loci)
+        tag_count = self._load_attribute_tags(data, attributes)
+        head_link_count = self._link_questions_to_heads(atlas_heads, heads)
+
+        mark_data_current(version_key, data_path, heads_path)
+        self.stdout.write(self.style.SUCCESS(
+            f"Loaded {len(loci)} ontology loci, {len(attributes)} attributes, "
+            f"{len(heads)} heads, {tag_count} question tags, and "
+            f"{head_link_count} head links"
+        ))
+
+    def _load_doctrine_heads(self, atlas_heads, loci):
+        """Mirror the Atlas's heads of doctrine into the database.
+
+        The Atlas app (`westminster_standards.heads_of_doctrine`) is the single
+        source of truth for the head taxonomy: its heads carry the ontology
+        attributes they bear on, the text they cover, and a detail page at
+        /atlas/heads/<slug>/. Mirroring them here — rather than maintaining a
+        parallel list in the JSON — keeps the head chips on Study Reformed
+        pages pointing at Atlas pages that actually exist.
+        """
         heads = {}
-        loaded_head_slugs = set()
-        for head_data in data.get('doctrine_heads', []):
+        for head_data in atlas_heads.HEADS_OF_DOCTRINE:
             head, _ = DoctrineHead.objects.update_or_create(
                 slug=head_data['slug'],
                 defaults={
                     'name': head_data['name'],
                     'description': head_data.get('description', ''),
-                    'locus': loci.get(head_data.get('locus')),
-                    'order': head_data.get('order', 0),
-                    'atlas_path': head_data.get('atlas_path', ''),
+                    'locus': loci.get(head_data.get('locus_key')),
+                    'order': head_data.get('number', 0),
+                    'atlas_path': f"heads/{head_data['slug']}/",
                 },
             )
             heads[head.slug] = head
-            loaded_head_slugs.add(head.slug)
 
-        DoctrineHead.objects.exclude(slug__in=loaded_head_slugs).delete()
+        DoctrineHead.objects.exclude(slug__in=heads).delete()
+        return heads
 
+    def _load_attribute_tags(self, data, attributes):
+        """Load the hand-authored per-question ontology attribute tags."""
         tag_count = 0
-        head_link_count = 0
         for tag_data in data.get('question_tags', []):
             try:
                 question = Question.objects.get(
@@ -114,30 +142,47 @@ class Command(BaseCommand):
                     defaults={'is_representative': bool(tag_data.get('representative'))},
                 )
                 tag_count += 1
+        return tag_count
 
-            head_slugs = set(tag_data.get('heads', []))
-            head_ids = [
-                heads[head_slug].id
-                for head_slug in head_slugs
-                if head_slug in heads
-            ]
-            QuestionDoctrineHead.objects.filter(question=question).exclude(
+    def _link_questions_to_heads(self, atlas_heads, heads):
+        """Derive question -> doctrine-head links from the Atlas's coverage lists.
+
+        Every Confession section and catechism question is covered by at least
+        one head in the Atlas, so these links are complete for WCF/WLC/WSC
+        without a separate hand-maintained mapping.
+        """
+        derived = defaultdict(set)
+
+        catechism_questions = Question.objects.filter(
+            catechism__slug__in=('wsc', 'wlc')
+        ).select_related('catechism')
+        for question in catechism_questions:
+            for head in atlas_heads.heads_for_catechism_question(
+                question.catechism.slug, question.number
+            ):
+                derived[question.id].add(head['slug'])
+
+        confession_sections = Question.objects.filter(
+            catechism__slug='wcf'
+        ).select_related('topic')
+        for question in confession_sections:
+            if not question.topic:
+                continue
+            chapter = question.topic.order
+            section = question.number - question.topic.question_start + 1
+            for head in atlas_heads.heads_for_wcf_section(chapter, section):
+                derived[question.id].add(head['slug'])
+
+        head_link_count = 0
+        for question_id, slugs in derived.items():
+            head_ids = [heads[slug].id for slug in slugs if slug in heads]
+            QuestionDoctrineHead.objects.filter(question_id=question_id).exclude(
                 doctrine_head_id__in=head_ids
             ).delete()
-            for head_slug in head_slugs:
-                head = heads.get(head_slug)
-                if not head:
-                    self.stderr.write(f"Doctrine head '{head_slug}' not found, skipping")
-                    continue
+            for head_id in head_ids:
                 QuestionDoctrineHead.objects.update_or_create(
-                    question=question,
-                    doctrine_head=head,
+                    question_id=question_id,
+                    doctrine_head_id=head_id,
                 )
                 head_link_count += 1
-
-        mark_data_current(version_key, data_path)
-        self.stdout.write(self.style.SUCCESS(
-            f"Loaded {len(loci)} ontology loci, {len(attributes)} attributes, "
-            f"{len(heads)} heads, {tag_count} question tags, and "
-            f"{head_link_count} head links"
-        ))
+        return head_link_count

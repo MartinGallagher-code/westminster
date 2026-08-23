@@ -4,6 +4,7 @@ Tests for the site-wide tradition filter:
   - Filtered view querysets (Phases 2-6)
 """
 import json
+import re
 
 import pytest
 from django.test import Client, RequestFactory
@@ -341,3 +342,58 @@ class TestQuestionPreviewFilter:
     def test_westminster_question_default_cookie_returns_200(self, wsc_question):
         resp = Client().get(f'/api/question/{wsc_question.pk}/preview/')
         assert resp.status_code == 200
+
+
+@pytest.mark.django_db
+class TestSitemapMatchesGatedSets:
+    """The sitemap must not advertise URLs the comparison views gate off.
+
+    Regression: a theme in an unsupported set whose own entries happen to be
+    all-supported (the 1689 set's "Of Church Government", where the 1689 and
+    Savoy ranges are null) passed the per-theme tradition filter and was listed
+    in the sitemap, while CompareSetThemeView 404s every theme in that set.
+    Search engines indexed /compare/1689-baptist/of-church-government/ and got
+    a 404.
+    """
+
+    def _gated_set_with_westminster_only_theme(self, wsc_cat, other_cat):
+        cs = ComparisonSetFactory(name='Baptist Lineage', slug='1689-baptist', order=10)
+        # A theme whose 1689/Savoy ranges were null: only a Westminster entry.
+        westminster_only = ComparisonThemeFactory(
+            name='Of Church Government', slug='of-church-government', comparison_set=cs,
+        )
+        ComparisonEntryFactory(
+            theme=westminster_only, catechism=wsc_cat, question_start=1, question_end=1,
+        )
+        # A sibling theme in the same set that does reference the 1689 text.
+        mixed = ComparisonThemeFactory(
+            name='Scripture', slug='of-the-holy-scriptures', comparison_set=cs,
+        )
+        ComparisonEntryFactory(theme=mixed, catechism=wsc_cat, question_start=1, question_end=1)
+        ComparisonEntryFactory(theme=mixed, catechism=other_cat, question_start=1, question_end=1)
+        return westminster_only
+
+    def test_theme_in_gated_set_absent_from_sitemap(self, wsc_cat, other_cat):
+        self._gated_set_with_westminster_only_theme(wsc_cat, other_cat)
+
+        resp = Client().get('/sitemap.xml')
+        assert resp.status_code == 200
+        assert '/compare/1689-baptist/of-church-government/' not in resp.content.decode()
+
+    def test_theme_in_gated_set_still_404s(self, wsc_cat, other_cat):
+        self._gated_set_with_westminster_only_theme(wsc_cat, other_cat)
+
+        assert Client().get('/compare/1689-baptist/of-church-government/').status_code == 404
+
+    def test_every_comparison_url_in_sitemap_resolves(self, wsc_cat, other_cat):
+        self._gated_set_with_westminster_only_theme(wsc_cat, other_cat)
+        # A reachable set alongside the gated one.
+        cs = ComparisonSetFactory(name='Westminster', slug='westminster-set', order=1)
+        theme = ComparisonThemeFactory(name='Faith', slug='faith', comparison_set=cs)
+        ComparisonEntryFactory(theme=theme, catechism=wsc_cat, question_start=1, question_end=1)
+
+        c = Client()
+        body = c.get('/sitemap.xml').content.decode()
+        paths = re.findall(r'<loc>[^<]*?(/(?:compare|doctrine)/[^<]*)</loc>', body)
+        assert paths, 'sitemap should advertise at least one comparison URL'
+        assert [p for p in paths if c.get(p).status_code != 200] == []

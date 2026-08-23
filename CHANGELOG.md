@@ -3,6 +3,21 @@
 All notable project changes should be recorded here. This project uses a simple
 reverse-chronological changelog rather than formal release tags.
 
+## 2026-08-23
+
+### Fixed
+
+- Stopped the sitemap advertising comparison URLs that 404. A theme inside a comparison set that references an unsupported tradition — e.g. the Confessional Lineage set's "Of Church Government", whose 1689 and Savoy ranges are null, leaving it with only a Westminster entry — passed the per-theme tradition filter and was listed in `sitemap.xml`, while `CompareSetThemeView` gates the whole *set* and returned 404. `_comparison_themes_for_traditions` is now set-aware, matching `_comparison_sets_for_traditions`, so `/compare/1689-baptist/of-church-government/` is no longer advertised or linked from the doctrine index.
+
+### Changed
+
+- Unified the doctrine-head taxonomy on the Atlas. The database previously carried its own 33 heads (one per Confession chapter, seeded from `data/westminster_ontology.json`) alongside the Atlas app's 39 richer heads in `heads_of_doctrine.py`; the two shared only 8 slugs, so 25 of the 33 head chips on Study Reformed question pages linked to Atlas pages that did not exist. `load_westminster_ontology` now mirrors the Atlas's heads into the database and derives every question-to-head link from the Atlas's own coverage lists, and the duplicate `doctrine_heads` block and per-question `heads` field are dropped from the JSON, which keeps the loci, attributes, and the hand-authored per-question attribute tags. Every Confession section and catechism question now carries at least one head, and every head chip resolves to a real `/atlas/heads/<slug>/` page.
+- Made the "Loci treated here" panel read the loaded ontology. `catechism.atlas.topic_loci` previously bypassed the database because the per-question tags were sparse; they no longer are, so it now derives loci from the question tags and head links and falls back to the Atlas's static chapter/question mapping only when the ontology has not been loaded.
+
+### Added
+
+- Site search now reaches the Atlas. Search results show an "Also in the Atlas" section covering the layers the standards' text has no counterpart for — heads of doctrine, cruxes, divines, and schools — grouped by layer, capped per layer, and linking through to the Atlas's own search for the rest. Matching lives in the new `westminster_standards/entity_search.py` so the ported `views.py` stays untouched for upstream syncs.
+
 ## 2026-07-02
 
 ### Changed
