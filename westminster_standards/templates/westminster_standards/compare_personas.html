@@ -1,4 +1,5 @@
 {% extends "westminster_standards/base.html" %}
+{% load atlas_tags %}
 {% block title %}Compare Personas — Westminster Standards Atlas{% endblock %}
 {% block ws_crumb %}<li class="breadcrumb-item active" aria-current="page">Compare</li>{% endblock %}
 
@@ -86,11 +87,11 @@
         {% for row in group.attrs %}
           <div class="ws-cg-label">{{ row.attr.label }}</div>
           <div class="ws-cg-val {% if row.is_diff %}ws-cg-diff{% endif %}">
-            {% if row.vkey_a %}<a class="ws-cg-link" href="{% url 'westminster_standards:value_detail' row.dim_key row.attr.key row.vkey_a %}">{{ row.val_a }}</a>{% else %}{{ row.val_a }}{% endif %}
+            {% position row.val_a row.dim_key row.attr.key "ws-cg-link" %}
             {% if row.a_is_baseline %}<span class="ws-baseline-pill">WCF</span>{% endif %}
           </div>
           <div class="ws-cg-val {% if row.is_diff %}ws-cg-diff{% endif %}">
-            {% if row.vkey_b %}<a class="ws-cg-link" href="{% url 'westminster_standards:value_detail' row.dim_key row.attr.key row.vkey_b %}">{{ row.val_b }}</a>{% else %}{{ row.val_b }}{% endif %}
+            {% position row.val_b row.dim_key row.attr.key "ws-cg-link" %}
             {% if row.b_is_baseline %}<span class="ws-baseline-pill">WCF</span>{% endif %}
           </div>
         {% endfor %}

@@ -1,4 +1,5 @@
 {% extends "westminster_standards/base.html" %}
+{% load atlas_tags %}
 {% block title %}{{ p.name }} — Westminster Standards Atlas{% endblock %}
 {% block ws_crumb %}<li class="breadcrumb-item"><a href="{% url 'westminster_standards:personas_list' %}">Personas</a></li><li class="breadcrumb-item active" aria-current="page">{{ p.name }}</li>{% endblock %}
 
@@ -25,11 +26,21 @@
       {% endfor %}
     </div>
   {% endif %}
+  {% if departures %}
+    <p class="ws-departures">
+      <span class="ws-departures-label">Departs from the Confession on</span>
+      {% for d in departures %}<span class="ws-departure">{{ d.attr_label }}:
+        {% position d.value_label d.dim_key d.attr_key "ws-link" %}<span class="ws-departure-baseline"
+        >&nbsp;not {% position d.baseline_label d.dim_key d.attr_key "ws-link" %}</span></span>{% if not forloop.last %} · {% endif %}{% endfor %}
+    </p>
+  {% else %}
+    <p class="ws-departures ws-departures-none">Holds the Westminster position on all 35 attributes.</p>
+  {% endif %}
 </section>
 
 <div class="ws-card ws-prose">
   <h4 style="margin-top:0;">Biography</h4>
-  <p>{{ p.bio }}</p>
+  <p>{{ p.bio|link_divines:p.slug }}</p>
 
   {% if p.works %}
     <h4>Principal works</h4>
@@ -43,7 +54,7 @@
   <div class="ws-role-context">
     <span class="ws-role-context-eyebrow">Role at the Assembly</span>
     <p class="ws-role-context-label">{{ role_context.label }}</p>
-    <p class="ws-role-context-text">{{ role_context.text }}</p>
+    <p class="ws-role-context-text">{{ role_context.text|link_divines:p.slug }}</p>
   </div>
 {% endif %}
 
@@ -186,23 +197,14 @@
             {% for row in entry.rows %}
               <span class="ws-la-label">{{ row.attr.label }}</span>
               <span class="ws-la-value {% if row.is_override %}ws-la-override{% endif %}">
-                {% if row.value_key %}
-                  <a class="ws-link" href="{% url 'westminster_standards:value_detail' row.dim_key row.attr.key row.value_key %}"
-                     title="What this position is, who else held it, and what it was argued against">{{ row.value_label }}</a>
-                {% else %}
-                  {{ row.value_label }}
-                {% endif %}
+                {% position row.value_label row.dim_key row.attr.key "ws-link" %}
                 {% if row.is_override %}
                 <span class="ws-baseline-pill" style="background:rgba(248,113,113,0.18);color:#fda4af;font-size:0.65rem;"
                       aria-hidden="true">≠</span>
                 <span class="ws-la-baseline">
                   <span class="visually-hidden">departs from the Westminster position, which is</span>
                   <span aria-hidden="true">Westminster:</span>
-                  {% if row.baseline_key %}
-                    <a class="ws-link" href="{% url 'westminster_standards:value_detail' row.dim_key row.attr.key row.baseline_key %}">{{ row.baseline_label }}</a>
-                  {% else %}
-                    {{ row.baseline_label }}
-                  {% endif %}
+                  {% position row.baseline_label row.dim_key row.attr.key "ws-link" %}
                 </span>
                 {% endif %}
               </span>
@@ -241,6 +243,19 @@
   .ws-la-label { color: var(--text-muted); font-size: 0.8rem; line-height: 1.4; }
   .ws-la-value { color: var(--text-primary); font-size: 0.82rem; line-height: 1.4; }
   .ws-la-override { color: #fda4af; }
+  .ws-departures {
+    margin: 0.7rem 0 0;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+  }
+  .ws-departures-label {
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    font-size: 0.68rem;
+    margin-right: 0.35rem;
+  }
+  .ws-departure-baseline { color: var(--text-muted); font-size: 0.82rem; }
+  .ws-departures-none { font-style: italic; }
   /* Where a divine departs from the Confession, name what he departs from —
      the departure is the interesting fact, and it should not need a hover. */
   .ws-la-baseline {

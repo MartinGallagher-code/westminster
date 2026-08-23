@@ -1,4 +1,5 @@
 {% extends "westminster_standards/base.html" %}
+{% load atlas_tags %}
 {% block title %}{{ school.name }} — Westminster Standards Atlas{% endblock %}
 {% block ws_crumb %}<li class="breadcrumb-item"><a href="{% url 'westminster_standards:schools_list' %}">Schools</a></li><li class="breadcrumb-item active" aria-current="page">{{ school.name }}</li>{% endblock %}
 
@@ -46,11 +47,7 @@
           {{ row.dim.numeral }} · {{ row.dim.label }} · <strong style="color:var(--text-primary);">{{ row.attr.label }}</strong>
         </p>
         <p style="margin:0;font-size:0.92rem;">
-          {% if row.value_key %}
-            <a class="ws-link" href="{% url 'westminster_standards:value_detail' row.dim.key row.attr.key row.value_key %}">{{ row.value_label }}</a>
-          {% else %}
-            {{ row.value_label }}
-          {% endif %}
+          {% position row.value_label row.dim.key row.attr.key "ws-link" %}
           <span class="ws-baseline-pill" style="background:rgba(248,113,113,0.18);color:#fda4af;">override</span>
           <span style="color:var(--text-muted);font-size:0.8rem;margin-left:0.3rem;">vs WCF: {{ row.baseline_label }}</span>
         </p>
