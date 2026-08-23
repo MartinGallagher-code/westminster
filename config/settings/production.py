@@ -42,6 +42,11 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 
 
+# Cache rendered read-only pages for anonymous visitors. The data loaders end
+# with clear_cache, so a deploy that changes content also empties this.
+PAGE_CACHE_SECONDS = int(os.environ.get('PAGE_CACHE_SECONDS', '3600'))
+
+
 # ── Error monitoring ──────────────────────────────────────────────────────
 #
 # Set SENTRY_DSN in the service environment to turn this on; without it the

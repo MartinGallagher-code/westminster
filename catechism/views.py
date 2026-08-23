@@ -24,6 +24,7 @@ from .models import (
     BibleBook, ScriptureIndex, ComparisonSet, ComparisonTheme,
     ComparisonEntry, QuestionDoctrineHead, QuestionOntologyTag,
 )
+from .cache import cache_read_only_page
 from .citations import bibtex, citation_label, citation_text, resolve_reference, ris
 from .handout import build_handout
 from .scripture_refs import (
@@ -466,6 +467,7 @@ class LearnLessonView(TemplateView):
         return ctx
 
 
+@method_decorator(cache_read_only_page, name='dispatch')
 class QuestionDetailView(CatechismMixin, DetailView):
     template_name = 'catechism/question_detail.html'
     context_object_name = 'question'
@@ -625,6 +627,7 @@ class TopicListRedirectView(CatechismMixin, View):
         return redirect(self.catechism.get_absolute_url())
 
 
+@method_decorator(cache_read_only_page, name='dispatch')
 class TopicDetailView(CatechismMixin, DetailView):
     template_name = 'catechism/topic_detail.html'
     context_object_name = 'topic'
@@ -756,6 +759,7 @@ class ScriptureIndexView(TemplateView):
         return ctx
 
 
+@method_decorator(cache_read_only_page, name='dispatch')
 class ScriptureBookView(DetailView):
     template_name = 'catechism/scripture_book.html'
     model = BibleBook
@@ -1100,6 +1104,7 @@ class CompareSetView(ListView):
         return ctx
 
 
+@method_decorator(cache_read_only_page, name='dispatch')
 class CompareSetThemeView(DetailView):
     template_name = 'catechism/compare_theme.html'
     context_object_name = 'theme'
@@ -1249,6 +1254,7 @@ class CitationExportView(View):
         return response
 
 
+@method_decorator(cache_read_only_page, name='dispatch')
 class HandoutView(TemplateView):
     """A print-ready session handout for a question, section, or whole chapter.
 

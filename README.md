@@ -82,6 +82,9 @@ python manage.py makemigrations --check --dry-run
 
 ## Deployment
 
+Operational procedures — backups, restores, health checks, monitoring — are in
+[`docs/OPERATIONS.md`](docs/OPERATIONS.md).
+
 The project deploys to Render via `render.yaml`.
 
 Python is pinned with `.python-version` so Render uses Python 3.12 even if the service falls back to Render's platform default.
