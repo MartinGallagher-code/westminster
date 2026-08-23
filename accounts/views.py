@@ -439,6 +439,7 @@ class MemorizeHomeView(LoginRequiredMixin, TemplateView):
         return ctx
 
 
+@method_decorator(ratelimit(key='user', rate='120/m', method='POST', block=True), name='post')
 class MemorizeReviewView(LoginRequiredMixin, View):
     """Show one due card, then record how it went."""
 
@@ -493,8 +494,13 @@ class MemorizeRemoveView(LoginRequiredMixin, View):
         return redirect(request.POST.get('next') or question.get_absolute_url())
 
 
+@method_decorator(ratelimit(key='user', rate='10/m', method='POST', block=True), name='post')
 class MemorizeAddDocumentView(LoginRequiredMixin, View):
-    """Add every question of a catechism to the deck in one go."""
+    """Add every question of a catechism to the deck in one go.
+
+    Rate limited more tightly than the rest: one request writes a card for
+    every question in the document.
+    """
 
     def post(self, request):
         catechism = get_object_or_404(Catechism, slug=request.POST.get('catechism'))
@@ -519,6 +525,7 @@ class MemorizeAddDocumentView(LoginRequiredMixin, View):
         return redirect('accounts:memorize')
 
 
+@method_decorator(ratelimit(key='user', rate='20/h', method='GET', block=True), name='get')
 class NotesExportView(LoginRequiredMixin, View):
     """Download every note, annotation and highlight as one Markdown file."""
 

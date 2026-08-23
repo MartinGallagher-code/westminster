@@ -20,3 +20,23 @@ jobs:
       - run: pytest --cov
         env:
           DJANGO_SETTINGS_MODULE: config.settings.development
+
+  # The unit suite runs against factories — a few rows built for one test —
+  # so defects that only appear in the loaded corpus survive it. Two already
+  # did: doctrine-head chips linking to Atlas pages that did not exist, and
+  # sitemap.xml advertising comparison URLs that 404. This job loads the real
+  # data with the same script the deploy uses, then checks it.
+  data-integrity:
+    runs-on: ubuntu-latest
+    env:
+      DJANGO_SETTINGS_MODULE: config.settings.development
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - run: python manage.py migrate
+      - run: python manage.py createcachetable
+      - run: ./scripts/load_data.sh
+      - run: python manage.py check_site_integrity

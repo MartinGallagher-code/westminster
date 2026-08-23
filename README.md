@@ -93,6 +93,8 @@ Required production environment variables:
 - `DATABASE_URL`
 - `ALLOWED_HOSTS`
 - `GOOGLE_ANALYTICS_ID` optional
+- `SENTRY_DSN` optional — error monitoring; unset disables it
+- `SENTRY_TRACES_SAMPLE_RATE` optional, defaults to `0.05`
 
 `build.sh` installs dependencies, collects static assets, migrates the database, loads source data, rebuilds indexes/cross-references, and clears the cache.
 

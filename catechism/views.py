@@ -8,8 +8,10 @@ from django.db.models import Q, Count, Prefetch, F
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView
+from django_ratelimit.decorators import ratelimit
 
 from .atlas import atlas_url
 from .document_guides import get_document_guide
@@ -627,6 +629,10 @@ class TopicDetailView(CatechismMixin, DetailView):
         return ctx
 
 
+# Search is the most expensive read on the site and the obvious scraping
+# target. The limit is per-IP and deliberately generous: church and library
+# networks share an address.
+@method_decorator(ratelimit(key='ip', rate='120/m', method='GET', block=True), name='get')
 class SearchView(ListView):
     template_name = 'catechism/search_results.html'
     context_object_name = 'results'

@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+# Load every source dataset into the current database.
+#
+# Extracted from build.sh so deploys and the CI data-integrity job run exactly
+# the same sequence — a check that runs against a differently-loaded database
+# is not a check.
+#
+# Each command skips automatically when its source data has not changed.
+set -o errexit
+
+# Load data (each command skips automatically if source data unchanged)
+python manage.py load_catechism
+python manage.py load_fisher
+python manage.py load_flavel
+python manage.py load_henry
+python manage.py load_watson
+python manage.py load_prooftexts
+
+# Load Larger Catechism and commentary
+python manage.py load_wlc
+python manage.py load_ridgley
+python manage.py load_prooftexts --catechism wlc
+
+# Load Confession of Faith and commentaries
+python manage.py load_wcf
+python manage.py load_shaw
+python manage.py load_hodge
+
+# Westminster Standards Atlas ontology metadata
+python manage.py load_westminster_ontology
+
+# Remove stale commentary sources not loaded by any command above
+python manage.py cleanup_stale_sources
+
+# Cross-references between WSC and WLC (legacy)
+python manage.py load_crossrefs
+
+# Generalized cross-references (all three standards)
+python manage.py load_standard_crossrefs
+
+# Scripture index
+python manage.py build_scripture_index
+
+# Three Forms of Unity
+python manage.py load_heidelberg
+python manage.py load_prooftexts --catechism heidelberg
+python manage.py load_ursinus
+python manage.py load_thelemann
+python manage.py load_vanderkemp
+python manage.py load_bethune
+python manage.py load_fisher_hc
+python manage.py load_whitmer
+python manage.py load_belgic
+python manage.py load_prooftexts --catechism belgic
+python manage.py load_dort
+python manage.py load_prooftexts --catechism dort
+
+# 1689 London Baptist Confession
+python manage.py load_1689
+python manage.py load_prooftexts --catechism 1689
+
+# Pre-Westminster and Congregationalist Confessions
+python manage.py load_scots
+python manage.py load_prooftexts --catechism scots
+python manage.py load_irish
+python manage.py load_prooftexts --catechism irish
+python manage.py load_second_helvetic
+python manage.py load_prooftexts --catechism second-helvetic
+python manage.py load_savoy
+python manage.py load_prooftexts --catechism savoy
+
+# PCA Book of Church Order
+python manage.py load_pca_bco
+
+# Cross-references from the PCA BCO to the Westminster Standards
+python manage.py load_bco_crossrefs
+
+# Systematic Theologies
+python manage.py load_calvins_institutes
+python manage.py load_hodge_outlines
+
+# Comparison themes (all sets)
+python manage.py load_comparison_themes
+python manage.py load_comparison_themes --set three-forms
+python manage.py load_comparison_themes --set 1689-baptist
+python manage.py load_comparison_themes --set pre-westminster
+
+# Theme-based cross-references (derived from comparison themes)
+python manage.py generate_theme_crossrefs
+
+# Clear cache after data load to ensure fresh content
+python manage.py clear_cache
