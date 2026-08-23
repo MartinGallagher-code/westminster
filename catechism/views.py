@@ -579,10 +579,14 @@ class QuestionDetailView(CatechismMixin, DetailView):
         if self.request.user.is_authenticated:
             from accounts.models import UserNote
             from accounts.forms import NoteForm
+            from accounts.models import MemorizationCard
             ctx['user_note'] = UserNote.objects.filter(
                 user=self.request.user, question=q
             ).first()
             ctx['note_form'] = NoteForm()
+            ctx['memorization_card'] = MemorizationCard.objects.filter(
+                user=self.request.user, question=q
+            ).first()
 
         return ctx
 

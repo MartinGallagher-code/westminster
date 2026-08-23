@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Review - Memorise - Study Reformed{% endblock %}
+{% block meta_description %}Review a catechism answer you are committing to memory.{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'accounts:memorize' %}">Memorise</a></li>
+        <li class="breadcrumb-item active">Review</li>
+    </ol>
+</nav>
+
+<div class="d-flex justify-content-between align-items-baseline mb-3">
+    <h1 class="h4 mb-0">{{ card.question.catechism.abbreviation }} {{ card.question.display_number }}</h1>
+    <span class="text-muted small">{{ remaining }} left today</span>
+</div>
+
+<div class="study-card mb-3">
+    <div class="study-card-title">{{ card.question.question_text }}</div>
+</div>
+
+<div id="answer-panel" hidden>
+    <div class="study-card mb-3">
+        <div class="study-card-text">{{ card.question.answer_text|linebreaksbr }}</div>
+    </div>
+
+    <form method="post" class="d-flex flex-wrap gap-2">
+        {% csrf_token %}
+        <input type="hidden" name="card" value="{{ card.pk }}">
+        {% for grade, label in grades %}
+        <button type="submit" name="grade" value="{{ grade }}"
+                class="btn {% if grade == 'again' %}btn-outline-danger{% elif grade == 'easy' %}btn-outline-success{% else %}btn-outline-secondary{% endif %}">
+            {{ label }}
+        </button>
+        {% endfor %}
+    </form>
+</div>
+
+<button type="button" id="reveal-answer" class="btn btn-primary">Show the answer</button>
+
+<p class="mt-4">
+    <a class="small" href="{{ card.question.get_absolute_url }}">Open the full page for this answer</a>
+</p>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    (function () {
+        var reveal = document.getElementById('reveal-answer');
+        var panel = document.getElementById('answer-panel');
+        if (!reveal || !panel) return;
+        function show() {
+            panel.hidden = false;
+            reveal.hidden = true;
+            var first = panel.querySelector('button');
+            if (first) first.focus();
+        }
+        reveal.addEventListener('click', show);
+        document.addEventListener('keydown', function (e) {
+            if (e.key === ' ' && panel.hidden && e.target === document.body) {
+                e.preventDefault();
+                show();
+            }
+        });
+    })();
+</script>
+{% endblock %}

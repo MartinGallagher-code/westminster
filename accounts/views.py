@@ -10,14 +10,17 @@ from django.contrib.auth.models import User
 from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, ListView, DeleteView, TemplateView, View
 from django.http import HttpResponseRedirect, JsonResponse
 from django_ratelimit.decorators import ratelimit
 
-from .models import UserNote, Highlight, InlineComment, UserProfile
+from .models import UserNote, Highlight, InlineComment, MemorizationCard, UserProfile
+from . import scheduling
 from .forms import SignupForm
-from catechism.models import Question, Commentary
+from catechism.models import Catechism, Question, Commentary
+from catechism.utils import get_active_traditions
 
 logger = logging.getLogger(__name__)
 
@@ -372,3 +375,119 @@ class PasswordChangeView(LoginRequiredMixin, View):
             messages.success(request, 'Your password has been changed.')
             return redirect('accounts:dashboard')
         return render(request, 'accounts/password_change.html', {'form': form})
+
+
+# ── Memorisation ──────────────────────────────────────────────────────────
+
+
+def _deck(user):
+    return MemorizationCard.objects.filter(user=user).select_related(
+        'question', 'question__catechism', 'question__topic',
+    )
+
+
+class MemorizeHomeView(LoginRequiredMixin, TemplateView):
+    """The reader's deck: what is due, what is being learned, what is known."""
+
+    template_name = 'accounts/memorize.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        today = timezone.localdate()
+        deck = _deck(self.request.user)
+
+        ctx['today'] = today
+        ctx['due_cards'] = [card for card in deck if card.due_on <= today]
+        ctx['due_count'] = len(ctx['due_cards'])
+        ctx['total_count'] = deck.count()
+        ctx['mature_count'] = sum(1 for card in deck if card.is_mature)
+        ctx['learning_count'] = ctx['total_count'] - ctx['mature_count']
+        ctx['next_due'] = min(
+            (card.due_on for card in deck if card.due_on > today), default=None,
+        )
+        # Documents whose questions can be added in bulk.
+        ctx['memorisable'] = Catechism.objects.filter(
+            document_type=Catechism.CATECHISM,
+            tradition__in=get_active_traditions(self.request),
+        ).order_by('abbreviation')
+        return ctx
+
+
+class MemorizeReviewView(LoginRequiredMixin, View):
+    """Show one due card, then record how it went."""
+
+    def get(self, request):
+        today = timezone.localdate()
+        card = _deck(request.user).filter(due_on__lte=today).first()
+        if card is None:
+            messages.info(request, 'Nothing is due for review — well done.')
+            return redirect('accounts:memorize')
+        remaining = _deck(request.user).filter(due_on__lte=today).count()
+        return render(request, 'accounts/memorize_review.html', {
+            'card': card,
+            'remaining': remaining,
+            'grades': [(grade, scheduling.GRADE_LABELS[grade]) for grade in scheduling.GRADES],
+        })
+
+    def post(self, request):
+        card = get_object_or_404(
+            MemorizationCard, pk=request.POST.get('card'), user=request.user,
+        )
+        grade = request.POST.get('grade')
+        if grade not in scheduling.GRADES:
+            messages.error(request, 'Unknown review outcome.')
+            return redirect('accounts:memorize_review')
+        card.apply_review(grade)
+        return redirect('accounts:memorize_review')
+
+
+class MemorizeAddView(LoginRequiredMixin, View):
+    """Add a single question to the deck, from its own page."""
+
+    def post(self, request, question_pk):
+        question = get_object_or_404(Question, pk=question_pk)
+        _, created = MemorizationCard.objects.get_or_create(
+            user=request.user, question=question,
+        )
+        messages.success(
+            request,
+            'Added to your memorisation deck.' if created
+            else 'That answer is already in your deck.',
+        )
+        return redirect(request.POST.get('next') or question.get_absolute_url())
+
+
+class MemorizeRemoveView(LoginRequiredMixin, View):
+    def post(self, request, question_pk):
+        MemorizationCard.objects.filter(
+            user=request.user, question_id=question_pk,
+        ).delete()
+        messages.success(request, 'Removed from your memorisation deck.')
+        question = get_object_or_404(Question, pk=question_pk)
+        return redirect(request.POST.get('next') or question.get_absolute_url())
+
+
+class MemorizeAddDocumentView(LoginRequiredMixin, View):
+    """Add every question of a catechism to the deck in one go."""
+
+    def post(self, request):
+        catechism = get_object_or_404(Catechism, slug=request.POST.get('catechism'))
+        existing = set(
+            MemorizationCard.objects.filter(
+                user=request.user, question__catechism=catechism,
+            ).values_list('question_id', flat=True)
+        )
+        new_cards = [
+            MemorizationCard(user=request.user, question=question)
+            for question in catechism.questions.all()
+            if question.pk not in existing
+        ]
+        MemorizationCard.objects.bulk_create(new_cards)
+        messages.success(
+            request,
+            f'Added {len(new_cards)} answer{"" if len(new_cards) == 1 else "s"} '
+            f'from the {catechism.abbreviation} to your deck.'
+            if new_cards else
+            f'Every {catechism.abbreviation} answer is already in your deck.',
+        )
+        return redirect('accounts:memorize')

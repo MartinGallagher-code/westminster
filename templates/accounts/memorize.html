@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Memorise - Study Reformed{% endblock %}
+{% block meta_description %}Commit the catechism to memory with a review schedule that brings each answer back just before you would forget it.{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'catechism:home' %}">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'accounts:dashboard' %}">My Study</a></li>
+        <li class="breadcrumb-item active">Memorise</li>
+    </ol>
+</nav>
+
+<h1 class="mb-1">Memorise</h1>
+<p class="lead text-muted">Each answer comes back just before you would forget it. Recall it and the gap widens; miss it and it returns tomorrow.</p>
+<hr class="mb-4">
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="study-card h-100">
+            <div class="study-card-title display-6">{{ due_count }}</div>
+            <div class="study-card-text">due today</div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="study-card h-100">
+            <div class="study-card-title display-6">{{ learning_count }}</div>
+            <div class="study-card-text">still learning</div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="study-card h-100">
+            <div class="study-card-title display-6">{{ mature_count }}</div>
+            <div class="study-card-text">known &mdash; three weeks or more between reviews</div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="study-card h-100">
+            <div class="study-card-title display-6">{{ total_count }}</div>
+            <div class="study-card-text">in your deck</div>
+        </div>
+    </div>
+</div>
+
+{% if due_count %}
+<a href="{% url 'accounts:memorize_review' %}" class="btn btn-primary btn-lg mb-4">
+    Review {{ due_count }} answer{{ due_count|pluralize }}
+</a>
+{% elif total_count %}
+<div class="study-callout mb-4">
+    <div>
+        <div class="fw-semibold">Nothing due today</div>
+        <div class="text-muted small">
+            {% if next_due %}Your next review is on {{ next_due }}.{% else %}Add more answers to keep going.{% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<h2 class="h5 mt-4">Add a catechism to your deck</h2>
+<p class="text-muted small">Every answer is added as a new card, due immediately. You can remove any of them from its own page.</p>
+<form method="post" action="{% url 'accounts:memorize_add_document' %}" class="d-flex flex-wrap gap-2 align-items-center mb-5">
+    {% csrf_token %}
+    <label class="visually-hidden" for="catechism-select">Catechism</label>
+    <select class="form-select w-auto" name="catechism" id="catechism-select">
+        {% for cat in memorisable %}
+        <option value="{{ cat.slug }}">{{ cat.name }} ({{ cat.total_questions }})</option>
+        {% empty %}
+        <option value="" disabled>No catechisms in your active collections</option>
+        {% endfor %}
+    </select>
+    <button type="submit" class="btn btn-outline-primary">Add all</button>
+</form>
+
+{% if due_cards %}
+<h2 class="h5">Due now</h2>
+<div class="mb-4">
+    {% for card in due_cards %}
+    <a href="{{ card.question.get_absolute_url }}"
+       class="d-flex align-items-start gap-2 py-2 text-decoration-none border-bottom"
+       style="border-color: var(--wm-border) !important; color: var(--bs-body-color);">
+        <strong class="small text-nowrap text-primary" style="min-width: 4rem;">
+            {{ card.question.catechism.item_prefix }}{{ card.question.display_number }}
+        </strong>
+        <div>
+            <div class="small mb-1">{{ card.question.question_text|truncatewords:16 }}</div>
+            <div class="text-muted small">
+                {% if card.is_new %}new{% else %}seen {{ card.repetitions }} time{{ card.repetitions|pluralize }}{% endif %}
+                {% if card.lapses %}&middot; forgotten {{ card.lapses }} time{{ card.lapses|pluralize }}{% endif %}
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

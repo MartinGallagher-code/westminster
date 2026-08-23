@@ -155,6 +155,25 @@
                     <a href="{% url 'catechism:search' %}?q={{ question.topic.name|urlencode }}" class="btn btn-outline-primary btn-sm">
                         Search Topic
                     </a>
+                    {% if user.is_authenticated and not catechism.is_prose_document %}
+                    {% if memorization_card %}
+                    <form method="post" action="{% url 'accounts:memorize_remove' question_pk=question.pk %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.path }}">
+                        <button type="submit" class="btn btn-outline-success btn-sm" title="Due {{ memorization_card.due_on }}">
+                            <i class="bi bi-check2-circle me-1"></i>In your deck
+                        </button>
+                    </form>
+                    {% else %}
+                    <form method="post" action="{% url 'accounts:memorize_add' question_pk=question.pk %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.path }}">
+                        <button type="submit" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-lightbulb me-1"></i>Memorise
+                        </button>
+                    </form>
+                    {% endif %}
+                    {% endif %}
                 </div>
             </div>
 
