@@ -109,6 +109,33 @@ everything else is reproducible.
 Run `python manage.py check_site_integrity` from a shell on the deployed
 instance after any manual data change.
 
+## Verifying the text
+
+`python manage.py check_transcription` compares the loaded Westminster text
+against the Atlas app's independently sourced copy of the same documents.
+Two transcriptions agreeing is evidence; where they disagree, the divergence is
+either an error in one or a genuine edition difference, and both want an
+editor's eye.
+
+```bash
+python manage.py check_transcription                 # all three documents
+python manage.py check_transcription --document wcf --summary
+```
+
+`--summary` groups the findings by the differing words, which turns dozens of
+sections into a handful of decisions. On the current corpus the Larger
+Catechism agrees everywhere, the Shorter differs in one place, and the
+Confession differs in 59 sections — overwhelmingly British against American
+orthography (*honour/honor*, *pretence/pretense*, *endeavouring/endeavoring*)
+and roman against arabic numerals in the canon list, with a small number of
+real textual variants underneath.
+
+**This is not a check against a critical edition.** It compares two
+public-domain transcriptions the project already holds. Collating against a
+modern critical print edition — the Free Presbyterian Publications text, or the
+OPC's — remains editorial work that needs the book in hand; the command accepts
+any reference with the same shape, so that collation can reuse it.
+
 ## Environment variables
 
 | Variable | Required | Purpose |
