@@ -364,18 +364,22 @@ def persona_detail(request, slug):
                 overrides.add(full_key)
             value_key = None
             value_def = None
+            baseline_key = None
             for v in attr['values']:
                 if v['label'] == label:
                     value_key = v['key']
                     value_def = v.get('definition')
-                    break
+                if v['label'] == baseline_label:
+                    baseline_key = v['key']
             rows.append({
                 'attr': attr,
+                'dim_key': dim['key'],
                 'value_label': label,
                 'value_key': value_key,
                 'value_definition': value_def,
                 'is_override': is_override,
                 'baseline_label': baseline_label,
+                'baseline_key': baseline_key,
             })
         by_dim.append({'dim': dim, 'rows': rows})
     crux_appearances = cruxes_for_persona(slug)

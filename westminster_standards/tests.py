@@ -14,7 +14,9 @@ They run quickly (one pass over the in-memory data) and serve as a
 canary when any layer is edited.
 """
 
-from django.test import SimpleTestCase
+import re
+
+from django.test import SimpleTestCase, TestCase
 
 from .data import DIMENSIONS, WESTMINSTER_BASELINE_ATTRS, ATTR_VALUE_KEYS
 from .personas import PERSONAS, get_persona_by_slug
@@ -408,3 +410,62 @@ class CrossLinkInvariants(SimpleTestCase):
                                 f"only {cruxes_with_resolved_citations} of "
                                 f"{len(cruxes_with_language)} cruxes have "
                                 f"resolvable citations in language/references")
+
+
+class PersonaOntologyLinks(TestCase):
+    """A persona's positions should be explorable, especially where he
+    departs from the Confession.
+
+    Every value on a persona page names a position that has its own page
+    explaining what it is, who else held it, and what it was argued against —
+    but the persona page rendered them as plain text, so the one genuinely
+    interesting fact about a divine (that he disagreed with Westminster here)
+    was a dead end. The school and comparison pages already linked theirs.
+    """
+
+    def _persona_with_an_override(self):
+        for persona in PERSONAS:
+            for key, value in persona['attrs'].items():
+                if WESTMINSTER_BASELINE_ATTRS.get(key) not in (None, value):
+                    return persona, key
+        self.fail('no persona departs from the baseline')
+
+    def test_a_departure_links_to_the_position_it_takes(self):
+        persona, _key = self._persona_with_an_override()
+        body = self.client.get(
+            f"/atlas/personas/{persona['slug']}/"
+        ).content.decode()
+        self.assertIn('/atlas/dimension/', body)
+        self.assertIn('ws-la-override', body)
+
+    def test_a_departure_names_what_it_departs_from(self):
+        persona, _key = self._persona_with_an_override()
+        body = self.client.get(
+            f"/atlas/personas/{persona['slug']}/"
+        ).content.decode()
+        # The Westminster position is stated inline, not left to a hover.
+        self.assertIn('ws-la-baseline', body)
+        self.assertIn('departs from the Westminster position', body)
+
+    def test_arrowsmiths_atonement_position_is_clickable(self):
+        """The case that prompted this: John Arrowsmith is a hypothetical
+        universalist, which is precisely where he parts from the Confession."""
+        body = self.client.get('/atlas/personas/john-arrowsmith/').content.decode()
+        self.assertIn(
+            '/atlas/dimension/god_decree/extent_of_atonement/hypothetical_universal/',
+            body,
+        )
+        # ...and the Confession's own position is linked beside it.
+        self.assertIn(
+            '/atlas/dimension/god_decree/extent_of_atonement/particular/', body,
+        )
+
+    def test_every_linked_value_page_resolves(self):
+        persona, _key = self._persona_with_an_override()
+        body = self.client.get(f"/atlas/personas/{persona['slug']}/").content.decode()
+        hrefs = set(re.findall(r'href="(/atlas/dimension/[^"]+)"', body))
+        self.assertTrue(hrefs)
+        for href in sorted(hrefs):
+            self.assertEqual(
+                self.client.get(href).status_code, 200, f'{href} does not resolve',
+            )

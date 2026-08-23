@@ -186,8 +186,25 @@
             {% for row in entry.rows %}
               <span class="ws-la-label">{{ row.attr.label }}</span>
               <span class="ws-la-value {% if row.is_override %}ws-la-override{% endif %}">
-                {{ row.value_label }}
-                {% if row.is_override %}<span class="ws-baseline-pill" style="background:rgba(248,113,113,0.18);color:#fda4af;font-size:0.65rem;">≠</span>{% endif %}
+                {% if row.value_key %}
+                  <a class="ws-link" href="{% url 'westminster_standards:value_detail' row.dim_key row.attr.key row.value_key %}"
+                     title="What this position is, who else held it, and what it was argued against">{{ row.value_label }}</a>
+                {% else %}
+                  {{ row.value_label }}
+                {% endif %}
+                {% if row.is_override %}
+                <span class="ws-baseline-pill" style="background:rgba(248,113,113,0.18);color:#fda4af;font-size:0.65rem;"
+                      aria-hidden="true">≠</span>
+                <span class="ws-la-baseline">
+                  <span class="visually-hidden">departs from the Westminster position, which is</span>
+                  <span aria-hidden="true">Westminster:</span>
+                  {% if row.baseline_key %}
+                    <a class="ws-link" href="{% url 'westminster_standards:value_detail' row.dim_key row.attr.key row.baseline_key %}">{{ row.baseline_label }}</a>
+                  {% else %}
+                    {{ row.baseline_label }}
+                  {% endif %}
+                </span>
+                {% endif %}
               </span>
             {% endfor %}
           </div>
@@ -224,6 +241,13 @@
   .ws-la-label { color: var(--text-muted); font-size: 0.8rem; line-height: 1.4; }
   .ws-la-value { color: var(--text-primary); font-size: 0.82rem; line-height: 1.4; }
   .ws-la-override { color: #fda4af; }
+  /* Where a divine departs from the Confession, name what he departs from —
+     the departure is the interesting fact, and it should not need a hover. */
+  .ws-la-baseline {
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    white-space: nowrap;
+  }
   .ws-role-context {
     margin-top: 1rem;
     padding: 0.9rem 1.2rem;

@@ -11,6 +11,7 @@ reverse-chronological changelog rather than formal release tags.
 
 ### Added
 
+- Made a divine's departures from the Confession clickable on Atlas persona pages. Every attribute value now links to the page explaining that position — what it is, who else held it, what it was argued against — and where a persona departs from the Westminster baseline, the Confession's own position is named inline and linked beside it. John Arrowsmith's "Hypothetical-Universal ≠" now reads "Hypothetical-Universal ≠ Westminster: Particular", both linked. The school and comparison pages already did this; the persona page, where the departures actually live, did not.
 - Added every answer under one topic to the deck in a single action (`/accounts/memorize/add-topic/<pk>/`), which is the unit a reader working through a catechism actually uses.
 
 ## 2026-08-23 (later still)
