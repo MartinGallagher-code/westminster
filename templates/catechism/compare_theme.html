@@ -52,6 +52,10 @@
             Search Topic
         </a>
         {% if columns|length > 1 %}
+        <a href="{% url 'catechism:compare_parallel' set_slug=comparison_set.slug theme_slug=theme.slug %}"
+           class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-list-columns-reverse me-1"></i>Read in parallel
+        </a>
         <a href="{% url 'catechism:compare_diff' set_slug=comparison_set.slug theme_slug=theme.slug %}"
            class="btn btn-outline-secondary btn-sm">
             <i class="bi bi-file-diff me-1"></i>What changed

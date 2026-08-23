@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block body_attrs %}data-filter-sensitive="true"{% endblock %}
+{% block title %}{{ theme.name }} — read in parallel — Study Reformed{% endblock %}
+{% block meta_description %}Read {{ theme.name }} across the Reformed standards section by section, each edition level with the others.{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'catechism:compare_index' %}">Compare</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'catechism:compare_set' set_slug=comparison_set.slug %}">{{ comparison_set.name }}</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'catechism:compare_set_theme' set_slug=comparison_set.slug theme_slug=theme.slug %}">{{ theme.name }}</a></li>
+        <li class="breadcrumb-item active">Read in parallel</li>
+    </ol>
+</nav>
+
+<h1 class="mb-2">{{ theme.name }}: in parallel</h1>
+
+{% if error %}
+<div class="study-callout mb-4">
+    <div>
+        <div class="fw-semibold">Not enough to read in parallel</div>
+        <div class="text-muted small">{{ error }}</div>
+    </div>
+</div>
+{% else %}
+<p class="lead text-muted">
+    {{ documents|length }} editions, section by section.
+    {{ edited_rows }} of {{ rows|length }} section{{ rows|length|pluralize }} depart from the earliest edition here.
+</p>
+
+<div class="d-flex gap-2 flex-wrap mb-4">
+    <a href="{% url 'catechism:compare_set_theme' set_slug=comparison_set.slug theme_slug=theme.slug %}"
+       class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-columns-gap me-1"></i>Back to the comparison
+    </a>
+    <a href="{% url 'catechism:compare_diff' set_slug=comparison_set.slug theme_slug=theme.slug %}"
+       class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-file-diff me-1"></i>Word-level diff
+    </a>
+</div>
+
+{% if entries|length > 2 %}
+<form method="get" class="mb-4 parallel-picker">
+    <span class="text-muted small me-2">Columns:</span>
+    {% for entry in entries %}
+    <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" name="docs" value="{{ entry.catechism.slug }}"
+               id="parallel-{{ entry.catechism.slug }}" checked>
+        <label class="form-check-label small" for="parallel-{{ entry.catechism.slug }}">
+            {{ entry.catechism.abbreviation }}
+        </label>
+    </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-outline-primary btn-sm ms-2">Show these</button>
+</form>
+{% endif %}
+
+<div class="parallel-read">
+    <div class="row parallel-heads g-3 d-none d-lg-flex">
+        {% for document in documents %}
+        <div class="col">
+            <div class="flat-section-heading mb-0">
+                <a href="{{ document.get_absolute_url }}">{{ document.abbreviation }}</a>
+                {% if document.year %}
+                <span class="text-muted fw-normal ms-1"
+                      style="font-size: 0.75rem; text-transform: none; letter-spacing: 0;">{{ document.year }}</span>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% for row in rows %}
+    <section class="row g-3 parallel-row {% if row.edited %}parallel-row-edited{% endif %}"
+             id="s{{ row.number }}" aria-label="Section {{ row.number }}">
+        {% for cell in row.cells %}
+        <div class="col-12 col-lg parallel-cell parallel-{{ cell.status }}">
+            {% if cell.question %}
+            <div class="d-flex justify-content-between align-items-baseline gap-2">
+                <a href="{{ cell.question.get_absolute_url }}" class="small fw-semibold text-decoration-none">
+                    {{ cell.question.catechism.abbreviation }} {{ cell.question.display_number }}
+                </a>
+                {% if cell.status == 'identical' %}
+                <span class="badge text-bg-light" title="Word for word the same as the earliest edition here">unchanged</span>
+                {% elif cell.status == 'edited' %}
+                <span class="badge text-bg-secondary">{{ cell.change_percent }}% changed</span>
+                {% endif %}
+            </div>
+            {% comment %}A confession section carries its chapter's title,
+            identical down the whole column; the heading and the section number
+            already say it.{% endcomment %}
+            {% if not cell.question.catechism.is_prose_document %}
+            <p class="small fw-semibold mb-1">{{ cell.question.question_text }}</p>
+            {% endif %}
+            <p class="mb-0 parallel-text">{{ cell.question.answer_text }}</p>
+            {% else %}
+            {# The gap is the finding: this edition has no section here. #}
+            <p class="text-muted fst-italic mb-0 small">No parallel section.</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </section>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

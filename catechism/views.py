@@ -25,7 +25,7 @@ from .models import (
     ComparisonEntry, QuestionDoctrineHead, QuestionOntologyTag,
 )
 from .cache import cache_read_only_page
-from .diffing import build_diff
+from .diffing import align_columns, build_diff, change_ratio, diff_words, section_text
 from .citations import bibtex, citation_label, citation_text, resolve_reference, ris
 from .handout import build_handout
 from .scripture_refs import (
@@ -1424,6 +1424,104 @@ class HandoutView(TemplateView):
         ctx['items'] = build_handout(questions)
         ctx['generated_on'] = date.today()
         return ctx
+
+
+class ParallelReadView(TemplateView):
+    """Read the editions in lockstep, section against section.
+
+    The comparison page sets the documents beside one another but lets each
+    column flow at its own length, so by the third section the Savoy is level
+    with the Confession's fourth and the reader is comparing the wrong things.
+    The alignment the diff already relies on fixes that: one row per section,
+    every edition level, so scrolling one scrolls all of them.
+    """
+
+    template_name = 'catechism/compare_parallel.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        active_traditions = get_active_traditions(self.request)
+
+        theme = get_object_or_404(
+            ComparisonTheme,
+            slug=self.kwargs['theme_slug'],
+            comparison_set__slug=self.kwargs['set_slug'],
+        )
+        # Same gate as the comparison page it is reached from.
+        if ComparisonEntry.objects.filter(
+            theme__comparison_set=theme.comparison_set
+        ).exclude(catechism__tradition__in=VALID_TRADITIONS).exists():
+            raise Http404
+
+        entries = list(
+            _order_entries_chronologically(
+                theme.entries.filter(
+                    catechism__tradition__in=active_traditions
+                ).select_related('catechism')
+            )
+        )
+
+        # ?docs= narrows the columns. Four editions side by side is a wall;
+        # a reader chasing one revision wants two. Accepts both the repeated
+        # form the checkbox picker submits and the comma-separated form that
+        # makes a shareable link.
+        wanted = [
+            slug
+            for value in self.request.GET.getlist('docs')
+            for slug in value.split(',') if slug
+        ]
+        if wanted:
+            chosen = [entry for entry in entries if entry.catechism.slug in wanted]
+            if chosen:
+                entries = chosen
+
+        ctx['theme'] = theme
+        ctx['comparison_set'] = theme.comparison_set
+        ctx['entries'] = entries
+        ctx['documents'] = [entry.catechism for entry in entries]
+        ctx['docs_param'] = ','.join(entry.catechism.slug for entry in entries)
+        if len(entries) < 2:
+            ctx['error'] = (
+                'Reading in parallel needs two documents in your active '
+                'collections.'
+            )
+            return ctx
+
+        ctx['rows'] = self._rows(entries)
+        ctx['edited_rows'] = sum(1 for row in ctx['rows'] if row['edited'])
+        return ctx
+
+    @staticmethod
+    def _rows(entries):
+        """One row per section, with each cell measured against the earliest
+        edition that has a section there — so a reader can see at a glance
+        which sections a later confession left alone."""
+        rows = []
+        columns = align_columns([list(entry.get_questions()) for entry in entries])
+        for index, questions in enumerate(columns, start=1):
+            baseline = next((q for q in questions if q is not None), None)
+            baseline_text = section_text(baseline)
+            cells = []
+            for question in questions:
+                if question is None:
+                    cells.append({'question': None, 'status': 'absent'})
+                elif question is baseline:
+                    cells.append({'question': question, 'status': 'baseline'})
+                else:
+                    ratio = change_ratio(diff_words(baseline_text, section_text(question)))
+                    cells.append({
+                        'question': question,
+                        'status': 'identical' if ratio == 0.0 else 'edited',
+                        'change_ratio': ratio,
+                        'change_percent': int(round(ratio * 100)),
+                    })
+            rows.append({
+                'number': index,
+                'cells': cells,
+                'edited': any(cell['status'] == 'edited' for cell in cells),
+                'absent': any(cell['status'] == 'absent' for cell in cells),
+            })
+        return rows
 
 
 class CompareDiffView(TemplateView):

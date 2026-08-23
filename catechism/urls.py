@@ -34,6 +34,8 @@ urlpatterns = [
     path('compare/<slug:set_slug>/<slug:theme_slug>/', views.CompareSetThemeView.as_view(), name='compare_set_theme'),
     path('compare/<slug:set_slug>/<slug:theme_slug>/diff/',
          views.CompareDiffView.as_view(), name='compare_diff'),
+    path('compare/<slug:set_slug>/<slug:theme_slug>/parallel/',
+         views.ParallelReadView.as_view(), name='compare_parallel'),
 
     # Printable small-group handouts
     path('handout/<slug:catechism_slug>/<str:reference>/',

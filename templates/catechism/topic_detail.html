@@ -99,6 +99,10 @@
             <a href="{{ primary_comparison_theme.get_absolute_url }}" class="btn btn-outline-primary btn-sm">
                 <i class="bi bi-columns-gap me-1"></i>Compare side by side
             </a>
+            <a href="{% url 'catechism:compare_parallel' set_slug=primary_comparison_theme.comparison_set.slug theme_slug=primary_comparison_theme.slug %}"
+               class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-list-columns-reverse me-1"></i>Read in parallel
+            </a>
             {% if primary_comparison_diff_target %}
             <a href="{% url 'catechism:compare_diff' set_slug=primary_comparison_theme.comparison_set.slug theme_slug=primary_comparison_theme.slug %}?a={{ catechism.slug }}&amp;b={{ primary_comparison_diff_target.slug }}"
                class="btn btn-outline-secondary btn-sm">
