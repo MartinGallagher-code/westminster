@@ -31,6 +31,20 @@ urlpatterns = [
     path('compare/custom/<slug:theme_slug>/', views.CustomCompareThemeView.as_view(), name='compare_custom_theme'),
     path('compare/<slug:set_slug>/', views.CompareSetView.as_view(), name='compare_set'),
     path('compare/<slug:set_slug>/<slug:theme_slug>/', views.CompareSetThemeView.as_view(), name='compare_set_theme'),
+    path('compare/<slug:set_slug>/<slug:theme_slug>/diff/',
+         views.CompareDiffView.as_view(), name='compare_diff'),
+
+    # Printable small-group handouts
+    path('handout/<slug:catechism_slug>/<str:reference>/',
+         views.HandoutView.as_view(), name='handout'),
+    path('handout/<slug:catechism_slug>/topic/<slug:topic_slug>/',
+         views.HandoutView.as_view(), name='handout_topic'),
+
+    # Citations: the reference a reader writes ("WCF 3.4"), made addressable
+    path('cite/<slug:catechism_slug>/<str:reference>/',
+         views.CitationPermalinkView.as_view(), name='citation_permalink'),
+    path('cite/<slug:catechism_slug>/<str:reference>/<str:fmt>/',
+         views.CitationExportView.as_view(), name='citation_export'),
 
     # Legacy WSC redirects (preserve old bookmarks)
     path('questions/', RedirectView.as_view(url='/wsc/questions/', permanent=True)),

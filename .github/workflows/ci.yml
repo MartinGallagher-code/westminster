@@ -20,3 +20,53 @@ jobs:
       - run: pytest --cov
         env:
           DJANGO_SETTINGS_MODULE: config.settings.development
+
+  # The unit suite runs against factories — a few rows built for one test —
+  # so defects that only appear in the loaded corpus survive it. Two already
+  # did: doctrine-head chips linking to Atlas pages that did not exist, and
+  # sitemap.xml advertising comparison URLs that 404. This job loads the real
+  # data with the same script the deploy uses, then checks it.
+  data-integrity:
+    runs-on: ubuntu-latest
+    env:
+      DJANGO_SETTINGS_MODULE: config.settings.development
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - run: python manage.py migrate
+      - run: python manage.py createcachetable
+      - run: ./scripts/load_data.sh
+      - run: python manage.py check_site_integrity
+
+  # The production search path is Postgres-only — a stored tsvector column with
+  # a GIN index — so SQLite runs never touch it. This job runs the whole suite
+  # against Postgres, including the tests that assert the column, the index,
+  # and that the planner can use it.
+  postgres:
+    runs-on: ubuntu-latest
+    env:
+      DJANGO_SETTINGS_MODULE: config.settings.development
+      DATABASE_URL: postgres://westminster:westminster@localhost:5432/westminster
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: westminster
+          POSTGRES_PASSWORD: westminster
+          POSTGRES_DB: westminster
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - run: pytest -q --no-cov --ds=config.settings.ci_postgres

@@ -21,7 +21,13 @@
     </ol>
 </nav>
 
-<h1 class="mb-2">{{ topic.name }}</h1>
+<div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+    <h1 class="mb-2">{{ topic.name }}</h1>
+    <a href="{% url 'catechism:handout_topic' catechism_slug=catechism.slug topic_slug=topic.slug %}"
+       class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-printer me-1"></i>Session handout
+    </a>
+</div>
 <p class="text-muted mb-3">{{ topic.description }}</p>
 <p class="text-muted small">{{ catechism.item_name_plural }} {{ topic.display_start }}&ndash;{{ topic.display_end }}</p>
 
@@ -39,7 +45,7 @@
     <div class="study-atlas-chip-group">
         {% for locus in atlas_loci %}
         <a href="{{ locus.url }}" class="study-atlas-chip"
-           style="border-left-color: {{ locus.color }};"
+           style="--locus-color: {{ locus.color }};"
            title="{{ locus.tagline }}">
             <span>{{ locus.icon }}</span>
             <span>{{ locus.label }}</span>

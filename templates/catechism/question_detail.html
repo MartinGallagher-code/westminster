@@ -149,12 +149,59 @@
                 </div>
                 <div class="d-flex gap-2 flex-wrap">
                     <button type="button" class="btn btn-outline-secondary btn-sm" id="copy-citation-btn"
-                            data-citation="{{ catechism.abbreviation }} {{ catechism.item_prefix }}{{ question.display_number }}{% if not catechism.is_prose_document %}.{% endif %} {{ question.question_text }}">
+                            data-citation="{{ citation_text }}">
                         <i class="bi bi-link-45deg me-1"></i>Copy Citation
                     </button>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-quote me-1"></i>Cite {{ citation_label }}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="{% url 'catechism:citation_permalink' catechism_slug=catechism.slug reference=citation_reference %}">
+                                    Permalink &mdash; /cite/{{ catechism.slug }}/{{ citation_reference }}/
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'catechism:citation_export' catechism_slug=catechism.slug reference=citation_reference fmt='bibtex' %}">
+                                    Download BibTeX
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'catechism:citation_export' catechism_slug=catechism.slug reference=citation_reference fmt='ris' %}">
+                                    Download RIS &mdash; Zotero, EndNote
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                     <a href="{% url 'catechism:search' %}?q={{ question.topic.name|urlencode }}" class="btn btn-outline-primary btn-sm">
                         Search Topic
                     </a>
+                    <a href="{% url 'catechism:handout' catechism_slug=catechism.slug reference=citation_reference %}"
+                       class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-printer me-1"></i>Session handout
+                    </a>
+                    {% if user.is_authenticated and not catechism.is_prose_document %}
+                    {% if memorization_card %}
+                    <form method="post" action="{% url 'accounts:memorize_remove' question_pk=question.pk %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.path }}">
+                        <button type="submit" class="btn btn-outline-success btn-sm" title="Due {{ memorization_card.due_on }}">
+                            <i class="bi bi-check2-circle me-1"></i>In your deck
+                        </button>
+                    </form>
+                    {% else %}
+                    <form method="post" action="{% url 'accounts:memorize_add' question_pk=question.pk %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.path }}">
+                        <button type="submit" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-lightbulb me-1"></i>Memorise
+                        </button>
+                    </form>
+                    {% endif %}
+                    {% endif %}
                 </div>
             </div>
 
@@ -174,7 +221,7 @@
                     {% for tag in ontology_tags %}
                     <a href="{{ tag.attribute.get_atlas_url }}"
                        class="study-atlas-chip"
-                       style="border-left-color: {{ tag.attribute.locus.color }};"
+                       style="--locus-color: {{ tag.attribute.locus.color }};"
                        title="{{ tag.attribute.baseline_description }}">
                         <span>{{ tag.attribute.locus.icon }}</span>
                         <span>{{ tag.attribute.name }}</span>
@@ -189,7 +236,7 @@
                     {% for head in doctrine_heads %}
                     <a href="{{ head.get_atlas_url }}"
                        class="study-atlas-chip"
-                       {% if head.locus %}style="border-left-color: {{ head.locus.color }};"{% endif %}>
+                       {% if head.locus %}style="--locus-color: {{ head.locus.color }};"{% endif %}>
                         {% if head.locus %}<span>{{ head.locus.icon }}</span>{% endif %}
                         <span>{{ head.name }}</span>
                     </a>

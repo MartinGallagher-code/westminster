@@ -1,0 +1,20 @@
+{% comment %}
+Narrow-screen document switcher for comparison pages.
+
+Below `lg` the columns stack, which turns a side-by-side comparison into
+three documents read one after another — the comparison is lost exactly
+where the screen is smallest. These tabs show one document at a time in
+place, so you can flip between them without losing your position.
+{% endcomment %}
+{% if columns|length > 1 %}
+<div class="comparison-doc-tabs d-lg-none mb-3" role="group"
+     aria-label="Choose which document to show">
+    {% for col in columns %}
+    <button type="button" class="doc-tab{% if forloop.first %} is-active{% endif %}"
+            data-doc="{{ col.catechism.slug }}"
+            aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}">
+        <span class="visually-hidden">Show </span>{{ col.catechism.abbreviation }}
+    </button>
+    {% endfor %}
+</div>
+{% endif %}

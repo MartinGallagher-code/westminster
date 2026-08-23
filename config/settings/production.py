@@ -40,3 +40,31 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_HSTS_SECONDS = 31536000
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
+
+
+# Cache rendered read-only pages for anonymous visitors. The data loaders end
+# with clear_cache, so a deploy that changes content also empties this.
+PAGE_CACHE_SECONDS = int(os.environ.get('PAGE_CACHE_SECONDS', '3600'))
+
+
+# ── Error monitoring ──────────────────────────────────────────────────────
+#
+# Set SENTRY_DSN in the service environment to turn this on; without it the
+# block is a no-op, so local and test runs are unaffected. Until this existed
+# the first report of a production error was a user mentioning it.
+SENTRY_DSN = os.environ.get('SENTRY_DSN', '')
+if SENTRY_DSN:
+    import sentry_sdk
+    from sentry_sdk.integrations.django import DjangoIntegration
+
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[DjangoIntegration()],
+        # Sampled, not exhaustive: this is a reading site, not a payments API.
+        traces_sample_rate=float(os.environ.get('SENTRY_TRACES_SAMPLE_RATE', '0.05')),
+        environment=os.environ.get('SENTRY_ENVIRONMENT', 'production'),
+        release=os.environ.get('RENDER_GIT_COMMIT', ''),
+        # Readers' notes and highlights are personal; never ship request
+        # bodies, cookies or user identifiers to a third party.
+        send_default_pii=False,
+    )

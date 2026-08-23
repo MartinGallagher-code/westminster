@@ -754,6 +754,174 @@ a {
     border-color: var(--wm-primary) !important;
 }
 
+/* ── Cross-edition diff ── */
+.diff-text {
+    line-height: 1.7;
+}
+
+ins.diff-ins {
+    background-color: #d8f0dc;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+}
+
+del.diff-del {
+    background-color: #f7dcdc;
+    text-decoration: line-through;
+}
+
+[data-bs-theme="dark"] ins.diff-ins {
+    background-color: #1e3a24;
+    color: #d9f2df;
+}
+
+[data-bs-theme="dark"] del.diff-del {
+    background-color: #43201f;
+    color: #f5d9d8;
+}
+
+.diff-row.diff-unchanged .diff-text {
+    color: var(--bs-secondary-color, #6c757d);
+}
+
+/* ── Session handout ──
+   Screen-readable, but laid out for paper: a group leader prints it or saves
+   it as a PDF from the browser. */
+.handout {
+    max-width: 46rem;
+}
+
+.handout-header {
+    border-bottom: 2px solid var(--wm-border);
+    padding-bottom: 0.75rem;
+}
+
+.handout-answer {
+    font-size: 1.02rem;
+    line-height: 1.6;
+}
+
+.handout-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--bs-secondary-color, #6c757d);
+    margin-top: 1.1rem;
+    margin-bottom: 0.4rem;
+}
+
+.handout-proofs,
+.handout-prompts {
+    padding-left: 1.2rem;
+}
+
+.handout-leader {
+    border-left: 3px solid var(--wm-border);
+    padding-left: 0.9rem;
+}
+
+.handout-footer {
+    border-top: 1px solid var(--wm-border);
+    padding-top: 0.75rem;
+}
+
+@media print {
+    .handout {
+        max-width: none;
+    }
+    .handout-item {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+    .handout-item h2 {
+        break-after: avoid;
+    }
+    .handout a {
+        text-decoration: none;
+        color: inherit;
+    }
+    .handout-leader {
+        border-left-color: #999;
+    }
+}
+
+/* ── Comparison: narrow-screen document switcher ──
+   Below lg the comparison columns stack, so a side-by-side reading becomes
+   three documents in sequence. The tabs show one at a time instead. */
+.comparison-doc-tabs {
+    display: flex;
+    gap: 0.25rem;
+    overflow-x: auto;
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    padding: 0.5rem 0;
+    background: var(--bs-body-bg);
+    border-bottom: 1px solid var(--wm-border);
+    -webkit-overflow-scrolling: touch;
+}
+
+.comparison-doc-tabs .doc-tab {
+    flex: 0 0 auto;
+    border: 1px solid var(--wm-border);
+    background: transparent;
+    color: var(--bs-body-color);
+    border-radius: 999px;
+    padding: 0.3rem 0.9rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.comparison-doc-tabs .doc-tab.is-active {
+    background: var(--bs-primary, #0d6efd);
+    border-color: var(--bs-primary, #0d6efd);
+    color: #fff;
+}
+
+.comparison-doc-tabs .doc-tab:focus-visible {
+    outline: 2px solid var(--bs-primary, #0d6efd);
+    outline-offset: 2px;
+}
+
+@media (max-width: 991.98px) {
+    #comparison-columns.has-doc-tabs .comparison-col {
+        display: none !important;
+    }
+    #comparison-columns.has-doc-tabs .comparison-col.is-active {
+        display: block !important;
+    }
+}
+
+/* Belt and braces with Bootstrap's display utilities: the switcher and the
+   desktop column checkboxes are mutually exclusive, and must stay that way
+   even if the Bootstrap stylesheet fails to load. */
+@media (min-width: 992px) {
+    .comparison-doc-tabs {
+        display: none !important;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .comparison-col-toggles {
+        display: none !important;
+    }
+}
+
+/* Search hits — distinct from a reader's saved highlights below. */
+mark.search-hit {
+    background-color: #d1e7ff;
+    color: inherit;
+    border-radius: 2px;
+    padding: 0 1px;
+}
+
+[data-bs-theme="dark"] mark.search-hit {
+    background-color: #1c3d5a;
+    color: #e9f2ff;
+}
+
 /* User highlights */
 mark.user-highlight {
     background-color: #fff3cd;
@@ -1323,13 +1491,46 @@ mark.user-annotation.active {
     padding: 1rem;
 }
 
+[data-bs-theme="dark"] .study-atlas-chip {
+    border-left-color: var(--locus-color, var(--wm-accent));
+}
+
+/* Skip link — self-contained so it still works if Bootstrap's utility
+   classes fail to load. */
+.skip-link {
+    position: absolute;
+    left: 0.5rem;
+    top: -3rem;
+    z-index: 1080;
+    padding: 0.5rem 0.9rem;
+    background: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    border: 1px solid var(--wm-border);
+    border-radius: 0.25rem;
+    transition: top 0.15s ease-in-out;
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+    top: 0.5rem;
+}
+
+#main-content:focus {
+    outline: none;
+}
+
 .study-atlas-chip-group {
     display: flex;
     flex-wrap: wrap;
     gap: 0.4rem;
 }
 
+/* Locus accent. The eight Atlas colours are bright pastels chosen against the
+   Atlas's dark ground; on a light card they are too faint to read as a
+   boundary, so darken them there and use them as-is in dark mode. Falls back
+   to the theme accent when no locus colour is set. */
 .study-atlas-chip {
+    border-left-color: color-mix(in srgb, var(--locus-color, var(--wm-accent)) 65%, #333);
     align-items: center;
     background: color-mix(in srgb, var(--wm-card-bg) 82%, var(--bs-body-bg));
     border: 1px solid var(--wm-border);

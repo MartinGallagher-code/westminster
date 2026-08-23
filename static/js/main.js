@@ -111,8 +111,34 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
+
+    // ── Copy-to-clipboard buttons ──
+    //
+    // <button data-copy="url"> copies the current address, including its query
+    // string — which is what makes a custom comparison shareable, since the
+    // chosen documents live in ?docs=. Any other value is copied literally.
+    document.querySelectorAll('[data-copy]').forEach(function(btn) {
+        if (!navigator.clipboard) return;
+        btn.addEventListener('click', function() {
+            var value = btn.getAttribute('data-copy');
+            var text = value === 'url' ? window.location.href : value;
+            var original = btn.innerHTML;
+            navigator.clipboard.writeText(text).then(function() {
+                btn.innerHTML = '<i class="bi bi-check2 me-1"></i>Link copied';
+                setTimeout(function() { btn.innerHTML = original; }, 1600);
+            });
+        });
+    });
+
     // ── Document tradition filter ──
-    var DEFAULT_FILTERS = {westminster: true, three_forms_of_unity: false};
+    // Keep this list in sync with VALID_TRADITIONS in catechism/utils.py and
+    // the FOUC-prevention script in templates/base.html.
+    var TRADITIONS = ['westminster', 'three_forms_of_unity', 'reformed_confessions'];
+    var DEFAULT_FILTERS = {westminster: true, three_forms_of_unity: false, reformed_confessions: false};
+
+    function anyTraditionActive(filters) {
+        return TRADITIONS.some(function(t) { return filters && filters[t]; });
+    }
 
     function loadDocFilters() {
         try {
@@ -124,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             if (raw) {
                 var f = JSON.parse(raw);
-                if (f.westminster || f.three_forms_of_unity) {
+                if (anyTraditionActive(f)) {
                     return f;
                 }
             }
@@ -158,6 +184,7 @@ document.addEventListener('DOMContentLoaded', function() {
             var check = btn.querySelector('.tradition-check');
             var active = !!filters[tradition];
             btn.classList.toggle('active', active);
+            btn.setAttribute('aria-pressed', active ? 'true' : 'false');
             if (check) check.style.visibility = active ? 'visible' : 'hidden';
         });
     }
@@ -188,7 +215,7 @@ document.addEventListener('DOMContentLoaded', function() {
             var next = Object.assign({}, docFilters);
             next[tradition] = !next[tradition];
             // Enforce: at least one must remain active; default to westminster
-            if (!next.westminster && !next.three_forms_of_unity) {
+            if (!anyTraditionActive(next)) {
                 next.westminster = true;
             }
             docFilters = next;

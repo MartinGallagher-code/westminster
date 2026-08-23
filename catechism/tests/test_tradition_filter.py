@@ -5,6 +5,7 @@ Tests for the site-wide tradition filter:
 """
 import json
 import re
+from urllib.parse import urlparse
 
 import pytest
 from django.test import Client, RequestFactory
@@ -397,3 +398,153 @@ class TestSitemapMatchesGatedSets:
         paths = re.findall(r'<loc>[^<]*?(/(?:compare|doctrine)/[^<]*)</loc>', body)
         assert paths, 'sitemap should advertise at least one comparison URL'
         assert [p for p in paths if c.get(p).status_code != 200] == []
+
+
+@pytest.fixture
+def confession_cat(db):
+    """A document in the newly published 'reformed_confessions' collection."""
+    return CatechismFactory(
+        name='1689 London Baptist Confession',
+        abbreviation='1689',
+        slug='1689',
+        total_questions=5,
+        tradition=Catechism.REFORMED_CONFESSIONS,
+    )
+
+
+@pytest.mark.django_db
+class TestReformedConfessionsArePublished:
+    """The 1689, Savoy, Scots, Second Helvetic and Irish Articles were loaded
+    with tradition='other', which every view gates on — so they and their two
+    comparison sets were unreachable. They now form their own collection."""
+
+    def _lineage_set(self, wsc_cat, confession_cat):
+        cs = ComparisonSetFactory(name='Confessional Lineage', slug='1689-baptist', order=10)
+        theme = ComparisonThemeFactory(
+            name='Of the Holy Scriptures', slug='of-the-holy-scriptures', comparison_set=cs,
+        )
+        ComparisonEntryFactory(theme=theme, catechism=wsc_cat, question_start=1, question_end=1)
+        ComparisonEntryFactory(theme=theme, catechism=confession_cat, question_start=1, question_end=1)
+        return cs, theme
+
+    def test_reformed_confessions_is_a_valid_tradition(self):
+        from catechism.utils import VALID_TRADITIONS
+        assert 'reformed_confessions' in VALID_TRADITIONS
+
+    def test_lineage_theme_page_no_longer_404s(self, wsc_cat, confession_cat):
+        self._lineage_set(wsc_cat, confession_cat)
+
+        c = client_with_cookie({
+            'westminster': True, 'three_forms_of_unity': False, 'reformed_confessions': True,
+        })
+        resp = c.get('/compare/1689-baptist/of-the-holy-scriptures/')
+        assert resp.status_code == 200
+        assert {col['catechism'].slug for col in resp.context['columns']} == {'wsc', '1689'}
+
+    def test_lineage_set_appears_in_the_index_when_enabled(self, wsc_cat, confession_cat):
+        self._lineage_set(wsc_cat, confession_cat)
+
+        c = client_with_cookie({
+            'westminster': True, 'three_forms_of_unity': False, 'reformed_confessions': True,
+        })
+        assert '1689-baptist' in [s.slug for s in c.get('/compare/').context['comparison_sets']]
+
+    def test_documents_without_a_parallel_are_named(self, wsc_cat, confession_cat):
+        cs, _ = self._lineage_set(wsc_cat, confession_cat)
+        # A theme the 1689 has no chapter for: only the Westminster entry.
+        theme = ComparisonThemeFactory(
+            name='Of Church Government', slug='of-church-government', comparison_set=cs,
+        )
+        ComparisonEntryFactory(theme=theme, catechism=wsc_cat, question_start=1, question_end=1)
+
+        c = client_with_cookie({
+            'westminster': True, 'three_forms_of_unity': False, 'reformed_confessions': True,
+        })
+        resp = c.get('/compare/1689-baptist/of-church-government/')
+        assert resp.status_code == 200
+        assert [d.slug for d in resp.context['documents_without_entry']] == ['1689']
+        assert 'No parallel here' in resp.content.decode()
+
+
+@pytest.mark.django_db
+class TestComparisonColumnOrder:
+    """Lineage sets are read left-to-right, so the oldest document comes first.
+
+    The default ordering is alphabetical by abbreviation, which would put the
+    1689 before the 1646 Confession it revises.
+    """
+
+    def test_columns_are_ordered_by_year(self, db):
+        wcf = CatechismFactory(
+            name='Westminster Confession', abbreviation='WCF', slug='wcf',
+            year=1646, total_questions=5, tradition=Catechism.WESTMINSTER,
+        )
+        savoy = CatechismFactory(
+            name='Savoy Declaration', abbreviation='Savoy', slug='savoy',
+            year=1658, total_questions=5, tradition=Catechism.REFORMED_CONFESSIONS,
+        )
+        lbc = CatechismFactory(
+            name='1689 London Baptist Confession', abbreviation='1689', slug='1689',
+            year=1689, total_questions=5, tradition=Catechism.REFORMED_CONFESSIONS,
+        )
+        cs = ComparisonSetFactory(name='Confessional Lineage', slug='1689-baptist', order=10)
+        theme = ComparisonThemeFactory(name='Scripture', slug='scripture', comparison_set=cs)
+        for cat in (lbc, savoy, wcf):        # inserted out of order on purpose
+            ComparisonEntryFactory(theme=theme, catechism=cat, question_start=1, question_end=1)
+
+        c = client_with_cookie({'westminster': True, 'reformed_confessions': True})
+        resp = c.get('/compare/1689-baptist/scripture/')
+        assert [col['catechism'].slug for col in resp.context['columns']] == ['wcf', 'savoy', '1689']
+
+
+@pytest.mark.django_db
+class TestSitemapAdvertisesOnlyAnonymouslyVisibleThemes:
+    """A crawler sends no docFilters cookie, so it sees DEFAULT_TRADITIONS.
+
+    Regression: a theme whose only entries are outside the default collection
+    (e.g. "Of the Gospel", carried by the 1689 and Savoy but not the
+    Confession) was advertised from a sitemap built over every valid
+    tradition, and 404'd for the crawler that followed the link.
+    """
+
+    def test_theme_outside_the_default_collection_is_not_advertised(self, wsc_cat, confession_cat):
+        cs = ComparisonSetFactory(name='Confessional Lineage', slug='1689-baptist', order=10)
+        westminster_theme = ComparisonThemeFactory(
+            name='Of the Holy Scriptures', slug='of-the-holy-scriptures', comparison_set=cs,
+        )
+        ComparisonEntryFactory(
+            theme=westminster_theme, catechism=wsc_cat, question_start=1, question_end=1,
+        )
+        confession_only = ComparisonThemeFactory(
+            name='Of the Gospel', slug='of-the-gospel', comparison_set=cs,
+        )
+        ComparisonEntryFactory(
+            theme=confession_only, catechism=confession_cat, question_start=1, question_end=1,
+        )
+
+        anon = Client()          # no cookie: exactly what a crawler sends
+        body = anon.get('/sitemap.xml').content.decode()
+        assert '/doctrine/of-the-gospel/' not in body
+        assert anon.get('/doctrine/of-the-gospel/').status_code == 404
+        # ...but it is reachable once the collection is enabled.
+        enabled = client_with_cookie({'westminster': True, 'reformed_confessions': True})
+        assert enabled.get('/doctrine/of-the-gospel/').status_code == 200
+
+    def test_every_sitemap_url_resolves_for_an_anonymous_crawler(self, wsc_cat, confession_cat):
+        cs = ComparisonSetFactory(name='Confessional Lineage', slug='1689-baptist', order=10)
+        theme = ComparisonThemeFactory(
+            name='Of the Gospel', slug='of-the-gospel', comparison_set=cs,
+        )
+        ComparisonEntryFactory(theme=theme, catechism=confession_cat, question_start=1, question_end=1)
+        westminster_theme = ComparisonThemeFactory(
+            name='Of the Holy Scriptures', slug='of-the-holy-scriptures', comparison_set=cs,
+        )
+        ComparisonEntryFactory(
+            theme=westminster_theme, catechism=wsc_cat, question_start=1, question_end=1,
+        )
+
+        anon = Client()
+        body = anon.get('/sitemap.xml').content.decode()
+        paths = [urlparse(loc).path for loc in re.findall(r'<loc>([^<]+)</loc>', body)]
+        assert paths
+        assert [p for p in paths if anon.get(p).status_code != 200] == []

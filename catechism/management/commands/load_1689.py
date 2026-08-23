@@ -118,6 +118,7 @@ class Command(BaseCommand):
                 'year': 1677,
                 'total_questions': total,
                 'document_type': Catechism.CONFESSION,
+                'tradition': Catechism.REFORMED_CONFESSIONS,
             }
         )
 

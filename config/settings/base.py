@@ -80,3 +80,9 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 GOOGLE_ANALYTICS_ID = os.environ.get('GOOGLE_ANALYTICS_ID', '')
+
+
+# Page cache for anonymous visitors on the read-only pages (see
+# catechism/cache.py). Zero disables it, which is the default outside
+# production so local edits are visible immediately.
+PAGE_CACHE_SECONDS = int(os.environ.get('PAGE_CACHE_SECONDS', '0'))

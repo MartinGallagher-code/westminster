@@ -1,15 +1,17 @@
 from collections import defaultdict
+from urllib.parse import urlencode
 from datetime import date
-import re
 from xml.sax.saxutils import escape
 
 from django.db import connection
-from django.db.models import Q, Count, Prefetch
+from django.db.models import Q, Count, Prefetch, F
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView
+from django_ratelimit.decorators import ratelimit
 
 from .atlas import atlas_url
 from .document_guides import get_document_guide
@@ -22,13 +24,16 @@ from .models import (
     BibleBook, ScriptureIndex, ComparisonSet, ComparisonTheme,
     ComparisonEntry, QuestionDoctrineHead, QuestionOntologyTag,
 )
-from .utils import VALID_TRADITIONS, get_active_traditions
+from .cache import cache_read_only_page
+from .diffing import build_diff
+from .citations import bibtex, citation_label, citation_text, resolve_reference, ris
+from .handout import build_handout
+from .scripture_refs import (
+    chapter_from_ref, parse_scripture_reference, reference_matches_chapter,
+)
+from .search_text import search_terms as _search_terms
+from .utils import DEFAULT_TRADITIONS, VALID_TRADITIONS, get_active_traditions
 
-
-SEARCH_STOP_WORDS = {
-    'a', 'an', 'and', 'by', 'for', 'from', 'in', 'into', 'is', 'of', 'on',
-    'or', 'the', 'to', 'with',
-}
 
 # Curated quick-start groupings for the custom comparison selector. Each preset
 # is filtered against the documents currently available in the active
@@ -44,6 +49,22 @@ COMPARISON_PRESETS = [
         'name': 'Three Forms of Unity',
         'slugs': ['heidelberg', 'belgic', 'dort'],
         'description': 'The Heidelberg Catechism, Belgic Confession, and Canons of Dort.',
+    },
+    {
+        'name': 'Confessional Lineage',
+        'slugs': ['wcf', 'savoy', '1689'],
+        'description': (
+            'Westminster (1646) to Savoy (1658) to the Second London Baptist '
+            'Confession (1689) — Presbyterian to Congregationalist to Baptist.'
+        ),
+    },
+    {
+        'name': 'Pre-Westminster',
+        'slugs': ['scots', 'second-helvetic', 'irish', 'wcf'],
+        'description': (
+            'The Scots Confession (1560), Second Helvetic (1566), and Irish '
+            'Articles (1615) beside the Confession they shaped.'
+        ),
     },
 ]
 
@@ -94,11 +115,9 @@ def _comparison_themes_for_traditions(active_traditions):
     ).select_related('comparison_set').distinct()
 
 
-def _search_terms(query):
-    return [
-        term for term in re.findall(r"[A-Za-z0-9']+", query.lower())
-        if len(term) > 2 and term not in SEARCH_STOP_WORDS
-    ]
+# A query matching a topic name pulls in that topic's questions too. Bounded
+# so a one-letter query cannot build an unbounded id array.
+MAX_TOPIC_MATCH_IDS = 500
 
 
 def _search_questions(query, active_traditions):
@@ -108,23 +127,33 @@ def _search_questions(query, active_traditions):
     terms = _search_terms(query)
 
     if connection.vendor == 'postgresql':
-        from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
+        # Match against the stored, GIN-indexed search_vector column added in
+        # migration 0023 rather than building a tsvector per row per query.
+        # The column lives in the database only — declaring it as a model field
+        # would break every SQLite migration — so the condition is raw SQL
+        # against the real table name, which no join alias can shift.
+        from django.db.models.expressions import RawSQL
 
-        vector = (
-            SearchVector('question_text', weight='A') +
-            SearchVector('answer_text', weight='B') +
-            SearchVector('topic__name', weight='B') +
-            SearchVector('proof_texts', weight='C')
+        tsquery = "websearch_to_tsquery('english', %s)"
+        # Topic names live in another table, so they cannot go in the generated
+        # column. Resolving them to ids first keeps the OR between two
+        # index-backed conditions — the GIN index on search_vector and the
+        # primary key — which a subquery in the OR would have ruled out.
+        topic_question_ids = list(
+            Question.objects.filter(topic__name__icontains=query)
+            .values_list('id', flat=True)[:MAX_TOPIC_MATCH_IDS]
         )
-        search_query = SearchQuery(query, search_type='websearch')
-        for term in terms:
-            search_query |= SearchQuery(term, search_type='plain')
         return base_qs.annotate(
-            search=vector,
-            rank=SearchRank(vector, search_query),
-        ).filter(search=search_query).order_by(
-            '-rank', 'catechism__abbreviation', 'number'
-        )
+            rank=RawSQL(
+                f'ts_rank(catechism_question.search_vector, {tsquery})', (query,),
+            ),
+        ).extra(
+            where=[
+                f'(catechism_question.search_vector @@ {tsquery}'
+                ' OR catechism_question.id = ANY(%s))'
+            ],
+            params=[query, topic_question_ids],
+        ).order_by('-rank', 'catechism__abbreviation', 'number')
 
     search_filter = (
         Q(question_text__icontains=query) |
@@ -168,17 +197,26 @@ def sitemap_xml(request):
         urls.extend(question.get_absolute_url() for question in catechism.questions.all())
 
     urls.extend(book.get_absolute_url() for book in BibleBook.objects.all())
+
+    # Comparison and doctrine pages are gated on the *visitor's* active
+    # traditions, and a crawler sends no docFilters cookie — so advertise only
+    # what resolves under DEFAULT_TRADITIONS. Listing more means listing 404s
+    # (e.g. /doctrine/of-the-gospel/, whose only entries are 1689 and Savoy).
     urls.extend(
         comparison_set.get_absolute_url()
-        for comparison_set in _comparison_sets_for_traditions(VALID_TRADITIONS)
+        for comparison_set in _comparison_sets_for_traditions(DEFAULT_TRADITIONS)
     )
 
-    comparison_themes = _comparison_themes_for_traditions(VALID_TRADITIONS)
+    comparison_themes = _comparison_themes_for_traditions(DEFAULT_TRADITIONS)
     urls.extend(theme.get_absolute_url() for theme in comparison_themes)
     urls.extend(
         reverse('catechism:doctrine_detail', kwargs={'theme_slug': slug})
         for slug in comparison_themes.values_list('slug', flat=True).distinct()
     )
+
+    # The Atlas's own pages (ontology, personas, cruxes, schools, heads).
+    from westminster_standards.sitemap import atlas_sitemap_paths
+    urls.extend(atlas_sitemap_paths())
 
     seen = set()
     locs = []
@@ -430,6 +468,7 @@ class LearnLessonView(TemplateView):
         return ctx
 
 
+@method_decorator(cache_read_only_page, name='dispatch')
 class QuestionDetailView(CatechismMixin, DetailView):
     template_name = 'catechism/question_detail.html'
     context_object_name = 'question'
@@ -562,10 +601,22 @@ class QuestionDetailView(CatechismMixin, DetailView):
         if self.request.user.is_authenticated:
             from accounts.models import UserNote
             from accounts.forms import NoteForm
+            from accounts.models import MemorizationCard
             ctx['user_note'] = UserNote.objects.filter(
                 user=self.request.user, question=q
             ).first()
             ctx['note_form'] = NoteForm()
+            ctx['memorization_card'] = MemorizationCard.objects.filter(
+                user=self.request.user, question=q
+            ).first()
+
+        ctx['citation_reference'] = q.display_number
+        ctx['citation_label'] = citation_label(q)
+        ctx['citation_text'] = citation_text(
+            q, self.request.build_absolute_uri(reverse('catechism:citation_permalink', kwargs={
+                'catechism_slug': q.catechism.slug, 'reference': q.display_number,
+            })),
+        )
 
         return ctx
 
@@ -577,6 +628,7 @@ class TopicListRedirectView(CatechismMixin, View):
         return redirect(self.catechism.get_absolute_url())
 
 
+@method_decorator(cache_read_only_page, name='dispatch')
 class TopicDetailView(CatechismMixin, DetailView):
     template_name = 'catechism/topic_detail.html'
     context_object_name = 'topic'
@@ -596,9 +648,27 @@ class TopicDetailView(CatechismMixin, DetailView):
         return ctx
 
 
+# Search is the most expensive read on the site and the obvious scraping
+# target. The limit is per-IP and deliberately generous: church and library
+# networks share an address.
+@method_decorator(ratelimit(key='ip', rate='120/m', method='GET', block=True), name='get')
 class SearchView(ListView):
     template_name = 'catechism/search_results.html'
     context_object_name = 'results'
+
+    def get(self, request, *args, **kwargs):
+        # "Rom 8:30" is a request for the Scripture index, not a substring
+        # search over question text. ?text=1 opts back into the text search.
+        if not request.GET.get('text'):
+            reference = parse_scripture_reference(request.GET.get('q', ''))
+            if reference:
+                destination = reference['book'].get_absolute_url()
+                params = urlencode({
+                    'ref': reference['ref'],
+                    'from': request.GET.get('q', '').strip(),
+                })
+                return redirect(f'{destination}?{params}')
+        return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
         query = self.request.GET.get('q', '').strip()
@@ -637,7 +707,10 @@ class SearchView(ListView):
         ctx['atlas_results'] = search_entities(ctx['query'])
         ctx['atlas_total'] = sum(group['total'] for group in ctx['atlas_results'])
 
-        tradition_order = {'westminster': 0, 'three_forms_of_unity': 1, 'other': 2}
+        tradition_order = {
+            'westminster': 0, 'three_forms_of_unity': 1,
+            'reformed_confessions': 2, 'other': 3,
+        }
         document_order = {
             'wcf': 0,
             'wlc': 1,
@@ -687,6 +760,7 @@ class ScriptureIndexView(TemplateView):
         return ctx
 
 
+@method_decorator(cache_read_only_page, name='dispatch')
 class ScriptureBookView(DetailView):
     template_name = 'catechism/scripture_book.html'
     model = BibleBook
@@ -703,6 +777,23 @@ class ScriptureBookView(DetailView):
             'question__catechism__abbreviation', 'question__number', 'reference',
         )
 
+        # Arriving from a search for "Rom 8:30": narrow to that chapter, but
+        # fall back to the whole book rather than showing an empty page.
+        requested_ref = self.request.GET.get('ref', '')
+        chapter = chapter_from_ref(requested_ref)
+        entries = list(entries)
+        if chapter is not None:
+            in_chapter = [
+                entry for entry in entries
+                if reference_matches_chapter(entry.reference, chapter)
+            ]
+            ctx['filtered_ref'] = f'{self.object.name} {requested_ref}'
+            ctx['filtered_chapter'] = chapter
+            ctx['filter_found_nothing'] = not in_chapter
+            if in_chapter:
+                entries = in_chapter
+        ctx['search_fallback_query'] = self.request.GET.get('from', '')
+
         grouped = defaultdict(list)
         catechism_map = {}
         for entry in entries:
@@ -710,7 +801,10 @@ class ScriptureBookView(DetailView):
             grouped[cat.pk].append({'question': entry.question, 'reference': entry.reference})
             catechism_map[cat.pk] = cat
 
-        tradition_order = {'westminster': 0, 'three_forms_of_unity': 1, 'other': 2}
+        tradition_order = {
+            'westminster': 0, 'three_forms_of_unity': 1,
+            'reformed_confessions': 2, 'other': 3,
+        }
         ordered_cats = sorted(
             catechism_map.values(),
             key=lambda c: (tradition_order.get(c.tradition, 99), c.abbreviation),
@@ -761,6 +855,19 @@ class CompareIndexView(ListView):
             all_catechisms.values_list('slug', flat=True)
         )
         return ctx
+
+
+def _order_entries_chronologically(entries):
+    """Oldest document first.
+
+    The default ordering is alphabetical by abbreviation, which puts the 1689
+    before the Confession it revises. These sets are read left-to-right as a
+    lineage, so order by the document's year and fall back to the abbreviation
+    when a year is missing.
+    """
+    return entries.order_by(
+        F('catechism__year').asc(nulls_last=True), 'catechism__abbreviation',
+    )
 
 
 def _build_columns(entries):
@@ -998,6 +1105,7 @@ class CompareSetView(ListView):
         return ctx
 
 
+@method_decorator(cache_read_only_page, name='dispatch')
 class CompareSetThemeView(DetailView):
     template_name = 'catechism/compare_theme.html'
     context_object_name = 'theme'
@@ -1023,11 +1131,26 @@ class CompareSetThemeView(DetailView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         active_traditions = get_active_traditions(self.request)
-        entries = self.object.entries.filter(
-            catechism__tradition__in=active_traditions
-        ).select_related('catechism')
+        entries = _order_entries_chronologically(
+            self.object.entries.filter(
+                catechism__tradition__in=active_traditions
+            ).select_related('catechism')
+        )
         ctx['columns'] = _build_columns(entries)
         ctx['comparison_set'] = self.object.comparison_set
+
+        # Documents in this set that have no parallel for this theme. The
+        # absence is itself informative — the 1689 has no chapter answering
+        # WCF XXXI, for instance — so name them rather than silently showing
+        # a narrower table.
+        covered = {entry.catechism_id for entry in entries}
+        ctx['documents_without_entry'] = [
+            catechism for catechism in Catechism.objects.filter(
+                comparison_entries__theme__comparison_set=self.object.comparison_set,
+                tradition__in=active_traditions,
+            ).distinct()
+            if catechism.id not in covered
+        ]
 
         # Prev/next theme navigation within the same set (filtered to active traditions)
         all_themes = list(
@@ -1080,3 +1203,147 @@ class LegacyTopicRedirect(View):
     def get(self, request, slug):
         return redirect('catechism:topic_detail',
                         catechism_slug='wsc', slug=slug, permanent=True)
+
+
+# ── Citations ─────────────────────────────────────────────────────────────
+
+
+def _resolve_citation(catechism_slug, reference):
+    """The question a '/cite/<doc>/<reference>/' URL denotes, or 404."""
+    catechism = get_object_or_404(Catechism, slug=catechism_slug)
+    question = resolve_reference(catechism, reference)
+    if question is None:
+        raise Http404(f'No {catechism.abbreviation} {reference}')
+    return question
+
+
+class CitationPermalinkView(View):
+    """'/cite/wcf/3.4/' — the reference a reader actually writes.
+
+    Redirects to the canonical page, whose URL is built from the sequential
+    question number and so cannot be derived from a citation by hand.
+    """
+
+    def get(self, request, catechism_slug, reference):
+        question = _resolve_citation(catechism_slug, reference)
+        return redirect(question.get_absolute_url(), permanent=True)
+
+
+class CitationExportView(View):
+    """Download one section or question as BibTeX or RIS."""
+
+    FORMATS = {
+        'bibtex': (bibtex, 'application/x-bibtex', 'bib'),
+        'ris': (ris, 'application/x-research-info-systems', 'ris'),
+    }
+
+    def get(self, request, catechism_slug, reference, fmt):
+        if fmt not in self.FORMATS:
+            raise Http404(f'Unknown citation format {fmt!r}')
+        question = _resolve_citation(catechism_slug, reference)
+        render_citation, content_type, extension = self.FORMATS[fmt]
+
+        permalink = request.build_absolute_uri(
+            reverse('catechism:citation_permalink', kwargs={
+                'catechism_slug': catechism_slug, 'reference': reference,
+            })
+        )
+        body = render_citation(question, url=permalink, accessed=date.today())
+        response = HttpResponse(body, content_type=f'{content_type}; charset=utf-8')
+        filename = f'{catechism_slug}-{reference.replace(".", "-")}.{extension}'
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        return response
+
+
+@method_decorator(cache_read_only_page, name='dispatch')
+class HandoutView(TemplateView):
+    """A print-ready session handout for a question, section, or whole chapter.
+
+    Rendered as a page rather than a server-generated PDF: every browser
+    prints to PDF, and a page keeps the links live for anyone reading it on a
+    screen.
+    """
+
+    template_name = 'catechism/handout.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        catechism = get_object_or_404(Catechism, slug=self.kwargs['catechism_slug'])
+        reference = self.kwargs.get('reference')
+        topic_slug = self.kwargs.get('topic_slug')
+
+        if topic_slug:
+            topic = get_object_or_404(Topic, catechism=catechism, slug=topic_slug)
+            questions = list(
+                topic.questions.select_related('catechism', 'topic').order_by('number')
+            )
+            ctx['heading'] = topic.name
+            ctx['subheading'] = (
+                f'{catechism.name} · {catechism.item_prefix}{topic.display_start}'
+                f'–{catechism.item_prefix}{topic.display_end}'
+            )
+            ctx['topic'] = topic
+        else:
+            question = resolve_reference(catechism, reference)
+            if question is None:
+                raise Http404(f'No {catechism.abbreviation} {reference}')
+            questions = [question]
+            ctx['heading'] = f'{catechism.abbreviation} {question.display_number}'
+            ctx['subheading'] = catechism.name
+
+        ctx['catechism'] = catechism
+        ctx['items'] = build_handout(questions)
+        ctx['generated_on'] = date.today()
+        return ctx
+
+
+class CompareDiffView(TemplateView):
+    """Word-level diff between two editions of the same chapter.
+
+    The Savoy Declaration and the 1689 are revisions of the Confession; side by
+    side they look identical and the edits are easy to miss. This shows what
+    actually changed.
+    """
+
+    template_name = 'catechism/compare_diff.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        active_traditions = get_active_traditions(self.request)
+
+        theme = get_object_or_404(
+            ComparisonTheme,
+            slug=self.kwargs['theme_slug'],
+            comparison_set__slug=self.kwargs['set_slug'],
+        )
+        entries = list(
+            _order_entries_chronologically(
+                theme.entries.filter(
+                    catechism__tradition__in=active_traditions,
+                ).select_related('catechism')
+            )
+        )
+        if len(entries) < 2:
+            ctx['theme'] = theme
+            ctx['comparison_set'] = theme.comparison_set
+            ctx['error'] = (
+                'This theme needs two documents in your active collections '
+                'before it can be compared word by word.'
+            )
+            ctx['entries'] = entries
+            return ctx
+
+        by_slug = {entry.catechism.slug: entry for entry in entries}
+        left_entry = by_slug.get(self.request.GET.get('a'), entries[0])
+        right_entry = by_slug.get(self.request.GET.get('b'))
+        if right_entry is None or right_entry == left_entry:
+            right_entry = next(entry for entry in entries if entry != left_entry)
+
+        ctx['theme'] = theme
+        ctx['comparison_set'] = theme.comparison_set
+        ctx['entries'] = entries
+        ctx['left'] = left_entry.catechism
+        ctx['right'] = right_entry.catechism
+        ctx['rows'] = build_diff(left_entry.get_questions(), right_entry.get_questions())
+        ctx['changed_rows'] = sum(1 for row in ctx['rows'] if not row['unchanged'])
+        return ctx

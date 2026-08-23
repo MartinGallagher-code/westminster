@@ -3,6 +3,59 @@
 All notable project changes should be recorded here. This project uses a simple
 reverse-chronological changelog rather than formal release tags.
 
+## 2026-08-23 (later)
+
+### Added
+
+- **Memorisation deck.** Signed-in readers can add an answer from its own page or a whole catechism at once, and review what is due. Scheduling is an SM-2 variant (`accounts/scheduling.py`): recall widens the gap (1, 6, 15, 38, 95 days…), a miss returns it tomorrow with reduced ease. The deck reports what is due, what is being learned, and what is known.
+- **Notes export and search.** Every note, annotation and highlight downloads as one Markdown file grouped by document and question, with absolute links back. The study desk now searches your own material too.
+- **Printable small-group handout** for any question or chapter: the text, proof texts with their verses, where the other standards treat the same ground, leader's notes excerpted from the commentators, and discussion prompts built from that passage's own proofs, parallels and Assembly cruxes.
+- **Citations.** `/cite/wcf/3.4/` resolves the reference a reader actually writes and redirects to the canonical page; the same reference exports as BibTeX or RIS.
+- **Cross-edition diff.** Parallel chapters of the Confession, Savoy and 1689 diffed word by word, ignoring punctuation and capitalisation so the substantive revisions surface.
+- **Transcription check.** `check_transcription` compares the loaded text against the Atlas's independently sourced copy and ranks the divergences.
+- **Data-integrity CI job.** `check_site_integrity` loads the real corpus and asserts what only a populated database can answer — every sitemap URL fetchable by an anonymous crawler, every Atlas page and chip resolving, every Westminster item carrying a doctrine head. A second CI job runs the whole suite against Postgres, which nothing previously did.
+- **Sentry** error monitoring behind `SENTRY_DSN`, with PII off.
+- **Operations runbook** (`docs/OPERATIONS.md`) covering backups, a rehearsed restore procedure with `scripts/verify_restore.sh`, and health-check monitoring.
+
+### Changed
+
+- The Postgres search matches a stored, GIN-indexed `search_vector` column instead of building a tsvector per row per query.
+- Read-only pages are cached for anonymous visitors, keyed by path and active collections; signed-in readers are never served from or written to the cache.
+- Rate limiting extended to password reset, search, and the new endpoints.
+- `build.sh`'s load sequence moved to `scripts/load_data.sh` so deploys and CI load identically.
+
+### Fixed
+
+- Submitting the password-reset form raised `NoReverseMatch`: Django's default success URL is not namespaced.
+
+## 2026-08-23
+
+### Added
+
+- Site search now shows the part of a result that matched, with the search terms marked, instead of the opening words of the question and answer.
+- Typing a Scripture reference into the search box ("Rom 8:30", "1 Cor 13") goes to that book's page in the Scripture index, narrowed to the chapter, with a link back to a plain text search. Only references with a chapter number are recognised, so searching for "acts" or "job" still searches the text.
+- Comparison pages gained a document switcher on narrow screens. The columns previously stacked below `lg`, turning a side-by-side reading into three documents in sequence; the switcher shows one at a time in place so you can flip between them without losing your position.
+- The Atlas is now in `sitemap.xml` — 432 pages (personas, cruxes, schools, heads of doctrine, and every locus, attribute and value page) that were previously unindexed.
+
+### Changed
+
+- Accessibility: the skip link now targets a real `<main>` landmark that can take focus and is styled without depending on Bootstrap's utility classes; the document-collection toggles expose their pressed state; and the eight Atlas locus accents are passed to CSS as a custom property so the stylesheet can darken them for the light theme, where the pastels were too faint to read as a boundary.
+
+## 2026-08-23
+
+### Added
+
+- Published the five Reformed confessions that were loaded but unreachable. The 1689 London Baptist Confession, Savoy Declaration, Scots Confession, Second Helvetic Confession, and Irish Articles were all created with the default tradition (`other`), which every view gates on, so the documents and the two comparison sets built on them — Confessional Lineage and Pre-Westminster Confessions — could not be reached from anywhere on the site. They now form a third document collection, **Reformed Confessions**, with its own filter toggle; a data migration moves the existing rows. Also added "Confessional Lineage" and "Pre-Westminster" quick-start presets to the custom comparison selector.
+
+### Changed
+
+- Comparison columns are ordered oldest-document-first instead of alphabetically by abbreviation, which had put the 1689 before the 1646 Confession it revises.
+- Comparison theme pages name the documents in the set that have no parallel section for that theme, rather than silently showing a narrower table — the omission (the 1689 has no chapter answering WCF XXXI) is part of what the comparison shows.
+
+### Fixed
+
+- `sitemap.xml` advertised doctrine and comparison pages that 404 for search engines. Those pages are gated on the visitor's active collections and a crawler sends no filter cookie, but the sitemap was built over every valid tradition — so a theme carried only by the 1689 and Savoy (e.g. "Of the Gospel") was advertised and then 404'd. The sitemap is now built over the anonymous defaults.
+
 ## 2026-08-23
 
 ### Fixed
