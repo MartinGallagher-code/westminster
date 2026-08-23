@@ -50,7 +50,9 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
 <p class="text-muted mb-0">
     {% if grouped_results %}
-        {{ total_results }} result{{ total_results|pluralize }} for &ldquo;{{ query }}&rdquo;
+        {{ total_results }} result{{ total_results|pluralize }} for &ldquo;{{ query }}&rdquo;{% if atlas_total %}, plus {{ atlas_total }} in the Atlas{% endif %}
+    {% elif atlas_total %}
+        No matches in the standards&rsquo; text &mdash; {{ atlas_total }} result{{ atlas_total|pluralize }} in the Atlas for &ldquo;{{ query }}&rdquo;
     {% else %}
         No results found for &ldquo;{{ query }}&rdquo;
     {% endif %}
@@ -88,6 +90,41 @@
     <div class="study-card-text">Use a shorter doctrine word, remove document filters, or search by a chapter topic like Scripture, justification, or prayer.</div>
 </div>
 {% endfor %}
+
+{% if atlas_results %}
+<div class="mb-5">
+    <div class="d-flex justify-content-between align-items-baseline border-bottom pb-2 mb-3">
+        <div>
+            <strong class="me-2"><i class="bi bi-diagram-3 me-1"></i>Also in the Atlas</strong>
+            <span class="text-muted small">Divines, cruxes, schools, and heads of doctrine</span>
+        </div>
+        <span class="badge text-bg-secondary">{{ atlas_total }}</span>
+    </div>
+    {% for group in atlas_results %}
+    <div class="mb-3">
+        <div class="text-muted small text-uppercase fw-semibold mb-2">
+            <i class="bi {{ group.icon }} me-1"></i>{{ group.label }}
+        </div>
+        {% for item in group.items %}
+        <a href="{{ item.url }}"
+           class="d-flex align-items-start gap-2 py-2 text-decoration-none border-bottom"
+           style="border-color: var(--wm-border) !important; color: var(--bs-body-color);">
+            <div>
+                <div class="small mb-1">
+                    <strong>{{ item.name }}</strong>
+                    {% if item.meta %}<span class="text-muted">{{ item.meta }}</span>{% endif %}
+                </div>
+                <div class="text-muted small">{{ item.description|truncatewords:20 }}</div>
+            </div>
+        </a>
+        {% endfor %}
+        {% if group.has_more %}
+        <a class="small" href="{{ group.more_url }}">All {{ group.total }} matches in the Atlas &rarr;</a>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
 {% else %}
 <div class="row g-3">
     {% for term in suggested_searches %}

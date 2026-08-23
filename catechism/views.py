@@ -77,6 +77,14 @@ def _comparison_themes_for_traditions(active_traditions):
         entries__catechism__tradition__in=active_traditions
     ).exclude(
         entries__catechism__tradition=Catechism.OTHER
+    ).exclude(
+        # A theme is only reachable if its whole comparison set is reachable:
+        # CompareSetThemeView 404s every theme in a set that references an
+        # unsupported tradition, so a theme that happens to carry only
+        # supported entries (e.g. the 1689 set's "Of Church Government", whose
+        # 1689/Savoy ranges are null) must not be advertised in the sitemap or
+        # linked from the doctrine index. Mirrors _comparison_sets_for_traditions.
+        comparison_set__themes__entries__catechism__tradition=Catechism.OTHER
     ).annotate(
         active_entry_count=Count(
             'entries',
@@ -621,6 +629,13 @@ class SearchView(ListView):
             'Lord\'s Supper',
             'church discipline',
         ]
+
+        # Site search also reaches into the Atlas layers that have no
+        # counterpart in the standards' text — its divines, cruxes, schools,
+        # and heads of doctrine — so one search covers the whole site.
+        from westminster_standards.entity_search import search_entities
+        ctx['atlas_results'] = search_entities(ctx['query'])
+        ctx['atlas_total'] = sum(group['total'] for group in ctx['atlas_results'])
 
         tradition_order = {'westminster': 0, 'three_forms_of_unity': 1, 'other': 2}
         document_order = {
