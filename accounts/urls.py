@@ -51,6 +51,7 @@ urlpatterns = [
     path('memorize/add/<int:question_pk>/', views.MemorizeAddView.as_view(), name='memorize_add'),
     path('memorize/remove/<int:question_pk>/', views.MemorizeRemoveView.as_view(), name='memorize_remove'),
     path('memorize/add-document/', views.MemorizeAddDocumentView.as_view(), name='memorize_add_document'),
+    path('memorize/add-topic/<int:topic_pk>/', views.MemorizeAddTopicView.as_view(), name='memorize_add_topic'),
 
     # Password change
     path('password/change/', views.PasswordChangeView.as_view(), name='password_change'),
