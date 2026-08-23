@@ -754,6 +754,68 @@ a {
     border-color: var(--wm-primary) !important;
 }
 
+/* ── Session handout ──
+   Screen-readable, but laid out for paper: a group leader prints it or saves
+   it as a PDF from the browser. */
+.handout {
+    max-width: 46rem;
+}
+
+.handout-header {
+    border-bottom: 2px solid var(--wm-border);
+    padding-bottom: 0.75rem;
+}
+
+.handout-answer {
+    font-size: 1.02rem;
+    line-height: 1.6;
+}
+
+.handout-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--bs-secondary-color, #6c757d);
+    margin-top: 1.1rem;
+    margin-bottom: 0.4rem;
+}
+
+.handout-proofs,
+.handout-prompts {
+    padding-left: 1.2rem;
+}
+
+.handout-leader {
+    border-left: 3px solid var(--wm-border);
+    padding-left: 0.9rem;
+}
+
+.handout-footer {
+    border-top: 1px solid var(--wm-border);
+    padding-top: 0.75rem;
+}
+
+@media print {
+    .handout {
+        max-width: none;
+    }
+    .handout-item {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+    .handout-item h2 {
+        break-after: avoid;
+    }
+    .handout a {
+        text-decoration: none;
+        color: inherit;
+    }
+    .handout-leader {
+        border-left-color: #999;
+    }
+}
+
 /* ── Comparison: narrow-screen document switcher ──
    Below lg the comparison columns stack, so a side-by-side reading becomes
    three documents in sequence. The tabs show one at a time instead. */

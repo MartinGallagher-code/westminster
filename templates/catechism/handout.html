@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}{{ heading }} — Session Handout{% endblock %}
+{% block meta_description %}A printable small-group handout for {{ heading }}: the text, its proof texts, discussion questions, and leader's notes.{% endblock %}
+{% block main_wrapper_class %}container py-4 handout{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-4 d-print-none">
+    <nav aria-label="breadcrumb" class="mb-0">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{% url 'catechism:home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ catechism.get_absolute_url }}">{{ catechism.abbreviation }}</a></li>
+            <li class="breadcrumb-item active">Handout</li>
+        </ol>
+    </nav>
+    <button type="button" class="btn btn-primary btn-sm" onclick="window.print()">
+        <i class="bi bi-printer me-1"></i>Print or save as PDF
+    </button>
+</div>
+
+<header class="handout-header mb-4">
+    <h1 class="h3 mb-1">{{ heading }}</h1>
+    <p class="text-muted mb-0">{{ subheading }}</p>
+</header>
+
+{% for item in items %}
+<section class="handout-item mb-5">
+    <h2 class="h5">
+        {{ item.question.catechism.item_prefix }}{{ item.question.display_number }}.
+        {{ item.question.question_text }}
+    </h2>
+    <p class="handout-answer">{{ item.question.answer_text }}</p>
+
+    {% if item.proofs %}
+    <h3 class="handout-label">Proof texts</h3>
+    <ul class="handout-proofs">
+        {% for proof in item.proofs %}
+        <li>
+            <strong>{{ proof.reference }}</strong>
+            {% if proof.text %}<span class="text-muted"> — {{ proof.text }}</span>{% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if item.prompts %}
+    <h3 class="handout-label">For discussion</h3>
+    <ol class="handout-prompts">
+        {% for prompt in item.prompts %}
+        <li class="mb-2">{{ prompt }}</li>
+        {% endfor %}
+    </ol>
+    {% endif %}
+
+    {% if item.cross_references %}
+    <h3 class="handout-label">Read alongside</h3>
+    <p class="small mb-0">
+        {% for target in item.cross_references %}
+        <a href="{{ target.get_absolute_url }}">{{ target.catechism.abbreviation }} {{ target.catechism.item_prefix }}{{ target.display_number }}</a>{% if not forloop.last %} · {% endif %}
+        {% endfor %}
+    </p>
+    {% endif %}
+
+    {% if item.leader_notes %}
+    <div class="handout-leader mt-3">
+        <h3 class="handout-label">Leader's notes</h3>
+        {% for note in item.leader_notes %}
+        <p class="small mb-2">
+            <strong>{{ note.source }}{% if note.author %} ({{ note.author }}){% endif %}:</strong>
+            {{ note.body }}
+        </p>
+        {% endfor %}
+    </div>
+    {% endif %}
+</section>
+{% endfor %}
+
+<footer class="handout-footer small text-muted">
+    Prepared from Study Reformed on {{ generated_on|date:"j F Y" }}.
+    Public-domain texts; leader's notes quoted from the commentators named.
+</footer>
+{% endblock %}

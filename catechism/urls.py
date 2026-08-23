@@ -32,6 +32,12 @@ urlpatterns = [
     path('compare/<slug:set_slug>/', views.CompareSetView.as_view(), name='compare_set'),
     path('compare/<slug:set_slug>/<slug:theme_slug>/', views.CompareSetThemeView.as_view(), name='compare_set_theme'),
 
+    # Printable small-group handouts
+    path('handout/<slug:catechism_slug>/<str:reference>/',
+         views.HandoutView.as_view(), name='handout'),
+    path('handout/<slug:catechism_slug>/topic/<slug:topic_slug>/',
+         views.HandoutView.as_view(), name='handout_topic'),
+
     # Citations: the reference a reader writes ("WCF 3.4"), made addressable
     path('cite/<slug:catechism_slug>/<str:reference>/',
          views.CitationPermalinkView.as_view(), name='citation_permalink'),

@@ -179,6 +179,10 @@
                     <a href="{% url 'catechism:search' %}?q={{ question.topic.name|urlencode }}" class="btn btn-outline-primary btn-sm">
                         Search Topic
                     </a>
+                    <a href="{% url 'catechism:handout' catechism_slug=catechism.slug reference=citation_reference %}"
+                       class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-printer me-1"></i>Session handout
+                    </a>
                     {% if user.is_authenticated and not catechism.is_prose_document %}
                     {% if memorization_card %}
                     <form method="post" action="{% url 'accounts:memorize_remove' question_pk=question.pk %}">

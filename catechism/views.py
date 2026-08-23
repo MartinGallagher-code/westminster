@@ -23,6 +23,7 @@ from .models import (
     ComparisonEntry, QuestionDoctrineHead, QuestionOntologyTag,
 )
 from .citations import bibtex, citation_label, citation_text, resolve_reference, ris
+from .handout import build_handout
 from .scripture_refs import (
     chapter_from_ref, parse_scripture_reference, reference_matches_chapter,
 )
@@ -1225,3 +1226,44 @@ class CitationExportView(View):
         filename = f'{catechism_slug}-{reference.replace(".", "-")}.{extension}'
         response['Content-Disposition'] = f'attachment; filename="{filename}"'
         return response
+
+
+class HandoutView(TemplateView):
+    """A print-ready session handout for a question, section, or whole chapter.
+
+    Rendered as a page rather than a server-generated PDF: every browser
+    prints to PDF, and a page keeps the links live for anyone reading it on a
+    screen.
+    """
+
+    template_name = 'catechism/handout.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        catechism = get_object_or_404(Catechism, slug=self.kwargs['catechism_slug'])
+        reference = self.kwargs.get('reference')
+        topic_slug = self.kwargs.get('topic_slug')
+
+        if topic_slug:
+            topic = get_object_or_404(Topic, catechism=catechism, slug=topic_slug)
+            questions = list(
+                topic.questions.select_related('catechism', 'topic').order_by('number')
+            )
+            ctx['heading'] = topic.name
+            ctx['subheading'] = (
+                f'{catechism.name} · {catechism.item_prefix}{topic.display_start}'
+                f'–{catechism.item_prefix}{topic.display_end}'
+            )
+            ctx['topic'] = topic
+        else:
+            question = resolve_reference(catechism, reference)
+            if question is None:
+                raise Http404(f'No {catechism.abbreviation} {reference}')
+            questions = [question]
+            ctx['heading'] = f'{catechism.abbreviation} {question.display_number}'
+            ctx['subheading'] = catechism.name
+
+        ctx['catechism'] = catechism
+        ctx['items'] = build_handout(questions)
+        ctx['generated_on'] = date.today()
+        return ctx
