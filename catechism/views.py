@@ -1,6 +1,6 @@
 from collections import defaultdict
+from urllib.parse import urlencode
 from datetime import date
-import re
 from xml.sax.saxutils import escape
 
 from django.db import connection
@@ -22,13 +22,12 @@ from .models import (
     BibleBook, ScriptureIndex, ComparisonSet, ComparisonTheme,
     ComparisonEntry, QuestionDoctrineHead, QuestionOntologyTag,
 )
+from .scripture_refs import (
+    chapter_from_ref, parse_scripture_reference, reference_matches_chapter,
+)
+from .search_text import search_terms as _search_terms
 from .utils import DEFAULT_TRADITIONS, VALID_TRADITIONS, get_active_traditions
 
-
-SEARCH_STOP_WORDS = {
-    'a', 'an', 'and', 'by', 'for', 'from', 'in', 'into', 'is', 'of', 'on',
-    'or', 'the', 'to', 'with',
-}
 
 # Curated quick-start groupings for the custom comparison selector. Each preset
 # is filtered against the documents currently available in the active
@@ -108,13 +107,6 @@ def _comparison_themes_for_traditions(active_traditions):
             distinct=True,
         )
     ).select_related('comparison_set').distinct()
-
-
-def _search_terms(query):
-    return [
-        term for term in re.findall(r"[A-Za-z0-9']+", query.lower())
-        if len(term) > 2 and term not in SEARCH_STOP_WORDS
-    ]
 
 
 def _search_questions(query, active_traditions):
@@ -200,6 +192,10 @@ def sitemap_xml(request):
         reverse('catechism:doctrine_detail', kwargs={'theme_slug': slug})
         for slug in comparison_themes.values_list('slug', flat=True).distinct()
     )
+
+    # The Atlas's own pages (ontology, personas, cruxes, schools, heads).
+    from westminster_standards.sitemap import atlas_sitemap_paths
+    urls.extend(atlas_sitemap_paths())
 
     seen = set()
     locs = []
@@ -621,6 +617,20 @@ class SearchView(ListView):
     template_name = 'catechism/search_results.html'
     context_object_name = 'results'
 
+    def get(self, request, *args, **kwargs):
+        # "Rom 8:30" is a request for the Scripture index, not a substring
+        # search over question text. ?text=1 opts back into the text search.
+        if not request.GET.get('text'):
+            reference = parse_scripture_reference(request.GET.get('q', ''))
+            if reference:
+                destination = reference['book'].get_absolute_url()
+                params = urlencode({
+                    'ref': reference['ref'],
+                    'from': request.GET.get('q', '').strip(),
+                })
+                return redirect(f'{destination}?{params}')
+        return super().get(request, *args, **kwargs)
+
     def get_queryset(self):
         query = self.request.GET.get('q', '').strip()
         if not query:
@@ -726,6 +736,23 @@ class ScriptureBookView(DetailView):
         ).select_related('question__catechism', 'question__topic').order_by(
             'question__catechism__abbreviation', 'question__number', 'reference',
         )
+
+        # Arriving from a search for "Rom 8:30": narrow to that chapter, but
+        # fall back to the whole book rather than showing an empty page.
+        requested_ref = self.request.GET.get('ref', '')
+        chapter = chapter_from_ref(requested_ref)
+        entries = list(entries)
+        if chapter is not None:
+            in_chapter = [
+                entry for entry in entries
+                if reference_matches_chapter(entry.reference, chapter)
+            ]
+            ctx['filtered_ref'] = f'{self.object.name} {requested_ref}'
+            ctx['filtered_chapter'] = chapter
+            ctx['filter_found_nothing'] = not in_chapter
+            if in_chapter:
+                entries = in_chapter
+        ctx['search_fallback_query'] = self.request.GET.get('from', '')
 
         grouped = defaultdict(list)
         catechism_map = {}

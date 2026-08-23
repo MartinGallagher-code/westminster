@@ -4,6 +4,8 @@ from django import template
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
 
+from catechism.search_text import highlighted_snippet
+
 register = template.Library()
 
 # All-caps section headers in confessions (e.g., Second Helvetic Confession).
@@ -47,3 +49,12 @@ def format_confession_sections(text):
     html = '<p>' + ''.join(html_parts) + '</p>'
     html = re.sub(r'<p>\s*</p>\n?', '', html)
     return mark_safe(html)
+
+
+@register.filter
+def search_snippet(text, query):
+    """Show the part of ``text`` that matched, with the terms marked.
+
+    Usage: ``{{ question.answer_text|search_snippet:query }}``
+    """
+    return highlighted_snippet(text, query)

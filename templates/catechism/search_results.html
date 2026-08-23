@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load catechism_tags %}
 
 {% block body_attrs %}data-filter-sensitive="true"{% endblock %}
 {% block title %}Search{% if query %}: {{ query }}{% endif %} - Study Reformed{% endblock %}
@@ -77,8 +78,8 @@
        style="border-color: var(--wm-border) !important; color: var(--bs-body-color);">
         <strong class="small text-nowrap text-primary" style="min-width: 3rem;">{{ group.catechism.item_prefix }}{{ q.display_number }}{% if not group.catechism.is_prose_document %}.{% endif %}</strong>
         <div>
-            <div class="small mb-1">{{ q.question_text|truncatewords:12 }}</div>
-            <div class="text-muted small">{{ q.answer_text|truncatewords:18 }}</div>
+            <div class="small mb-1">{{ q.question_text|search_snippet:query }}</div>
+            <div class="text-muted small">{{ q.answer_text|search_snippet:query }}</div>
         </div>
     </a>
     {% endfor %}
@@ -111,10 +112,10 @@
            style="border-color: var(--wm-border) !important; color: var(--bs-body-color);">
             <div>
                 <div class="small mb-1">
-                    <strong>{{ item.name }}</strong>
+                    <strong>{{ item.name|search_snippet:query }}</strong>
                     {% if item.meta %}<span class="text-muted">{{ item.meta }}</span>{% endif %}
                 </div>
-                <div class="text-muted small">{{ item.description|truncatewords:20 }}</div>
+                <div class="text-muted small">{{ item.description|search_snippet:query }}</div>
             </div>
         </a>
         {% endfor %}

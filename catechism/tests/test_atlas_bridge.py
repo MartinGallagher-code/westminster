@@ -14,6 +14,7 @@ from django.core.management import call_command
 from catechism.atlas import atlas_url, comparison_locus_atlas, topic_loci
 from catechism.models import DoctrineHead, Question, Topic
 from westminster_standards.entity_search import search_entities
+from westminster_standards.sitemap import atlas_sitemap_paths
 from .conftest import (
     OntologyAttributeFactory, OntologyLocusFactory, QuestionFactory,
     QuestionOntologyTagFactory,
@@ -237,3 +238,44 @@ def test_site_search_reports_atlas_matches_when_the_standards_have_none(client):
     assert resp.context['grouped_results'] == []
     assert 'result' in resp.content.decode()
     assert 'in the Atlas for' in resp.content.decode()
+
+
+# --- Phase 6: the Atlas is in the sitemap ----------------------------------
+
+
+@pytest.mark.django_db
+def test_sitemap_includes_the_atlas(client):
+    body = client.get('/sitemap.xml').content.decode()
+    assert '/atlas/ontology/' in body
+    assert '/atlas/personas/samuel-rutherford/' in body
+    assert '/atlas/heads/justification/' in body
+
+
+def test_atlas_sitemap_excludes_routes_that_redirect():
+    """A sitemap advertises destinations, not redirects.
+
+    The Atlas's pages for the three Standards Study Reformed hosts redirect to
+    its canonical pages (bridge.py), so they must not be listed.
+    """
+    paths = set(atlas_sitemap_paths())
+    assert '/atlas/works/dpw/' in paths          # the Atlas hosts this one
+    assert '/atlas/works/wcf/' not in paths
+    assert '/atlas/works/wsc/' not in paths
+    assert '/atlas/works/wlc/' not in paths
+
+
+@pytest.mark.django_db
+def test_every_atlas_sitemap_url_resolves(client):
+    paths = atlas_sitemap_paths()
+    assert len(paths) == len(set(paths)), 'sitemap paths must be unique'
+    # Spot-check one page per layer; the full sweep of all 432 is too slow for
+    # the unit suite and is covered by the loaded-data integrity check.
+    sample = [
+        '/atlas/', '/atlas/ontology/', '/atlas/dimension/scripture/',
+        '/atlas/dimension/scripture/canon/sixty_six/',
+        '/atlas/heads/justification/', '/atlas/cruxes/the-order-of-the-decrees/',
+        '/atlas/personas/samuel-rutherford/', '/atlas/works/ssk/',
+    ]
+    for path in sample:
+        assert path in paths, path
+        assert client.get(path).status_code == 200, path

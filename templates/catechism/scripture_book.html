@@ -20,6 +20,26 @@
 <h1 class="mb-1">{{ book.name }}</h1>
 <p class="text-muted mb-4">{{ total_citations }} citation{{ total_citations|pluralize }} across the active documents</p>
 
+{% if filtered_ref %}
+<div class="alert alert-light border d-flex flex-wrap justify-content-between align-items-center gap-2" role="status">
+    <div class="small">
+        {% if filter_found_nothing %}
+        <i class="bi bi-info-circle me-1"></i>
+        Nothing in the active documents cites <strong>{{ filtered_ref }}</strong> — showing the whole book.
+        {% else %}
+        <i class="bi bi-funnel me-1"></i>
+        Showing citations of <strong>{{ filtered_ref }}</strong>.
+        <a href="{{ book.get_absolute_url }}">Show all of {{ book.name }}</a>
+        {% endif %}
+    </div>
+    {% if search_fallback_query %}
+    <a class="small" href="{% url 'catechism:search' %}?q={{ search_fallback_query|urlencode }}&amp;text=1">
+        Search the text for &ldquo;{{ search_fallback_query }}&rdquo; instead
+    </a>
+    {% endif %}
+</div>
+{% endif %}
+
 <div class="row g-5">
     {% for group in grouped_entries %}
     <div class="col-md-6 col-xl-4 col-separator">

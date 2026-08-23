@@ -754,6 +754,19 @@ a {
     border-color: var(--wm-primary) !important;
 }
 
+/* Search hits — distinct from a reader's saved highlights below. */
+mark.search-hit {
+    background-color: #d1e7ff;
+    color: inherit;
+    border-radius: 2px;
+    padding: 0 1px;
+}
+
+[data-bs-theme="dark"] mark.search-hit {
+    background-color: #1c3d5a;
+    color: #e9f2ff;
+}
+
 /* User highlights */
 mark.user-highlight {
     background-color: #fff3cd;
