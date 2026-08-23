@@ -1807,6 +1807,16 @@ mark.user-annotation.active {
     border-left-color: var(--locus-color, var(--wm-accent));
 }
 
+/* The comparison offer on a confession chapter. Deliberately quieter than
+   the Atlas panel above it: it is an invitation, not the chapter's content. */
+.chapter-compare-panel {
+    background: color-mix(in srgb, var(--wm-card-bg) 88%, var(--bs-body-bg));
+    border: 1px solid var(--wm-border);
+    border-left: 3px solid var(--wm-primary);
+    border-radius: 0.45rem;
+    padding: 0.85rem 1rem;
+}
+
 /* Skip link — self-contained so it still works if Bootstrap's utility
    classes fail to load. */
 .skip-link {

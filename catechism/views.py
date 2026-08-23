@@ -115,6 +115,89 @@ def _comparison_themes_for_traditions(active_traditions):
     ).select_related('comparison_set').distinct()
 
 
+def _comparison_themes_for_topic(topic, active_traditions):
+    """Reachable comparison themes whose entry for this document covers this chapter.
+
+    A comparison set aligns chapter ranges, not chapters, so the match is an
+    overlap test rather than equality: the 1689 folds WCF XXV and XXVI into one
+    chapter, and both should offer the comparison.
+
+    Ordered so the most useful comparison comes first: how much of the chapter
+    the theme covers, then whether the documents it sets alongside this one are
+    the same kind of text. Without that second key WCF II leads with the
+    Westminster set, whose parallels are catechism answers — a fair comparison,
+    but not a word-level one, and the diff of a chapter against a Q&A is noise.
+    """
+    themes = list(
+        _comparison_themes_for_traditions(active_traditions).filter(
+            entries__catechism=topic.catechism,
+            entries__question_start__lte=topic.question_end,
+            entries__question_end__gte=topic.question_start,
+            active_entry_count__gte=2,
+        ).order_by('comparison_set__order', 'order')
+    )
+    if not themes:
+        return []
+
+    spans = {}
+    same_kind = set()
+    for entry in ComparisonEntry.objects.filter(
+        theme__in=themes, catechism__tradition__in=active_traditions,
+    ).select_related('catechism'):
+        if entry.catechism_id == topic.catechism_id:
+            spans[entry.theme_id] = (entry.question_start, entry.question_end)
+        elif entry.catechism.is_prose_document == topic.catechism.is_prose_document:
+            same_kind.add(entry.theme_id)
+
+    def rank(pair):
+        index, theme = pair
+        start, end = spans.get(theme.pk, (0, -1))
+        overlap = min(end, topic.question_end) - max(start, topic.question_start) + 1
+        return (-overlap, theme.pk not in same_kind, index)
+
+    return [theme for _, theme in sorted(enumerate(themes), key=rank)]
+
+
+def _dormant_comparison_traditions(topic, active_traditions):
+    """Collections that treat this chapter but are switched off for this reader.
+
+    A reader with only the Westminster Standards enabled sees no comparison at
+    all on WCF XXV, because the documents that revise it — the Savoy and the
+    1689 — sit in a collection they have not turned on. The site knows they
+    exist; saying so is more use than an empty space.
+    """
+    dormant = {
+        tradition for tradition in VALID_TRADITIONS
+        if tradition not in active_traditions
+    }
+    if not dormant:
+        return []
+
+    # Ask with every collection on, so this reports only what turning one on
+    # would actually reach — the same reachability rules as the panel itself.
+    themes = _comparison_themes_for_topic(topic, sorted(VALID_TRADITIONS))
+    if not themes:
+        return []
+
+    labels = dict(Catechism.TRADITION_CHOICES)
+    documents = {}
+    for entry in ComparisonEntry.objects.filter(
+        theme__in=themes, catechism__tradition__in=dormant,
+    ).select_related('catechism'):
+        documents.setdefault(entry.catechism.tradition, {})[
+            entry.catechism.abbreviation
+        ] = entry.catechism
+
+    return [
+        {
+            'tradition': tradition,
+            'label': labels.get(tradition, tradition),
+            'documents': [found[key] for key in sorted(found)],
+        }
+        for tradition, found in sorted(documents.items())
+    ]
+
+
 # A query matching a topic name pulls in that topic's questions too. Bounded
 # so a one-letter query cannot build an unbounded id array.
 MAX_TOPIC_MATCH_IDS = 500
@@ -658,6 +741,39 @@ class TopicDetailView(CatechismMixin, DetailView):
         )
         from .atlas import topic_loci
         ctx['atlas_loci'] = topic_loci(self.object)
+
+        # Every chapter of a confession is a revision of, or a reply to,
+        # somebody else's chapter. The comparison sets already know which —
+        # this surfaces the link from the chapter itself, rather than only
+        # from the comparison index a reader has to go looking for.
+        active_traditions = get_active_traditions(self.request)
+        themes = _comparison_themes_for_topic(self.object, active_traditions)
+        ctx['comparison_themes'] = themes
+        ctx['dormant_comparison_traditions'] = _dormant_comparison_traditions(
+            self.object, active_traditions
+        )
+        if themes:
+            others = [
+                entry.catechism for entry in _order_entries_chronologically(
+                    themes[0].entries.filter(
+                        catechism__tradition__in=active_traditions
+                    ).select_related('catechism')
+                )
+                if entry.catechism_id != self.object.catechism_id
+            ]
+            ctx['primary_comparison_theme'] = themes[0]
+            ctx['primary_comparison_documents'] = others
+            # A word-level diff is only worth offering against a document of
+            # the same kind. WCF I against the Savoy's chapter I shows the
+            # handful of edits; WCF I against WSC Q2 is two different texts,
+            # and the diff would report every word as changed.
+            ctx['primary_comparison_diff_target'] = next(
+                (
+                    document for document in others
+                    if document.is_prose_document == self.object.catechism.is_prose_document
+                ),
+                None,
+            )
         return ctx
 
 
