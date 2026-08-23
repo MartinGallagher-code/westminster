@@ -43,6 +43,10 @@
            class="btn btn-outline-secondary btn-sm">
             <i class="bi bi-printer me-1"></i>Session handout
         </a>
+        <a href="{% url 'catechism:presenter_topic' catechism_slug=catechism.slug topic_slug=topic.slug %}"
+           class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-projector me-1"></i>Present
+        </a>
     </div>
 </div>
 <p class="text-muted mb-3">{{ topic.description }}</p>

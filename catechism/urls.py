@@ -41,6 +41,12 @@ urlpatterns = [
     path('handout/<slug:catechism_slug>/topic/<slug:topic_slug>/',
          views.HandoutView.as_view(), name='handout_topic'),
 
+    # Small-group tools
+    path('present/<slug:catechism_slug>/', views.PresenterView.as_view(), name='presenter'),
+    path('present/<slug:catechism_slug>/topic/<slug:topic_slug>/',
+         views.PresenterView.as_view(), name='presenter_topic'),
+    path('plan/', views.SessionPlanView.as_view(), name='session_plan'),
+
     # Citations: the reference a reader writes ("WCF 3.4"), made addressable
     path('cite/<slug:catechism_slug>/<str:reference>/',
          views.CitationPermalinkView.as_view(), name='citation_permalink'),

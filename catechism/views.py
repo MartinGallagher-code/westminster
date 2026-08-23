@@ -1436,3 +1436,89 @@ class SearchSuggestView(View):
             'groups': groups,
             'search_url': f"{reverse('catechism:search')}?q={quote(query)}",
         })
+
+
+class PresenterView(TemplateView):
+    """One question at a time, large, for a group looking at a screen.
+
+    The handout covers paper; nothing covered projection. Deliberately
+    chromeless: no navbar, no sidebar, no commentary — just the text, advanced
+    from the keyboard or a clicker, which sends arrow keys.
+    """
+
+    template_name = 'catechism/presenter.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        catechism = get_object_or_404(Catechism, slug=self.kwargs['catechism_slug'])
+
+        topic_slug = self.kwargs.get('topic_slug')
+        if topic_slug:
+            topic = get_object_or_404(Topic, catechism=catechism, slug=topic_slug)
+            questions = list(topic.questions.order_by('number'))
+            ctx['heading'] = topic.name
+        else:
+            first = int(self.request.GET.get('from', 1))
+            last = int(self.request.GET.get('to', first))
+            questions = list(
+                catechism.questions.filter(number__gte=first, number__lte=last)
+                .order_by('number')
+            )
+            ctx['heading'] = catechism.name
+
+        if not questions:
+            raise Http404('Nothing to present')
+
+        ctx['catechism'] = catechism
+        ctx['slides'] = [
+            {
+                'number': f'{catechism.item_prefix}{question.display_number}',
+                'question': question.question_text,
+                'answer': question.answer_text,
+                'proofs': question.get_proof_text_list(),
+                'url': question.get_absolute_url(),
+            }
+            for question in questions
+        ]
+        return ctx
+
+
+class SessionPlanView(TemplateView):
+    """Turn a chosen range into everything a group leader needs at once."""
+
+    template_name = 'catechism/session_plan.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        active_traditions = get_active_traditions(self.request)
+        ctx['catechisms'] = Catechism.objects.filter(
+            tradition__in=active_traditions,
+        ).order_by('abbreviation')
+
+        slug = self.request.GET.get('catechism', '')
+        catechism = Catechism.objects.filter(slug=slug).first()
+        if catechism is None:
+            return ctx
+
+        topics = list(catechism.topics.order_by('order'))
+        ctx['catechism'] = catechism
+        ctx['topics'] = topics
+
+        topic_slug = self.request.GET.get('topic', '')
+        topic = next((t for t in topics if t.slug == topic_slug), None)
+        if topic is None:
+            return ctx
+
+        ctx['topic'] = topic
+        ctx['questions'] = topic.questions.order_by('number')
+        ctx['plan'] = {
+            'handout': reverse('catechism:handout_topic', kwargs={
+                'catechism_slug': catechism.slug, 'topic_slug': topic.slug,
+            }),
+            'presenter': reverse('catechism:presenter_topic', kwargs={
+                'catechism_slug': catechism.slug, 'topic_slug': topic.slug,
+            }),
+            'reading': topic.get_absolute_url(),
+            'share': self.request.build_absolute_uri(),
+        }
+        return ctx

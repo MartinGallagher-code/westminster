@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Plan a session - Study Reformed{% endblock %}
+{% block meta_description %}Turn a passage of the catechism into a handout, a presenter view, and a shareable link for your group.{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'catechism:home' %}">Home</a></li>
+        <li class="breadcrumb-item active">Plan a session</li>
+    </ol>
+</nav>
+
+<h1 class="mb-1">Plan a session</h1>
+<p class="lead text-muted">Choose what your group is covering. You get the reading, a printable handout, and a presenter view for the screen &mdash; from one link you can send round.</p>
+<hr class="mb-4">
+
+<form method="get" class="row g-2 align-items-end mb-4">
+    <div class="col-auto">
+        <label class="form-label small mb-1" for="plan-catechism">Document</label>
+        <select class="form-select" name="catechism" id="plan-catechism" onchange="this.form.submit()">
+            <option value="">Choose…</option>
+            {% for cat in catechisms %}
+            <option value="{{ cat.slug }}" {% if catechism.slug == cat.slug %}selected{% endif %}>{{ cat.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    {% if topics %}
+    <div class="col-auto">
+        <label class="form-label small mb-1" for="plan-topic">Section</label>
+        <select class="form-select" name="topic" id="plan-topic" onchange="this.form.submit()">
+            <option value="">Choose…</option>
+            {% for t in topics %}
+            <option value="{{ t.slug }}" {% if topic.slug == t.slug %}selected{% endif %}>{{ t.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    {% endif %}
+    <div class="col-auto"><noscript><button class="btn btn-outline-primary" type="submit">Go</button></noscript></div>
+</form>
+
+{% if plan %}
+<div class="study-callout mb-4">
+    <div>
+        <div class="fw-semibold">{{ catechism.abbreviation }} &mdash; {{ topic.name }}</div>
+        <div class="text-muted small">
+            {{ catechism.item_name_plural }} {{ topic.display_start }}&ndash;{{ topic.display_end }} &middot;
+            {{ questions|length }} to cover
+        </div>
+    </div>
+    <button type="button" class="btn btn-outline-secondary btn-sm" data-copy="url">
+        <i class="bi bi-link-45deg me-1"></i>Copy shareable link
+    </button>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <a class="study-card study-card-link h-100" href="{{ plan.reading }}">
+            <i class="bi bi-book"></i>
+            <span class="study-card-title">Read it</span>
+            <span class="study-card-text">The full text with proofs, commentary and cross-references.</span>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a class="study-card study-card-link h-100" href="{{ plan.handout }}">
+            <i class="bi bi-printer"></i>
+            <span class="study-card-title">Print the handout</span>
+            <span class="study-card-text">Text, proof texts, discussion questions and leader's notes.</span>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a class="study-card study-card-link h-100" href="{{ plan.presenter }}">
+            <i class="bi bi-projector"></i>
+            <span class="study-card-title">Put it on screen</span>
+            <span class="study-card-text">One question at a time, large, advanced from the keyboard.</span>
+        </a>
+    </div>
+</div>
+
+<h2 class="h5">What you will cover</h2>
+<ol class="mb-4">
+    {% for q in questions %}
+    <li class="mb-1">
+        <a href="{{ q.get_absolute_url }}">{{ catechism.item_prefix }}{{ q.display_number }}</a>
+        &mdash; {{ q.question_text|truncatewords:18 }}
+    </li>
+    {% endfor %}
+</ol>
+{% endif %}
+{% endblock %}

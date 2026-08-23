@@ -754,6 +754,90 @@ a {
     border-color: var(--wm-primary) !important;
 }
 
+/* ── Presenter mode ──
+   A group is reading this from across a room: type scales with the viewport,
+   the page chrome gets out of the way, and nothing scrolls. */
+.presenter {
+    max-width: none;
+    padding: 0;
+}
+
+.presenter-stage {
+    min-height: 78vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3vh 5vw;
+    outline: none;
+}
+
+.presenter-slide { max-width: 60rem; text-align: center; }
+
+.presenter-number {
+    font-size: 1rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--bs-secondary-color, #6c757d);
+    margin-bottom: 1.2rem;
+}
+
+.presenter-question {
+    font-size: clamp(1.9rem, 4.6vw, 3.4rem);
+    line-height: 1.22;
+    margin-bottom: 1.6rem;
+}
+
+.presenter-answer {
+    font-size: clamp(1.3rem, 2.9vw, 2.2rem);
+    line-height: 1.45;
+}
+
+.presenter-proofs {
+    font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+    color: var(--bs-secondary-color, #6c757d);
+    margin-top: 1.2rem;
+}
+
+.presenter-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0.6rem;
+    background: var(--bs-body-bg);
+    border-top: 1px solid var(--wm-border);
+}
+
+.presenter-btn {
+    border: 1px solid var(--wm-border);
+    background: transparent;
+    color: var(--bs-body-color);
+    border-radius: 0.35rem;
+    padding: 0.35rem 0.9rem;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.presenter-btn:hover { border-color: var(--wm-accent, #8a6d3b); }
+
+.presenter-progress {
+    font-variant-numeric: tabular-nums;
+    color: var(--bs-secondary-color, #6c757d);
+    font-size: 0.85rem;
+    min-width: 4rem;
+    text-align: center;
+}
+
+/* The presenter view hides the site chrome entirely. */
+body:has(.presenter) .navbar,
+body:has(.presenter) footer {
+    display: none;
+}
+
 /* ── Practice heatmap ── */
 .practice-heatmap {
     display: flex;
