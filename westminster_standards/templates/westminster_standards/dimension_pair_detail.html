@@ -1,4 +1,5 @@
 {% extends "westminster_standards/base.html" %}
+{% load atlas_tags %}
 {% block title %}Intersection — Westminster Standards Atlas{% endblock %}
 {% block ws_crumb %}<li class="breadcrumb-item"><a href="{% url 'westminster_standards:dimension_pairs' %}">Intersections</a></li><li class="breadcrumb-item active" aria-current="page">{% for d in dims %}{{ d.label }}{% if not forloop.last %} · {% endif %}{% endfor %}</li>{% endblock %}
 
@@ -31,10 +32,10 @@
 <div class="ws-card" style="margin-bottom:0.7rem;">
   <span class="ws-eyebrow" style="font-size:0.72rem;">{{ c.count }} entit{{ c.count|pluralize:"y,ies" }}</span>
   <table class="ws-cluster-table">
-    {% for label, value in c.values %}
+    {% for v in c.values %}
     <tr>
-      <td class="ws-ct-label">{{ label }}</td>
-      <td class="ws-ct-value">{{ value }}</td>
+      <td class="ws-ct-label">{{ v.attr_label }}</td>
+      <td class="ws-ct-value">{% position v.value_label v.dim_key v.attr_key "ws-link" %}</td>
     </tr>
     {% endfor %}
   </table>

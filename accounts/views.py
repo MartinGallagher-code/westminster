@@ -9,7 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.db.models import Count, Q
 from django.shortcuts import get_object_or_404, render, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, ListView, DeleteView, TemplateView, View
@@ -18,7 +18,7 @@ from django_ratelimit.decorators import ratelimit
 
 from .models import UserNote, Highlight, InlineComment, MemorizationCard, UserProfile
 from .export import export_filename, notes_markdown
-from . import scheduling
+from . import drills, scheduling
 from .forms import SignupForm
 from catechism.models import Catechism, Question, Commentary, Topic
 from catechism.utils import get_active_traditions
@@ -447,6 +447,10 @@ class MemorizeHomeView(TemplateView):
         ctx['next_due'] = min(
             (card.due_on for card in deck if card.due_on > today), default=None,
         )
+        profile, _ = UserProfile.objects.get_or_create(user=self.request.user)
+        ctx['profile'] = profile
+        ctx['practising_today'] = profile.last_review_on == today
+        ctx['drill_modes'] = drills.MODES
         # Documents whose questions can be added in bulk.
         ctx['memorisable'] = Catechism.objects.filter(
             document_type=Catechism.CATECHISM,
@@ -457,7 +461,34 @@ class MemorizeHomeView(TemplateView):
 
 @method_decorator(ratelimit(key='user', rate='120/m', method='POST', block=True), name='post')
 class MemorizeReviewView(LoginRequiredMixin, View):
-    """Show one due card, then record how it went."""
+    """Show one due card in the chosen drill, then record how it went."""
+
+    def _mode(self, request):
+        mode = request.GET.get('mode') or request.POST.get('mode')
+        return mode if mode in drills.MODE_KEYS else drills.RECALL
+
+    def _context(self, request, card, mode, **extra):
+        today = timezone.localdate()
+        answer = card.question.answer_text
+        context = {
+            'card': card,
+            'mode': mode,
+            'modes': drills.MODES,
+            'remaining': _deck(request.user).filter(due_on__lte=today).count(),
+            'grades': [
+                (grade, scheduling.GRADE_LABELS[grade]) for grade in scheduling.GRADES
+            ],
+        }
+        if mode == drills.INITIALS:
+            context['initials'] = drills.first_letters(answer)
+        elif mode == drills.CLOZE:
+            # Seeded on the card and its progress: stable across a reload, but
+            # different gaps as the answer comes back around.
+            context['cloze_tokens'] = drills.cloze(
+                answer, seed=card.pk * 31 + card.repetitions,
+            )
+        context.update(extra)
+        return context
 
     def get(self, request):
         today = timezone.localdate()
@@ -465,23 +496,36 @@ class MemorizeReviewView(LoginRequiredMixin, View):
         if card is None:
             messages.info(request, 'Nothing is due for review — well done.')
             return redirect('accounts:memorize')
-        remaining = _deck(request.user).filter(due_on__lte=today).count()
-        return render(request, 'accounts/memorize_review.html', {
-            'card': card,
-            'remaining': remaining,
-            'grades': [(grade, scheduling.GRADE_LABELS[grade]) for grade in scheduling.GRADES],
-        })
+        return render(
+            request, 'accounts/memorize_review.html',
+            self._context(request, card, self._mode(request)),
+        )
 
     def post(self, request):
         card = get_object_or_404(
             MemorizationCard, pk=request.POST.get('card'), user=request.user,
         )
+        mode = self._mode(request)
+
+        if request.POST.get('action') == 'check':
+            typed = request.POST.get('typed', '')
+            result = drills.score_typed(card.question.answer_text, typed)
+            return render(request, 'accounts/memorize_review.html', self._context(
+                request, card, mode,
+                result=result,
+                typed=typed,
+                suggested_grade=drills.suggested_grade(result['accuracy']),
+            ))
+
         grade = request.POST.get('grade')
         if grade not in scheduling.GRADES:
             messages.error(request, 'Unknown review outcome.')
-            return redirect('accounts:memorize_review')
+            return redirect(f'{reverse("accounts:memorize_review")}?mode={mode}')
+
         card.apply_review(grade)
-        return redirect('accounts:memorize_review')
+        profile, _ = UserProfile.objects.get_or_create(user=request.user)
+        profile.record_review()
+        return redirect(f'{reverse("accounts:memorize_review")}?mode={mode}')
 
 
 class MemorizeAddView(LoginRequiredMixin, View):

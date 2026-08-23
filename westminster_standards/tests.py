@@ -469,3 +469,92 @@ class PersonaOntologyLinks(TestCase):
             self.assertEqual(
                 self.client.get(href).status_code, 200, f'{href} does not resolve',
             )
+
+
+class PositionGlossing(TestCase):
+    """The 117 positions all carry a definition that nothing used to render."""
+
+    def test_a_position_renders_as_a_link_carrying_its_definition(self):
+        from .templatetags.atlas_tags import position
+
+        html = position('Hypothetical-Universal', 'god_decree', 'extent_of_atonement')
+        self.assertIn('/atlas/dimension/god_decree/extent_of_atonement/'
+                      'hypothetical_universal/', html)
+        self.assertIn('title="', html)
+
+    def test_a_position_resolves_from_a_unique_label_alone(self):
+        """Some templates hold only the label, not the keys."""
+        from .templatetags.atlas_tags import position
+
+        self.assertIn('/atlas/dimension/', position('Supralapsarian'))
+
+    def test_an_unknown_position_degrades_to_plain_text(self):
+        from .templatetags.atlas_tags import position
+
+        self.assertEqual(position('Not-A-Position', 'x', 'y'), 'Not-A-Position')
+
+    def test_every_position_in_the_ontology_can_be_glossed(self):
+        from .glossary import VALUE_BY_KEYS
+
+        self.assertEqual(len(VALUE_BY_KEYS), 117)
+        undefined = [
+            entry['label'] for entry in VALUE_BY_KEYS.values()
+            if not entry['definition']
+        ]
+        self.assertEqual(undefined, [])
+
+    def test_intersection_pages_link_their_positions(self):
+        """These pages listed 15+ hyphenated positions as flat text."""
+        body = self.client.get('/atlas/dimensions/scripture-god_decree/').content.decode()
+        self.assertIn('/atlas/dimension/scripture/', body)
+        self.assertIn('/atlas/dimension/god_decree/', body)
+
+
+class ProseCrossLinks(TestCase):
+    """Divines named in a biography or a role blurb should be reachable."""
+
+    def test_divines_named_in_prose_are_linked(self):
+        from .templatetags.atlas_tags import link_divines
+
+        html = link_divines('Alexander Henderson and George Gillespie argued the case.')
+        self.assertIn('/atlas/personas/alexander-henderson/', html)
+        self.assertIn('/atlas/personas/george-gillespie/', html)
+
+    def test_a_persona_is_not_linked_to_his_own_page(self):
+        from .templatetags.atlas_tags import link_divines
+
+        html = link_divines('Samuel Rutherford wrote Lex Rex.', 'samuel-rutherford')
+        self.assertNotIn('/atlas/personas/samuel-rutherford/', html)
+
+    def test_prose_cannot_smuggle_markup(self):
+        from .templatetags.atlas_tags import link_divines
+
+        html = link_divines('<script>alert(1)</script> said George Gillespie.')
+        self.assertNotIn('<script>', html)
+        self.assertIn('&lt;script&gt;', html)
+
+    def test_the_role_blurb_on_a_persona_page_is_linked(self):
+        body = self.client.get('/atlas/personas/samuel-rutherford/').content.decode()
+        self.assertIn('/atlas/personas/george-gillespie/', body)
+
+
+class DeparturesInTheHeader(TestCase):
+    """Where a divine broke with the Confession was buried in a collapsed
+    section; it is the most interesting thing about him."""
+
+    def test_a_departure_is_stated_in_the_header(self):
+        body = self.client.get('/atlas/personas/john-arrowsmith/').content.decode()
+        self.assertIn('Departs from the Confession on', body)
+        self.assertIn('Hypothetical-Universal', body)
+        self.assertIn('Particular', body)
+
+    def test_a_persona_holding_the_baseline_says_so(self):
+        from .personas import PERSONAS
+        from .data import WESTMINSTER_BASELINE_ATTRS
+
+        plain = next(
+            p for p in PERSONAS
+            if all(WESTMINSTER_BASELINE_ATTRS.get(k) == v for k, v in p['attrs'].items())
+        )
+        body = self.client.get(f"/atlas/personas/{plain['slug']}/").content.decode()
+        self.assertIn('Holds the Westminster position', body)

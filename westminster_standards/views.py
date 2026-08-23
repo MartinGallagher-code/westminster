@@ -382,11 +382,27 @@ def persona_detail(request, slug):
                 'baseline_key': baseline_key,
             })
         by_dim.append({'dim': dim, 'rows': rows})
+
+    # The one genuinely interesting fact about a divine is where he parted
+    # from the Confession; it belongs in the header, not two clicks down.
+    departures = [
+        {
+            'dim_key': dim_entry['dim']['key'],
+            'attr_key': row['attr']['key'],
+            'attr_label': row['attr']['label'],
+            'value_label': row['value_label'],
+            'baseline_label': row['baseline_label'],
+        }
+        for dim_entry in by_dim
+        for row in dim_entry['rows']
+        if row['is_override']
+    ]
     crux_appearances = cruxes_for_persona(slug)
     persona_schools = [s for s in SCHOOLS if slug in s.get('anchor_persona_slugs', [])]
     return render(request, 'westminster_standards/persona_detail.html', {
         'p': p,
         'by_dim': by_dim,
+        'departures': departures,
         'override_count': len(overrides),
         'crux_appearances': crux_appearances,
         'persona_schools': persona_schools,
@@ -881,6 +897,23 @@ def _answer_with_markers(answer_with_proofs, proof_count):
     return mark_safe(_MARKER_RE.sub(repl, text))
 
 
+def _dim_of(full_key, dims):
+    """The dimension of a ``dimkey_attrkey`` full key.
+
+    Split against the known dimensions rather than on the last underscore:
+    both halves contain underscores (``god_decree_extent_of_atonement``).
+    """
+    for dimension in dims:
+        if full_key.startswith(dimension['key'] + '_'):
+            return dimension['key']
+    return ''
+
+
+def _attr_of(full_key, dims):
+    dim_key = _dim_of(full_key, dims)
+    return full_key[len(dim_key) + 1:] if dim_key else full_key
+
+
 def _intersection_clusters(dim_keys):
     """For the given set of dimensions, build a cluster view grouping
     personas and schools by their joint signature across the selected loci."""
@@ -909,7 +942,15 @@ def _intersection_clusters(dim_keys):
         if not members['schools'] and not members['personas']:
             continue
         view.append({
-            'values': list(zip([attr_labels_local[k] for k in attr_keys], sig)),
+            'values': [
+                {
+                    'attr_label': attr_labels_local[key],
+                    'dim_key': _dim_of(key, dims),
+                    'attr_key': _attr_of(key, dims),
+                    'value_label': value,
+                }
+                for key, value in zip(attr_keys, sig)
+            ],
             'schools': members['schools'],
             'personas': members['personas'],
             'count': len(members['schools']) + len(members['personas']),

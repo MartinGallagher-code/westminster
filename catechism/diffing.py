@@ -23,9 +23,17 @@ def _tokenise(text):
     return _TOKEN_RE.findall(text or '')
 
 
-def _normalise(token):
-    """Compare on words alone: punctuation and case were modernised freely."""
+def normalise_word(token):
+    """Compare on words alone: punctuation and case carry no meaning here.
+
+    Shared with the memorisation drills, where a reader typing "mans" for
+    "Man's" has remembered the word.
+    """
     return re.sub(r'[^\w]', '', token).lower()
+
+
+# Historical name, kept for the diff internals below.
+_normalise = normalise_word
 
 
 def diff_words(before, after):
