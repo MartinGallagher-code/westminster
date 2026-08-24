@@ -340,13 +340,25 @@ class HomeView(TemplateView):
         active_traditions = get_active_traditions(self.request)
         catechisms = list(Catechism.objects.filter(tradition__in=active_traditions))
         day_of_year = date.today().timetuple().tm_yday
+
+        # Each document shows a question of the day. Asking for them one at a
+        # time cost a query per document — twelve on a home page that is
+        # otherwise six — so ask for all of them at once.
+        wanted = {
+            cat.id: (day_of_year % cat.total_questions) + 1
+            for cat in catechisms if cat.total_questions
+        }
+        featured = {}
+        if wanted:
+            lookup = Q()
+            for catechism_id, number in wanted.items():
+                lookup |= Q(catechism_id=catechism_id, number=number)
+            featured = {
+                question.catechism_id: question
+                for question in Question.objects.filter(lookup).select_related('topic')
+            }
         for cat in catechisms:
-            cat.featured_question = None
-            if cat.total_questions:
-                cat.featured_question = Question.objects.filter(
-                    catechism=cat,
-                    number=(day_of_year % cat.total_questions) + 1
-                ).select_related('topic').first()
+            cat.featured_question = featured.get(cat.id)
         ctx['catechisms'] = catechisms
         if catechisms:
             hero_cat = catechisms[day_of_year % len(catechisms)]
@@ -622,17 +634,14 @@ class QuestionDetailView(CatechismMixin, DetailView):
 
         # Build scripture text lookup for proof texts
         refs = q.get_proof_text_list()
-        if refs:
-            passages = ScripturePassage.objects.filter(reference__in=refs)
-            ctx['scripture_map'] = {p.reference: p.text for p in passages}
-            found_refs = set(ctx['scripture_map'].keys())
-            for ref in refs:
-                if ref not in found_refs:
-                    passage = ScripturePassage.objects.filter(reference=ref).first()
-                    if passage:
-                        ctx['scripture_map'][ref] = passage.text
-        else:
-            ctx['scripture_map'] = {}
+        # A per-reference fallback used to follow this, re-querying each
+        # reference the bulk lookup did not return. It is the same exact-match
+        # filter, so it could never find anything: over 400 questions it
+        # rescued none of 2,148 misses, at the cost of one query apiece.
+        ctx['scripture_map'] = {
+            p.reference: p.text
+            for p in ScripturePassage.objects.filter(reference__in=refs)
+        } if refs else {}
 
         active_traditions = get_active_traditions(self.request)
 
@@ -683,14 +692,18 @@ class QuestionDetailView(CatechismMixin, DetailView):
         ctx['chapter_questions'] = chapter_questions
 
         # Build scripture maps for all chapter questions (for chapter mode)
-        chapter_scripture_map = {}
-        for cq in chapter_questions:
-            if cq.id == q.id:
-                continue  # Already built above
-            cq_refs = cq.get_proof_text_list()
-            if cq_refs:
-                for p in ScripturePassage.objects.filter(reference__in=cq_refs):
-                    chapter_scripture_map[p.reference] = p.text
+        # Every section of the chapter is shown with its proofs, so gather the
+        # references first and look them up once — a query per section put 15
+        # of them on a single Confession chapter.
+        chapter_refs = {
+            ref
+            for cq in chapter_questions if cq.id != q.id
+            for ref in cq.get_proof_text_list()
+        }
+        chapter_scripture_map = {
+            p.reference: p.text
+            for p in ScripturePassage.objects.filter(reference__in=chapter_refs)
+        } if chapter_refs else {}
         ctx['chapter_scripture_map'] = {**chapter_scripture_map, **ctx['scripture_map']}
 
         if self.request.user.is_authenticated:
@@ -736,9 +749,11 @@ class TopicDetailView(CatechismMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
+        # display_number reads each question's topic; without this that was a
+        # query per section of the chapter.
         ctx['questions'] = Question.objects.filter(
             catechism=self.catechism, topic=self.object
-        )
+        ).select_related('topic')
         from .atlas import topic_loci
         ctx['atlas_loci'] = topic_loci(self.object)
 
