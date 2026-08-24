@@ -1499,11 +1499,18 @@ mark.user-annotation.active {
     padding-right: 1.5rem;
 }
 
-@media (max-width: 575.98px) {
-    .page-band-content {
-        padding-left: 1rem;
-        padding-right: 1rem;
-    }
+
+
+/* Bootstrap pairs a container's 0.75rem side padding with a row's default
+   1.5rem gutter, and cancels the row's negative margins against it. A row
+   asking for a wider gutter — g-5 is 3rem — pulls 0.75rem past the container
+   on each side, so the page scrolls sideways at every width. Every document
+   home, the Scripture index and book pages, the learn pages and both auth
+   pages did exactly that. Give the container back the difference, and the
+   wider gutter is spent between the columns rather than outside the page. */
+.gutter-wide {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
 }
 
 /* Column separator — applied to grid columns site-wide */
