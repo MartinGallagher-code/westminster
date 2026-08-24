@@ -1,4 +1,5 @@
 {% extends "westminster_standards/base.html" %}
+{% load atlas_tags %}
 {% block title %}{{ crux.title }} — Westminster Cruxes{% endblock %}
 {% block ws_crumb %}<li class="breadcrumb-item"><a href="{% url 'westminster_standards:cruxes_list' %}">Cruxes</a></li><li class="breadcrumb-item active" aria-current="page">{{ crux.title }}</li>{% endblock %}
 
@@ -200,4 +201,5 @@
   .ws-related-title { display: block; font-weight: 500; font-size: 0.94rem; }
   .ws-related-tag { display: block; color: var(--text-secondary); font-size: 0.84rem; line-height: 1.4; margin-top: 0.2rem; }
 </style>
+{% cite_atlas "crux" crux.slug %}
 {% endblock %}

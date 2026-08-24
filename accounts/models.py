@@ -202,3 +202,79 @@ class MemorizationCard(models.Model):
             'last_reviewed_at',
         ])
         return self
+
+
+class ReadingPosition(models.Model):
+    """Where a reader last was in each document.
+
+    One row per reader per document, updated as they read, so returning to a
+    long confession does not mean hunting for the chapter they left off in.
+    """
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='reading_positions',
+    )
+    catechism = models.ForeignKey(
+        'catechism.Catechism',
+        on_delete=models.CASCADE,
+        related_name='reading_positions',
+    )
+    question = models.ForeignKey(
+        'catechism.Question',
+        on_delete=models.CASCADE,
+        related_name='reading_positions',
+    )
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-updated_at']
+        unique_together = ('user', 'catechism')
+
+    def __str__(self):
+        prefix = self.question.catechism.item_prefix
+        return f"{self.user.username} at {prefix}{self.question.number}"
+
+    @classmethod
+    def remember(cls, user, question):
+        """Record that this reader is here now."""
+        if not user.is_authenticated:
+            return None
+        position, _ = cls.objects.update_or_create(
+            user=user, catechism=question.catechism,
+            defaults={'question': question},
+        )
+        return position
+
+
+class ReviewDay(models.Model):
+    """How much was practised on a given day.
+
+    A streak says whether you turned up; this says how much you did, which is
+    what makes a year of practice visible as a shape rather than a number.
+    """
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='review_days',
+    )
+    day = models.DateField(db_index=True)
+    reviews = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['-day']
+        unique_together = ('user', 'day')
+
+    def __str__(self):
+        return f"{self.user.username} {self.day}: {self.reviews}"
+
+    @classmethod
+    def record(cls, user, today=None):
+        today = today or timezone.localdate()
+        day, created = cls.objects.get_or_create(user=user, day=today, defaults={'reviews': 1})
+        if not created:
+            cls.objects.filter(pk=day.pk).update(reviews=models.F('reviews') + 1)
+            day.refresh_from_db(fields=['reviews'])
+        return day

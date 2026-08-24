@@ -62,6 +62,46 @@
     .ws-link { color: var(--wm-primary); text-decoration: none; }
     .ws-link:hover { text-decoration: underline; }
 
+    /* Citation panel. A <details> so it stays shut until wanted and still
+       opens with JavaScript off. */
+    .ws-cite { margin: 1rem 0 0; font-size: 0.88rem; }
+    .ws-cite > summary {
+      cursor: pointer;
+      color: var(--text-secondary);
+      list-style: none;
+    }
+    .ws-cite > summary::-webkit-details-marker { display: none; }
+    .ws-cite > summary::before {
+      content: '\25B8';
+      color: var(--gold);
+      display: inline-block;
+      font-size: 0.82rem;
+      margin-right: 0.5rem;
+      transition: transform 0.15s;
+    }
+    .ws-cite[open] > summary::before { transform: rotate(90deg); }
+    .ws-cite > summary:hover { color: var(--wm-primary); }
+    .ws-cite-body {
+      border-left: 2px solid var(--wm-border);
+      padding: 0.4rem 0 0.1rem 0.75rem;
+      margin-top: 0.5rem;
+    }
+    .ws-cite-line { font-family: var(--font-serif); margin: 0 0 0.45rem; }
+    .ws-cite-links { margin: 0; color: var(--text-muted); }
+    .ws-cite-version { color: var(--text-muted); font-size: 0.8rem; margin: 0.45rem 0 0; }
+    .ws-cite-copy {
+      background: none;
+      border: 1px solid var(--wm-border);
+      border-radius: 0.25rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.8rem;
+      margin-left: 0.5rem;
+      padding: 0.05rem 0.45rem;
+    }
+    .ws-cite-copy:hover { color: var(--wm-primary); border-color: var(--wm-primary); }
+
     .ws-dim-card {
       background: var(--wm-card-bg);
       border: 1px solid var(--wm-card-border);

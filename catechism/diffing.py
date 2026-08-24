@@ -93,6 +93,22 @@ def align_sections(left_questions, right_questions):
     return pairs
 
 
+def align_columns(columns):
+    """Pair parallel sections across any number of editions, positionally.
+
+    ``align_sections`` reads two editions against each other; a seminary
+    reader wants the Confession, the Savoy and the 1689 level with one another
+    at once. Same rule, N columns wide: row *i* holds section *i* of every
+    edition, and ``None`` where an edition has no section there.
+    """
+    columns = [list(column) for column in columns]
+    height = max((len(column) for column in columns), default=0)
+    return [
+        [column[index] if index < len(column) else None for column in columns]
+        for index in range(height)
+    ]
+
+
 def section_text(question):
     """The text of a section for diffing: the answer, or the Q and A together."""
     if question is None:

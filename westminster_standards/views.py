@@ -292,6 +292,74 @@ def dimension_detail(request, dim_key):
     })
 
 
+def _facet_attribute_options():
+    """Every attribute, grouped by locus, for the facet picker."""
+    return [
+        {
+            'label': dimension['label'],
+            'options': [
+                {'key': f"{dimension['key']}_{attribute['key']}", 'label': attribute['label']}
+                for attribute in dimension['attributes']
+            ],
+        }
+        for dimension in DIMENSIONS
+    ]
+
+
+def _facet_value_options(full_key):
+    """The positions available for the chosen attribute."""
+    if not full_key:
+        return []
+    for dimension in DIMENSIONS:
+        for attribute in dimension['attributes']:
+            if f"{dimension['key']}_{attribute['key']}" == full_key:
+                baseline = WESTMINSTER_BASELINE_ATTRS.get(full_key)
+                return [
+                    {'label': value['label'], 'is_baseline': value['label'] == baseline}
+                    for value in attribute['values']
+                ]
+    return []
+
+
+def _persona_facet(request):
+    """Read the facet from the query string, ignoring anything unrecognised."""
+    attr = request.GET.get('attr', '')
+    if attr and not any(
+        f"{dimension['key']}_{attribute['key']}" == attr
+        for dimension in DIMENSIONS for attribute in dimension['attributes']
+    ):
+        attr = ''
+    value = request.GET.get('value', '') if attr else ''
+    departures_only = request.GET.get('departures') == '1'
+    return {
+        'attr': attr,
+        'value': value,
+        'departures_only': departures_only,
+        'active': bool(attr or departures_only),
+        'attr_label': ATTR_LABELS.get(attr, attr),
+    }
+
+
+def _personas_matching(facet):
+    """Personas satisfying the facet."""
+    matched = []
+    for persona in PERSONAS:
+        attrs = persona.get('attrs', {})
+        if facet['attr']:
+            held = attrs.get(facet['attr'])
+            if facet['value'] and held != facet['value']:
+                continue
+            if not facet['value'] and held is None:
+                continue
+        if facet['departures_only'] and not any(
+            WESTMINSTER_BASELINE_ATTRS.get(key) != held
+            for key, held in attrs.items()
+        ):
+            continue
+        matched.append(persona)
+    return matched
+
+
 def personas_list(request):
     """Listing of all Westminster personas, grouped by role.
 
@@ -338,10 +406,29 @@ def personas_list(request):
             continue
         groups.append({'role': role, 'people': by_role[role]})
     personas_flat = sorted(PERSONAS, key=lambda p: p['name'].lower())
+
+    # Faceted browse: "show every divine who held hypothetical universalism".
+    # The value pages answer that one position at a time; this answers it for
+    # any position, and for the more useful question of who departed at all.
+    facet = _persona_facet(request)
+    if facet['active']:
+        matching = {p['slug'] for p in _personas_matching(facet)}
+        groups = [
+            {'role': group['role'],
+             'people': [p for p in group['people'] if p['slug'] in matching]}
+            for group in groups
+        ]
+        groups = [group for group in groups if group['people']]
+        personas_flat = [p for p in personas_flat if p['slug'] in matching]
+
     return render(request, 'westminster_standards/personas_list.html', {
         'groups': groups,
         'personas_flat': personas_flat,
         'total': len(PERSONAS),
+        'shown': len(personas_flat),
+        'facet': facet,
+        'facet_attributes': _facet_attribute_options(),
+        'facet_values': _facet_value_options(facet['attr']),
         'counts': _counts(),
     })
 

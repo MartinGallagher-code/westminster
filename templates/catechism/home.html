@@ -78,6 +78,33 @@
                 </a>
             </div>
         </div>
+        {% if reading_positions or memorisation_due %}
+        <div class="continue-strip mt-4">
+            <div class="flat-section-heading mb-2">Pick up where you left off</div>
+            <div class="continue-items">
+                {% for position in reading_positions %}
+                <a class="continue-item" href="{{ position.question.get_absolute_url }}">
+                    <span class="continue-kind">Reading</span>
+                    <span class="continue-title">{{ position.catechism.abbreviation }} {{ position.catechism.item_prefix }}{{ position.question.display_number }}</span>
+                    <span class="continue-detail">{{ position.question.question_text|truncatewords:9 }}</span>
+                </a>
+                {% endfor %}
+                {% if memorisation_due %}
+                <a class="continue-item" href="{% url 'accounts:memorize_review' %}">
+                    <span class="continue-kind">Memorising</span>
+                    <span class="continue-title">{{ memorisation_due }} due today</span>
+                    <span class="continue-detail">Review what is ready to come back.</span>
+                </a>
+                {% endif %}
+                <a class="continue-item" href="{% url 'catechism:learn_index' %}">
+                    <span class="continue-kind">Learning</span>
+                    <span class="continue-title">Teaching guide</span>
+                    <span class="continue-detail">Work the Standards lesson by lesson.</span>
+                </a>
+            </div>
+        </div>
+        {% endif %}
+
         {% if recent_note %}
         <div class="study-continue mt-4">
             <div>

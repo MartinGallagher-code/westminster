@@ -16,7 +16,9 @@ from django.views.generic import CreateView, ListView, DeleteView, TemplateView,
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django_ratelimit.decorators import ratelimit
 
-from .models import UserNote, Highlight, InlineComment, MemorizationCard, UserProfile
+from .models import (
+    UserNote, Highlight, InlineComment, MemorizationCard, ReviewDay, UserProfile,
+)
 from .export import export_filename, notes_markdown
 from . import drills, scheduling
 from .forms import SignupForm
@@ -410,6 +412,43 @@ class PasswordChangeView(LoginRequiredMixin, View):
 # ── Memorisation ──────────────────────────────────────────────────────────
 
 
+HEATMAP_WEEKS = 14
+
+
+def _practice_heatmap(user, today):
+    """The last few months of practice, as weeks of days.
+
+    Returns whole weeks starting on Monday so the grid lines up as a calendar
+    rather than drifting.
+    """
+    from datetime import timedelta
+
+    start = today - timedelta(days=HEATMAP_WEEKS * 7 - 1)
+    start -= timedelta(days=start.weekday())
+    counts = dict(
+        ReviewDay.objects.filter(user=user, day__gte=start)
+        .values_list('day', 'reviews')
+    )
+    busiest = max(counts.values(), default=0)
+
+    weeks = []
+    day = start
+    while day <= today:
+        week = []
+        for _ in range(7):
+            reviews = counts.get(day, 0)
+            week.append({
+                'day': day,
+                'reviews': reviews,
+                # Four steps is enough to read at a glance; more is noise.
+                'level': 0 if not reviews else min(4, 1 + (3 * reviews) // max(busiest, 1)),
+                'future': day > today,
+            })
+            day += timedelta(days=1)
+        weeks.append(week)
+    return {'weeks': weeks, 'busiest': busiest, 'total_days': len(counts)}
+
+
 def _deck(user):
     return MemorizationCard.objects.filter(user=user).select_related(
         'question', 'question__catechism', 'question__topic',
@@ -451,6 +490,7 @@ class MemorizeHomeView(TemplateView):
         ctx['profile'] = profile
         ctx['practising_today'] = profile.last_review_on == today
         ctx['drill_modes'] = drills.MODES
+        ctx['heatmap'] = _practice_heatmap(self.request.user, today)
         # Documents whose questions can be added in bulk.
         ctx['memorisable'] = Catechism.objects.filter(
             document_type=Catechism.CATECHISM,
@@ -525,6 +565,7 @@ class MemorizeReviewView(LoginRequiredMixin, View):
         card.apply_review(grade)
         profile, _ = UserProfile.objects.get_or_create(user=request.user)
         profile.record_review()
+        ReviewDay.record(request.user)
         return redirect(f'{reverse("accounts:memorize_review")}?mode={mode}')
 
 

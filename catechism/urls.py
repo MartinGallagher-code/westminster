@@ -10,6 +10,7 @@ urlpatterns = [
 
     # API
     path('api/question/<int:pk>/preview/', views.question_preview_json, name='question_preview'),
+    path('api/suggest/', views.SearchSuggestView.as_view(), name='search_suggest'),
 
     # Site-wide
     path('', views.HomeView.as_view(), name='home'),
@@ -33,12 +34,20 @@ urlpatterns = [
     path('compare/<slug:set_slug>/<slug:theme_slug>/', views.CompareSetThemeView.as_view(), name='compare_set_theme'),
     path('compare/<slug:set_slug>/<slug:theme_slug>/diff/',
          views.CompareDiffView.as_view(), name='compare_diff'),
+    path('compare/<slug:set_slug>/<slug:theme_slug>/parallel/',
+         views.ParallelReadView.as_view(), name='compare_parallel'),
 
     # Printable small-group handouts
     path('handout/<slug:catechism_slug>/<str:reference>/',
          views.HandoutView.as_view(), name='handout'),
     path('handout/<slug:catechism_slug>/topic/<slug:topic_slug>/',
          views.HandoutView.as_view(), name='handout_topic'),
+
+    # Small-group tools
+    path('present/<slug:catechism_slug>/', views.PresenterView.as_view(), name='presenter'),
+    path('present/<slug:catechism_slug>/topic/<slug:topic_slug>/',
+         views.PresenterView.as_view(), name='presenter_topic'),
+    path('plan/', views.SessionPlanView.as_view(), name='session_plan'),
 
     # Citations: the reference a reader writes ("WCF 3.4"), made addressable
     path('cite/<slug:catechism_slug>/<str:reference>/',

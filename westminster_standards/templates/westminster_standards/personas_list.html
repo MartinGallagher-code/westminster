@@ -1,4 +1,5 @@
 {% extends "westminster_standards/base.html" %}
+{% load atlas_tags %}
 {% block title %}Personas — Westminster Standards Atlas{% endblock %}
 {% block ws_crumb %}<li class="breadcrumb-item active" aria-current="page">Personas</li>{% endblock %}
 
@@ -13,6 +14,56 @@
     and the originally-named royalist absentees who refused to sit.
   </p>
 </section>
+
+{% comment %}Faceted browse: the ontology answers "who held this?", one
+position at a time, on the value pages. This asks it of any position at
+once.{% endcomment %}
+<form method="get" class="pl-facets" aria-label="Filter by position held">
+  <div class="pl-facet">
+    <label class="pl-facet-label" for="facet-attr">Position on</label>
+    <select name="attr" id="facet-attr" onchange="var v=this.form.elements['value']; if (v) v.selectedIndex = 0; this.form.submit();">
+      <option value="">any question</option>
+      {% for group in facet_attributes %}
+      <optgroup label="{{ group.label }}">
+        {% for option in group.options %}
+        <option value="{{ option.key }}" {% if option.key == facet.attr %}selected{% endif %}>{{ option.label }}</option>
+        {% endfor %}
+      </optgroup>
+      {% endfor %}
+    </select>
+  </div>
+  {% if facet_values %}
+  <div class="pl-facet">
+    <label class="pl-facet-label" for="facet-value">holding</label>
+    <select name="value" id="facet-value" onchange="this.form.submit()">
+      <option value="">any position</option>
+      {% for value in facet_values %}
+      <option value="{{ value.label }}" {% if value.label == facet.value %}selected{% endif %}>
+        {{ value.label }}{% if value.is_baseline %} (the Confession's){% endif %}
+      </option>
+      {% endfor %}
+    </select>
+  </div>
+  {% endif %}
+  <label class="pl-facet-check">
+    <input type="checkbox" name="departures" value="1" {% if facet.departures_only %}checked{% endif %}
+           onchange="this.form.submit()">
+    only those who depart from the Confession
+  </label>
+  <noscript><button type="submit" class="pl-tab">Apply</button></noscript>
+  {% if facet.active %}
+  <a class="ws-link" href="{% url 'westminster_standards:personas_list' %}">clear</a>
+  {% endif %}
+</form>
+
+{% if facet.active %}
+<p class="pl-facet-summary">
+  Showing <strong>{{ shown }}</strong> of {{ total }} divines
+  {% if facet.attr %}&mdash; {{ facet.attr_label }}{% if facet.value %}:
+    {% position facet.value None None "ws-link" %}{% endif %}{% endif %}
+  {% if facet.departures_only %}{% if facet.attr %}, {% endif %}departing from the Confession somewhere{% endif %}.
+</p>
+{% endif %}
 
 <div class="pl-controls">
   <div class="pl-search">
@@ -62,6 +113,27 @@
 <p id="pl-empty" class="pl-empty" hidden>No personas match that name.</p>
 
 <style>
+  .pl-facets {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.8rem;
+    margin: 1rem 0 0.3rem;
+    font-size: 0.88rem;
+  }
+  .pl-facet { display: flex; align-items: center; gap: 0.4rem; }
+  .pl-facet-label { color: var(--text-muted); }
+  .pl-facets select {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-primary);
+    padding: 0.35rem 0.5rem;
+    max-width: 18rem;
+  }
+  .pl-facet-check { display: flex; align-items: center; gap: 0.4rem; color: var(--text-muted); }
+  .pl-facet-summary { color: var(--text-muted); font-size: 0.9rem; margin: 0.2rem 0 0.6rem; }
+
   .pl-controls {
     display: flex;
     flex-wrap: wrap;

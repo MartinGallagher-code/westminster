@@ -1,4 +1,5 @@
 {% extends "westminster_standards/base.html" %}
+{% load atlas_tags %}
 {% block title %}{{ value.label }} — {{ attr.label }} — Westminster Standards Atlas{% endblock %}
 {% block ws_crumb %}<li class="breadcrumb-item"><a href="{% url 'westminster_standards:ontology' %}">Ontology</a></li><li class="breadcrumb-item active" aria-current="page">{{ attr.label }}: {{ value.label }}</li>{% endblock %}
 
@@ -200,4 +201,5 @@
   .vd-sib-name { display: block; font-weight: 500; font-size: 0.9rem; color: var(--text-primary); }
   .vd-sib-def { display: block; color: var(--text-secondary); font-size: 0.82rem; line-height: 1.45; margin-top: 0.2rem; }
 </style>
+{% cite_atlas "position" dim.key attr.key value.key %}
 {% endblock %}

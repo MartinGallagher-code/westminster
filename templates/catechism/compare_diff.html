@@ -30,6 +30,13 @@
     {{ changed_rows }} of {{ rows|length }} section{{ rows|length|pluralize }} differ.
 </p>
 
+<p>
+    <a href="{% url 'catechism:compare_parallel' set_slug=comparison_set.slug theme_slug=theme.slug %}"
+       class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-list-columns-reverse me-1"></i>Read them in parallel instead
+    </a>
+</p>
+
 <form method="get" class="d-flex flex-wrap gap-2 align-items-end mb-4">
     <div>
         <label class="form-label small mb-1" for="diff-a">From</label>

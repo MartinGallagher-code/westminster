@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 
+{# The comparison panel below depends on which collections are switched on. #}
+{% block body_attrs %}data-filter-sensitive="true"{% endblock %}
+
 {% block title %}{{ topic.name }} - {{ catechism.name }}{% endblock %}
 {% block meta_description %}Read {{ topic.name }} in {{ catechism.name }}, covering {{ catechism.item_name_plural|lower }} {{ topic.display_start }} through {{ topic.display_end }}.{% endblock %}
 {% block og_title %}{{ topic.name }} - {{ catechism.name }}{% endblock %}
@@ -43,6 +46,10 @@
            class="btn btn-outline-secondary btn-sm">
             <i class="bi bi-printer me-1"></i>Session handout
         </a>
+        <a href="{% url 'catechism:presenter_topic' catechism_slug=catechism.slug topic_slug=topic.slug %}"
+           class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-projector me-1"></i>Present
+        </a>
     </div>
 </div>
 <p class="text-muted mb-3">{{ topic.description }}</p>
@@ -69,6 +76,60 @@
         </a>
         {% endfor %}
     </div>
+</div>
+{% endif %}
+
+{% if primary_comparison_theme or dormant_comparison_traditions %}
+<div class="chapter-compare-panel mb-4">
+{% if primary_comparison_theme %}
+    <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+        <div>
+            <div class="small text-muted">{% if catechism.is_prose_document %}Across editions{% else %}In parallel{% endif %}</div>
+            <div class="fw-semibold">{{ primary_comparison_theme.name }}</div>
+            <p class="text-muted small mb-0">
+                {% if primary_comparison_documents %}
+                Also treated by
+                {% for document in primary_comparison_documents %}{% if not forloop.first %}{% if forloop.last %} and {% else %}, {% endif %}{% endif %}<a href="{{ document.get_absolute_url }}" title="{{ document.name }}">{{ document.abbreviation }}</a>{% endfor %}.
+                {% else %}
+                No other document in your collections treats this.
+                {% endif %}
+            </p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{{ primary_comparison_theme.get_absolute_url }}" class="btn btn-outline-primary btn-sm">
+                <i class="bi bi-columns-gap me-1"></i>Compare side by side
+            </a>
+            <a href="{% url 'catechism:compare_parallel' set_slug=primary_comparison_theme.comparison_set.slug theme_slug=primary_comparison_theme.slug %}"
+               class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-list-columns-reverse me-1"></i>Read in parallel
+            </a>
+            {% if primary_comparison_diff_target %}
+            <a href="{% url 'catechism:compare_diff' set_slug=primary_comparison_theme.comparison_set.slug theme_slug=primary_comparison_theme.slug %}?a={{ catechism.slug }}&amp;b={{ primary_comparison_diff_target.slug }}"
+               class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-file-diff me-1"></i>See what changed
+            </a>
+            {% endif %}
+        </div>
+    </div>
+    {% if comparison_themes|length > 1 %}
+    <div class="small text-muted mt-2">
+        This chapter also spans:
+        {% for theme in comparison_themes %}{% if not forloop.first %}
+        <a href="{{ theme.get_absolute_url }}">{{ theme.name }}</a>{% if not forloop.last %},{% endif %}
+        {% endif %}{% endfor %}
+    </div>
+    {% endif %}
+{% endif %}
+{% for collection in dormant_comparison_traditions %}
+<div class="small text-muted {% if primary_comparison_theme or not forloop.first %}mt-2{% endif %}">
+    {% for document in collection.documents %}{% if not forloop.first %}{% if forloop.last %} and {% else %}, {% endif %}{% endif %}<a href="{{ document.get_absolute_url }}" title="{{ document.name }}">{{ document.abbreviation }}</a>{% endfor %}
+    also treat this chapter.
+    <button type="button" class="btn btn-link btn-sm p-0 align-baseline tradition-toggle"
+            data-tradition="{{ collection.tradition }}">
+        Turn on {{ collection.label }} to compare
+    </button>
+</div>
+{% endfor %}
 </div>
 {% endif %}
 

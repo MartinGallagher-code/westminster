@@ -1,4 +1,5 @@
 {% extends "westminster_standards/base.html" %}
+{% load atlas_tags %}
 {% block title %}{{ head.name }} — Heads of Doctrine — Westminster Standards{% endblock %}
 {% block ws_crumb %}<li class="breadcrumb-item"><a href="{% url 'westminster_standards:heads_list' %}">Heads of Doctrine</a></li><li class="breadcrumb-item active" aria-current="page">{{ head.name }}</li>{% endblock %}
 
@@ -439,4 +440,5 @@
     .hd-ref { margin-bottom: 0.2rem; }
   }
 </style>
+{% cite_atlas "head" head.slug %}
 {% endblock %}

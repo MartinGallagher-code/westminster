@@ -1,4 +1,5 @@
 {% extends "westminster_standards/base.html" %}
+{% load atlas_tags %}
 {% block title %}Westminster Standards Atlas — eight loci of the Westminster consensus{% endblock %}
 {% block ws_content %}
 <div class="container">
@@ -35,7 +36,7 @@
 
 {% if daily_text %}
 <section class="ws-home-daily">
-  <a class="ws-daily-link" href="{{ daily_text.url }}">
+  <a class="ws-daily-link" href="{{ daily_text.url|atlas_path }}">
     <span class="ws-eyebrow">From the Standards · {{ daily_text.reference }}</span>
     {% if daily_text.kind == 'wsc' %}
       <p class="ws-daily-q">{{ daily_text.q.question }}</p>

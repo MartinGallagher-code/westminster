@@ -1,5 +1,5 @@
 from collections import defaultdict
-from urllib.parse import urlencode
+from urllib.parse import quote, urlencode
 from datetime import date
 from xml.sax.saxutils import escape
 
@@ -25,7 +25,7 @@ from .models import (
     ComparisonEntry, QuestionDoctrineHead, QuestionOntologyTag,
 )
 from .cache import cache_read_only_page
-from .diffing import build_diff
+from .diffing import align_columns, build_diff, change_ratio, diff_words, section_text
 from .citations import bibtex, citation_label, citation_text, resolve_reference, ris
 from .handout import build_handout
 from .scripture_refs import (
@@ -113,6 +113,89 @@ def _comparison_themes_for_traditions(active_traditions):
             distinct=True,
         )
     ).select_related('comparison_set').distinct()
+
+
+def _comparison_themes_for_topic(topic, active_traditions):
+    """Reachable comparison themes whose entry for this document covers this chapter.
+
+    A comparison set aligns chapter ranges, not chapters, so the match is an
+    overlap test rather than equality: the 1689 folds WCF XXV and XXVI into one
+    chapter, and both should offer the comparison.
+
+    Ordered so the most useful comparison comes first: how much of the chapter
+    the theme covers, then whether the documents it sets alongside this one are
+    the same kind of text. Without that second key WCF II leads with the
+    Westminster set, whose parallels are catechism answers — a fair comparison,
+    but not a word-level one, and the diff of a chapter against a Q&A is noise.
+    """
+    themes = list(
+        _comparison_themes_for_traditions(active_traditions).filter(
+            entries__catechism=topic.catechism,
+            entries__question_start__lte=topic.question_end,
+            entries__question_end__gte=topic.question_start,
+            active_entry_count__gte=2,
+        ).order_by('comparison_set__order', 'order')
+    )
+    if not themes:
+        return []
+
+    spans = {}
+    same_kind = set()
+    for entry in ComparisonEntry.objects.filter(
+        theme__in=themes, catechism__tradition__in=active_traditions,
+    ).select_related('catechism'):
+        if entry.catechism_id == topic.catechism_id:
+            spans[entry.theme_id] = (entry.question_start, entry.question_end)
+        elif entry.catechism.is_prose_document == topic.catechism.is_prose_document:
+            same_kind.add(entry.theme_id)
+
+    def rank(pair):
+        index, theme = pair
+        start, end = spans.get(theme.pk, (0, -1))
+        overlap = min(end, topic.question_end) - max(start, topic.question_start) + 1
+        return (-overlap, theme.pk not in same_kind, index)
+
+    return [theme for _, theme in sorted(enumerate(themes), key=rank)]
+
+
+def _dormant_comparison_traditions(topic, active_traditions):
+    """Collections that treat this chapter but are switched off for this reader.
+
+    A reader with only the Westminster Standards enabled sees no comparison at
+    all on WCF XXV, because the documents that revise it — the Savoy and the
+    1689 — sit in a collection they have not turned on. The site knows they
+    exist; saying so is more use than an empty space.
+    """
+    dormant = {
+        tradition for tradition in VALID_TRADITIONS
+        if tradition not in active_traditions
+    }
+    if not dormant:
+        return []
+
+    # Ask with every collection on, so this reports only what turning one on
+    # would actually reach — the same reachability rules as the panel itself.
+    themes = _comparison_themes_for_topic(topic, sorted(VALID_TRADITIONS))
+    if not themes:
+        return []
+
+    labels = dict(Catechism.TRADITION_CHOICES)
+    documents = {}
+    for entry in ComparisonEntry.objects.filter(
+        theme__in=themes, catechism__tradition__in=dormant,
+    ).select_related('catechism'):
+        documents.setdefault(entry.catechism.tradition, {})[
+            entry.catechism.abbreviation
+        ] = entry.catechism
+
+    return [
+        {
+            'tradition': tradition,
+            'label': labels.get(tradition, tradition),
+            'documents': [found[key] for key in sorted(found)],
+        }
+        for tradition, found in sorted(documents.items())
+    ]
 
 
 # A query matching a topic name pulls in that topic's questions too. Bounded
@@ -286,12 +369,22 @@ class HomeView(TemplateView):
         ]
         ctx['atlas_home_url'] = atlas_url()
         if self.request.user.is_authenticated:
-            from accounts.models import UserNote
+            from accounts.models import MemorizationCard, ReadingPosition, UserNote
             ctx['recent_note'] = UserNote.objects.filter(
                 user=self.request.user
             ).select_related(
                 'question', 'question__catechism', 'question__topic'
             ).order_by('-updated_at').first()
+
+            # Where you were, what is due, what to read next — the three
+            # things a returning reader wants before they want anything else.
+            ctx['reading_positions'] = list(
+                ReadingPosition.objects.filter(user=self.request.user)
+                .select_related('question', 'question__catechism', 'question__topic')[:3]
+            )
+            ctx['memorisation_due'] = MemorizationCard.objects.filter(
+                user=self.request.user, due_on__lte=date.today(),
+            ).count()
         return ctx
 
 
@@ -603,7 +696,8 @@ class QuestionDetailView(CatechismMixin, DetailView):
         if self.request.user.is_authenticated:
             from accounts.models import UserNote
             from accounts.forms import NoteForm
-            from accounts.models import MemorizationCard
+            from accounts.models import MemorizationCard, ReadingPosition
+            ReadingPosition.remember(self.request.user, q)
             ctx['user_note'] = UserNote.objects.filter(
                 user=self.request.user, question=q
             ).first()
@@ -647,6 +741,39 @@ class TopicDetailView(CatechismMixin, DetailView):
         )
         from .atlas import topic_loci
         ctx['atlas_loci'] = topic_loci(self.object)
+
+        # Every chapter of a confession is a revision of, or a reply to,
+        # somebody else's chapter. The comparison sets already know which —
+        # this surfaces the link from the chapter itself, rather than only
+        # from the comparison index a reader has to go looking for.
+        active_traditions = get_active_traditions(self.request)
+        themes = _comparison_themes_for_topic(self.object, active_traditions)
+        ctx['comparison_themes'] = themes
+        ctx['dormant_comparison_traditions'] = _dormant_comparison_traditions(
+            self.object, active_traditions
+        )
+        if themes:
+            others = [
+                entry.catechism for entry in _order_entries_chronologically(
+                    themes[0].entries.filter(
+                        catechism__tradition__in=active_traditions
+                    ).select_related('catechism')
+                )
+                if entry.catechism_id != self.object.catechism_id
+            ]
+            ctx['primary_comparison_theme'] = themes[0]
+            ctx['primary_comparison_documents'] = others
+            # A word-level diff is only worth offering against a document of
+            # the same kind. WCF I against the Savoy's chapter I shows the
+            # handful of edits; WCF I against WSC Q2 is two different texts,
+            # and the diff would report every word as changed.
+            ctx['primary_comparison_diff_target'] = next(
+                (
+                    document for document in others
+                    if document.is_prose_document == self.object.catechism.is_prose_document
+                ),
+                None,
+            )
         return ctx
 
 
@@ -1299,6 +1426,104 @@ class HandoutView(TemplateView):
         return ctx
 
 
+class ParallelReadView(TemplateView):
+    """Read the editions in lockstep, section against section.
+
+    The comparison page sets the documents beside one another but lets each
+    column flow at its own length, so by the third section the Savoy is level
+    with the Confession's fourth and the reader is comparing the wrong things.
+    The alignment the diff already relies on fixes that: one row per section,
+    every edition level, so scrolling one scrolls all of them.
+    """
+
+    template_name = 'catechism/compare_parallel.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        active_traditions = get_active_traditions(self.request)
+
+        theme = get_object_or_404(
+            ComparisonTheme,
+            slug=self.kwargs['theme_slug'],
+            comparison_set__slug=self.kwargs['set_slug'],
+        )
+        # Same gate as the comparison page it is reached from.
+        if ComparisonEntry.objects.filter(
+            theme__comparison_set=theme.comparison_set
+        ).exclude(catechism__tradition__in=VALID_TRADITIONS).exists():
+            raise Http404
+
+        entries = list(
+            _order_entries_chronologically(
+                theme.entries.filter(
+                    catechism__tradition__in=active_traditions
+                ).select_related('catechism')
+            )
+        )
+
+        # ?docs= narrows the columns. Four editions side by side is a wall;
+        # a reader chasing one revision wants two. Accepts both the repeated
+        # form the checkbox picker submits and the comma-separated form that
+        # makes a shareable link.
+        wanted = [
+            slug
+            for value in self.request.GET.getlist('docs')
+            for slug in value.split(',') if slug
+        ]
+        if wanted:
+            chosen = [entry for entry in entries if entry.catechism.slug in wanted]
+            if chosen:
+                entries = chosen
+
+        ctx['theme'] = theme
+        ctx['comparison_set'] = theme.comparison_set
+        ctx['entries'] = entries
+        ctx['documents'] = [entry.catechism for entry in entries]
+        ctx['docs_param'] = ','.join(entry.catechism.slug for entry in entries)
+        if len(entries) < 2:
+            ctx['error'] = (
+                'Reading in parallel needs two documents in your active '
+                'collections.'
+            )
+            return ctx
+
+        ctx['rows'] = self._rows(entries)
+        ctx['edited_rows'] = sum(1 for row in ctx['rows'] if row['edited'])
+        return ctx
+
+    @staticmethod
+    def _rows(entries):
+        """One row per section, with each cell measured against the earliest
+        edition that has a section there — so a reader can see at a glance
+        which sections a later confession left alone."""
+        rows = []
+        columns = align_columns([list(entry.get_questions()) for entry in entries])
+        for index, questions in enumerate(columns, start=1):
+            baseline = next((q for q in questions if q is not None), None)
+            baseline_text = section_text(baseline)
+            cells = []
+            for question in questions:
+                if question is None:
+                    cells.append({'question': None, 'status': 'absent'})
+                elif question is baseline:
+                    cells.append({'question': question, 'status': 'baseline'})
+                else:
+                    ratio = change_ratio(diff_words(baseline_text, section_text(question)))
+                    cells.append({
+                        'question': question,
+                        'status': 'identical' if ratio == 0.0 else 'edited',
+                        'change_ratio': ratio,
+                        'change_percent': int(round(ratio * 100)),
+                    })
+            rows.append({
+                'number': index,
+                'cells': cells,
+                'edited': any(cell['status'] == 'edited' for cell in cells),
+                'absent': any(cell['status'] == 'absent' for cell in cells),
+            })
+        return rows
+
+
 class CompareDiffView(TemplateView):
     """Word-level diff between two editions of the same chapter.
 
@@ -1348,4 +1573,166 @@ class CompareDiffView(TemplateView):
         ctx['right'] = right_entry.catechism
         ctx['rows'] = build_diff(left_entry.get_questions(), right_entry.get_questions())
         ctx['changed_rows'] = sum(1 for row in ctx['rows'] if not row['unchanged'])
+        return ctx
+
+
+# ── Unified suggestions ───────────────────────────────────────────────────
+
+SUGGEST_MIN_LENGTH = 2
+SUGGEST_PER_GROUP = 5
+
+
+@method_decorator(ratelimit(key='ip', rate='240/m', method='GET', block=True), name='get')
+class SearchSuggestView(View):
+    """Typeahead across everything the site holds.
+
+    Site search covered the standards' text and the Atlas had a search of its
+    own, so a reader had to know the Atlas existed before they could find a
+    divine or a position in it. One box, results grouped by what they are.
+    """
+
+    def get(self, request):
+        query = request.GET.get('q', '').strip()
+        if len(query) < SUGGEST_MIN_LENGTH:
+            return JsonResponse({'groups': []})
+
+        groups = []
+
+        reference = parse_scripture_reference(query)
+        if reference:
+            groups.append({'label': 'Scripture', 'items': [{
+                'name': reference['label'],
+                'detail': 'see where this passage is cited',
+                'url': reference['book'].get_absolute_url() + f"?ref={reference['ref']}",
+            }]})
+
+        questions = _search_questions(
+            query, get_active_traditions(request),
+        ).select_related('catechism', 'topic')[:SUGGEST_PER_GROUP]
+        if questions:
+            groups.append({'label': 'In the standards', 'items': [
+                {
+                    'name': f'{q.catechism.abbreviation} {q.catechism.item_prefix}{q.display_number}',
+                    'detail': q.question_text[:90],
+                    'url': q.get_absolute_url(),
+                }
+                for q in questions
+            ]})
+
+        from westminster_standards.entity_search import search_entities
+        for group in search_entities(query, limit=SUGGEST_PER_GROUP):
+            groups.append({'label': group['label'], 'items': [
+                {
+                    'name': item['name'],
+                    'detail': (item.get('description') or '')[:90],
+                    'url': item['url'],
+                }
+                for item in group['items']
+            ]})
+
+        from westminster_standards.glossary import UNIQUE_BY_LABEL, url_for
+        lowered = query.lower()
+        positions = [
+            entry for label, entry in UNIQUE_BY_LABEL.items()
+            if lowered in label.lower()
+        ][:SUGGEST_PER_GROUP]
+        if positions:
+            groups.append({'label': 'Positions', 'items': [
+                {
+                    'name': entry['label'],
+                    'detail': entry['definition'][:90],
+                    'url': url_for(entry),
+                }
+                for entry in positions
+            ]})
+
+        return JsonResponse({
+            'groups': groups,
+            'search_url': f"{reverse('catechism:search')}?q={quote(query)}",
+        })
+
+
+class PresenterView(TemplateView):
+    """One question at a time, large, for a group looking at a screen.
+
+    The handout covers paper; nothing covered projection. Deliberately
+    chromeless: no navbar, no sidebar, no commentary — just the text, advanced
+    from the keyboard or a clicker, which sends arrow keys.
+    """
+
+    template_name = 'catechism/presenter.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        catechism = get_object_or_404(Catechism, slug=self.kwargs['catechism_slug'])
+
+        topic_slug = self.kwargs.get('topic_slug')
+        if topic_slug:
+            topic = get_object_or_404(Topic, catechism=catechism, slug=topic_slug)
+            questions = list(topic.questions.order_by('number'))
+            ctx['heading'] = topic.name
+        else:
+            first = int(self.request.GET.get('from', 1))
+            last = int(self.request.GET.get('to', first))
+            questions = list(
+                catechism.questions.filter(number__gte=first, number__lte=last)
+                .order_by('number')
+            )
+            ctx['heading'] = catechism.name
+
+        if not questions:
+            raise Http404('Nothing to present')
+
+        ctx['catechism'] = catechism
+        ctx['slides'] = [
+            {
+                'number': f'{catechism.item_prefix}{question.display_number}',
+                'question': question.question_text,
+                'answer': question.answer_text,
+                'proofs': question.get_proof_text_list(),
+                'url': question.get_absolute_url(),
+            }
+            for question in questions
+        ]
+        return ctx
+
+
+class SessionPlanView(TemplateView):
+    """Turn a chosen range into everything a group leader needs at once."""
+
+    template_name = 'catechism/session_plan.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        active_traditions = get_active_traditions(self.request)
+        ctx['catechisms'] = Catechism.objects.filter(
+            tradition__in=active_traditions,
+        ).order_by('abbreviation')
+
+        slug = self.request.GET.get('catechism', '')
+        catechism = Catechism.objects.filter(slug=slug).first()
+        if catechism is None:
+            return ctx
+
+        topics = list(catechism.topics.order_by('order'))
+        ctx['catechism'] = catechism
+        ctx['topics'] = topics
+
+        topic_slug = self.request.GET.get('topic', '')
+        topic = next((t for t in topics if t.slug == topic_slug), None)
+        if topic is None:
+            return ctx
+
+        ctx['topic'] = topic
+        ctx['questions'] = topic.questions.order_by('number')
+        ctx['plan'] = {
+            'handout': reverse('catechism:handout_topic', kwargs={
+                'catechism_slug': catechism.slug, 'topic_slug': topic.slug,
+            }),
+            'presenter': reverse('catechism:presenter_topic', kwargs={
+                'catechism_slug': catechism.slug, 'topic_slug': topic.slug,
+            }),
+            'reading': topic.get_absolute_url(),
+            'share': self.request.build_absolute_uri(),
+        }
         return ctx

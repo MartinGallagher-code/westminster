@@ -7,6 +7,8 @@
 {% block twitter_title %}{{ catechism.name }} - Study Reformed{% endblock %}
 {% block twitter_description %}{% if document_guide %}{{ document_guide.summary }}{% elif catechism.description %}{{ catechism.description }}{% else %}Read {{ catechism.name }} with Scripture proofs and study tools.{% endif %}{% endblock %}
 
+{% block main_wrapper_class %}container-fluid py-4 gutter-wide{% endblock %}
+
 {% block content %}
 <div class="mb-4 pb-3 border-bottom">
     <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
