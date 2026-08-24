@@ -51,6 +51,60 @@ LINK_SOURCE_ROUTES = [
     ('westminster_standards:dimension_pairs', {}),
 ]
 
+
+def _detail_link_sources():
+    """One detail page of each kind, chosen from the loaded data.
+
+    The index pages above link mostly to each other. The links worth checking
+    — a chapter's comparison offer, an Atlas page's citation panel, a theme's
+    parallel reading — are on detail pages, and their URLs cannot be written
+    down in advance because they depend on what is loaded.
+    """
+    from catechism.models import ComparisonTheme, Topic
+    from westminster_standards.cruxes import CRUXES
+    from westminster_standards.heads_of_doctrine import HEADS_OF_DOCTRINE
+    from westminster_standards.personas import PERSONAS
+    from westminster_standards.schools import SCHOOLS
+
+    paths = []
+
+    chapter = Topic.objects.filter(catechism__slug='wcf').order_by('order').first()
+    if chapter:
+        paths.append(chapter.get_absolute_url())
+    question = Question.objects.filter(catechism__slug='wsc').order_by('number').first()
+    if question:
+        paths.append(question.get_absolute_url())
+
+    # A theme every visitor can reach, so the check runs cookie-less as a
+    # crawler does: a theme gated behind an unselected collection would 404
+    # here for a reason that is not a defect.
+    theme = ComparisonTheme.objects.filter(
+        entries__catechism__tradition__in=DEFAULT_TRADITIONS,
+    ).exclude(
+        entries__catechism__tradition__in=(
+            set(Catechism.objects.values_list('tradition', flat=True))
+            - set(DEFAULT_TRADITIONS)
+        ),
+    ).order_by('comparison_set__order', 'order').first()
+    if theme:
+        paths.append(theme.get_absolute_url())
+        paths.append(reverse('catechism:compare_parallel', kwargs={
+            'set_slug': theme.comparison_set.slug, 'theme_slug': theme.slug,
+        }))
+
+    for route, collection, key in (
+        ('persona_detail', PERSONAS, 'slug'),
+        ('crux_detail', CRUXES, 'slug'),
+        ('head_detail', HEADS_OF_DOCTRINE, 'slug'),
+        ('school_detail', SCHOOLS, 'slug'),
+    ):
+        if collection:
+            paths.append(reverse(
+                f'westminster_standards:{route}', args=[collection[0][key]],
+            ))
+    return paths
+
+
 # Links a crawl of those pages should not follow: they mutate state, need a
 # session, or are static assets served by the storage layer rather than a view.
 UNCHECKED_LINK_PREFIXES = ('/static/', '/accounts/', '/admin/')
@@ -185,12 +239,15 @@ class Command(BaseCommand):
         default collections, or the visitor meets a 404 on their first click.
         """
         checked, broken = set(), []
+        sources = []
         for route, kwargs in LINK_SOURCE_ROUTES:
             try:
-                source = reverse(route, kwargs=kwargs)
+                sources.append(reverse(route, kwargs=kwargs))
             except NoReverseMatch:
                 self._fail(f'link-check source route {route} does not exist')
-                continue
+        sources.extend(_detail_link_sources())
+
+        for source in sources:
             page = self.client.get(source)
             if page.status_code != 200:
                 self._fail(f'{source} returned {page.status_code}')
@@ -209,7 +266,7 @@ class Command(BaseCommand):
             )
         else:
             self._ok(
-                f'{len(checked)} links across {len(LINK_SOURCE_ROUTES)} pages resolve'
+                f'{len(checked)} links across {len(sources)} pages resolve'
             )
 
     def _check_sitemap_resolves(self, full, sample):
