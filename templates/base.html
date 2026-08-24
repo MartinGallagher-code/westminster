@@ -67,8 +67,15 @@
     <meta name="twitter:description" content="{% block twitter_description %}Explore the Reformed confessional standards with Scripture proofs and commentary from classic Reformed theologians.{% endblock %}">
     <meta name="twitter:image" content="{% block twitter_image %}{{ og_image_url }}{% endblock %}">
 
-    {# Favicon #}
+    {% comment %}Icons. The SVG is the good one; the PNG and the .ico are for
+    the browsers and tools that will not take it, and the touch icon is what a
+    phone puts on the home screen — which the daily drills make a real use
+    case. Browsers also ask for /favicon.ico at the root regardless of what is
+    declared here, so urls.py answers that too.{% endcomment %}
     <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon-32.png' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/apple-touch-icon.png' %}">
+    <link rel="manifest" href="{% url 'webmanifest' %}">
 
     {# Fonts and CSS — served from this origin, not a CDN. See static/vendor/. #}
     <link rel="stylesheet" href="{% static 'vendor/fonts/fonts.css' %}">
