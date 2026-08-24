@@ -11,10 +11,12 @@ populated database can answer. It is meant for CI and for a shell on a
 deployed instance.
 """
 
+import re
+
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.test import Client
-from django.urls import reverse
+from django.urls import NoReverseMatch, reverse
 
 from catechism.models import Catechism, DoctrineHead, OntologyAttribute, OntologyLocus, Question
 from catechism.utils import DEFAULT_TRADITIONS
@@ -26,6 +28,32 @@ EXPECTED_ATTRIBUTES = 35
 # Question and section pages are by far the most numerous URLs and the most
 # expensive to render; sample them unless --full is given.
 DEFAULT_QUESTION_SAMPLE = 25
+
+HREF = re.compile(r'(?:href|action)="(/[^"]*)"')
+
+# Pages whose *rendered links* are checked, one per kind of page. The sitemap
+# check answers "does this URL resolve"; this answers "does what the page
+# actually links to resolve", which is a different question — the Atlas home
+# page linked its text of the day at the upstream mount point, and no sitemap
+# check could see it because the sitemap never listed that URL.
+LINK_SOURCE_ROUTES = [
+    ('catechism:home', {}),
+    ('catechism:compare_index', {}),
+    ('catechism:scripture_index', {}),
+    ('catechism:session_plan', {}),
+    ('westminster_standards:home', {}),
+    ('westminster_standards:ontology', {}),
+    ('westminster_standards:personas_list', {}),
+    ('westminster_standards:cruxes_list', {}),
+    ('westminster_standards:schools_list', {}),
+    ('westminster_standards:heads_list', {}),
+    ('westminster_standards:works_list', {}),
+    ('westminster_standards:dimension_pairs', {}),
+]
+
+# Links a crawl of those pages should not follow: they mutate state, need a
+# session, or are static assets served by the storage layer rather than a view.
+UNCHECKED_LINK_PREFIXES = ('/static/', '/accounts/', '/admin/')
 
 
 class Command(BaseCommand):
@@ -53,6 +81,7 @@ class Command(BaseCommand):
         self._check_ontology_shape()
         self._check_doctrine_head_coverage()
         self._check_atlas_links_resolve()
+        self._check_rendered_links_resolve()
         self._check_sitemap_resolves(
             full=options['full'], sample=options['sample'],
         )
@@ -147,6 +176,41 @@ class Command(BaseCommand):
             self._fail(f'{len(broken)} Atlas pages do not resolve: {broken[:5]}')
         else:
             self._ok(f'all {len(paths)} Atlas pages resolve')
+
+    def _check_rendered_links_resolve(self):
+        """Follow every internal link on one page of each kind.
+
+        A crawler and a first-time visitor send no docFilters cookie, so this
+        runs as they do: anything a page links to has to resolve under the
+        default collections, or the visitor meets a 404 on their first click.
+        """
+        checked, broken = set(), []
+        for route, kwargs in LINK_SOURCE_ROUTES:
+            try:
+                source = reverse(route, kwargs=kwargs)
+            except NoReverseMatch:
+                self._fail(f'link-check source route {route} does not exist')
+                continue
+            page = self.client.get(source)
+            if page.status_code != 200:
+                self._fail(f'{source} returned {page.status_code}')
+                continue
+            for href in sorted({h.split('#')[0] for h in HREF.findall(page.content.decode())}):
+                if not href or href.startswith(UNCHECKED_LINK_PREFIXES) or href in checked:
+                    continue
+                checked.add(href)
+                status = self.client.get(href).status_code
+                if status >= 400:
+                    broken.append(f'{href} ({status}) linked from {source}')
+
+        if broken:
+            self._fail(
+                f'{len(broken)} rendered link(s) do not resolve: {broken[:5]}'
+            )
+        else:
+            self._ok(
+                f'{len(checked)} links across {len(LINK_SOURCE_ROUTES)} pages resolve'
+            )
 
     def _check_sitemap_resolves(self, full, sample):
         """Every URL the sitemap advertises must be fetchable by a crawler.

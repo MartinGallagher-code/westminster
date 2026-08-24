@@ -128,3 +128,24 @@ def cite_atlas(context, kind, *parts):
         'version': version,
         'citation': citation_text(entity, url=absolute, version=version),
     }
+
+
+@register.filter(name='atlas_path')
+def atlas_path(url):
+    """Rewrite a URL the ported views built against upstream's mount point.
+
+    ``views.py`` is kept pristine for future syncs with ontologicalatlas.com,
+    and upstream serves the Atlas at ``/westminster_standards/``. Here it is
+    mounted at ``/atlas/``, so a hard-coded upstream path 404s — as the home
+    page's text of the day did, every day, for every visitor. Rewriting it at
+    the point of use fixes the link without diverging the ported module.
+    """
+    from catechism.atlas import atlas_url
+
+    if not url:
+        return url
+    path, _, fragment = str(url).partition('#')
+    if '/westminster_standards/' not in f'/{path.lstrip("/")}':
+        return url
+    rewritten = atlas_url(path)
+    return f'{rewritten}#{fragment}' if fragment else rewritten
