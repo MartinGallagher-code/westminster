@@ -113,7 +113,7 @@ def section_text(question):
     """The text of a section for diffing: the answer, or the Q and A together."""
     if question is None:
         return ''
-    if question.catechism.is_prose_document:
+    if question.document.is_prose_document:
         return question.answer_text or question.question_text or ''
     return f'{question.question_text} {question.answer_text}'.strip()
 

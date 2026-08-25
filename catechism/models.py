@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.signals import post_delete, post_migrate, post_save
 
 
 class Catechism(models.Model):
@@ -101,7 +102,83 @@ class Catechism(models.Model):
         return self.get_absolute_url()
 
 
-class Topic(models.Model):
+# Every rendered row asks its document a question. ``Question
+# .get_absolute_url`` needs the slug and the document type to pick a route,
+# and ``display_number`` needs the type again — so a queryset that had not
+# said ``select_related('catechism')`` cost one query per row. A single
+# Larger Catechism question page issued 204 of them, all identical, and the
+# document home pages were as bad. The call sites are templates all over the
+# site, so a select_related here and there would leave the next one to
+# reintroduce it.
+#
+# There are only ever a dozen or so documents, so they are held in a
+# process-level map and rebuilt whenever one is saved or deleted — the same
+# approach Django takes for content types.
+_DOCUMENTS = None
+
+
+def _document_map():
+    global _DOCUMENTS
+    if _DOCUMENTS is None:
+        _DOCUMENTS = {
+            row['id']: row
+            for row in Catechism.objects.values('id', 'slug', 'document_type')
+        }
+    return _DOCUMENTS
+
+
+def _forget_documents(**kwargs):
+    """Drop the map. Connected to Catechism saves, deletes and migrations."""
+    global _DOCUMENTS
+    _DOCUMENTS = None
+
+
+class DocumentFacts:
+    """The little a row needs to know about the document it belongs to."""
+
+    __slots__ = ('slug', 'document_type')
+
+    def __init__(self, slug, document_type):
+        self.slug = slug
+        self.document_type = document_type
+
+    @property
+    def is_confession(self):
+        return self.document_type == Catechism.CONFESSION
+
+    @property
+    def is_systematic_theology(self):
+        return self.document_type == Catechism.SYSTEMATIC_THEOLOGY
+
+    @property
+    def is_prose_document(self):
+        return self.is_confession or self.is_systematic_theology
+
+
+class BelongsToDocument:
+    """Mixin giving a row its document's slug and type without a query.
+
+    Prefers an already-loaded related object, so nothing changes for a
+    queryset that did select_related; falls back to fetching the row when the
+    map has no entry for it, which keeps the answer correct even if a document
+    was created in a way that fires no signal.
+    """
+
+    @property
+    def document(self):
+        loaded = self._state.fields_cache.get('catechism')
+        if loaded is not None:
+            return loaded
+        entry = _document_map().get(self.catechism_id)
+        if entry is None:
+            _forget_documents()
+            entry = _document_map().get(self.catechism_id)
+        if entry is None:
+            return self.catechism
+        return DocumentFacts(entry['slug'], entry['document_type'])
+
+
+class Topic(BelongsToDocument, models.Model):
     catechism = models.ForeignKey(
         Catechism, on_delete=models.CASCADE, related_name='topics'
     )
@@ -122,28 +199,29 @@ class Topic(models.Model):
     @property
     def display_start(self):
         """Returns order.1 for prose documents (confessions/sys theologies), plain start for catechisms."""
-        if self.catechism.is_prose_document:
+        if self.document.is_prose_document:
             return f"{self.order}.1"
         return str(self.question_start)
 
     @property
     def display_end(self):
         """Returns order.N for prose documents (confessions/sys theologies), plain end for catechisms."""
-        if self.catechism.is_prose_document:
+        if self.document.is_prose_document:
             count = self.question_end - self.question_start + 1
             return f"{self.order}.{count}"
         return str(self.question_end)
 
     def get_absolute_url(self):
         from django.urls import reverse
-        name = 'catechism:chapter_detail' if self.catechism.is_confession else 'catechism:topic_detail'
+        document = self.document
+        name = 'catechism:chapter_detail' if document.is_confession else 'catechism:topic_detail'
         return reverse(name, kwargs={
-            'catechism_slug': self.catechism.slug,
+            'catechism_slug': document.slug,
             'slug': self.slug,
         })
 
 
-class Question(models.Model):
+class Question(BelongsToDocument, models.Model):
     catechism = models.ForeignKey(
         Catechism, on_delete=models.CASCADE, related_name='questions'
     )
@@ -169,16 +247,17 @@ class Question(models.Model):
     @property
     def display_number(self):
         """Returns book/chapter.item for prose documents (e.g. '1.5'), plain number for catechisms."""
-        if self.catechism.is_prose_document and self.topic:
+        if self.document.is_prose_document and self.topic:
             section = self.number - self.topic.question_start + 1
             return f"{self.topic.order}.{section}"
         return str(self.number)
 
     def get_absolute_url(self):
         from django.urls import reverse
-        name = 'catechism:section_detail' if self.catechism.is_confession else 'catechism:question_detail'
+        document = self.document
+        name = 'catechism:section_detail' if document.is_confession else 'catechism:question_detail'
         return reverse(name, kwargs={
-            'catechism_slug': self.catechism.slug,
+            'catechism_slug': document.slug,
             'number': self.number,
         })
 
@@ -399,11 +478,14 @@ class ComparisonEntry(models.Model):
         return f"{self.theme.name} - {self.catechism.abbreviation}"
 
     def get_questions(self):
+        # The comparison pages print each section's document alongside it, so
+        # the document comes too: without it the parallel reading spent a
+        # query per cell naming the edition it had just fetched.
         return Question.objects.filter(
             catechism=self.catechism,
             number__gte=self.question_start,
             number__lte=self.question_end,
-        ).select_related('topic')
+        ).select_related('topic', 'catechism')
 
 
 class OntologyLocus(models.Model):
@@ -514,3 +596,11 @@ class DataVersion(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.data_hash[:8]}…)"
+
+
+# The document map above is only safe because it is dropped whenever the set
+# of documents could have changed: a save, a delete, or a migration (which is
+# how the test database and a fresh deploy get their rows).
+post_save.connect(_forget_documents, sender=Catechism)
+post_delete.connect(_forget_documents, sender=Catechism)
+post_migrate.connect(_forget_documents)
