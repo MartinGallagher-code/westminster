@@ -3,6 +3,29 @@
 All notable project changes should be recorded here. This project uses a simple
 reverse-chronological changelog rather than formal release tags.
 
+## 2026-08-30
+
+### Fixed
+
+- Gave every Scripture proof reference somewhere to go. Verse text is fetched by `fetch_scripture`, which is manual because it calls an upstream service, so a fully loaded database has none — 0 passages against 4,706 distinct references. That left the reference as the only thing on the page, and it rendered as a bold, clickable line whose collapse target was inside `{% if verse_text %}`: a control that did nothing when clicked, on every question page. References now link to the Scripture index, which already knows every question in the standards that cites the passage. 99.4% of the corpus resolves — including multi-verse proofs like "1 Cor. 10:16, 17, 21", which land on the right chapter — and what does not resolve renders as plain text, so a reference is either a working link or not a link at all. `check_site_integrity` holds that floor and reports when no verse text has been fetched.
+- Stopped search rendering every match on one page. `SearchView` had no pagination and grouped the whole queryset, so "the" returned 633KB of HTML, "God" 282KB. Across documents each group now shows ten and offers the rest behind its own document filter; filtered to one document, the list pages at 25. Counts report the true total rather than what was rendered. Unfiltered searches now come in around 55–60KB whatever the term.
+- Fixed the footer's "Sitemap" link, which served `application/xml` to anyone who clicked it. It is replaced by a link to the new About page; crawlers still find `sitemap.xml` through `robots.txt`.
+- Removed a passage query over every section of a chapter, run on every question page, feeding a `chapter_scripture_map` no template has ever read.
+
+### Added
+
+- **An About page** (`/about/`). Nothing on the site said what a confession is, what a catechism is, what a proof text is, or who runs this — the home page opens with "Read the Reformed standards with Scripture proofs, cross-references, classic commentary", every word of which presumes the reader already knows. The new page explains what these documents are and why they were written to be read together, what the site puts around them, where the texts come from, and who maintains it, then points to the four ways in. Its corpus figures are counted from the database rather than written down, so it cannot go stale.
+- **A code licence** (MIT), a contributor guide, and `docs/ARCHITECTURE.md` covering the apps, the data model, the loading pipeline, the collections filter, page caching, the Postgres-only search path, and the Atlas seam.
+
+### Changed
+
+- Reduced the navigation bar from ten links to six. At 1200px it wrapped onto a second row; at 1280px "Sign Up" broke across two lines. Memorise, the group tools and a reader's own notes are things you do with a passage rather than ways of reaching one, so they now sit behind a Study menu with About and Support. One row at every width from 1200px up.
+- Suppressed the navbar's search box on the home and search pages, which lead with their own — two search fields were on screen at once, stacked directly above each other on a phone.
+- Moved the Atlas panel on question pages below the text, the proofs and the commentary. Its vocabulary is the densest on the site, and the reader met "Ontology placement" and "Prolegomena / The Nature of Theology" before "What is the chief end of man?". Retitled to say what it shows.
+- Stopped the teaching guide's aside stretching down the whole 24-lesson list — roughly 1,800px of empty box. It keeps its own height and follows the reader as the list scrolls.
+- Rewrote `westminster_standards/README.md` and its TODO, which described the app's life before the port: the wrong mount point, a sister app that does not exist here, six layers listed as "stubbed" that hold 181 personas, 16 schools and all six works, and "full WCF/LC/SC text" named as the biggest remaining gap long after it was loaded.
+- Added `westminster_standards` to the coverage configuration — a third of the codebase that no coverage report had measured.
+
 ## 2026-08-24
 
 ### Changed
