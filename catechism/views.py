@@ -545,7 +545,6 @@ class AboutView(TemplateView):
             question__catechism__tradition__in=active_traditions,
         ).count()
         ctx['lesson_count'] = len(get_lessons())
-        ctx['atlas_home_url'] = atlas_url()
         return ctx
 
 

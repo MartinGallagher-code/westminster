@@ -205,46 +205,6 @@
                 </div>
             </div>
 
-            {% if ontology_tags or doctrine_heads %}
-            <div class="study-atlas-panel mb-4">
-                <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-3">
-                    <div>
-                        <div class="small text-muted">Westminster Standards Atlas</div>
-                        <div class="fw-semibold">Ontology placement</div>
-                    </div>
-                    <a href="{% url 'westminster_standards:ontology' %}" class="btn btn-outline-secondary btn-sm">
-                        Browse the Atlas <i class="bi bi-arrow-right ms-1"></i>
-                    </a>
-                </div>
-                {% if ontology_tags %}
-                <div class="study-atlas-chip-group mb-3">
-                    {% for tag in ontology_tags %}
-                    <a href="{{ tag.attribute.get_atlas_url }}"
-                       class="study-atlas-chip"
-                       style="--locus-color: {{ tag.attribute.locus.color }};"
-                       title="{{ tag.attribute.baseline_description }}">
-                        <span>{{ tag.attribute.locus.icon }}</span>
-                        <span>{{ tag.attribute.name }}</span>
-                        {% if tag.is_representative %}<small>approx.</small>{% endif %}
-                    </a>
-                    {% endfor %}
-                </div>
-                {% endif %}
-                {% if doctrine_heads %}
-                <div class="small text-muted mb-2">Heads of doctrine</div>
-                <div class="study-atlas-chip-group">
-                    {% for head in doctrine_heads %}
-                    <a href="{{ head.get_atlas_url }}"
-                       class="study-atlas-chip"
-                       {% if head.locus %}style="--locus-color: {{ head.locus.color }};"{% endif %}>
-                        {% if head.locus %}<span>{{ head.locus.icon }}</span>{% endif %}
-                        <span>{{ head.name }}</span>
-                    </a>
-                    {% endfor %}
-                </div>
-                {% endif %}
-            </div>
-            {% endif %}
 
             <!-- Question and Answer -->
             <div class="mb-5 pb-4 border-bottom">
@@ -445,6 +405,58 @@
                 </div>
             </div>
             {% endwith %}
+
+            {% comment %}
+            Placed after the text and its apparatus, not before them. This panel
+            leads with the Atlas's vocabulary — loci, attributes, heads of
+            doctrine — and reading it first meant meeting "Prolegomena / The
+            Nature of Theology" before "What is the chief end of man?". It is an
+            onward offer once the reader has the passage, not a preface to it.
+            {% endcomment %}
+            {% if ontology_tags or doctrine_heads %}
+            <div class="study-atlas-panel mb-4">
+                <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-3">
+                    <div>
+                        <div class="small text-muted">Westminster Standards Atlas</div>
+                        <div class="fw-semibold">Where this sits in the wider scheme</div>
+                        <div class="small text-body-secondary">
+                            The doctrines this {{ catechism.item_name|lower }} bears on, and the
+                            head of doctrine it falls under.
+                        </div>
+                    </div>
+                    <a href="{% url 'westminster_standards:ontology' %}" class="btn btn-outline-secondary btn-sm">
+                        Browse the Atlas <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </div>
+                {% if ontology_tags %}
+                <div class="study-atlas-chip-group mb-3">
+                    {% for tag in ontology_tags %}
+                    <a href="{{ tag.attribute.get_atlas_url }}"
+                       class="study-atlas-chip"
+                       style="--locus-color: {{ tag.attribute.locus.color }};"
+                       title="{{ tag.attribute.baseline_description }}">
+                        <span>{{ tag.attribute.locus.icon }}</span>
+                        <span>{{ tag.attribute.name }}</span>
+                        {% if tag.is_representative %}<small>approx.</small>{% endif %}
+                    </a>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% if doctrine_heads %}
+                <div class="small text-muted mb-2">Heads of doctrine</div>
+                <div class="study-atlas-chip-group">
+                    {% for head in doctrine_heads %}
+                    <a href="{{ head.get_atlas_url }}"
+                       class="study-atlas-chip"
+                       {% if head.locus %}style="--locus-color: {{ head.locus.color }};"{% endif %}>
+                        {% if head.locus %}<span>{{ head.locus.icon }}</span>{% endif %}
+                        <span>{{ head.name }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
 
             <!-- Prev/Next (bottom) -->
             <div class="d-flex justify-content-between mt-2 mb-4 pt-4 border-top">

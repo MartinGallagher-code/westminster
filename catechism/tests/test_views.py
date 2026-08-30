@@ -169,10 +169,14 @@ class TestQuestionDetailView:
         QuestionOntologyTagFactory(question=q1, attribute=attr)
 
         resp = client.get('/wsc/questions/1/')
+        body = resp.content.decode()
 
         assert resp.status_code == 200
-        assert b'Ontology placement' in resp.content
-        assert b'Necessity' in resp.content
+        assert 'Where this sits in the wider scheme' in body
+        assert 'Necessity' in body
+        # The panel is an onward offer, not a preface: the reader meets the
+        # question and its answer before the Atlas's vocabulary.
+        assert body.index('What is the chief end of man?') < body.index('study-atlas-panel')
 
 
 @pytest.mark.django_db
@@ -516,3 +520,24 @@ class TestAboutView:
 
     def test_is_in_the_sitemap(self, client, setup_catechism):
         assert b'/about/' in client.get('/sitemap.xml').content
+
+
+@pytest.mark.django_db
+class TestNavigationChrome:
+    """The navbar carries one search box, and not two."""
+
+    @pytest.mark.parametrize('path', ['/', '/search/?q=faith'])
+    def test_search_led_pages_render_one_search_box(self, client, setup_catechism, path):
+        body = client.get(path).content.decode()
+        assert body.count('type="search"') == 1
+
+    def test_other_pages_keep_the_navbar_search(self, client, setup_catechism):
+        body = client.get('/wsc/questions/1/').content.decode()
+        assert 'aria-label="Search the Reformed Standards"' in body
+
+    def test_study_tools_sit_behind_one_menu(self, client, setup_catechism):
+        """Memorise and the group tools stopped being top-level nav items."""
+        body = client.get('/wsc/questions/1/').content.decode()
+        assert 'id="study-dropdown"' in body
+        assert '/accounts/memorize/' in body
+        assert '/plan/' in body

@@ -1928,3 +1928,11 @@ mark.user-annotation.active {
     border: 1px solid var(--wm-border);
     border-left: 4px solid var(--wm-accent);
     border-radius: 0.
+/* The teaching guide's aside: a short card beside a long list of lessons.
+   It follows the reader down rather than stretching to the list's height. */
+@media (min-width: 992px) {
+    .learn-aside {
+        position: sticky;
+        top: 1rem;
+    }
+}
