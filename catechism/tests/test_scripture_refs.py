@@ -4,8 +4,9 @@ import pytest
 
 from catechism.scripture_refs import (
     chapter_from_ref, parse_scripture_reference, reference_matches_chapter,
+    scripture_urls,
 )
-from .conftest import BibleBookFactory
+from .conftest import BibleBookFactory, QuestionFactory
 
 
 @pytest.fixture
@@ -114,3 +115,68 @@ def test_scripture_book_page_notes_the_filter(client, books):
     body = resp.content.decode()
     assert 'Romans 8:30' in body
     assert 'text=1' in body        # the escape hatch back to a text search
+
+
+# ── Proof references as links ────────────────────────────────────────────
+#
+# Verse text comes from a manual fetch against an upstream service, so a loaded
+# database usually has none. That used to leave every proof reference as a bold,
+# clickable line whose collapse target was empty — a control that did nothing.
+# The reference now links to the Scripture index instead.
+
+
+def test_scripture_urls_links_a_plain_reference(books):
+    urls = scripture_urls(['1 Cor. 10:31'], books=books)
+    assert urls['1 Cor. 10:31'].startswith('/scripture/1-corinthians/')
+    assert 'ref=10%3A31' in urls['1 Cor. 10:31']
+
+
+def test_scripture_urls_carries_the_reference_as_written(books):
+    url = scripture_urls(['Rom. 8:29-30'], books=books)['Rom. 8:29-30']
+    assert 'from=Rom.+8%3A29-30' in url
+
+
+@pytest.mark.parametrize('reference', [
+    '1 Cor. 10:16, 17, 21',      # a verse list
+    '1 Cor. 11:23 to 29',        # a spelled-out range
+    '1 Cor. 11:27 to the end, with Jude 23',
+    '1 Cor. 10:14-16,21',
+])
+def test_scripture_urls_falls_back_to_the_leading_citation(books, reference):
+    """A multi-verse proof still lands the reader on the right chapter."""
+    url = scripture_urls([reference], books=books)[reference]
+    assert url.startswith('/scripture/1-corinthians/')
+    assert 'ref=1' in url
+
+
+@pytest.mark.parametrize('reference', [
+    '10:43',            # no book — the chapter is inherited from a neighbour
+    '1 Cor. 5 chap.',
+])
+def test_scripture_urls_omits_what_it_cannot_place(books, reference):
+    """Unresolvable references get no entry, so the template renders plain text."""
+    assert scripture_urls([reference], books=books) == {}
+
+
+def test_scripture_urls_is_empty_for_no_references(books):
+    assert scripture_urls([], books=books) == {}
+    assert scripture_urls(None, books=books) == {}
+
+
+@pytest.mark.django_db
+def test_proof_reference_renders_as_a_link_without_verse_text(client, books):
+    """The reference is actionable even when nothing has been fetched."""
+    question = QuestionFactory(proof_texts='1 Cor. 10:31; Rom. 11:36')
+    body = client.get(question.get_absolute_url()).content.decode()
+
+    assert 'href="/scripture/1-corinthians/?ref=10%3A31' in body
+    # The old dead affordance: a collapse toggle with an empty target.
+    assert 'data-bs-target="#verse-' not in body
+
+
+@pytest.mark.django_db
+def test_unresolvable_proof_reference_is_not_a_link(client, books):
+    question = QuestionFactory(proof_texts='10:43')
+    body = client.get(question.get_absolute_url()).content.decode()
+
+    assert '<span class="scripture-ref fw-bold">10:43</span>' in body

@@ -30,6 +30,7 @@ from .citations import bibtex, citation_label, citation_text, resolve_reference,
 from .handout import build_handout
 from .scripture_refs import (
     chapter_from_ref, parse_scripture_reference, reference_matches_chapter,
+    scripture_urls,
 )
 from .search_text import search_terms as _search_terms
 from .utils import DEFAULT_TRADITIONS, VALID_TRADITIONS, get_active_traditions
@@ -642,6 +643,10 @@ class QuestionDetailView(CatechismMixin, DetailView):
             p.reference: p.text
             for p in ScripturePassage.objects.filter(reference__in=refs)
         } if refs else {}
+        # Verse text is fetched from an external service (``fetch_scripture``)
+        # and is often absent, but the reference itself always has somewhere to
+        # go: the Scripture index knows every question that cites the passage.
+        ctx['scripture_link_map'] = scripture_urls(refs)
 
         active_traditions = get_active_traditions(self.request)
 
@@ -691,20 +696,10 @@ class QuestionDetailView(CatechismMixin, DetailView):
         )
         ctx['chapter_questions'] = chapter_questions
 
-        # Build scripture maps for all chapter questions (for chapter mode)
-        # Every section of the chapter is shown with its proofs, so gather the
-        # references first and look them up once — a query per section put 15
-        # of them on a single Confession chapter.
-        chapter_refs = {
-            ref
-            for cq in chapter_questions if cq.id != q.id
-            for ref in cq.get_proof_text_list()
-        }
-        chapter_scripture_map = {
-            p.reference: p.text
-            for p in ScripturePassage.objects.filter(reference__in=chapter_refs)
-        } if chapter_refs else {}
-        ctx['chapter_scripture_map'] = {**chapter_scripture_map, **ctx['scripture_map']}
+        # Chapter mode shows each section's question and answer, not its proof
+        # apparatus, so no per-chapter scripture map is built. One used to be —
+        # a passage query over every section's references on every question page
+        # — feeding a `chapter_scripture_map` no template ever read.
 
         if self.request.user.is_authenticated:
             from accounts.models import UserNote

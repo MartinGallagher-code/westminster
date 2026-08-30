@@ -18,12 +18,21 @@ from django.core.management.base import BaseCommand, CommandError
 from django.test import Client
 from django.urls import NoReverseMatch, reverse
 
-from catechism.models import Catechism, DoctrineHead, OntologyAttribute, OntologyLocus, Question
+from catechism.models import (
+    Catechism, DoctrineHead, OntologyAttribute, OntologyLocus, Question,
+    ScripturePassage,
+)
+from catechism.scripture_refs import scripture_urls
 from catechism.utils import DEFAULT_TRADITIONS
 
 WESTMINSTER_SLUGS = ('wcf', 'wlc', 'wsc')
 EXPECTED_LOCI = 8
 EXPECTED_ATTRIBUTES = 35
+
+# Proof references are hand-transcribed across fourteen documents, so a few
+# genuinely unparseable ones ('10:43' with no book, '1 Cor. 5 chap.') are
+# expected. The floor catches a parser regression, not the long tail.
+MIN_PROOF_LINK_COVERAGE = 0.98
 
 # Question and section pages are by far the most numerous URLs and the most
 # expensive to render; sample them unless --full is given.
@@ -134,6 +143,7 @@ class Command(BaseCommand):
         self._check_documents_loaded()
         self._check_ontology_shape()
         self._check_doctrine_head_coverage()
+        self._check_proof_text_links()
         self._check_atlas_links_resolve()
         self._check_rendered_links_resolve()
         self._check_sitemap_resolves(
@@ -212,6 +222,50 @@ class Command(BaseCommand):
                 )
             else:
                 self._ok(f'all {questions.count()} {slug.upper()} items carry a doctrine head')
+
+    def _check_proof_text_links(self):
+        """Proof references must resolve to a book of the Scripture index.
+
+        Verse text comes from ``fetch_scripture``, which is manual because it
+        calls an upstream service, so a loaded database normally has none. That
+        makes the reference itself the only thing a reader can act on, and it is
+        only actionable if it links somewhere — so this checks the link, not the
+        text. It catches a citation style a new document introduces that the
+        reference parser cannot read.
+        """
+        references = set()
+        for proofs in Question.objects.exclude(proof_texts='').exclude(
+            proof_texts__isnull=True
+        ).values_list('proof_texts', flat=True):
+            references.update(ref.strip() for ref in proofs.split(';') if ref.strip())
+
+        if not references:
+            return
+
+        resolved = scripture_urls(sorted(references))
+        coverage = len(resolved) / len(references)
+        if coverage < MIN_PROOF_LINK_COVERAGE:
+            unresolved = sorted(set(references) - set(resolved))[:5]
+            self._fail(
+                f'only {coverage:.1%} of {len(references)} proof references resolve '
+                f'to the Scripture index (floor is {MIN_PROOF_LINK_COVERAGE:.0%}); '
+                f'unresolved examples: {unresolved}'
+            )
+        else:
+            self._ok(
+                f'{len(resolved)} of {len(references)} proof references link to '
+                f'the Scripture index ({coverage:.1%})'
+            )
+
+        # Not a failure: a deploy that has not run fetch_scripture yet is a
+        # normal state, and the references still work. Worth saying out loud,
+        # because it is otherwise invisible until someone looks at a page.
+        with_text = ScripturePassage.objects.filter(reference__in=references).count()
+        if not with_text:
+            self.stdout.write(
+                '  · no proof texts carry verse text — run fetch_scripture to '
+                'show the passages inline'
+            )
 
     def _check_atlas_links_resolve(self):
         broken = [

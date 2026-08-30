@@ -325,18 +325,25 @@
                     {% if proof_texts %}
                     <div class="tab-pane fade show active" id="tab-scripture" role="tabpanel">
                         <div id="scripture-texts" data-annotatable data-content-type="scripture" data-question-id="{{ question.pk }}">
+                            {% comment %}
+                            The reference is a link to the Scripture index — every
+                            question in the standards that cites the passage. Verse
+                            text is shown underneath when it has been fetched; where
+                            it has not, the reference still goes somewhere, rather
+                            than toggling a collapse with nothing inside it.
+                            {% endcomment %}
                             {% for ref in proof_texts %}
-                            {% with verse_text=scripture_map|get_item:ref %}
+                            {% with verse_text=scripture_map|get_item:ref scripture_url=scripture_link_map|get_item:ref %}
                             <div class="scripture-passage mb-3">
-                                <div class="scripture-ref fw-bold text-primary" style="cursor:pointer"
-                                     data-bs-toggle="collapse" data-bs-target="#verse-{{ forloop.counter }}">
-                                    {{ ref }}
-                                </div>
+                                {% if scripture_url %}
+                                <a class="scripture-ref fw-bold" href="{{ scripture_url }}"
+                                   title="See everywhere the standards cite {{ ref }}">{{ ref }}</a>
+                                {% else %}
+                                <span class="scripture-ref fw-bold">{{ ref }}</span>
+                                {% endif %}
                                 {% if verse_text %}
-                                <div class="collapse show" id="verse-{{ forloop.counter }}">
-                                    <div class="esv-text ps-3 border-start border-primary mt-1">
-                                        {{ verse_text }}
-                                    </div>
+                                <div class="esv-text ps-3 border-start border-primary mt-1">
+                                    {{ verse_text }}
                                 </div>
                                 {% endif %}
                             </div>

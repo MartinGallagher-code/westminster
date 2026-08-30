@@ -12,6 +12,7 @@ bare "acts" is far more likely to be a word search than a request for the book.
 """
 
 import re
+from urllib.parse import urlencode
 
 # "1 Cor 13:4-7", "1Cor 13", "I Corinthians 13:4", "Rom 8"
 _REFERENCE_RE = re.compile(
@@ -112,3 +113,52 @@ def reference_matches_chapter(reference, chapter):
         return True
     return re.search(rf'(?<!\d)(?<![:.]){chapter}(?![\d])(?=\s*[:.]|\s*$|\s*[,;])',
                      reference or '') is not None
+
+
+# A proof text often cites several verses at once — "1 Cor. 10:16, 17, 21",
+# "1 Cor. 11:23 to 29", "1 Cor. 11:27 to the end, with Jude 23". The book page
+# filters by chapter, so the leading citation is enough to land the reader in
+# the right place; everything from the first continuation marker on is dropped.
+_CONTINUATION_RE = re.compile(r'\s*(?:[,;&]|\bto\b|\bwith\b|\band\b|\bcf\b|\bff?\b)')
+
+
+def _leading_citation(reference):
+    """The first citation in a multi-verse proof text, or None if it is alone."""
+    head = _CONTINUATION_RE.split(reference, maxsplit=1)[0].strip()
+    return head if head and head != reference.strip() else None
+
+
+def scripture_urls(references, books=None):
+    """Map each reference to the Scripture-index page that lists its citations.
+
+    Proof texts are stored as display strings ("1 Cor. 10:31", "Ps. 73:25-28").
+    Rendering them as inert text strands the reader: the site already knows
+    which questions cite a passage, and the book page answers that. Resolve the
+    references in bulk — one ``BibleBook`` fetch for the whole page rather than
+    one per proof — and skip anything the parser cannot place, so a reference
+    is either a working link or plain text, never a dead affordance.
+
+    The link always carries the reference as written in ``?from=``, so the book
+    page can offer it back even where only its leading citation resolved.
+    """
+    references = [ref for ref in (references or []) if ref]
+    if not references:
+        return {}
+
+    if books is None:
+        from .models import BibleBook
+        books = list(BibleBook.objects.all())
+
+    urls = {}
+    for ref in references:
+        if ref in urls:
+            continue
+        parsed = parse_scripture_reference(ref, books=books)
+        if parsed is None:
+            head = _leading_citation(ref)
+            parsed = parse_scripture_reference(head, books=books) if head else None
+        if parsed is None:
+            continue
+        query = urlencode({'ref': parsed['ref'], 'from': ref})
+        urls[ref] = f"{parsed['book'].get_absolute_url()}?{query}"
+    return urls
