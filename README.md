@@ -48,7 +48,10 @@ For a full local dataset, run the same idempotent load sequence used by Render:
 
 If you only need a smaller development dataset, run the relevant management commands manually. Most load commands skip automatically when their source data has not changed.
 
-External fetch commands are intentionally manual because they call upstream services:
+External fetch commands are intentionally manual because they call upstream
+services. Until `fetch_scripture` is run the database holds no verse text, so
+proof texts render as links into the Scripture index rather than as passages —
+that is the expected state of a freshly loaded database, not a fault:
 
 ```bash
 python manage.py fetch_watson --delay=0.3
@@ -101,6 +104,19 @@ Required production environment variables:
 
 `build.sh` installs dependencies, collects static assets, migrates the database, loads source data, rebuilds indexes/cross-references, and clears the cache.
 
+## Documentation
+
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — how the project is put
+  together: the apps, the data model, the loading pipeline, the collections
+  filter, the Atlas seam, and the conventions worth knowing before a first
+  change.
+- [`docs/OPERATIONS.md`](docs/OPERATIONS.md) — backups, restores, health
+  checks, monitoring.
+- [`CONTRIBUTING.md`](CONTRIBUTING.md) — setup, what to run before a pull
+  request, and how to report a transcription error.
+- [`westminster_standards/README.md`](westminster_standards/README.md) — the
+  Atlas app.
+
 ## Project Workflow
 
 - Record user-visible changes in `CHANGELOG.md`.
@@ -109,4 +125,15 @@ Required production environment variables:
 
 ## License
 
-Public domain catechism data sourced from [Creeds.json](https://github.com/NonlinearFruit/Creeds.json). Additional source data is tracked in `data/` with project-specific loaders.
+The code is MIT-licensed — see [`LICENSE`](LICENSE).
+
+The confessional and commentary texts are separate from the code and are all in
+the public domain. Public-domain catechism data is sourced from
+[Creeds.json](https://github.com/NonlinearFruit/Creeds.json); the 1689 proof
+texts come from the CC0-licensed [lwalen/lbcf](https://github.com/lwalen/lbcf)
+repository. Additional source data is tracked in `data/` with project-specific
+loaders.
+
+Vendored front-end assets keep their own licences under `static/vendor/`:
+Bootstrap and Bootstrap Icons under MIT, and both typefaces under the SIL Open
+Font License.
