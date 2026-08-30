@@ -19,7 +19,7 @@ from .teaching_guide import (
     get_guide_intro, get_lessons, get_lesson, get_adjacent_lessons,
 )
 from .models import (
-    Catechism, Topic, Question, Commentary, FisherSubQuestion,
+    Catechism, Topic, Question, Commentary, CommentarySource, FisherSubQuestion,
     ScripturePassage, StandardCrossReference,
     BibleBook, ScriptureIndex, ComparisonSet, ComparisonTheme,
     ComparisonEntry, QuestionDoctrineHead, QuestionOntologyTag,
@@ -270,6 +270,7 @@ def robots_txt(request):
 def sitemap_xml(request):
     urls = [
         reverse('catechism:home'),
+        reverse('catechism:about'),
         reverse('catechism:search'),
         reverse('catechism:scripture_index'),
         reverse('catechism:compare_index'),
@@ -505,6 +506,47 @@ def _resolve_text_links(text_refs):
                 'question_text': question.question_text,
             })
     return links
+
+
+@method_decorator(cache_read_only_page, name='dispatch')
+class AboutView(TemplateView):
+    """What this site is, for a reader who has not met these documents before.
+
+    Every other page assumes its vocabulary — "the standards", "proof texts",
+    "the Atlas" — and a visitor who arrives without it has nowhere to start.
+    The corpus figures are counted from the database rather than written down,
+    so this page cannot quietly go stale as documents are loaded.
+    """
+    template_name = 'catechism/about.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        active_traditions = get_active_traditions(self.request)
+
+        documents = Catechism.objects.filter(
+            tradition__in=active_traditions,
+        ).annotate(item_count=Count('questions')).order_by('tradition', 'slug')
+
+        labels = dict(Catechism.TRADITION_CHOICES)
+        collections = defaultdict(list)
+        for document in documents:
+            collections[document.tradition].append(document)
+        ctx['collections'] = [
+            {'label': labels.get(tradition, tradition), 'documents': documents}
+            for tradition, documents in collections.items()
+        ]
+
+        ctx['document_count'] = documents.count()
+        ctx['item_count'] = sum(document.item_count for document in documents)
+        ctx['commentary_sources'] = CommentarySource.objects.filter(
+            entries__question__catechism__tradition__in=active_traditions,
+        ).distinct().order_by('year', 'author')
+        ctx['scripture_reference_count'] = ScriptureIndex.objects.filter(
+            question__catechism__tradition__in=active_traditions,
+        ).count()
+        ctx['lesson_count'] = len(get_lessons())
+        ctx['atlas_home_url'] = atlas_url()
+        return ctx
 
 
 class LearnIndexView(TemplateView):

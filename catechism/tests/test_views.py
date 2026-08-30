@@ -469,3 +469,50 @@ class TestCompareIndexPresets:
         resp = client.get('/compare/')
         names = [p['name'] for p in resp.context['comparison_presets']]
         assert 'Westminster Standards' not in names
+
+
+@pytest.mark.django_db
+class TestAboutView:
+    """Every other page assumes the vocabulary; this one supplies it."""
+
+    def test_renders(self, client, setup_catechism):
+        resp = client.get('/about/')
+        assert resp.status_code == 200
+        assert b'What are the Reformed standards?' in resp.content
+
+    def test_counts_the_corpus_rather_than_hardcoding_it(self, client, setup_catechism):
+        cat, topic, _, _ = setup_catechism
+        resp = client.get('/about/')
+
+        assert resp.context['document_count'] == Catechism.objects.filter(
+            tradition__in=('westminster',),
+        ).count()
+        assert resp.context['item_count'] == 2
+        loaded = [
+            document
+            for collection in resp.context['collections']
+            for document in collection['documents']
+        ]
+        assert cat in loaded
+
+    def test_lists_only_documents_in_active_collections(self, client, setup_catechism):
+        """A document behind an unselected collection is not advertised here."""
+        dormant = CatechismFactory(
+            slug='belgic-test', abbreviation='BCt', tradition='three_forms_of_unity',
+        )
+        QuestionFactory(catechism=dormant)
+
+        resp = client.get('/about/')
+        listed = [
+            document
+            for collection in resp.context['collections']
+            for document in collection['documents']
+        ]
+        assert dormant not in listed
+
+    def test_is_reachable_from_the_footer(self, client, setup_catechism):
+        body = client.get('/').content.decode()
+        assert 'href="/about/"' in body
+
+    def test_is_in_the_sitemap(self, client, setup_catechism):
+        assert b'/about/' in client.get('/sitemap.xml').content
