@@ -35,6 +35,12 @@ from .scripture_refs import (
 from .search_text import search_terms as _search_terms
 from .utils import DEFAULT_TRADITIONS, VALID_TRADITIONS, get_active_traditions
 
+# Search results were rendered in full, every match on one page: "the" returned
+# 633KB of HTML and "God" 282KB. Across documents each group now shows a sample
+# and offers the rest behind its own filter; within one document the list pages.
+GROUPED_SEARCH_SAMPLE = 10
+SEARCH_PAGE_SIZE = 25
+
 
 # Curated quick-start groupings for the custom comparison selector. Each preset
 # is filtered against the documents currently available in the active
@@ -823,6 +829,16 @@ class SearchView(ListView):
 
         return qs
 
+    def get_paginate_by(self, queryset):
+        """Paginate a single document's results; sample across many.
+
+        Filtered to one document, the reader wants the whole list and pages
+        through it. Unfiltered, the page's job is to show which documents
+        answer to the word at all, so it samples each group instead (see
+        ``get_context_data``) and paging would only obscure that.
+        """
+        return SEARCH_PAGE_SIZE if self.request.GET.get('catechism') else None
+
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['query'] = self.request.GET.get('q', '')
@@ -874,11 +890,47 @@ class SearchView(ListView):
                 c.abbreviation,
             ),
         )
+        # When paginated, ``results`` is one page of objects, so the true count
+        # comes from the paginator rather than from what this page rendered.
+        paginator = ctx.get('paginator')
+        ctx['total_results'] = (
+            paginator.count if paginator else sum(len(qs) for qs in grouped.values())
+        )
+
+        # Across every document, show a sample per document rather than the lot:
+        # the value of the unfiltered page is knowing *which* documents answer
+        # to the word, and "the" used to render 633KB of every match in one
+        # scroll. Each group offers the rest behind its own document filter,
+        # which is where the reader gets real pagination — and where the whole
+        # page is already one document's worth, so nothing is held back.
         ctx['grouped_results'] = [
-            {'catechism': cat, 'questions': grouped[cat.pk]}
+            {
+                'catechism': cat,
+                'questions': (
+                    grouped[cat.pk] if paginator
+                    else grouped[cat.pk][:GROUPED_SEARCH_SAMPLE]
+                ),
+                'total': paginator.count if paginator else len(grouped[cat.pk]),
+                'has_more': (
+                    not paginator and len(grouped[cat.pk]) > GROUPED_SEARCH_SAMPLE
+                ),
+                'more_url': (
+                    f"{reverse('catechism:search')}"
+                    f"?{urlencode({'q': ctx['query'], 'catechism': cat.slug})}"
+                ),
+            }
             for cat in ordered_cats
         ]
-        ctx['total_results'] = sum(len(g['questions']) for g in ctx['grouped_results'])
+        # Carried on every pagination link so paging does not drop the filter.
+        ctx['pagination_query'] = urlencode({
+            k: v for k, v in (
+                ('q', ctx['query']),
+                ('catechism', ctx['selected_catechism_slug']),
+            ) if v
+        })
+        # The Atlas matches are the same on every page; repeating them under
+        # each page of a filtered search is noise.
+        ctx['show_atlas_results'] = not paginator or ctx['page_obj'].number == 1
         return ctx
 
 

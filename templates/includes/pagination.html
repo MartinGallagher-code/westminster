@@ -1,0 +1,35 @@
+{% comment %}
+Page controls for a paginated ListView.
+
+Expects `page_obj` and `is_paginated` from Django's pagination, plus a
+`pagination_query` string carrying the view's own query parameters, so paging
+never silently drops the search term or the document filter.
+{% endcomment %}
+{% if is_paginated %}
+<nav aria-label="Result pages" class="mt-4">
+    <ul class="pagination pagination-sm justify-content-center mb-1">
+        <li class="page-item{% if not page_obj.has_previous %} disabled{% endif %}">
+            <a class="page-link"
+               href="{% if page_obj.has_previous %}?{{ pagination_query }}&amp;page={{ page_obj.previous_page_number }}{% else %}#{% endif %}"
+               {% if not page_obj.has_previous %}tabindex="-1" aria-disabled="true"{% endif %}>
+                <i class="bi bi-chevron-left me-1"></i>Previous
+            </a>
+        </li>
+        <li class="page-item disabled">
+            <span class="page-link">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </span>
+        </li>
+        <li class="page-item{% if not page_obj.has_next %} disabled{% endif %}">
+            <a class="page-link"
+               href="{% if page_obj.has_next %}?{{ pagination_query }}&amp;page={{ page_obj.next_page_number }}{% else %}#{% endif %}"
+               {% if not page_obj.has_next %}tabindex="-1" aria-disabled="true"{% endif %}>
+                Next<i class="bi bi-chevron-right ms-1"></i>
+            </a>
+        </li>
+    </ul>
+    <p class="text-center text-muted small mb-0">
+        {{ page_obj.paginator.count }} result{{ page_obj.paginator.count|pluralize }} in all
+    </p>
+</nav>
+{% endif %}

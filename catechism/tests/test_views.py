@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.test import Client
 
 from catechism.models import Catechism, ComparisonSet
+from catechism.views import GROUPED_SEARCH_SAMPLE, SEARCH_PAGE_SIZE
 from .conftest import (
     CatechismFactory, TopicFactory, QuestionFactory,
     BibleBookFactory, ScriptureIndexFactory,
@@ -206,6 +207,86 @@ class TestSearchView:
         assert resp.status_code == 200
         assert q1 in resp.context['results']
         assert q2 in resp.context['results']
+
+    # ── Result volume ────────────────────────────────────────────────────
+    #
+    # Every match used to render on one page: "the" returned 633KB of HTML.
+    # Across documents each group now shows a sample and offers the rest
+    # behind its own filter; within one document the list pages.
+
+    def test_group_samples_and_offers_the_rest(self, client, setup_catechism):
+        cat, topic, _, _ = setup_catechism
+        for number in range(3, 3 + GROUPED_SEARCH_SAMPLE + 5):
+            QuestionFactory(
+                catechism=cat, number=number, topic=topic,
+                question_text='What is God?', answer_text='God is a Spirit.',
+            )
+
+        resp = client.get('/search/?q=God')
+        group = resp.context['grouped_results'][0]
+
+        assert len(group['questions']) == GROUPED_SEARCH_SAMPLE
+        assert group['total'] > GROUPED_SEARCH_SAMPLE
+        assert group['has_more'] is True
+        assert f'catechism={cat.slug}' in group['more_url']
+        # The count shown is the true one, not the size of the sample.
+        assert resp.context['total_results'] == group['total']
+
+    def test_small_group_is_not_truncated(self, client, setup_catechism):
+        resp = client.get('/search/?q=chief+end')
+        group = resp.context['grouped_results'][0]
+        assert group['has_more'] is False
+        assert len(group['questions']) == group['total']
+
+    def test_unfiltered_search_is_not_paginated(self, client, setup_catechism):
+        resp = client.get('/search/?q=God')
+        assert resp.context['paginator'] is None
+
+    def test_filtered_search_pages_the_whole_document(self, client, setup_catechism):
+        cat, topic, _, _ = setup_catechism
+        for number in range(3, 3 + SEARCH_PAGE_SIZE + 5):
+            QuestionFactory(
+                catechism=cat, number=number, topic=topic,
+                question_text='What is God?', answer_text='God is a Spirit.',
+            )
+
+        resp = client.get(f'/search/?q=God&catechism={cat.slug}')
+        assert resp.context['paginator'].num_pages == 2
+        assert len(resp.context['results']) == SEARCH_PAGE_SIZE
+        # A page of one document shows everything on it — nothing held back.
+        assert resp.context['grouped_results'][0]['has_more'] is False
+        assert len(resp.context['grouped_results'][0]['questions']) == SEARCH_PAGE_SIZE
+
+        total = resp.context['paginator'].count
+        page_two = client.get(f'/search/?q=God&catechism={cat.slug}&page=2')
+        assert page_two.status_code == 200
+        assert len(page_two.context['results']) == total - SEARCH_PAGE_SIZE
+        # The reported total is the whole result set, not this page.
+        assert page_two.context['total_results'] == total
+
+    def test_paging_links_keep_the_query_and_filter(self, client, setup_catechism):
+        cat, topic, _, _ = setup_catechism
+        for number in range(3, 3 + SEARCH_PAGE_SIZE + 5):
+            QuestionFactory(
+                catechism=cat, number=number, topic=topic,
+                question_text='What is God?', answer_text='God is a Spirit.',
+            )
+
+        body = client.get(f'/search/?q=God&catechism={cat.slug}').content.decode()
+        assert f'?q=God&amp;catechism={cat.slug}&amp;page=2' in body
+
+    def test_atlas_matches_are_not_repeated_on_every_page(self, client, setup_catechism):
+        cat, topic, _, _ = setup_catechism
+        for number in range(3, 3 + SEARCH_PAGE_SIZE + 5):
+            QuestionFactory(
+                catechism=cat, number=number, topic=topic,
+                question_text='What is God?', answer_text='God is a Spirit.',
+            )
+
+        first = client.get(f'/search/?q=God&catechism={cat.slug}')
+        second = client.get(f'/search/?q=God&catechism={cat.slug}&page=2')
+        assert first.context['show_atlas_results'] is True
+        assert second.context['show_atlas_results'] is False
 
 
 @pytest.mark.django_db
