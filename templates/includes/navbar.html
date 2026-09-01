@@ -9,12 +9,19 @@
             </svg>
             <span class="ms-2">Study Reformed</span>
         </a>
+        {% comment %}
+        The home page and the search page each lead with their own search box.
+        Rendering this one as well put two search fields on screen at once,
+        stacked directly above each other on a phone.
+        {% endcomment %}
+        {% if not hide_navbar_search %}
         <form class="d-flex me-2" action="{% url 'catechism:search' %}" method="get">
             <input class="form-control form-control-sm me-1" type="search" name="q"
                    placeholder="Search..." value="{{ query|default:'' }}"
                    aria-label="Search the Reformed Standards">
             <button class="btn btn-outline-light btn-sm" type="submit"><i class="bi bi-search"></i></button>
         </form>
+        {% endif %}
         <div class="dropdown me-2">
             <button class="btn btn-outline-light btn-sm" type="button"
                     id="appearance-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside"
@@ -127,21 +134,33 @@
                         <li><a class="dropdown-item" href="{% url 'westminster_standards:search' %}"><i class="bi bi-search me-2"></i>Search the Atlas</a></li>
                     </ul>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'accounts:support' %}"><i class="bi bi-cup-hot me-1"></i>Support</a>
+                {% comment %}
+                Memorise, the group tools and a reader's own notes are all
+                things you do *with* a passage rather than ways of reaching one,
+                so they sit together behind one menu. As separate top-level
+                items they pushed the bar past its own width: "Sign Up" wrapped
+                onto a second line at 1280px.
+                {% endcomment %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="study-dropdown"
+                       role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-lightbulb me-1"></i>Study
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="study-dropdown">
+                        <li><a class="dropdown-item" href="{% url 'accounts:memorize' %}"><i class="bi bi-lightbulb me-2"></i>Memorise</a></li>
+                        <li><a class="dropdown-item" href="{% url 'catechism:session_plan' %}"><i class="bi bi-people me-2"></i>Group sessions</a></li>
+                        {% if user.is_authenticated %}
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'accounts:dashboard' %}"><i class="bi bi-journal-text me-2"></i>My notes</a></li>
+                        {% endif %}
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'catechism:about' %}"><i class="bi bi-info-circle me-2"></i>About this site</a></li>
+                        <li><a class="dropdown-item" href="{% url 'accounts:support' %}"><i class="bi bi-cup-hot me-2"></i>Support</a></li>
+                    </ul>
                 </li>
             </ul>
             <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'accounts:memorize' %}"><i class="bi bi-lightbulb me-1"></i>Memorise</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'catechism:session_plan' %}"><i class="bi bi-people me-1"></i>Groups</a>
-                </li>
                 {% if user.is_authenticated %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'accounts:dashboard' %}"><i class="bi bi-journal-text me-1"></i>My Notes</a>
-                </li>
                 {% if user.is_staff or user.is_superuser %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'accounts:admin_user_list' %}"><i class="bi bi-shield-lock me-1"></i>Admin</a>

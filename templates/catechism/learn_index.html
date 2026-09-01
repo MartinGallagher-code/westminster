@@ -16,7 +16,7 @@
 </div>
 
 <div class="row g-5">
-    <div class="col-lg-7">
+    <div class="col-lg-8">
         {% for paragraph in intro.paragraphs %}
         <p>{{ paragraph }}</p>
         {% endfor %}
@@ -44,8 +44,13 @@
         {% endfor %}
     </div>
 
-    <div class="col-lg-5">
-        <div class="study-card h-100">
+    <div class="col-lg-4">
+        {% comment %}
+        h-100 stretched this card down the whole lesson list — roughly 1,800px
+        of empty box beside 24 lessons. It is a short aside, so it keeps its own
+        height and sticks to the top of the viewport as the list scrolls past.
+        {% endcomment %}
+        <div class="study-card learn-aside">
             <i class="bi bi-mortarboard"></i>
             <div class="study-card-title">How this guide works</div>
             <div class="study-card-text">

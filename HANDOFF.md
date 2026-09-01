@@ -9,6 +9,9 @@
 
 ## Most Recent Work
 
+- Usability and completeness pass (2026-08-30), in five commits. **Two defects on every page of their kind:** proof references rendered as a bold clickable line whose collapse target was empty — verse text comes from a manual `fetch_scripture`, so a loaded database has 0 passages against 4,706 references — and search had no pagination at all, returning 633KB of HTML for "the". References now link to the Scripture index (99.4% resolve; `check_site_integrity` holds the floor and reports when no verse text is loaded), and search samples per document with the rest behind the document filter. **Onboarding:** `/about/` was a 404 and nothing anywhere explained what a confession, a catechism or a proof text is; the new page does, with corpus figures counted from the database. **Chrome:** the navbar went from ten links to six (it wrapped to two rows at 1200px), the duplicate search box on search-led pages is suppressed, the Atlas panel moved below the text it was preceding, and the teaching guide's aside stopped stretching 1,800px. **Repo:** MIT LICENSE, CONTRIBUTING.md, docs/ARCHITECTURE.md; `westminster_standards/README.md` and its TODO rewritten against what the modules actually contain (they still described the tsmo mount, a `/puritans/` sister app, and six layers as "stubbed"); PIPELINE_SMOKE.md dropped; `westminster_standards` added to the coverage config.
+- Along the way: `chapter_scripture_map` was a passage query over every section of a chapter, run on every question page, feeding a context variable no template has ever read. Removed.
+
 - Site-wide improvement pass (2026-08-23), in five commits on top of the Atlas integration work below. **Discovery:** the five Reformed confessions that were loaded but unreachable behind `tradition='other'` are published as their own collection; the Atlas's 432 pages are in the sitemap; search shows the matching phrase with the terms marked, and routes Scripture references to the Scripture index; comparison columns are readable on a phone and ordered oldest-first. **Study:** a memorisation deck with spaced repetition, Markdown export and search of a reader's own notes, printable small-group handouts, shareable custom comparisons, citation permalinks with BibTeX/RIS export, and a word-level diff between the Confession, Savoy and the 1689. **Production:** Sentry, a data-integrity CI job over the loaded corpus, a Postgres CI job, a GIN-indexed search vector, page caching for anonymous visitors, wider rate limiting, and an operations runbook with a rehearsed restore.
 - Along the way: the password-reset form raised `NoReverseMatch` on submit (Django's default success URL is not namespaced), and the sitemap advertised comparison and doctrine URLs that 404 for crawlers. Both fixed with regression tests.
 
@@ -35,7 +38,6 @@
 - The Atlas app owns the doctrine-head taxonomy; add or rename heads in `westminster_standards/heads_of_doctrine.py`, never in `data/westminster_ontology.json` (which now holds only loci, attributes, and per-question attribute tags).
 - The ontology is now fully tagged (WSC/WLC/WCF, 475 questions); if the upstream Atlas exports richer mappings later, reconcile against those rather than starting over.
 - Decide whether the 1689/Savoy/pre-Westminster documents should get real traditions and a filter toggle, or stay gated; today they are loaded but unreachable.
-- `westminster_standards/README.md` and `TODO.md` still describe the app's pre-port life (the tsmo mount, the `/puritans/` sister app, personas/schools as stubbed, DPW/FPCG/SSK text as missing). All are now inaccurate; worth a pass.
 - Consider adding a Study Reformed doctrine-map/index page over `OntologyLocus` and `OntologyAttribute`.
 - Consider adding a generated PostgreSQL search vector column or indexes if search volume grows.
 - Verify Render has `SECRET_KEY`, `DATABASE_URL`, and `ALLOWED_HOSTS` set.
@@ -44,7 +46,7 @@
 
 ## Validation Notes
 
-- `python3 -m pytest -q` passes: 380 passed, 5 skipped (the Postgres-only search tests). Against Postgres: 385 passed. `python3 manage.py test westminster_standards` passes: 37 tests.
+- `python3 -m pytest -q` passes: 722 passed, 5 skipped (the Postgres-only search tests). `python3 manage.py test westminster_standards` passes: 56 tests.
 - `python3 manage.py check_site_integrity` passes against a fully loaded database.
 - Restore rehearsed against PostgreSQL 16: dump, drop, restore, `scripts/verify_restore.sh` green.
 - `python3 -m pytest catechism/tests/test_models.py::test_atlas_url_normalizes_public_subproject_paths catechism/tests/test_commands.py::test_load_westminster_ontology_smoke catechism/tests/test_views.py::TestQuestionDetailView::test_renders_ontology_tags -q` passes: 3 passed.

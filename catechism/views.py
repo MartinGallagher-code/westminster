@@ -19,7 +19,7 @@ from .teaching_guide import (
     get_guide_intro, get_lessons, get_lesson, get_adjacent_lessons,
 )
 from .models import (
-    Catechism, Topic, Question, Commentary, FisherSubQuestion,
+    Catechism, Topic, Question, Commentary, CommentarySource, FisherSubQuestion,
     ScripturePassage, StandardCrossReference,
     BibleBook, ScriptureIndex, ComparisonSet, ComparisonTheme,
     ComparisonEntry, QuestionDoctrineHead, QuestionOntologyTag,
@@ -30,9 +30,16 @@ from .citations import bibtex, citation_label, citation_text, resolve_reference,
 from .handout import build_handout
 from .scripture_refs import (
     chapter_from_ref, parse_scripture_reference, reference_matches_chapter,
+    scripture_urls,
 )
 from .search_text import search_terms as _search_terms
 from .utils import DEFAULT_TRADITIONS, VALID_TRADITIONS, get_active_traditions
+
+# Search results were rendered in full, every match on one page: "the" returned
+# 633KB of HTML and "God" 282KB. Across documents each group now shows a sample
+# and offers the rest behind its own filter; within one document the list pages.
+GROUPED_SEARCH_SAMPLE = 10
+SEARCH_PAGE_SIZE = 25
 
 
 # Curated quick-start groupings for the custom comparison selector. Each preset
@@ -263,6 +270,7 @@ def robots_txt(request):
 def sitemap_xml(request):
     urls = [
         reverse('catechism:home'),
+        reverse('catechism:about'),
         reverse('catechism:search'),
         reverse('catechism:scripture_index'),
         reverse('catechism:compare_index'),
@@ -500,6 +508,46 @@ def _resolve_text_links(text_refs):
     return links
 
 
+@method_decorator(cache_read_only_page, name='dispatch')
+class AboutView(TemplateView):
+    """What this site is, for a reader who has not met these documents before.
+
+    Every other page assumes its vocabulary — "the standards", "proof texts",
+    "the Atlas" — and a visitor who arrives without it has nowhere to start.
+    The corpus figures are counted from the database rather than written down,
+    so this page cannot quietly go stale as documents are loaded.
+    """
+    template_name = 'catechism/about.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        active_traditions = get_active_traditions(self.request)
+
+        documents = Catechism.objects.filter(
+            tradition__in=active_traditions,
+        ).annotate(item_count=Count('questions')).order_by('tradition', 'slug')
+
+        labels = dict(Catechism.TRADITION_CHOICES)
+        collections = defaultdict(list)
+        for document in documents:
+            collections[document.tradition].append(document)
+        ctx['collections'] = [
+            {'label': labels.get(tradition, tradition), 'documents': documents}
+            for tradition, documents in collections.items()
+        ]
+
+        ctx['document_count'] = documents.count()
+        ctx['item_count'] = sum(document.item_count for document in documents)
+        ctx['commentary_sources'] = CommentarySource.objects.filter(
+            entries__question__catechism__tradition__in=active_traditions,
+        ).distinct().order_by('year', 'author')
+        ctx['scripture_reference_count'] = ScriptureIndex.objects.filter(
+            question__catechism__tradition__in=active_traditions,
+        ).count()
+        ctx['lesson_count'] = len(get_lessons())
+        return ctx
+
+
 class LearnIndexView(TemplateView):
     """Landing page for the guided teaching path."""
     template_name = 'catechism/learn_index.html'
@@ -642,6 +690,10 @@ class QuestionDetailView(CatechismMixin, DetailView):
             p.reference: p.text
             for p in ScripturePassage.objects.filter(reference__in=refs)
         } if refs else {}
+        # Verse text is fetched from an external service (``fetch_scripture``)
+        # and is often absent, but the reference itself always has somewhere to
+        # go: the Scripture index knows every question that cites the passage.
+        ctx['scripture_link_map'] = scripture_urls(refs)
 
         active_traditions = get_active_traditions(self.request)
 
@@ -691,20 +743,10 @@ class QuestionDetailView(CatechismMixin, DetailView):
         )
         ctx['chapter_questions'] = chapter_questions
 
-        # Build scripture maps for all chapter questions (for chapter mode)
-        # Every section of the chapter is shown with its proofs, so gather the
-        # references first and look them up once — a query per section put 15
-        # of them on a single Confession chapter.
-        chapter_refs = {
-            ref
-            for cq in chapter_questions if cq.id != q.id
-            for ref in cq.get_proof_text_list()
-        }
-        chapter_scripture_map = {
-            p.reference: p.text
-            for p in ScripturePassage.objects.filter(reference__in=chapter_refs)
-        } if chapter_refs else {}
-        ctx['chapter_scripture_map'] = {**chapter_scripture_map, **ctx['scripture_map']}
+        # Chapter mode shows each section's question and answer, not its proof
+        # apparatus, so no per-chapter scripture map is built. One used to be —
+        # a passage query over every section's references on every question page
+        # — feeding a `chapter_scripture_map` no template ever read.
 
         if self.request.user.is_authenticated:
             from accounts.models import UserNote
@@ -828,6 +870,16 @@ class SearchView(ListView):
 
         return qs
 
+    def get_paginate_by(self, queryset):
+        """Paginate a single document's results; sample across many.
+
+        Filtered to one document, the reader wants the whole list and pages
+        through it. Unfiltered, the page's job is to show which documents
+        answer to the word at all, so it samples each group instead (see
+        ``get_context_data``) and paging would only obscure that.
+        """
+        return SEARCH_PAGE_SIZE if self.request.GET.get('catechism') else None
+
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['query'] = self.request.GET.get('q', '')
@@ -879,11 +931,47 @@ class SearchView(ListView):
                 c.abbreviation,
             ),
         )
+        # When paginated, ``results`` is one page of objects, so the true count
+        # comes from the paginator rather than from what this page rendered.
+        paginator = ctx.get('paginator')
+        ctx['total_results'] = (
+            paginator.count if paginator else sum(len(qs) for qs in grouped.values())
+        )
+
+        # Across every document, show a sample per document rather than the lot:
+        # the value of the unfiltered page is knowing *which* documents answer
+        # to the word, and "the" used to render 633KB of every match in one
+        # scroll. Each group offers the rest behind its own document filter,
+        # which is where the reader gets real pagination — and where the whole
+        # page is already one document's worth, so nothing is held back.
         ctx['grouped_results'] = [
-            {'catechism': cat, 'questions': grouped[cat.pk]}
+            {
+                'catechism': cat,
+                'questions': (
+                    grouped[cat.pk] if paginator
+                    else grouped[cat.pk][:GROUPED_SEARCH_SAMPLE]
+                ),
+                'total': paginator.count if paginator else len(grouped[cat.pk]),
+                'has_more': (
+                    not paginator and len(grouped[cat.pk]) > GROUPED_SEARCH_SAMPLE
+                ),
+                'more_url': (
+                    f"{reverse('catechism:search')}"
+                    f"?{urlencode({'q': ctx['query'], 'catechism': cat.slug})}"
+                ),
+            }
             for cat in ordered_cats
         ]
-        ctx['total_results'] = sum(len(g['questions']) for g in ctx['grouped_results'])
+        # Carried on every pagination link so paging does not drop the filter.
+        ctx['pagination_query'] = urlencode({
+            k: v for k, v in (
+                ('q', ctx['query']),
+                ('catechism', ctx['selected_catechism_slug']),
+            ) if v
+        })
+        # The Atlas matches are the same on every page; repeating them under
+        # each page of a filtered search is noise.
+        ctx['show_atlas_results'] = not paginator or ctx['page_obj'].number == 1
         return ctx
 
 

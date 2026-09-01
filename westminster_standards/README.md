@@ -1,37 +1,39 @@
 # Westminster Standards Atlas
 
-> **Integration note.** This app was ported from the
-> TimeSpaceMatterObserver project (ontologicalatlas.com) into **Study
-> Reformed**, where it is mounted at **`/atlas/`** (see `config/urls.py`).
-> Its templates extend Study Reformed's site `base.html` and its design
-> tokens are bridged to the site theme in
-> `static/westminster_standards/atlas-theme.css`. The Confession-chapter
-> and catechism-question full-text pages redirect to Study Reformed's own
-> pages via `bridge.py`. Sections below that describe the tsmo mount,
-> `/puritans/`, or `core/` describe the app's origin and may not apply
-> here. The data layer is unchanged, so it can still be synced with the
-> upstream app.
->
-> This app is also the **single source of truth for the heads of doctrine**:
-> Study Reformed's `load_westminster_ontology` mirrors
-> `heads_of_doctrine.py` into its database and derives every
-> question-to-head link from the coverage lists here, so add or rename a
-> head in this file and nowhere else. `entity_search.py` exposes the
-> persona/crux/school/head layers to the site-wide search without touching
-> `views.py`.
+A Django app, mounted at **`/atlas/`** in Study Reformed (`config/urls.py`),
+that catalogues the Westminster confessional landscape through a structured
+ontology and exposes it as a browseable atlas of the Confession (1646), the
+Larger and Shorter Catechisms (1647), and their two service-books (1645).
 
-A Django app — mounted at `/atlas/` in Study Reformed (originally at
-`/westminster_standards/` in the TimeSpaceMatterObserver project) — that
-catalogues the Westminster confessional landscape through a structured
-ontology and exposes it as a browseable atlas of the Confession (1646),
-the Larger and Shorter Catechisms (1647), and their two service-books
-(1645).
+Where Study Reformed presents the *texts* — with proofs, commentary and
+cross-references — the Atlas presents the *world around them*: the Assembly
+that wrote them, the positions it debated and rejected, the parties inside it,
+and the traditions that received and revised its work.
 
-Sister app to `/puritans/`. Where the Puritan atlas maps the wider
-seventeenth-century Reformed-Puritan tradition (190 personas, 500 works,
-18 schools), this atlas maps the *confessional consensus* the
-Westminster Assembly produced, the contested positions inside that
-consensus, and its reception and revision history.
+## Origin, and what that means for edits
+
+This app was ported from the TimeSpaceMatterObserver project
+(ontologicalatlas.com), where it was mounted at `/westminster_standards/`
+alongside a sister app at `/puritans/`. Neither of those exists here. The data
+layer is unchanged from upstream, so the app can still be synced with it, and
+two conventions follow from that:
+
+- **Site-specific behaviour is kept out of the ported `views.py`.**
+  `bridge.py` redirects the Confession-chapter and catechism-question full-text
+  pages to Study Reformed's own pages; `entity_search.py` exposes the
+  persona/crux/school/head layers to the site-wide search. Both exist so
+  `views.py` stays close to upstream.
+- **The design tokens are bridged, not rewritten.** Templates extend Study
+  Reformed's site `base.html`, and
+  `static/westminster_standards/atlas-theme.css` maps this app's tokens onto
+  the site theme.
+
+This app is also the **single source of truth for the heads of doctrine**.
+Study Reformed's `load_westminster_ontology` mirrors `heads_of_doctrine.py`
+into its database and derives every question-to-head link from the coverage
+lists here — so add or rename a head in that file and nowhere else.
+`data/westminster_ontology.json` holds only loci, attributes and hand-authored
+per-question attribute tags.
 
 ## The 8-locus Westminster ontology
 
@@ -46,128 +48,95 @@ consensus, and its reception and revision history.
 | VII  | **Ecclesiology & Worship** | polity · sacramental efficacy · regulative principle · censures & synods |
 | VIII | **Civil & Last Things** | magistrate · oaths & marriage · intermediate state · final judgment |
 
-35 attributes total — matching the shape of `puritans/data.py` so the
-downstream machinery (value-detail page, dimension intersections,
-entity placement) can be reused.
+35 attributes in total. For each, every value is listed — the contested
+alternatives the Assembly debated, the rejected Roman/Arminian/Socinian/
+Antinomian positions, and post-Assembly developments. One value per attribute
+is marked as the **WCF baseline**, the position the Standards themselves take;
+the mapping lives in `data.WESTMINSTER_BASELINE_ATTRS` and is validated at
+import time.
 
-For each attribute, every value is listed (the contested alternatives
-the Assembly debated, the rejected Roman/Arminian/Socinian/Antinomian
-positions, and any post-Assembly developments). One value per
-attribute is marked as the **WCF baseline** — the position the
-Standards themselves take. The full mapping lives in
-`westminster_standards.data.WESTMINSTER_BASELINE_ATTRS` and is
-validated at import time.
+## What each layer holds
 
-## Differences from the Puritan ontology
+| File | Contents |
+|---|---|
+| `data.py` | The 8-locus ontology and `WESTMINSTER_BASELINE_ATTRS` (35 attributes) |
+| `heads_of_doctrine.py` | 39 heads of doctrine, each tagged with the `attribute_keys` it bears on. Every WCF section and catechism question is covered. |
+| `personas.py` | 181 Westminster divines, with bios drawn from the historical record where material exists |
+| `cruxes.py` | 30 cruxes — background, parties, outcome, confessional language, legacy |
+| `schools.py` | 16 Assembly parties and receiving traditions, each with a full 35-attribute profile |
+| `works.py` | 6 works: the Standards themselves, by chapter or Q&A |
+| `locus_mapping.py` | Chapter / question / section → locus assignments |
+| `questions.py` | Attribute labels and dimension mapping. `QUESTIONS` itself is empty. |
+| `controversies.py`, `cases.py` | Empty. Kept for the upstream shape. |
 
-The Puritan ontology maps a *tradition* (190 figures across two
-centuries, multiple competing schools). The Westminster ontology
-maps a *confessional consensus* (one document, one Assembly, one
-hammered-out doctrinal position) plus its surrounding alternatives.
-Three concrete differences:
+The layers are pure Python rather than database tables — that is the upstream
+project's design. `cruxes.py` and `personas.py` are large files for that
+reason.
 
-1. The loci are organised by the internal shape of the Standards
-   themselves — Scripture first (WCF I), then God and decree
-   (II–V), covenant and Christ (VII–VIII), the *ordo salutis*
-   (X–XVIII), law and sanctification (XIX–XXII), polity and worship
-   (XXV–XXXI, plus XXI), civil and last things (XXIII–XXIV, XXXII–XXXIII).
-2. The contested positions inside each attribute are read off the
-   *Assembly debates* — supra/infra, particular vs hypothetical-
-   universal atonement, jure divino presbyterianism vs Independency
-   vs Erastianism, strict vs moderate regulative principle, papal
-   Antichrist vs reserved, *custos utriusque tabulae* vs disestablishment.
-3. The default `attrs` for a confessionally Westminster persona/work
-   is the `WESTMINSTER_BASELINE_ATTRS` dict; departures from the
-   Standards are marked as overrides on individual attributes.
+## How the text is tagged
 
-## Layer files
+Every WCF section and every catechism question maps to one or more heads of
+doctrine, and every head carries the ontology `attribute_keys` it bears on —
+full keys of the form `locus_attr`, e.g. `god_decree_extent_of_atonement`.
 
-| File | Status | Description |
-|---|---|---|
-| `data.py` | populated | The 8-locus ontology and the `WESTMINSTER_BASELINE_ATTRS` map. |
-| `personas.py` | stubbed | Westminster divines (Twisse, Calamy, Rutherford, Gillespie, Goodwin, Nye, Selden, …). |
-| `works.py` | stubbed | The Standards themselves (WCF, LC, SC, DPW, FPCG) with full text by chapter or Q&A. |
-| `schools.py` | stubbed | The Assembly parties (English Presbyterians, Scots, Dissenting Brethren, Erastians, Hypothetical Universalists) and the receiving traditions (1689 Particular Baptists, Savoy 1658, 1788 American revision, the Marrow controversy, the 1843 Disruption, etc.). |
-| `questions.py` | stubbed | The contested questions debated at the Assembly. |
-| `controversies.py` | stubbed | The Grand Debate, the Calamy-Rutherford atonement debate, the Erastian controversy, the active-obedience vote, the 1788 revision, etc. |
-| `cases.py` | stubbed | Key Assembly votes and post-Assembly reception cases. |
-| `heads_of_doctrine.py` | populated | ~39 systematic-theology heads (every WCF section and every catechism question maps to at least one), each tagged with the ontology `attribute_keys` it bears on. |
-| `locus_mapping.py` | populated | Chapter/question/section → locus assignments. |
+A section's ontology tags are therefore *derived*: the union of the
+`attribute_keys` of the heads covering it
+(`attributes_for_wcf_section`, `attributes_for_catechism_question`). Pages
+render these as locus-tinted chips linking to the Westminster baseline value
+for each attribute.
 
-## Tagging the text with the ontology
-
-Every WCF section and every catechism question is mapped to one or more
-*heads of doctrine* (`heads_of_doctrine.py`), and every head carries the
-ontology **`attribute_keys`** it bears on — full keys of the form
-`locus_attr`, e.g. `god_decree_extent_of_atonement`.
-
-A work-section's ontology tags are therefore *derived*: they are the union
-of the `attribute_keys` of the heads that cover that section
-(`attributes_for_wcf_section`, `attributes_for_catechism_question`). The
-WCF chapter, catechism-question, and directory-work section pages render
-these as locus-tinted chips that link to the Westminster baseline value for
-each attribute. Heads treating doctrines the ontology does not adjudicate
-as a *contested* axis (creation, providence, adoption, the doctrine of
-God's essence, …) are mapped to the nearest representative attribute within
-their locus, so every section of every work receives at least one tag.
-
-These nearest-fit associations are flagged *representative* (the
-`_REPRESENTATIVE_ATTRS` set in `heads_of_doctrine.py`) and render with a
-dashed border and a trailing **≈**, distinct from *core* tags that mark a
+Heads treating doctrines the ontology does not adjudicate as a *contested*
+axis (creation, providence, adoption, the doctrine of God's essence) are mapped
+to the nearest representative attribute within their locus, so every section
+receives at least one tag. These nearest-fit associations are flagged
+*representative* (`_REPRESENTATIVE_ATTRS` in `heads_of_doctrine.py`) and render
+with a dashed border and a trailing **≈**, distinct from *core* tags marking a
 genuinely contested axis. The same attribute can be core under one head and
-representative under another — e.g. `order_of_decrees` is core for the
-eternal decree (WCF III) but representative for providence (WCF V) — and a
-section's tag is shown as core whenever any covering head treats it so.
+representative under another — `order_of_decrees` is core for the eternal
+decree (WCF III) but representative for providence (WCF V) — and a section's
+tag shows as core whenever any covering head treats it so.
 
-## URLs
+## Routes
 
-The app is mounted at `/westminster_standards/` from `tsmo/urls.py`.
+All under `/atlas/`; see `urls.py` for the full list.
 
 ```
-/westminster_standards/                                  home
-/westminster_standards/ontology/                         the full eight-locus grid
-/westminster_standards/dimension/<dim>/                  locus detail
-/westminster_standards/dimension/<dim>/<attr>/<val>/     value detail
+/atlas/                                   home
+/atlas/ontology/                          the full eight-locus grid
+/atlas/dimension/<dim>/                   locus detail
+/atlas/dimension/<dim>/<attr>/<val>/      value detail
+/atlas/personas/  /atlas/personas/<slug>/
+/atlas/cruxes/    /atlas/cruxes/<slug>/
+/atlas/schools/   /atlas/schools/<slug>/
+/atlas/heads/     /atlas/heads/<slug>/
+/atlas/works/     /atlas/works/<slug>/
+/atlas/search/
 ```
+
+`check_site_integrity` fetches every Atlas page and every doctrine-head chip,
+so a route that stops resolving fails CI rather than the live site.
 
 ## Adding content
 
-### Adding a persona
+**A persona.** Append a dict to `PERSONAS` in `personas.py` with `slug`,
+`name`, `dates`, `role`, `tagline`, `bio`, and `attrs` — inheriting from
+`WESTMINSTER_BASELINE_ATTRS` and overriding only on points of departure.
+Goodwin overrides `ecclesiology_worship_polity` to
+`Independent-Congregational`; Calamy overrides
+`god_decree_extent_of_atonement` to `Hypothetical-Universal`.
 
-Append a dict to `PERSONAS` in `personas.py` with: `slug`, `name`,
-`dates`, `role`, `tagline`, `bio`, `attrs` (inheriting from
-`WESTMINSTER_BASELINE_ATTRS` and overriding only on points of
-departure — e.g. Goodwin would override `ecclesiology_worship_polity`
-to `Independent-Congregational`; Calamy would override
-`god_decree_extent_of_atonement` to `Hypothetical-Universal`).
+**A school.** An Assembly party or a receiving tradition, with a complete
+35-attribute `attrs` profile (baseline plus overrides) and a `description`.
 
-### Adding a work
+**A head of doctrine.** Here and nowhere else — see the note above. The heads
+module is part of `load_westminster_ontology`'s hash, so editing it re-triggers
+the loader on the next deploy.
 
-For the Standards themselves, supply the full text broken into
-chapters (WCF), questions (LC/SC), or sections (DPW/FPCG). For other
-works (Owen's *Death of Death*, Rutherford's *Lex Rex*, Gillespie's
-*Aaron's Rod Blossoming*, Calamy's atonement defences) follow the
-same shape as `puritans/works.py`.
+## Licence and attribution
 
-### Adding a school
+The ontology and structured data are original to this project.
 
-A school is an Assembly party or a receiving tradition. Each school
-has a complete 35-attribute `attrs` profile (inheriting from baseline
-with overrides) and a `description`.
-
-## Extracting to its own repo
-
-To extract `westminster_standards/` as a standalone reusable Django
-app: same recipe as `puritans/` — the app is fully self-contained
-except for being mounted in `tsmo/urls.py`, the data is pure-Python
-(no models), and templates extend `westminster_standards/base.html`.
-
-## License & attribution
-
-Ontology and structured data: original.
-
-Westminster Standards text (to be added): public-domain (1646–1647);
-the standard modern critical edition is the *Westminster Confession of
-Faith: Edinburgh Edition* (Free Presbyterian Publications) and the
-*Westminster Larger Catechism* and *Shorter Catechism* in the same
-edition. The 1788 American revisions are also public-domain.
+The Westminster Standards texts are public domain (1646–1647), as are the 1788
+American revisions. The standard modern critical edition is the *Westminster
+Confession of Faith: Edinburgh Edition* (Free Presbyterian Publications), with
+the Larger and Shorter Catechisms in the same edition.

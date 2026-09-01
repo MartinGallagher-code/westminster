@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.test import Client
 
 from catechism.models import Catechism, ComparisonSet
+from catechism.views import GROUPED_SEARCH_SAMPLE, SEARCH_PAGE_SIZE
 from .conftest import (
     CatechismFactory, TopicFactory, QuestionFactory,
     BibleBookFactory, ScriptureIndexFactory,
@@ -168,10 +169,14 @@ class TestQuestionDetailView:
         QuestionOntologyTagFactory(question=q1, attribute=attr)
 
         resp = client.get('/wsc/questions/1/')
+        body = resp.content.decode()
 
         assert resp.status_code == 200
-        assert b'Ontology placement' in resp.content
-        assert b'Necessity' in resp.content
+        assert 'Where this sits in the wider scheme' in body
+        assert 'Necessity' in body
+        # The panel is an onward offer, not a preface: the reader meets the
+        # question and its answer before the Atlas's vocabulary.
+        assert body.index('What is the chief end of man?') < body.index('study-atlas-panel')
 
 
 @pytest.mark.django_db
@@ -206,6 +211,86 @@ class TestSearchView:
         assert resp.status_code == 200
         assert q1 in resp.context['results']
         assert q2 in resp.context['results']
+
+    # ── Result volume ────────────────────────────────────────────────────
+    #
+    # Every match used to render on one page: "the" returned 633KB of HTML.
+    # Across documents each group now shows a sample and offers the rest
+    # behind its own filter; within one document the list pages.
+
+    def test_group_samples_and_offers_the_rest(self, client, setup_catechism):
+        cat, topic, _, _ = setup_catechism
+        for number in range(3, 3 + GROUPED_SEARCH_SAMPLE + 5):
+            QuestionFactory(
+                catechism=cat, number=number, topic=topic,
+                question_text='What is God?', answer_text='God is a Spirit.',
+            )
+
+        resp = client.get('/search/?q=God')
+        group = resp.context['grouped_results'][0]
+
+        assert len(group['questions']) == GROUPED_SEARCH_SAMPLE
+        assert group['total'] > GROUPED_SEARCH_SAMPLE
+        assert group['has_more'] is True
+        assert f'catechism={cat.slug}' in group['more_url']
+        # The count shown is the true one, not the size of the sample.
+        assert resp.context['total_results'] == group['total']
+
+    def test_small_group_is_not_truncated(self, client, setup_catechism):
+        resp = client.get('/search/?q=chief+end')
+        group = resp.context['grouped_results'][0]
+        assert group['has_more'] is False
+        assert len(group['questions']) == group['total']
+
+    def test_unfiltered_search_is_not_paginated(self, client, setup_catechism):
+        resp = client.get('/search/?q=God')
+        assert resp.context['paginator'] is None
+
+    def test_filtered_search_pages_the_whole_document(self, client, setup_catechism):
+        cat, topic, _, _ = setup_catechism
+        for number in range(3, 3 + SEARCH_PAGE_SIZE + 5):
+            QuestionFactory(
+                catechism=cat, number=number, topic=topic,
+                question_text='What is God?', answer_text='God is a Spirit.',
+            )
+
+        resp = client.get(f'/search/?q=God&catechism={cat.slug}')
+        assert resp.context['paginator'].num_pages == 2
+        assert len(resp.context['results']) == SEARCH_PAGE_SIZE
+        # A page of one document shows everything on it — nothing held back.
+        assert resp.context['grouped_results'][0]['has_more'] is False
+        assert len(resp.context['grouped_results'][0]['questions']) == SEARCH_PAGE_SIZE
+
+        total = resp.context['paginator'].count
+        page_two = client.get(f'/search/?q=God&catechism={cat.slug}&page=2')
+        assert page_two.status_code == 200
+        assert len(page_two.context['results']) == total - SEARCH_PAGE_SIZE
+        # The reported total is the whole result set, not this page.
+        assert page_two.context['total_results'] == total
+
+    def test_paging_links_keep_the_query_and_filter(self, client, setup_catechism):
+        cat, topic, _, _ = setup_catechism
+        for number in range(3, 3 + SEARCH_PAGE_SIZE + 5):
+            QuestionFactory(
+                catechism=cat, number=number, topic=topic,
+                question_text='What is God?', answer_text='God is a Spirit.',
+            )
+
+        body = client.get(f'/search/?q=God&catechism={cat.slug}').content.decode()
+        assert f'?q=God&amp;catechism={cat.slug}&amp;page=2' in body
+
+    def test_atlas_matches_are_not_repeated_on_every_page(self, client, setup_catechism):
+        cat, topic, _, _ = setup_catechism
+        for number in range(3, 3 + SEARCH_PAGE_SIZE + 5):
+            QuestionFactory(
+                catechism=cat, number=number, topic=topic,
+                question_text='What is God?', answer_text='God is a Spirit.',
+            )
+
+        first = client.get(f'/search/?q=God&catechism={cat.slug}')
+        second = client.get(f'/search/?q=God&catechism={cat.slug}&page=2')
+        assert first.context['show_atlas_results'] is True
+        assert second.context['show_atlas_results'] is False
 
 
 @pytest.mark.django_db
@@ -388,3 +473,71 @@ class TestCompareIndexPresets:
         resp = client.get('/compare/')
         names = [p['name'] for p in resp.context['comparison_presets']]
         assert 'Westminster Standards' not in names
+
+
+@pytest.mark.django_db
+class TestAboutView:
+    """Every other page assumes the vocabulary; this one supplies it."""
+
+    def test_renders(self, client, setup_catechism):
+        resp = client.get('/about/')
+        assert resp.status_code == 200
+        assert b'What are the Reformed standards?' in resp.content
+
+    def test_counts_the_corpus_rather_than_hardcoding_it(self, client, setup_catechism):
+        cat, topic, _, _ = setup_catechism
+        resp = client.get('/about/')
+
+        assert resp.context['document_count'] == Catechism.objects.filter(
+            tradition__in=('westminster',),
+        ).count()
+        assert resp.context['item_count'] == 2
+        loaded = [
+            document
+            for collection in resp.context['collections']
+            for document in collection['documents']
+        ]
+        assert cat in loaded
+
+    def test_lists_only_documents_in_active_collections(self, client, setup_catechism):
+        """A document behind an unselected collection is not advertised here."""
+        dormant = CatechismFactory(
+            slug='belgic-test', abbreviation='BCt', tradition='three_forms_of_unity',
+        )
+        QuestionFactory(catechism=dormant)
+
+        resp = client.get('/about/')
+        listed = [
+            document
+            for collection in resp.context['collections']
+            for document in collection['documents']
+        ]
+        assert dormant not in listed
+
+    def test_is_reachable_from_the_footer(self, client, setup_catechism):
+        body = client.get('/').content.decode()
+        assert 'href="/about/"' in body
+
+    def test_is_in_the_sitemap(self, client, setup_catechism):
+        assert b'/about/' in client.get('/sitemap.xml').content
+
+
+@pytest.mark.django_db
+class TestNavigationChrome:
+    """The navbar carries one search box, and not two."""
+
+    @pytest.mark.parametrize('path', ['/', '/search/?q=faith'])
+    def test_search_led_pages_render_one_search_box(self, client, setup_catechism, path):
+        body = client.get(path).content.decode()
+        assert body.count('type="search"') == 1
+
+    def test_other_pages_keep_the_navbar_search(self, client, setup_catechism):
+        body = client.get('/wsc/questions/1/').content.decode()
+        assert 'aria-label="Search the Reformed Standards"' in body
+
+    def test_study_tools_sit_behind_one_menu(self, client, setup_catechism):
+        """Memorise and the group tools stopped being top-level nav items."""
+        body = client.get('/wsc/questions/1/').content.decode()
+        assert 'id="study-dropdown"' in body
+        assert '/accounts/memorize/' in body
+        assert '/plan/' in body

@@ -14,6 +14,7 @@ urlpatterns = [
 
     # Site-wide
     path('', views.HomeView.as_view(), name='home'),
+    path('about/', views.AboutView.as_view(), name='about'),
     path('search/', views.SearchView.as_view(), name='search'),
     path('doctrine/', views.DoctrineIndexView.as_view(), name='doctrine_index'),
     path('doctrine/<slug:theme_slug>/', views.DoctrineDetailView.as_view(), name='doctrine_detail'),

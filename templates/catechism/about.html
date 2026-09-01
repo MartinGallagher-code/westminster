@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}About - Study Reformed{% endblock %}
+{% block meta_description %}What the Reformed confessional standards are, what this site does with them, where the texts come from, and how to start reading.{% endblock %}
+{% block og_title %}About Study Reformed{% endblock %}
+{% block og_description %}A reader's introduction to the Reformed standards and to what this site puts around them.{% endblock %}
+{% block twitter_title %}About Study Reformed{% endblock %}
+{% block twitter_description %}A reader's introduction to the Reformed standards and to what this site puts around them.{% endblock %}
+
+{% block main_wrapper_class %}container-fluid py-4 gutter-wide{% endblock %}
+
+{% block content %}
+<div class="mb-4 pb-3 border-bottom">
+    <h1 class="mb-1">About Study Reformed</h1>
+    <p class="text-muted mb-0">What these documents are, and what this site does with them.</p>
+</div>
+
+<div class="row g-5">
+    <div class="col-lg-7">
+        <h2 class="h4 fw-semibold mb-3">What are the Reformed standards?</h2>
+        <p>
+            In the sixteenth and seventeenth centuries the Reformed churches wrote down what
+            they believed Scripture teaches, in two forms. A <strong>confession</strong> is a
+            continuous statement of doctrine, set out in numbered chapters and sections — the
+            Westminster Confession of Faith (1646) is the best known in English. A
+            <strong>catechism</strong> teaches the same doctrine as questions and answers, meant
+            to be learned by heart — the Westminster Shorter Catechism (1647) opens by asking
+            &ldquo;What is the chief end of man?&rdquo;
+        </p>
+        <p>
+            These documents were written to be read together. The Shorter Catechism compresses
+            into a sentence what the Confession spends a chapter on, and the Larger Catechism
+            sits between them. Nearly every claim carries <strong>proof texts</strong>: the
+            Scripture references the authors gave as its warrant. Reading a confession without
+            them is reading half of it.
+        </p>
+        <p>
+            They are also not the only ones. The Dutch churches confess the Three Forms of
+            Unity; English Congregationalists revised Westminster into the Savoy Declaration
+            (1658), and Baptists revised Savoy into the 1689 London Baptist Confession. Set
+            those side by side and the disagreements — and the far larger agreement — become
+            visible in a way no single document shows.
+        </p>
+
+        <h2 class="h4 fw-semibold mt-5 mb-3">What this site adds</h2>
+        <p>
+            The texts themselves are freely available in many places. What is harder to find is
+            the apparatus around them, which is what this site is for:
+        </p>
+        <ul>
+            <li>
+                <strong>Proof texts, made navigable.</strong> Every Scripture reference links to
+                {% if scripture_reference_count %}an index of {{ scripture_reference_count }} citations,{% else %}an index{% endif %}
+                so you can ask the question backwards: given this passage, where do the standards
+                appeal to it?
+            </li>
+            <li>
+                <strong>Historical commentary.</strong> The expositors below wrote to explain
+                these documents to their own congregations. Their comments sit beside the text
+                they comment on, rather than in a separate book.
+            </li>
+            <li>
+                <strong>Cross-references and comparison.</strong> Each question links to the
+                places the other standards treat the same doctrine, and comparison pages set
+                whole documents side by side — down to a word-level diff between Westminster,
+                Savoy and the 1689.
+            </li>
+            <li>
+                <strong>Study tools.</strong> A
+                <a href="{% url 'catechism:learn_index' %}">teaching guide</a> in
+                {{ lesson_count }} lessons, printable handouts and a presenter mode for small
+                groups, and — for a signed-in reader — private notes, highlights, and a
+                memorisation deck on a spaced-repetition schedule.
+            </li>
+        </ul>
+
+        <h2 class="h4 fw-semibold mt-5 mb-3">Where the texts come from</h2>
+        <p>
+            Everything here is in the public domain. The confessional texts come from the
+            <a href="https://github.com/NonlinearFruit/Creeds.json" target="_blank" rel="noopener noreferrer">Creeds.json</a>
+            corpus and from transcriptions of the printed editions; the commentaries are
+            nineteenth-century and earlier printings. Transcription errors are corrected as they
+            are found, and the loaders are checked against the source data on every deploy.
+        </p>
+        <p>
+            The Book of Church Order is the Presbyterian Church in America&rsquo;s own
+            constitutional document, included because it is the polity these standards are
+            actually practised under. It is reproduced as published, and is not a confession.
+        </p>
+
+        <h2 class="h4 fw-semibold mt-5 mb-3">Who made it</h2>
+        <p>
+            Study Reformed is built and maintained by Martin J. Gallagher. It is free, has no
+            advertising, and does not sell anything. It carries no tracking beyond anonymous
+            page analytics. If it is useful to you, you can
+            <a href="{% url 'accounts:support' %}">support the running costs</a>; there is
+            nothing to unlock by doing so.
+        </p>
+        <p class="text-muted small">
+            <em>Soli Deo Gloria.</em>
+        </p>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="flat-section-heading mb-3">What is loaded</div>
+                <p class="text-body-secondary small">
+                    {{ document_count }} document{{ document_count|pluralize }},
+                    {{ item_count }} chapters, sections and questions in your active
+                    collections.
+                </p>
+                {% for collection in collections %}
+                <div class="mb-3">
+                    <div class="text-muted small text-uppercase fw-semibold mb-2">{{ collection.label }}</div>
+                    {% for document in collection.documents %}
+                    <a href="{{ document.get_absolute_url }}"
+                       class="d-flex justify-content-between align-items-baseline gap-2 py-1 text-decoration-none"
+                       style="color: var(--bs-body-color);">
+                        <span class="small">
+                            <strong class="me-1">{{ document.abbreviation }}</strong>{{ document.name }}
+                        </span>
+                        <span class="text-muted small">{{ document.item_count }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+                <p class="text-muted small mb-0">
+                    Other collections can be switched on from the
+                    <span class="text-nowrap">Collections menu</span> in the navigation bar.
+                </p>
+            </div>
+        </div>
+
+        {% if commentary_sources %}
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="flat-section-heading mb-3">Commentators</div>
+                {% for source in commentary_sources %}
+                <div class="d-flex justify-content-between align-items-baseline gap-2 py-1 small">
+                    <span>{{ source.author }} &middot; <span class="text-body-secondary">{{ source.name }}</span></span>
+                    {% if source.year %}<span class="text-muted">{{ source.year }}</span>{% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="card">
+            <div class="card-body">
+                <div class="flat-section-heading mb-3">Where to start</div>
+                <a class="study-inline-link mb-2" href="{% url 'catechism:catechism_home' catechism_slug='wsc' %}">
+                    <strong>The Shorter Catechism</strong>
+                    <span>107 questions and answers — the shortest way in.</span>
+                </a>
+                <a class="study-inline-link mb-2" href="{% url 'catechism:learn_index' %}">
+                    <strong>The teaching guide</strong>
+                    <span>{{ lesson_count }} lessons through the doctrine, in order.</span>
+                </a>
+                <a class="study-inline-link mb-2" href="{% url 'catechism:compare_index' %}">
+                    <strong>Compare the standards</strong>
+                    <span>The same doctrine across several documents at once.</span>
+                </a>
+                <a class="study-inline-link" href="{{ atlas_home_url }}">
+                    <strong>The Westminster Standards Atlas</strong>
+                    <span>The Assembly itself — its divines, its disputes, and its schools.</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

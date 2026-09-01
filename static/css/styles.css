@@ -741,13 +741,27 @@ a {
     color: var(--bs-body-color);
 }
 
+/* A proof reference is a link when we can resolve it to a book of the
+   Scripture index, and plain text when we cannot. The two must not look
+   alike: only the link carries the primary colour and underline. */
 .scripture-ref {
     font-size: 0.95rem;
     transition: color 0.15s ease;
 }
 
-.scripture-ref:hover {
-    color: var(--wm-primary-hover) !important;
+a.scripture-ref {
+    color: var(--wm-primary);
+    text-decoration: none;
+}
+
+a.scripture-ref:hover,
+a.scripture-ref:focus-visible {
+    color: var(--wm-primary-hover);
+    text-decoration: underline;
+}
+
+span.scripture-ref {
+    color: var(--bs-body-color);
 }
 
 .scripture-passage .border-start {
@@ -1914,3 +1928,11 @@ mark.user-annotation.active {
     border: 1px solid var(--wm-border);
     border-left: 4px solid var(--wm-accent);
     border-radius: 0.
+/* The teaching guide's aside: a short card beside a long list of lessons.
+   It follows the reader down rather than stretching to the list's height. */
+@media (min-width: 992px) {
+    .learn-aside {
+        position: sticky;
+        top: 1rem;
+    }
+}
