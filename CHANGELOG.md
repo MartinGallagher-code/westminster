@@ -3,6 +3,20 @@
 All notable project changes should be recorded here. This project uses a simple
 reverse-chronological changelog rather than formal release tags.
 
+## 2026-11-02
+
+### Fixed
+
+- **The Book of Church Order was a year out of date.** The PCA published the 2026 edition (amendments through the 53rd General Assembly) in July; the site still served 2025's text. `check_bco_update` could never have noticed: it re-downloaded the 2025 PDF's own URL, and each edition is published at a new one. It now reads the download link from the PCA's BCO page. The BCO is rebuilt from the 2026 PDF, with the eleven amended sections (12-3, 18-2, 24-1, 29-1, 31-10, 35-9, 36-4, 36-5, 41-3, 42-2 and the new 36-8).
+- **Every BCO section was cited under the wrong number.** Sections were numbered by the chapter's position in the topic list, and the Preface came first — so BCO 1-1 was labelled "BCO 2.1", 21-4 "BCO 22.4", and the sidebar read "Chapter 2: Chapter 1: The Doctrine of Church Government". Citation exports, handouts and the "Cite" menu carried the same wrong numbers, and `/cite/pca-bco/21-4/` was a 404. Sections now carry the reference printed in the book ("21-4", "Preface II"); documents with their own numbering are marked `uses_native_references`, and everything that renders a section number reads it from there.
+- **Reloading the BCO deleted readers' work.** `load_pca_bco` deleted every BCO section and recreated it, which cascaded through notes, highlights, memorisation cards and reading positions on BCO sections, and through the BCO cross-references — which `load_bco_crossrefs` then never rebuilt, because its own JSON had not changed. The loader now updates sections in place by reference (upgrading rows from the old format too), and the cross-reference loader rebuilds whenever the BCO data changes and clears links no mapping produces.
+- **The BCO text itself was badly extracted.** Chapter titles were appended to the last section of the chapter before (6-4, 15-6, 22-6, 27-5, 38-4, 43-10, 47-9 and others); the Directory for Worship's preface was the tail of 46-8; 56-6 (printed without its period) was merged into 56-5; the 36-4 sentence of suspension was missing; footnotes on the ordination questions were in the wrong sections; and every section was stored as hard-wrapped PDF lines, so its lettered and numbered clauses ran together as one paragraph. `scripts/parse_pca_bco.py` now produces the data from the PDF, rebuilding paragraphs from the page geometry and validating the structure before it writes anything.
+
+### Added
+
+- The Directory for Worship's preface — the statement that the Directory is not binding in all its parts, except chapters 56–58 and 59-3 — as its own entry before chapter 47.
+- Scripture cited in the BCO's text now loads as the sections' proof texts, so the Scripture index includes the BCO. (`data/pca-bco_proof_texts.json` existed before but was keyed by sequential numbers that had already drifted, and nothing loaded it.)
+
 ## 2026-08-30
 
 ### Fixed
