@@ -35,6 +35,14 @@ class Catechism(models.Model):
     tradition = models.CharField(
         max_length=30, choices=TRADITION_CHOICES, default=OTHER
     )
+    uses_native_references = models.BooleanField(
+        default=False,
+        help_text=(
+            "Sections carry the document's own printed references (e.g. BCO "
+            "'21-4' or 'Preface II') rather than being cited by chapter "
+            "position, and topic names already include their chapter label."
+        ),
+    )
 
     class Meta:
         ordering = ['abbreviation']
@@ -122,7 +130,7 @@ def _document_map():
     if _DOCUMENTS is None:
         _DOCUMENTS = {
             row['id']: row
-            for row in Catechism.objects.values('id', 'slug', 'document_type')
+            for row in Catechism.objects.values('id', 'slug', 'document_type', 'uses_native_references')
         }
     return _DOCUMENTS
 
@@ -136,11 +144,12 @@ def _forget_documents(**kwargs):
 class DocumentFacts:
     """The little a row needs to know about the document it belongs to."""
 
-    __slots__ = ('slug', 'document_type')
+    __slots__ = ('slug', 'document_type', 'uses_native_references')
 
-    def __init__(self, slug, document_type):
+    def __init__(self, slug, document_type, uses_native_references=False):
         self.slug = slug
         self.document_type = document_type
+        self.uses_native_references = uses_native_references
 
     @property
     def is_confession(self):
@@ -175,7 +184,9 @@ class BelongsToDocument:
             entry = _document_map().get(self.catechism_id)
         if entry is None:
             return self.catechism
-        return DocumentFacts(entry['slug'], entry['document_type'])
+        return DocumentFacts(
+            entry['slug'], entry['document_type'], entry.get('uses_native_references', False)
+        )
 
 
 class Topic(BelongsToDocument, models.Model):
@@ -197,16 +208,62 @@ class Topic(BelongsToDocument, models.Model):
         return self.name
 
     @property
+    def heading(self):
+        """How the topic is titled in navigation: 'Chapter 3: Of God's Eternal Decree'.
+
+        Documents with native references (the BCO) already name each topic
+        as printed — 'Chapter 1: The Doctrine of Church Government',
+        'Preface' — so their position in the topic list is not a chapter
+        number and must not be prefixed.
+        """
+        document = self.document
+        if document.uses_native_references or not document.is_prose_document:
+            return self.name
+        label = 'Book' if document.is_systematic_theology else 'Chapter'
+        return f"{label} {self.order}: {self.name}"
+
+    def _reference_bounds(self):
+        bounds = getattr(self, '_reference_bounds_cache', None)
+        if bounds is None:
+            rows = dict(
+                Question.objects.filter(
+                    catechism_id=self.catechism_id,
+                    number__in=(self.question_start, self.question_end),
+                ).values_list('number', 'reference')
+            )
+            bounds = (
+                rows.get(self.question_start) or str(self.question_start),
+                rows.get(self.question_end) or str(self.question_end),
+            )
+            self._reference_bounds_cache = bounds
+        return bounds
+
+    def prime_reference_bounds(self, questions):
+        """Record the first and last references from already-loaded questions."""
+        if questions:
+            self._reference_bounds_cache = (
+                questions[0].display_number, questions[-1].display_number
+            )
+
+    @property
     def display_start(self):
-        """Returns order.1 for prose documents (confessions/sys theologies), plain start for catechisms."""
-        if self.document.is_prose_document:
+        """'3.1' for prose documents, the native reference where the document
+        has its own ('1-1'), and the plain start number for catechisms."""
+        document = self.document
+        if document.uses_native_references:
+            return self._reference_bounds()[0]
+        if document.is_prose_document:
             return f"{self.order}.1"
         return str(self.question_start)
 
     @property
     def display_end(self):
-        """Returns order.N for prose documents (confessions/sys theologies), plain end for catechisms."""
-        if self.document.is_prose_document:
+        """'3.8' for prose documents, the native reference where the document
+        has its own ('1-7'), and the plain end number for catechisms."""
+        document = self.document
+        if document.uses_native_references:
+            return self._reference_bounds()[1]
+        if document.is_prose_document:
             count = self.question_end - self.question_start + 1
             return f"{self.order}.{count}"
         return str(self.question_end)
@@ -235,6 +292,15 @@ class Question(BelongsToDocument, models.Model):
         blank=True,
         help_text="Semicolon-separated Scripture references"
     )
+    reference = models.CharField(
+        max_length=40,
+        blank=True,
+        default='',
+        help_text=(
+            "The document's own printed reference for this section (e.g. "
+            "'21-4'), for documents whose numbering is not chapter.section."
+        ),
+    )
 
     class Meta:
         ordering = ['number']
@@ -246,7 +312,11 @@ class Question(BelongsToDocument, models.Model):
 
     @property
     def display_number(self):
-        """Returns book/chapter.item for prose documents (e.g. '1.5'), plain number for catechisms."""
+        """The reference a reader cites: the document's own where it has one
+        ('BCO 21-4'), chapter.item for other prose documents ('1.5'), and the
+        plain number for catechisms."""
+        if self.reference:
+            return self.reference
         if self.document.is_prose_document and self.topic:
             section = self.number - self.topic.question_start + 1
             return f"{self.topic.order}.{section}"

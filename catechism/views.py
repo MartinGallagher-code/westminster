@@ -26,7 +26,7 @@ from .models import (
 )
 from .cache import cache_read_only_page
 from .diffing import align_columns, build_diff, change_ratio, diff_words, section_text
-from .citations import bibtex, citation_label, citation_text, resolve_reference, ris
+from .citations import bibtex, citation_label, citation_text, reference_slug, resolve_reference, ris
 from .handout import build_handout
 from .scripture_refs import (
     chapter_from_ref, parse_scripture_reference, reference_matches_chapter,
@@ -425,10 +425,12 @@ class CatechismHomeView(CatechismMixin, TemplateView):
         questions_by_topic = defaultdict(list)
         for q in questions:
             questions_by_topic[q.topic_id].append(q)
-        ctx['grouped'] = [
-            {'topic': topic, 'questions': questions_by_topic.get(topic.id, [])}
-            for topic in topics
-        ]
+        ctx['grouped'] = []
+        for topic in topics:
+            topic_questions = questions_by_topic.get(topic.id, [])
+            # Native-reference documents read their range from the questions.
+            topic.prime_reference_bounds(topic_questions)
+            ctx['grouped'].append({'topic': topic, 'questions': topic_questions})
 
         day_of_year = date.today().timetuple().tm_yday
         ctx['featured_question'] = None
@@ -761,11 +763,11 @@ class QuestionDetailView(CatechismMixin, DetailView):
                 user=self.request.user, question=q
             ).first()
 
-        ctx['citation_reference'] = q.display_number
+        ctx['citation_reference'] = reference_slug(q)
         ctx['citation_label'] = citation_label(q)
         ctx['citation_text'] = citation_text(
             q, self.request.build_absolute_uri(reverse('catechism:citation_permalink', kwargs={
-                'catechism_slug': q.catechism.slug, 'reference': q.display_number,
+                'catechism_slug': q.catechism.slug, 'reference': reference_slug(q),
             })),
         )
 

@@ -91,11 +91,7 @@
                         data-bs-toggle="collapse" data-bs-target="#collapse-{{ group.topic.slug }}"
                         aria-expanded="false" aria-controls="collapse-{{ group.topic.slug }}">
                     <span class="me-auto">
-                        {% if catechism.is_prose_document %}
-                        {{ catechism.topic_name }} {{ group.topic.order }}: {{ group.topic.name }}
-                        {% else %}
-                        {{ group.topic.name }}
-                        {% endif %}
+                        {{ group.topic.heading }}
                     </span>
                 </button>
             </h2>

@@ -9,6 +9,8 @@
 
 ## Most Recent Work
 
+- Book of Church Order overhaul (2026-11-02). **Out of date:** the 2026 edition (53rd GA) was published in July; the site served 2025, and `check_bco_update` re-hashed the old URL so it could never notice. It now scrapes https://www.pcaac.org/bco/ for the current PDF. **Wrong numbers everywhere:** sections were numbered `topic.order.section`, and the Preface is topic 1, so BCO 1-1 showed and cited as "BCO 2.1". New `Question.reference` and `Catechism.uses_native_references` (migration 0024); `display_number`, `Topic.heading`, `Topic.display_start/end`, citations, `/cite/` and handouts use the printed reference. **Destructive reloads:** `load_pca_bco` deleted and recreated every row, cascading through user notes/cards/positions and BCO cross-references (which then never rebuilt). It now updates in place by reference, including rows in the old format. **Bad text:** rebuilt from the PDF by `scripts/parse_pca_bco.py`, which fixes chapter titles leaking into sections, the merged 56-6, misplaced footnotes, the missing 36-4 form, and run-together list items. See `TODO_PCA_BCO.md` for the update procedure, and its **Copyright** section: the PDF requires the Stated Clerk's written permission for electronic reproduction, which needs a decision from the site owner.
+
 - Usability and completeness pass (2026-08-30), in five commits. **Two defects on every page of their kind:** proof references rendered as a bold clickable line whose collapse target was empty — verse text comes from a manual `fetch_scripture`, so a loaded database has 0 passages against 4,706 references — and search had no pagination at all, returning 633KB of HTML for "the". References now link to the Scripture index (99.4% resolve; `check_site_integrity` holds the floor and reports when no verse text is loaded), and search samples per document with the rest behind the document filter. **Onboarding:** `/about/` was a 404 and nothing anywhere explained what a confession, a catechism or a proof text is; the new page does, with corpus figures counted from the database. **Chrome:** the navbar went from ten links to six (it wrapped to two rows at 1200px), the duplicate search box on search-led pages is suppressed, the Atlas panel moved below the text it was preceding, and the teaching guide's aside stopped stretching 1,800px. **Repo:** MIT LICENSE, CONTRIBUTING.md, docs/ARCHITECTURE.md; `westminster_standards/README.md` and its TODO rewritten against what the modules actually contain (they still described the tsmo mount, a `/puritans/` sister app, and six layers as "stubbed"); PIPELINE_SMOKE.md dropped; `westminster_standards` added to the coverage config.
 - Along the way: `chapter_scripture_map` was a passage query over every section of a chapter, run on every question page, feeding a context variable no template has ever read. Removed.
 
@@ -42,11 +44,12 @@
 - Consider adding a generated PostgreSQL search vector column or indexes if search volume grows.
 - Verify Render has `SECRET_KEY`, `DATABASE_URL`, and `ALLOWED_HOSTS` set.
 - Set `WESTMINSTER_ATLAS_BASE_URL` if the Atlas later moves under `study.site`.
-- Add BCO cross-references and comparison-theme coverage when ready.
+- Add BCO comparison-theme coverage if useful.
+- Obtain (or confirm) the PCA Stated Clerk's written permission to publish the BCO text, and show the required notice on BCO pages (see `TODO_PCA_BCO.md`).
 
 ## Validation Notes
 
-- `python3 -m pytest -q` passes: 722 passed, 5 skipped (the Postgres-only search tests). `python3 manage.py test westminster_standards` passes: 56 tests.
+- `python3 -m pytest -q` passes: 746 passed, 5 skipped (the Postgres-only search tests). `python3 manage.py test westminster_standards` passes: 56 tests.
 - `python3 manage.py check_site_integrity` passes against a fully loaded database.
 - Restore rehearsed against PostgreSQL 16: dump, drop, restore, `scripts/verify_restore.sh` green.
 - `python3 -m pytest catechism/tests/test_models.py::test_atlas_url_normalizes_public_subproject_paths catechism/tests/test_commands.py::test_load_westminster_ontology_smoke catechism/tests/test_views.py::TestQuestionDetailView::test_renders_ontology_tags -q` passes: 3 passed.

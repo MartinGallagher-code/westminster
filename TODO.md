@@ -8,7 +8,7 @@
 
 2. **BCO enrichment** — _cross-references implemented_
    - Done: cross-references from the PCA Book of Church Order to WCF, WLC, and WSC (`load_bco_crossrefs`).
-   - Strip General Assembly action-date footnotes if they cause display issues.
+   - Done: footnotes are attached to their sections as notes (`scripts/parse_pca_bco.py`).
    - Add BCO material to comparison themes if it proves useful.
    - Expand the editorial cross-reference map to additional BCO chapters as needed.
 
@@ -25,8 +25,9 @@
    - Update the link in `templates/accounts/support.html` if the username changes.
 
 2. **BCO update monitoring**
-   - Periodically run `python manage.py check_bco_update`.
-   - Update `data/pca_bco/version.json` when the PCA publishes a new edition.
+   - After each General Assembly (late June), run `python manage.py check_bco_update`; the PCA usually publishes the new edition in July or August.
+   - When it reports a new edition, follow "Updating to a new edition" in `TODO_PCA_BCO.md` (`scripts/parse_pca_bco.py`).
+   - Copyright: the BCO's notice requires the Stated Clerk's written permission for electronic reproduction (see `TODO_PCA_BCO.md`).
 
 3. **Release hygiene**
    - Update `CHANGELOG.md` for user-visible changes.

@@ -34,6 +34,15 @@ question, section or chapter of a document. Both carry `BelongsToDocument`,
 which is what lets one set of templates render fourteen documents of three
 different shapes.
 
+`Question.number` is a sequential position used in URLs; what a reader sees
+and cites is `Question.display_number`. For most prose documents that is
+derived — `topic.order` and the section's place in it ("WCF 3.4") — but a
+document whose own numbering is not chapter-and-section sets
+`Catechism.uses_native_references` and stores each section's printed
+reference in `Question.reference` (the BCO's "21-4", "Preface II"). Its topic
+names then already carry their chapter label, so `Topic.heading` does not
+prefix one. Citations (`/cite/<doc>/<reference>/`) resolve either form.
+
 Around those:
 
 - **Commentary.** `CommentarySource` (Fisher, Watson, Ridgley, Hodge, …) with

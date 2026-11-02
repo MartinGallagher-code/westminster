@@ -38,6 +38,13 @@ python manage.py load_crossrefs
 # Generalized cross-references (all three standards)
 python manage.py load_standard_crossrefs
 
+# PCA Book of Church Order — before the Scripture index, which indexes the
+# Scripture the BCO cites
+python manage.py load_pca_bco
+
+# Cross-references from the PCA BCO to the Westminster Standards
+python manage.py load_bco_crossrefs
+
 # Scripture index
 python manage.py build_scripture_index
 
@@ -68,12 +75,6 @@ python manage.py load_second_helvetic
 python manage.py load_prooftexts --catechism second-helvetic
 python manage.py load_savoy
 python manage.py load_prooftexts --catechism savoy
-
-# PCA Book of Church Order
-python manage.py load_pca_bco
-
-# Cross-references from the PCA BCO to the Westminster Standards
-python manage.py load_bco_crossrefs
 
 # Systematic Theologies
 python manage.py load_calvins_institutes

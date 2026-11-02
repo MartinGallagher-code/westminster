@@ -12,16 +12,44 @@ CITATION_REFERENCE_RE = re.compile(r'^(?P<first>\d{1,3})(?:[.:](?P<second>\d{1,3
 
 
 def reference_for(question):
-    """The human reference for a question: '3.4' for prose, '1' otherwise."""
+    """The human reference for a question: '3.4' for prose, '1' otherwise,
+    or the document's own ('21-4', 'Preface II') where it has one."""
     return question.display_number
+
+
+def _reference_key(reference):
+    """Normalise a native reference for comparison and URLs: 'Preface II' -> 'preface-ii'."""
+    return re.sub(r'[\s_]+', '-', (reference or '').strip().lower())
+
+
+def reference_slug(question):
+    """The reference as it appears in a /cite/ or /handout/ URL."""
+    if question.reference:
+        return _reference_key(question.reference)
+    return question.display_number
+
+
+def _resolve_native_reference(catechism, reference):
+    """Find a section by its printed reference ('21-4', 'preface-ii', '21.4')."""
+    key = _reference_key(reference)
+    # Readers write "BCO 21.4" as often as "21-4".
+    key = re.sub(r'^(\d{1,3})[.:](\d{1,3})$', r'\1-\2', key)
+    for pk, native in catechism.questions.exclude(reference='').values_list('pk', 'reference'):
+        if _reference_key(native) == key:
+            return catechism.questions.get(pk=pk)
+    return None
 
 
 def resolve_reference(catechism, reference):
     """Find the question a reference denotes, or None.
 
     Prose documents (confessions) take 'chapter.section'; catechisms take a
-    bare question number.
+    bare question number; documents with their own numbering (the BCO) take
+    the reference as printed.
     """
+    if catechism.uses_native_references:
+        return _resolve_native_reference(catechism, reference)
+
     match = CITATION_REFERENCE_RE.match((reference or '').strip())
     if not match:
         return None
@@ -49,7 +77,7 @@ def resolve_reference(catechism, reference):
 def citation_key(question):
     """A BibTeX-safe key, e.g. 'wcf-3-4'."""
     slug = question.catechism.slug
-    return f"{slug}-{reference_for(question)}".replace('.', '-')
+    return f"{slug}-{reference_slug(question)}".replace('.', '-')
 
 
 def citation_label(question):
@@ -58,6 +86,9 @@ def citation_label(question):
 
 
 def _part_title(question):
+    if question.reference:
+        reference = question.reference
+        return f'Section {reference}' if reference[:1].isdigit() else reference
     if question.catechism.is_prose_document:
         chapter, _, section = reference_for(question).partition('.')
         return f'Chapter {chapter}, Section {section}'

@@ -5,6 +5,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 
 from catechism.management.commands._helpers import data_is_current, mark_data_current
+from catechism.management.commands.load_pca_bco import data_paths as bco_data_paths
 from catechism.models import Catechism, Topic, Question, StandardCrossReference
 
 CHAPTER_RE = re.compile(r"Chapter\s+(\d+)\s*:")
@@ -25,12 +26,21 @@ def _expand_ranges(items):
 class Command(BaseCommand):
     help = "Load editorial cross-references from the PCA Book of Church Order to the Westminster Standards"
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--force', action='store_true',
+            help='Rebuild even if the source data has not changed',
+        )
+
     def handle(self, *args, **options):
         data_path = settings.BASE_DIR / "data" / "pca_bco" / "bco_cross_references.json"
         if not data_path.exists():
             self.stdout.write(self.style.WARNING("No bco_cross_references.json found, skipping"))
             return
-        if data_is_current("bco-crossrefs", data_path):
+        # The links hang off BCO sections, so a change to the BCO text (new
+        # sections, renumbering) must rebuild them as well as a change here.
+        source_paths = (data_path, *bco_data_paths())
+        if not options.get('force') and data_is_current("bco-crossrefs", *source_paths):
             self.stdout.write("BCO cross-references unchanged, skipping.")
             return
 
@@ -62,6 +72,10 @@ class Command(BaseCommand):
         with open(data_path) as f:
             payload = json.load(f)
         mappings = payload["mappings"] if isinstance(payload, dict) else payload
+
+        # Rebuild from scratch: a mapping removed from the JSON, or a section
+        # that moved chapter, must not leave its old links behind.
+        StandardCrossReference.objects.filter(source_question__catechism=bco).delete()
 
         created_count = 0
         skipped_chapters = []
@@ -119,7 +133,7 @@ class Command(BaseCommand):
                 f"Skipped unmapped BCO chapters: {sorted(skipped_chapters)}"
             ))
 
-        mark_data_current("bco-crossrefs", data_path)
+        mark_data_current("bco-crossrefs", *source_paths)
         self.stdout.write(self.style.SUCCESS(
             f"Loaded {created_count} BCO cross-references"
         ))
