@@ -52,6 +52,22 @@ def format_confession_sections(text):
 
 
 @register.filter
+def format_paragraphs(text):
+    """Render blank-line-separated paragraphs as ``<p>`` elements.
+
+    For documents stored with clean paragraph breaks (the BCO), where the
+    all-caps header detection in ``format_confession_sections`` would misread
+    an abbreviation such as "PCA." as a heading.
+    """
+    if not text:
+        return text
+    paragraphs = [
+        ' '.join(p.split()) for p in re.split(r'\n\s*\n', text) if p.strip()
+    ]
+    return mark_safe(''.join(f'<p>{escape(p)}</p>' for p in paragraphs))
+
+
+@register.filter
 def search_snippet(text, query):
     """Show the part of ``text`` that matched, with the terms marked.
 
